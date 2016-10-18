@@ -1,34 +1,33 @@
 var feng3d;
 (function (feng3d) {
-    var EventPriortyTest = (function () {
-        function EventPriortyTest() {
+    class EventPriortyTest {
+        constructor() {
             this.init();
             this.destroy();
         }
-        EventPriortyTest.prototype.init = function () {
+        init() {
             this.dispatcher = new feng3d.EventDispatcher();
             this.dispatcher.addEventListener("test", this.func2, this, 2.5);
             this.dispatcher.addEventListener("test", this.func1, this, 1);
             this.dispatcher.addEventListener("test", this.func3, this, 3);
             this.dispatcher.dispatchEvent(new feng3d.Event("test"));
-        };
-        EventPriortyTest.prototype.destroy = function () {
+        }
+        destroy() {
             this.dispatcher.removeEventListener("test", this.func1, this);
             this.dispatcher.removeEventListener("test", this.func2, this);
             this.dispatcher.removeEventListener("test", this.func3, this);
             this.dispatcher = null;
-        };
-        EventPriortyTest.prototype.func1 = function () {
+        }
+        func1() {
             console.log("1");
-        };
-        EventPriortyTest.prototype.func2 = function () {
+        }
+        func2() {
             console.log("2");
-        };
-        EventPriortyTest.prototype.func3 = function () {
+        }
+        func3() {
             console.log("3");
-        };
-        return EventPriortyTest;
-    }());
+        }
+    }
     feng3d.EventPriortyTest = EventPriortyTest;
 })(feng3d || (feng3d = {}));
 new feng3d.EventPriortyTest();

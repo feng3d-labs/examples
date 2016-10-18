@@ -1,10 +1,10 @@
 var feng3d;
 (function (feng3d) {
-    var ColorMaterialTest = (function () {
-        function ColorMaterialTest() {
+    class ColorMaterialTest {
+        constructor() {
             this.init();
         }
-        ColorMaterialTest.prototype.init = function () {
+        init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             //初始化颜色材质
@@ -22,9 +22,8 @@ var feng3d;
             setInterval(function () {
                 colorMaterial.color.color = Math.random() * (1 << 32 - 1);
             }, 1000);
-        };
-        return ColorMaterialTest;
-    }());
+        }
+    }
     feng3d.ColorMaterialTest = ColorMaterialTest;
 })(feng3d || (feng3d = {}));
 new feng3d.ColorMaterialTest();

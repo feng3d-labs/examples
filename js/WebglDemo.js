@@ -1,17 +1,17 @@
 var feng3d;
 (function (feng3d) {
-    var WebglDemo = (function () {
-        function WebglDemo() {
+    class WebglDemo {
+        constructor() {
             this.init();
             this.controller = new feng3d.LookAtController(this.view3D.camera);
             this.view3D.camera.space3D.z = -1000;
             setInterval(this.process.bind(this), 500);
         }
-        WebglDemo.prototype.process = function () {
+        process() {
             this.controller.lookAtPosition = new feng3d.Vector3D(Math.random() * 10, 0, 0);
             this.controller.update();
-        };
-        WebglDemo.prototype.init = function () {
+        }
+        init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var scene3D = this.view3D.scene;
@@ -40,9 +40,8 @@ var feng3d;
                 new feng3d.Space3D(200, -200, 500, -90, 0, 0),
             ]);
             scene3D.addChild(cylinder);
-        };
-        return WebglDemo;
-    }());
+        }
+    }
     feng3d.WebglDemo = WebglDemo;
 })(feng3d || (feng3d = {}));
 new feng3d.WebglDemo();

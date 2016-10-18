@@ -1,22 +1,16 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var feng3d;
 (function (feng3d) {
     //
     // 事件冒泡测试
     // @author warden_feng 2014-11-26
     //
-    var EventBubblesTest = (function (_super) {
-        __extends(EventBubblesTest, _super);
-        function EventBubblesTest() {
-            _super.call(this);
+    class EventBubblesTest extends feng3d.EventDispatcher {
+        constructor() {
+            super();
             this.init();
             this.destroy();
         }
-        EventBubblesTest.prototype.init = function () {
+        init() {
             this.a = new Container("a");
             this.b = new Container("b");
             this.c = new Container("c");
@@ -31,8 +25,8 @@ var feng3d;
             // this.a.dispatchEvent(new Event("testEvent", null, true));
             //			b.dispatchEvent(new Event("testEvent", null, true));
             this.c.dispatchEvent(new feng3d.Event("testEvent", null, true));
-        };
-        EventBubblesTest.prototype.destroy = function () {
+        }
+        destroy() {
             this.a.removeEventListener("testEvent", this.onTestEvent, this);
             this.b.removeEventListener("testEvent", this.onTestEvent, this);
             this.c.removeEventListener("testEvent", this.onTestEvent, this);
@@ -42,8 +36,8 @@ var feng3d;
             this.a = null;
             this.b = null;
             this.c = null;
-        };
-        EventBubblesTest.prototype.onTestEvent = function (event) {
+        }
+        onTestEvent(event) {
             console.log(event.type, event.target.name, event.currentTarget.name);
             //测试事件停止函数
             //			if (event.currentTarget == b)
@@ -51,35 +45,32 @@ var feng3d;
             //测试事件停止函数
             //			if (event.currentTarget == b)
             //				event.stopImmediatePropagation();
-        };
-        EventBubblesTest.prototype.onTestEvent1 = function (event) {
+        }
+        onTestEvent1(event) {
             console.log(event.type, event.target.name, event.currentTarget.name);
             //测试事件停止函数
             if (event.currentTarget == this.b)
                 event.isStop = true;
-        };
-        return EventBubblesTest;
-    }(feng3d.EventDispatcher));
+        }
+    }
     feng3d.EventBubblesTest = EventBubblesTest;
-    var Container = (function (_super) {
-        __extends(Container, _super);
-        function Container(name) {
-            _super.call(this);
+    class Container extends feng3d.EventDispatcher {
+        constructor(name) {
+            super();
             this.name = name;
         }
-        Container.prototype.addChild = function (container) {
+        addChild(container) {
             container.parent = this;
-        };
-        Container.prototype.toString = function () {
+        }
+        toString() {
             return this.name;
-        };
-        Container.prototype.destroy = function () {
-            _super.prototype.destroy.call(this);
+        }
+        destroy() {
+            super.destroy();
             this.name = null;
             this.parent = null;
-        };
-        return Container;
-    }(feng3d.EventDispatcher));
+        }
+    }
 })(feng3d || (feng3d = {}));
 new feng3d.EventBubblesTest();
 //# sourceMappingURL=EventBubblesTest.js.map

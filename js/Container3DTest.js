@@ -3,11 +3,11 @@ var feng3d;
     /**
      * 测试3D容器
      */
-    var Container3DTest = (function () {
-        function Container3DTest() {
+    class Container3DTest {
+        constructor() {
             this.init();
         }
-        Container3DTest.prototype.init = function () {
+        init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             //初始化颜色材质
@@ -32,9 +32,8 @@ var feng3d;
             setInterval(function () {
                 colorMaterial.color.color = Math.random() * (1 << 32 - 1);
             }, 1000);
-        };
-        return Container3DTest;
-    }());
+        }
+    }
     feng3d.Container3DTest = Container3DTest;
 })(feng3d || (feng3d = {}));
 new feng3d.Container3DTest();

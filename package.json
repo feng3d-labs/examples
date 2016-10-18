@@ -1,0 +1,25 @@
+{
+  "name": "feng3d-examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "bin": {
+    "feng3d-examples": "examples.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wardenfeng/feng3d-ts.git"
+  },
+  "keywords": [
+    "feng3d-examples"
+  ],
+  "author": "feng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wardenfeng/feng3d-ts/issues"
+  },
+  "homepage": "https://github.com/wardenfeng/feng3d-ts#readme"
+}

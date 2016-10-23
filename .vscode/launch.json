@@ -6,7 +6,7 @@
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:8080",
-            "sourceMaps": true,
+            "sourceMaps": false,
             "webRoot": "${workspaceRoot}"
         },
         {

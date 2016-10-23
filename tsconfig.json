@@ -8,6 +8,6 @@
     },
     "exclude": [
         "node_modules",
-        "feng3d"
+        "feng3d/src"
     ]
 }

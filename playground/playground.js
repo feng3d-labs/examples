@@ -6,7 +6,7 @@
 
 	window.onload = function () {
 		require(['vs/editor/editor.main'], function () {
-			xhr('libs/feng3d.d.ts').then(function (response) {
+			xhr('feng3d/release/feng3d.d.ts').then(function (response) {
 				monaco.languages.typescript.javascriptDefaults.addExtraLib(response.responseText, 'monaco.d.ts');
 				monaco.languages.typescript.javascriptDefaults.addExtraLib([
 					'declare var require: {',

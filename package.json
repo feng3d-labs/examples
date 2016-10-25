@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/wardenfeng/feng3d-ts/issues"
   },
-  "homepage": "https://github.com/wardenfeng/feng3d-ts#readme"
+  "homepage": "https://github.com/wardenfeng/feng3d-ts#readme",
+  "dependencies": {
+    "monaco-editor": "^0.7.0"
+  }
 }

@@ -1,7 +1,3 @@
 [submodule "feng3d"]
 	path = feng3d
 	url = https://github.com/feng3dTS/feng3d-ts.git
-[submodule "node_modules"]
-	path = node_modules
-	url = https://git.oschina.net/wardenfeng/node_modules.git
-	branch = feng3d-ts-examples

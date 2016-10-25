@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wardenfeng/feng3d-ts.git"
+    "url": "git+https://github.com/feng3dTS/feng3d-ts-examples.git"
   },
   "keywords": [
     "feng3d-examples"
@@ -19,9 +19,9 @@
   "author": "feng",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wardenfeng/feng3d-ts/issues"
+    "url": "https://github.com/feng3dTS/feng3d-ts-examples/issues"
   },
-  "homepage": "https://github.com/wardenfeng/feng3d-ts#readme",
+  "homepage": "https://github.com/feng3dTS/feng3d-ts-examples#readme",
   "dependencies": {
     "monaco-editor": "^0.7.0"
   }

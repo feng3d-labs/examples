@@ -1,0 +1,4 @@
+[submodule "feng3d"]
+	path = feng3d
+	url = https://github.com/feng3dTS/feng3d-ts.git
+	branch = master

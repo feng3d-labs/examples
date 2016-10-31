@@ -13,6 +13,10 @@ feng3d引擎示例
 
     `cnpm install`
 
+1. 编译项目
+
+    `ctrl+shift+B`
+
 1. 运行项目
 
     * 开启http服务器（比如http-server，使用cnpm install -g http-server安装，http-server命令开启）浏览http://localhost:8080/

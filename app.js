@@ -7,7 +7,7 @@ function init() {
     type = GetQueryString("type");
     type = type || "WebglDemo";
     select.value = type;
-    jsCtrl.src = "js/" + type + ".js";
+    jsCtrl.src = "out/" + type + ".js";
     document.onkeyup = function (e) {
         var keycode = e.which;
         if (keycode == 37) {

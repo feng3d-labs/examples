@@ -4,10 +4,10 @@
         "target": "es6",
         "noImplicitAny": false,
         "sourceMap": true,
-        "outDir": "js"
+        "outDir": "out"
     },
     "exclude": [
         "node_modules",
-        "feng3d/src"
+        "feng3d"
     ]
 }

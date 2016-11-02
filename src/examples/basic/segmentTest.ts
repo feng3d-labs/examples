@@ -2,13 +2,14 @@ var canvas = document.getElementById("glcanvas");
 var view3D = new feng3d.View3D(canvas);
 
 //初始化颜色材质
-var segmentMaterial = new feng3d.SegmentMaterial();
 var segmentObject3D = new feng3d.Object3D("cube", [
     new feng3d.Geometry(),
-    new feng3d.Space3D(0, 0, 300),
-    segmentMaterial,
+    new feng3d.Space3D(0, 0, 300)
 ]);
 view3D.scene.addChild(segmentObject3D);
+
+//初始化颜色材质
+var segmentMaterial = segmentObject3D.getComponentByClass(feng3d.Material).getOrCreateComponentByClass(feng3d.SegmentMaterial);
 
 var segmentGeometry = new feng3d.SegmentGeometry();
 var geometry = segmentObject3D.getComponentByClass(feng3d.Geometry);

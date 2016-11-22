@@ -20,5 +20,5 @@ setInterval(function () {
     cube.space3D.ry += 1;
 }, 15);
 setInterval(function () {
-    colorMaterial.color.color = Math.random() * (1 << 32 - 1);
+    colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
 }, 1000);

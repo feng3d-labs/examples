@@ -201,7 +201,7 @@
 				return callback(new Error('sample not found'));
 			}
 
-			samplePath = 'out/examples/' + samplePath;
+			samplePath = 'out/' + samplePath;
 
 			var js = xhr(samplePath + '.js').then(function (response) { return response.responseText });
 			monaco.Promise.join([js]).then(function (_) {

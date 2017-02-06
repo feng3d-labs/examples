@@ -18,9 +18,53 @@ var PLAY_SAMPLES = [
 		path: "basic/segmentTest"
 	},
 	{
+		chapter: "Basic",
+		name: "FPSController",
+		id: "basic-FPSController",
+		path: "basic/FPSControllerTest"
+	},
+	{
+		chapter: "Basic",
+		name: "ParticleAnimator",
+		id: "basic-ParticleAnimator",
+		path: "basic/ParticleAnimatorTest"
+	},
+	{
+		chapter: "Basic",
+		name: "PointLight",
+		id: "basic-PointLight",
+		path: "basic/PointLightTest"
+	},
+	{
+		chapter: "Basic",
+		name: "OBJParser",
+		id: "basic-OBJParser",
+		path: "basic/OBJParserTest"
+	},
+	{
+		chapter: "Basic",
+		name: "MD5Loader",
+		id: "basic-MD5Loader",
+		path: "basic/MD5LoaderTest"
+	},
+	{
 		chapter: "Material",
 		name: "colorMaterial",
 		id: "material-colorMaterial",
 		path: "material/colorMaterialTest"
+	}
+	,
+	{
+		chapter: "Material",
+		name: "SegmentMaterial",
+		id: "material-SegmentMaterial",
+		path: "material/SegmentMaterialTest"
+	}
+	,
+	{
+		chapter: "Material",
+		name: "TextureMaterial",
+		id: "material-TextureMaterial",
+		path: "material/TextureMaterialTest"
 	}
 ];

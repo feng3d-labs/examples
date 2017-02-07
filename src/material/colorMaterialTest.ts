@@ -1,7 +1,7 @@
 var canvas = document.getElementById("glcanvas");
 var view3D = new feng3d.View3D(canvas);
 
-var cube = feng3d.$object3DFactory.createCube();
+var cube = new feng3d.CubeObject3D();
 cube.transform.z = 300;
 this.view3D.scene.addChild(cube);
 

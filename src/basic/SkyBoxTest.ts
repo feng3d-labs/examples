@@ -1,10 +1,5 @@
 module feng3d {
-
-    /**
-     * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
-     */
-    export class FPSControllerTest {
-
+    export class SkyBoxTest {
         view3D: View3D;
         controller: FPSController;
         cameraObj: Object3D;
@@ -46,30 +41,26 @@ module feng3d {
         init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
-            var scene3D = this.view3D.scene;
 
-            var cube = new CubeObject3D();
-            cube.transform.position = new Vector3D(0, 0, 0);
-            scene3D.addChild(cube);
+            var scene = this.view3D.scene;
 
-            var plane = new PlaneObject3D();
-            plane.transform.position = new Vector3D(150, 0, 0);
-            plane.transform.rotation = new Vector3D(90, 0, 0);
-            scene3D.addChild(plane);
+            var loadedNum = 0;
+            var imagePaths = ['px.jpg', 'py.jpg', 'pz.jpg', 'nx.jpg', 'ny.jpg', 'nz.jpg'];
+            var images: HTMLImageElement[] = [];
+            for (var i = 0; i < imagePaths.length; i++) {
+                var image = images[i] = new Image();
+                image.onload = function () {
+                    loadedNum++;
+                    if (loadedNum == imagePaths.length) {
+                        var skybox = new SkyBoxObject3D(images);
+                        scene.addChild(skybox);
+                    }
+                }
+                image.src = 'resources/skybox/' + imagePaths[i];
+            }
 
-            var sphere = new SphereObject3D();
-            sphere.transform.position = new Vector3D(-150, 0, 0);
-            scene3D.addChild(sphere);
-
-            var capsule = new CapsuleObject3D();
-            capsule.transform.position = new Vector3D(300, 0, 0);
-            scene3D.addChild(capsule);
-
-            var cylinder = new CylinderObject3D();
-            cylinder.transform.position = new Vector3D(-300, 0, 0);
-            scene3D.addChild(cylinder);
         }
     }
 }
 
-new feng3d.FPSControllerTest();
+new feng3d.SkyBoxTest();

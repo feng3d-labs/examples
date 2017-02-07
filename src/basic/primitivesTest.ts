@@ -2,23 +2,23 @@ var canvas = document.getElementById("glcanvas");
 var view3D = new feng3d.View3D(canvas);
 var scene3D = view3D.scene;
 
-var cube = feng3d.$object3DFactory.createCube();
+var cube = new feng3d.CubeObject3D();
 scene3D.addChild(cube);
 
-var plane = feng3d.$object3DFactory.createPlane();
+var plane = new feng3d.PlaneObject3D();
 plane.transform.position = new feng3d.Vector3D(150, 0, 0);
 plane.transform.rotation = new feng3d.Vector3D(90, 0, 0);
 scene3D.addChild(plane);
 
-var sphere = feng3d.$object3DFactory.createSphere();
+var sphere = new feng3d.SphereObject3D();
 sphere.transform.position = new feng3d.Vector3D(-150, 0, 0);
 scene3D.addChild(sphere);
 
-var capsule = feng3d.$object3DFactory.createCapsule();
+var capsule = new feng3d.CapsuleObject3D();
 capsule.transform.position = new feng3d.Vector3D(300, 0, 0);
 scene3D.addChild(capsule);
 
-var cylinder = feng3d.$object3DFactory.createCylinder();
+var cylinder = new feng3d.CylinderObject3D();
 cylinder.transform.position = new feng3d.Vector3D(-300, 0, 0);
 scene3D.addChild(cylinder);
 

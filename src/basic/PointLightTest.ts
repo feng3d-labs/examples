@@ -56,7 +56,7 @@ module feng3d {
                     if (loadedNum == imagePaths.length) {
 
                         //初始化立方体
-                        var cube = $object3DFactory.createCube();
+                        var cube = new CubeObject3D();
                         cube.transform.y = -200;
                         var material = cube.getOrCreateComponentByClass(MeshRenderer).material = new StandardMaterial();
                         // material.difuseTexture = new Texture2D(images[0]);

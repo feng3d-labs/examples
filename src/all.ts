@@ -48,6 +48,18 @@ var PLAY_SAMPLES = [
 		path: "basic/MD5LoaderTest"
 	},
 	{
+		chapter: "Basic",
+		name: "SkyBox",
+		id: "basic-SkyBox",
+		path: "basic/SkyBoxTest"
+	},
+	{
+		chapter: "Basic",
+		name: "Terrain",
+		id: "basic-Terrain",
+		path: "basic/TerrainTest"
+	},
+	{
 		chapter: "Material",
 		name: "colorMaterial",
 		id: "material-colorMaterial",

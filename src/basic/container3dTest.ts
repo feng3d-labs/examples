@@ -1,10 +1,10 @@
 var canvas = document.getElementById("glcanvas");
 var view3D = new feng3d.View3D(canvas);
 //初始化颜色材质
-var cube = feng3d.$object3DFactory.createCube();
+var cube = new feng3d.CubeObject3D();
 cube.transform.z = 500;
 view3D.scene.addChild(cube);
-var cylinder = feng3d.$object3DFactory.createCylinder();
+var cylinder = new feng3d.CylinderObject3D();
 cylinder.transform.x = 200;
 cube.addChild(cylinder);
 

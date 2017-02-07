@@ -10,7 +10,7 @@ module feng3d {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
-            var cube = $object3DFactory.createCube();
+            var cube = new CubeObject3D();
             cube.transform.z = 300;
             this.view3D.scene.addChild(cube);
 

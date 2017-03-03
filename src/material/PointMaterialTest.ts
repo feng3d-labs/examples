@@ -24,7 +24,7 @@ module feng3d {
 
                 var angle = x / length * Math.PI;
                 var vec = new Vector3D(x, Math.sin(angle) * height, 0);
-                pointGeometry.addPoint(new Point(vec));
+                pointGeometry.addPoint(new PointInfo(vec));
             }
 
             //变化旋转

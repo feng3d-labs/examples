@@ -8,11 +8,10 @@ module feng3d {
 
             this.init();
 
-            this.cameraObj = new Object3D("camera");
+            this.cameraObj = this.view3D.camera;
             this.cameraObj.transform.z = -500;
             this.cameraObj.transform.y = 200;
             this.cameraObj.transform.lookAt(new Vector3D());
-            this.cameraObj.addComponent(this.view3D.camera);
             //
             this.controller = new FPSController();
             //
@@ -20,8 +19,8 @@ module feng3d {
             setInterval(this.process.bind(this), 17);
 
 
-            Input.instance.addEventListener("mousedown", this.onMousedown, this);
-            Input.instance.addEventListener("mouseup", this.onMouseup, this);
+            input.addEventListener("mousedown", this.onMousedown, this);
+            input.addEventListener("mouseup", this.onMouseup, this);
         }
 
         private onMousedown() {

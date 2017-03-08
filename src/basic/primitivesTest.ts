@@ -22,8 +22,7 @@ var cylinder = new feng3d.CylinderObject3D();
 cylinder.transform.position = new feng3d.Vector3D(-300, 0, 0);
 scene3D.addChild(cylinder);
 
-var cameraObj = new feng3d.Object3D("camera");
-cameraObj.addComponent(this.view3D.camera);
+var cameraObj = view3D.camera;
 var controller = new feng3d.LookAtController(cameraObj.transform);
 controller.lookAtPosition = new feng3d.Vector3D();
 //

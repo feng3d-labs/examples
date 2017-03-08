@@ -38,7 +38,6 @@ module feng3d {
                     useMatrial(object3D, image);
 
                     object.transform.z = 300;
-                    scene.addChild(object3D);
                     skeletonAnimator = animator;
                     //
                     md5Loader.loadAnim(md5animUrl, function (skeletonClipNode: SkeletonClipNode) {
@@ -46,6 +45,7 @@ module feng3d {
                         skeletonAnimator.animations.push(skeletonClipNode);
                         skeletonClipNode.looping = true;
                         skeletonAnimator.play();
+                        scene.addChild(object3D);
                     });
                 });
             };

@@ -60,6 +60,12 @@ var PLAY_SAMPLES = [
 		path: "basic/TerrainTest"
 	},
 	{
+		chapter: "Basic",
+		name: "MousePickTest",
+		id: "basic-MousePick",
+		path: "basic/MousePickTest"
+	},
+	{
 		chapter: "Material",
 		name: "colorMaterial",
 		id: "material-colorMaterial",

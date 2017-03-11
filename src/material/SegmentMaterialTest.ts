@@ -11,7 +11,7 @@ module feng3d {
             this.view3D = new View3D(canvas);
 
             var segment = new Object3D("segment");
-            segment.transform.z = 300;
+            segment.transform.position.z = 300;
             this.view3D.scene.addChild(segment);
 
             //初始化材质
@@ -35,7 +35,7 @@ module feng3d {
 
             //变化旋转
             setInterval(function () {
-                segment.transform.ry += 1;
+                segment.transform.rotation.y += 1;
             }, 15);
         }
     }

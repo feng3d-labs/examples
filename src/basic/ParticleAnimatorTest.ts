@@ -9,7 +9,7 @@ module feng3d {
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.position.z = -500;
             this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
@@ -46,7 +46,7 @@ module feng3d {
             var particle = new Object3D("particle");
             particle.getOrCreateComponentByClass(MeshFilter).geometry = new PointGeometry();
             particle.getOrCreateComponentByClass(MeshRenderer).material = new ParticleMaterial();
-            particle.transform.y = -100;
+            particle.transform.position.y = -100;
             scene.addChild(particle);
 
             var particleAnimator = particle.getOrCreateComponentByClass(ParticleAnimator);

@@ -15,7 +15,7 @@ module feng3d {
             var object3D = new Object3D("plane");
             object3D.getOrCreateComponentByClass(MeshFilter).geometry = pointGeometry;
             object3D.getOrCreateComponentByClass(MeshRenderer).material = pointMaterial;
-            object3D.transform.z = 300;
+            object3D.transform.position.z = 300;
             this.view3D.scene.addChild(object3D);
 
             var length = 200;
@@ -29,9 +29,9 @@ module feng3d {
 
             //变化旋转
             setInterval(function () {
-                object3D.transform.ry += 1;
+                object3D.transform.rotation.y += 1;
 
-                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.ry / 30);
+                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.rotation.y / 30);
 
             }, 15);
         }

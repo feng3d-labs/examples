@@ -14,7 +14,7 @@ module feng3d {
             // //变化旋转
             setInterval(function () {
                 if (object) {
-                    object.transform.ry += 1;
+                    object.transform.rotation.y += 1;
                 }
             }, 15);
 
@@ -30,14 +30,14 @@ module feng3d {
                 var md5Loader = new MD5Loader();
                 md5Loader.load(md5meshUrl, function (object3D: Object3D, animator: SkeletonAnimator) {
 
-                    object3D.transform.y = -100;
-                    object3D.transform.rx = -90;
+                    object3D.transform.position.y = -100;
+                    object3D.transform.rotation.x = -90;
 
                     object = object3D;
 
                     useMatrial(object3D, image);
 
-                    object.transform.z = 300;
+                    object.transform.position.z = 300;
                     skeletonAnimator = animator;
                     //
                     md5Loader.loadAnim(md5animUrl, function (skeletonClipNode: SkeletonClipNode) {

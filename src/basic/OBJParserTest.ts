@@ -14,21 +14,21 @@ module feng3d {
             // //变化旋转
             setInterval(function () {
                 if (object) {
-                    object.transform.ry += 1;
+                    object.transform.rotation.y += 1;
                 }
             }, 15);
 
-            // var objUrl = "resources/cube.obj";
-            var objUrl = "resources/head.obj";
+            var objUrl = "resources/cube.obj";
+            // var objUrl = "resources/head.obj";
             var scene = this.view3D.scene;
 
             var objLoader = new ObjLoader();
             objLoader.load(objUrl, function (object3D: Object3D) {
                 object = object3D;
-                object.transform.sx = 50;
-                object.transform.sy = 50;
-                object.transform.sz = 50;
-                object.transform.z = 300;
+                object.transform.scale.x = 20;
+                object.transform.scale.y = 20;
+                object.transform.scale.z = 20;
+                object.transform.position.z = 300;
                 scene.addChild(object3D);
             });
         }

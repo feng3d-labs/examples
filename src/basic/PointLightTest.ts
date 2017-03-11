@@ -9,8 +9,8 @@ module feng3d {
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.z = -500;
-            this.cameraObj.transform.y = 200;
+            this.cameraObj.transform.position.z = -500;
+            this.cameraObj.transform.position.y = 200;
             this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
@@ -56,7 +56,7 @@ module feng3d {
 
                         //初始化立方体
                         var cube = new CubeObject3D();
-                        cube.transform.y = -200;
+                        cube.transform.position.y = -200;
                         var material = cube.getOrCreateComponentByClass(MeshRenderer).material = new StandardMaterial();
                         // material.difuseTexture = new Texture2D(images[0]);
                         material.roughness = 0.7;
@@ -104,10 +104,10 @@ function setPointLightPosition() {
     var time = new Date().getTime();
     //
     var angle = time / 1000;
-    light0.transform.x = Math.sin(angle) * 300;
-    light0.transform.z = Math.cos(angle) * 300;
+    light0.transform.position.x = Math.sin(angle) * 300;
+    light0.transform.position.z = Math.cos(angle) * 300;
     //
     angle = angle + Math.PI / 2;
-    light1.transform.x = Math.sin(angle) * 300;
-    light1.transform.z = Math.cos(angle) * 300;
+    light1.transform.position.x = Math.sin(angle) * 300;
+    light1.transform.position.z = Math.cos(angle) * 300;
 }

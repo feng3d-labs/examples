@@ -11,12 +11,12 @@ module feng3d {
             this.view3D = new View3D(canvas);
 
             var cube = new CubeObject3D();
-            cube.transform.z = 300;
+            cube.transform.position.z = 300;
             this.view3D.scene.addChild(cube);
 
             //变化旋转与颜色
             setInterval(function () {
-                cube.transform.ry += 1;
+                cube.transform.rotation.y += 1;
             }, 15);
 
             var image = new Image();  // Create the image object

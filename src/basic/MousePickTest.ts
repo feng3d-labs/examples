@@ -82,7 +82,7 @@ module feng3d
         {
 
             var object3D: Object3D = <Object3D>event.target;
-            var material = object3D.getComponentByClass(MeshRenderer).material = new ColorMaterial();
+            var material = object3D.getComponentByType(MeshRenderer).material = new ColorMaterial();
             material.color.fromUnit(Math.random() * (1 << 24));
         }
     }

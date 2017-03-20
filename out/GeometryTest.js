@@ -8,15 +8,15 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var object3d = new feng3d.Object3D();
-            var mesh = object3d.getOrCreateComponentByClass(feng3d.Model);
-            var geometry = mesh.geometry = new feng3d.PlaneGeometry();
+            var model = object3d.getOrCreateComponentByClass(feng3d.Model);
+            var geometry = model.geometry = new feng3d.Geometry();
+            geometry.addGeometry(new feng3d.PlaneGeometry());
             geometry.addGeometry(new feng3d.SphereGeometry(50));
-            object3d.getOrCreateComponentByClass(feng3d.Model);
             object3d.transform.position.z = 300;
             object3d.transform.position.y = -100;
             this.view3D.scene.addChild(object3d);
             //初始化颜色材质
-            var colorMaterial = object3d.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
+            var colorMaterial = model.material = new feng3d.ColorMaterial();
             //变化旋转与颜色
             setInterval(function () {
                 object3d.transform.rotation.y += 1;

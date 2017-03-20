@@ -1,0 +1,109 @@
+{
+	"__className__": "feng3d.Scene3D",
+	"children_": [
+		{
+			"__className__": "feng3d.PlaneObject3D",
+			"components_": [
+				{
+					"__className__": "feng3d.Transform",
+					"position": {
+						"__className__": "feng3d.Vector3D",
+						"w": 0,
+						"x": 0,
+						"y": 0,
+						"z": 0
+					},
+					"rotation": {
+						"__className__": "feng3d.Vector3D",
+						"w": 0,
+						"x": 0,
+						"y": 0,
+						"z": 0
+					},
+					"scale": {
+						"__className__": "feng3d.Vector3D",
+						"w": 0,
+						"x": 1,
+						"y": 1,
+						"z": 1
+					}
+				},
+				{
+					"__className__": "feng3d.MeshFilter",
+					"components_": [
+						{
+							"__className__": "feng3d.PlaneGeometry",
+							"height": 100,
+							"segmentsH": 1,
+							"segmentsW": 1,
+							"width": 100,
+							"yUp": true
+						}]
+				},
+				{
+					"__className__": "feng3d.MeshRenderer",
+					"components_": [
+						{
+							"__className__": "feng3d.StandardMaterial",
+							"ambientColor": {
+								"__className__": "feng3d.Color",
+								"a": 1,
+								"b": 0,
+								"g": 0,
+								"r": 0
+							},
+							"baseColor": {
+								"__className__": "feng3d.Color",
+								"a": 1,
+								"b": 1,
+								"g": 1,
+								"r": 1
+							},
+							"metalic": 1,
+							"reflectance": 1,
+							"renderMode": 4,
+							"roughness": 1,
+							"shaderName": "standard"
+						}]
+				}],
+			"mouseEnabled_": true,
+			"name": "plane",
+			"planeGeometry": {
+				"__className__": "feng3d.PlaneGeometry",
+				"height": 100,
+				"segmentsH": 1,
+				"segmentsW": 1,
+				"width": 100,
+				"yUp": true
+			},
+			"visible_": true
+		}],
+	"components_": [
+		{
+			"__className__": "feng3d.Transform",
+			"position": {
+				"__className__": "feng3d.Vector3D",
+				"w": 0,
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"rotation": {
+				"__className__": "feng3d.Vector3D",
+				"w": 0,
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"scale": {
+				"__className__": "feng3d.Vector3D",
+				"w": 0,
+				"x": 1,
+				"y": 1,
+				"z": 1
+			}
+		}],
+	"mouseEnabled_": true,
+	"name": "root",
+	"visible_": true
+}

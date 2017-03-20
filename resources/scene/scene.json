@@ -1,0 +1,31 @@
+{
+	"__className__": "feng3d.Scene3D",
+	"components_": [
+		{
+			"__className__": "feng3d.Transform",
+			"position": {
+				"__className__": "feng3d.Vector3D",
+				"w": 0,
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"rotation": {
+				"__className__": "feng3d.Vector3D",
+				"w": 0,
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"scale": {
+				"__className__": "feng3d.Vector3D",
+				"w": 0,
+				"x": 1,
+				"y": 1,
+				"z": 1
+			}
+		}],
+	"mouseEnabled_": true,
+	"name": "root",
+	"visible_": true
+}

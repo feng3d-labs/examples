@@ -9,10 +9,6 @@ feng3d引擎示例
 
     `git submodule update --init --recursive`
 
-1. 安装npm依赖
-
-    `cnpm install`
-
 1. 编译项目
 
     `ctrl+shift+B`

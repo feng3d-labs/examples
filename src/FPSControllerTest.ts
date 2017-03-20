@@ -13,10 +13,9 @@ module feng3d {
 
             this.init();
 
-            this.cameraObj = new Object3D("camera");
+            this.cameraObj = this.view3D.camera;
             this.cameraObj.transform.position.z = -500;
             this.cameraObj.transform.lookAt(new Vector3D());
-            this.cameraObj.addComponent(this.view3D.camera);
             //
             this.controller = new FPSController();
             //

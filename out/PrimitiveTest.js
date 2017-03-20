@@ -3,8 +3,7 @@ var feng3d;
     class PrimitiveTest {
         constructor() {
             this.init();
-            this.cameraObj = new feng3d.Object3D("camera");
-            this.cameraObj.addComponent(this.view3D.camera);
+            this.cameraObj = this.view3D.camera;
             this.controller = new feng3d.LookAtController(this.cameraObj.transform);
             this.controller.lookAtPosition = new feng3d.Vector3D();
             //

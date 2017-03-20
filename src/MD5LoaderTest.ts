@@ -72,10 +72,10 @@ module feng3d
             {
 
                 var child = object3D.getChildAt(i);
-                var Model = child.getComponentByType(Model);
-                if (Model)
+                var model = child.getComponentByType(Model);
+                if (model)
                 {
-                    Model.material = material;
+                    model.material = material;
                 }
             }
 

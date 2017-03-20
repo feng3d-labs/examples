@@ -19,9 +19,9 @@ var feng3d;
             var objLoader = new feng3d.ObjLoader();
             objLoader.load(objUrl, function (object3D) {
                 object = object3D;
-                object.transform.scale.x = 50;
-                object.transform.scale.y = 50;
-                object.transform.scale.z = 50;
+                object.transform.scale.x = 20;
+                object.transform.scale.y = 20;
+                object.transform.scale.z = 20;
                 object.transform.position.z = 300;
                 scene.addChild(object3D);
             });

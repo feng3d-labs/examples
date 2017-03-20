@@ -45,9 +45,9 @@ var feng3d;
             material.texture = new feng3d.Texture2D(image);
             for (var i = 0; i < object3D.numChildren; i++) {
                 var child = object3D.getChildAt(i);
-                var Model = child.getComponentByType(Model);
-                if (Model) {
-                    Model.material = material;
+                var model = child.getComponentByType(feng3d.Model);
+                if (model) {
+                    model.material = material;
                 }
             }
         }

@@ -6,10 +6,9 @@ var feng3d;
     class MousePickTest {
         constructor() {
             this.init();
-            this.cameraObj = new feng3d.Object3D("camera");
+            this.cameraObj = this.view3D.camera;
             this.cameraObj.transform.position.z = -500;
             this.cameraObj.transform.lookAt(new feng3d.Vector3D());
-            this.cameraObj.addComponent(this.view3D.camera);
             //
             this.controller = new feng3d.FPSController();
             //

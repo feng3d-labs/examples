@@ -1,21 +1,17 @@
-module feng3d
-{
-    export class TerrainTest
-    {
+module feng3d {
+    export class TerrainTest {
         view3D: View3D;
         controller: FPSController;
         cameraObj: Object3D;
 
-        constructor()
-        {
+        constructor() {
 
             this.init();
 
-            this.cameraObj = new Object3D("camera");
+            this.cameraObj = this.view3D.camera;
             this.cameraObj.transform.position.z = -500;
             this.cameraObj.transform.position.y = 200;
             this.cameraObj.transform.lookAt(new Vector3D());
-            this.cameraObj.addComponent(this.view3D.camera);
             //
             this.controller = new FPSController();
             //
@@ -27,26 +23,22 @@ module feng3d
             input.addEventListener("mouseup", this.onMouseup, this);
         }
 
-        private onMousedown()
-        {
+        private onMousedown() {
 
             this.controller.target = this.cameraObj.transform;
         }
 
-        private onMouseup()
-        {
+        private onMouseup() {
 
             this.controller.target = null;
         }
 
-        process()
-        {
+        process() {
 
             this.controller.update();
         }
 
-        init()
-        {
+        init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
@@ -61,14 +53,11 @@ module feng3d
             var loadedNum = 0;
             var imagePaths = ['terrain_heights.jpg', 'terrain_diffuse.jpg', 'terrain_splats.png', 'beach.jpg', 'grass.jpg', 'rock.jpg'];
             var images: HTMLImageElement[] = [];
-            for (var i = 0; i < imagePaths.length; i++)
-            {
+            for (var i = 0; i < imagePaths.length; i++) {
                 var image = images[i] = new Image();
-                image.onload = function ()
-                {
+                image.onload = function () {
                     loadedNum++;
-                    if (loadedNum == imagePaths.length)
-                    {
+                    if (loadedNum == imagePaths.length) {
                         //获取高度图
                         var heightImage = images[0];
                         ctxt.drawImage(heightImage, 0, 0);

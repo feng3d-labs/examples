@@ -13,8 +13,7 @@ module feng3d
 
             this.init();
 
-            this.cameraObj = new Object3D("camera");
-            this.cameraObj.addComponent(this.view3D.camera);
+            this.cameraObj = this.view3D.camera;
             this.controller = new LookAtController(this.cameraObj.transform);
             this.controller.lookAtPosition = new Vector3D();
             //

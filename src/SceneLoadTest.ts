@@ -55,7 +55,11 @@ module feng3d
             loader.addEventListener(LoaderEvent.COMPLETE, function ()
             {
                 var json = JSON.parse(loader.content);
-                var scene: Scene3D = serialization.readObject(json, scene3D);
+                var scene: Scene3D = serialization.readObject(json);
+                for (var i = 0; i < scene.numChildren; i++)
+                {
+                    scene3D.addChild(scene.getChildAt(i));
+                }
             }, this);
             loader.loadText("resources/scene/scene.json");
         }

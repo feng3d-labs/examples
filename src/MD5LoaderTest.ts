@@ -30,47 +30,39 @@ module feng3d
             var skeletonAnimator: SkeletonAnimator
             var useMatrial = this.useMatrial;
 
-            var image = new Image();
-            image.onload = function ()
+            var md5Loader = new MD5Loader();
+            md5Loader.load(md5meshUrl, function (object3D: Object3D, animator: SkeletonAnimator)
             {
 
-                var md5Loader = new MD5Loader();
-                md5Loader.load(md5meshUrl, function (object3D: Object3D, animator: SkeletonAnimator)
+                object3D.transform.position.y = -100;
+                object3D.transform.rotation.x = -90;
+
+                object = object3D;
+
+                useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
+
+                object.transform.position.z = 300;
+                scene.addChild(object3D);
+                skeletonAnimator = animator;
+                //
+                md5Loader.loadAnim(md5animUrl, function (skeletonClipNode: SkeletonClipNode)
                 {
-
-                    object3D.transform.position.y = -100;
-                    object3D.transform.rotation.x = -90;
-
-                    object = object3D;
-
-                    useMatrial(object3D, image);
-
-                    object.transform.position.z = 300;
-                    scene.addChild(object3D);
-                    skeletonAnimator = animator;
-                    //
-                    md5Loader.loadAnim(md5animUrl, function (skeletonClipNode: SkeletonClipNode)
-                    {
-                        skeletonClipNode.name = "idle2";
-                        skeletonAnimator.animations.push(skeletonClipNode);
-                        skeletonClipNode.looping = true;
-                        skeletonAnimator.play();
-                    });
+                    skeletonClipNode.name = "idle2";
+                    skeletonAnimator.animations.push(skeletonClipNode);
+                    skeletonClipNode.looping = true;
+                    skeletonAnimator.play();
                 });
-            };
-            image.src = "resources/hellknight/hellknight_diffuse.jpg"
-
+            });
         }
 
-        private useMatrial(object3D: Object3D, image: HTMLImageElement)
+        private useMatrial(object3D: Object3D, imageUrl: string)
         {
 
             var material = new SkeletonAnimatorMaterial();
-            material.texture = new Texture2D(image);
+            material.texture = new Texture2D(imageUrl);
 
             for (var i = 0; i < object3D.numChildren; i++)
             {
-
                 var child = object3D.getChildAt(i);
                 var model = child.getComponentByType(Model);
                 if (model)
@@ -78,9 +70,7 @@ module feng3d
                     model.material = material;
                 }
             }
-
         }
-
     }
     var object: Object3D;
 }

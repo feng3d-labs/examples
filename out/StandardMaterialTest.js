@@ -17,8 +17,8 @@ var feng3d;
             //材质
             var material = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.StandardMaterial();
             //
-            material.diffuseMethod.difuseTexture.url = 'resources/sky.jpg';
-            // material.diffuseMethod.baseColor.setTo(1, 0, 0);
+            material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
+            material.diffuseMethod.color.setTo(0.8, 1.0, 1.0);
         }
     }
     feng3d.StandardMaterialTest = StandardMaterialTest;

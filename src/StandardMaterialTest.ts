@@ -14,7 +14,7 @@ module feng3d
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
-            var cube = new CubeObject3D();
+            var cube = new SphereObject3D();
             cube.transform.position.z = 300;
             this.view3D.scene.addChild(cube);
 
@@ -28,7 +28,7 @@ module feng3d
             var material = cube.getOrCreateComponentByClass(Model).material = new StandardMaterial();
             //
             material.diffuseMethod.difuseTexture.url = 'resources/sky.jpg';
-            material.diffuseMethod.baseColor.setTo(1, 0, 0);
+            // material.diffuseMethod.baseColor.setTo(1, 0, 0);
         }
     }
 }

@@ -52,53 +52,41 @@ module feng3d
 
             var scene = this.view3D.scene;
 
-            var loadedNum = 0;
-            var imagePaths = ['floor_diffuse.jpg', 'floor_normal.jpg'];
-            var images: HTMLImageElement[] = [];
-            for (var i = 0; i < imagePaths.length; i++)
-            {
-                var image = images[i] = new Image();
-                image.onload = function ()
-                {
-                    loadedNum++;
-                    if (loadedNum == imagePaths.length)
-                    {
+            // var imagePaths = ['floor_diffuse.jpg', 'floor_normal.jpg'];
 
-                        //初始化立方体
-                        var cube = new CubeObject3D();
-                        cube.transform.position.y = -200;
-                        var material = cube.getOrCreateComponentByClass(Model).material = new StandardMaterial();
-                        // material.difuseTexture = new Texture2D(images[0]);
-                        material.roughness = 0.7;
-                        scene.addChild(cube);
+            //初始化立方体
+            var cube = new CubeObject3D();
+            cube.transform.position.y = -200;
+            var material = cube.getOrCreateComponentByClass(Model).material = new StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
+            material.diffuseMethod.color.setTo(0.8, 1.0, 1.0);
+            material.roughness = 0.7;
+            scene.addChild(cube);
 
-                        //
-                        var lightColor0 = new Color(1, 0, 0, 1);
-                        light0.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
-                        light0.getOrCreateComponentByClass(Model);
-                        //初始化点光源
-                        var pointLight0 = new PointLight();
-                        pointLight0.color = lightColor0;
-                        light0.addComponent(pointLight0);
-                        light0.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor0);
-                        scene.addChild(light0);
+            //
+            var lightColor0 = new Color(1, 0, 0, 1);
+            light0.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
+            light0.getOrCreateComponentByClass(Model);
+            //初始化点光源
+            var pointLight0 = new PointLight();
+            pointLight0.color = lightColor0;
+            light0.addComponent(pointLight0);
+            light0.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor0);
+            scene.addChild(light0);
 
-                        //
-                        var lightColor1 = new Color(0, 1, 0, 1);
-                        light1.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
-                        light1.getOrCreateComponentByClass(Model);
-                        //初始化点光源
-                        var pointLight1 = new PointLight();
-                        pointLight1.color = lightColor1;
-                        light1.addComponent(pointLight1);
-                        light1.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor1);
-                        scene.addChild(light1);
+            //
+            var lightColor1 = new Color(0, 1, 0, 1);
+            light1.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
+            light1.getOrCreateComponentByClass(Model);
+            //初始化点光源
+            var pointLight1 = new PointLight();
+            pointLight1.color = lightColor1;
+            light1.addComponent(pointLight1);
+            light1.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor1);
+            scene.addChild(light1);
 
-                        setPointLightPosition();
-                    }
-                }
-                image.src = 'resources/' + imagePaths[i];
-            }
+            setPointLightPosition();
+
 
         }
 

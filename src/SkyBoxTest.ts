@@ -50,24 +50,18 @@ module feng3d
 
             var scene = this.view3D.scene;
 
-            var loadedNum = 0;
+            var root = 'resources/skybox/';
             var imagePaths = ['px.jpg', 'py.jpg', 'pz.jpg', 'nx.jpg', 'ny.jpg', 'nz.jpg'];
-            var images: HTMLImageElement[] = [];
             for (var i = 0; i < imagePaths.length; i++)
             {
-                var image = images[i] = new Image();
-                image.onload = function ()
-                {
-                    loadedNum++;
-                    if (loadedNum == imagePaths.length)
-                    {
-                        var skybox = new SkyBoxObject3D(images);
-                        scene.addChild(skybox);
-                    }
-                }
-                image.src = 'resources/skybox/' + imagePaths[i];
+                imagePaths[i] = root + imagePaths[i];
             }
 
+            var skybox = new Object3D("skybox");
+            var model = skybox.getOrCreateComponentByClass(Model);
+            model.geometry = new SkyBoxGeometry();
+            model.material = new SkyBoxMaterial(imagePaths);
+            scene.addChild(skybox);
         }
     }
 }

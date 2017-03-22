@@ -27,20 +27,16 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var scene = this.view3D.scene;
-            var loadedNum = 0;
+            var root = 'resources/skybox/';
             var imagePaths = ['px.jpg', 'py.jpg', 'pz.jpg', 'nx.jpg', 'ny.jpg', 'nz.jpg'];
-            var images = [];
             for (var i = 0; i < imagePaths.length; i++) {
-                var image = images[i] = new Image();
-                image.onload = function () {
-                    loadedNum++;
-                    if (loadedNum == imagePaths.length) {
-                        var skybox = new feng3d.SkyBoxObject3D(images);
-                        scene.addChild(skybox);
-                    }
-                };
-                image.src = 'resources/skybox/' + imagePaths[i];
+                imagePaths[i] = root + imagePaths[i];
             }
+            var skybox = new feng3d.Object3D("skybox");
+            var model = skybox.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.SkyBoxGeometry();
+            model.material = new feng3d.SkyBoxMaterial(imagePaths);
+            scene.addChild(skybox);
         }
     }
     feng3d.SkyBoxTest = SkyBoxTest;

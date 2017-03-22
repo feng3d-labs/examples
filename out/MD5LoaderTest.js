@@ -18,31 +18,27 @@ var feng3d;
             var scene = this.view3D.scene;
             var skeletonAnimator;
             var useMatrial = this.useMatrial;
-            var image = new Image();
-            image.onload = function () {
-                var md5Loader = new feng3d.MD5Loader();
-                md5Loader.load(md5meshUrl, function (object3D, animator) {
-                    object3D.transform.position.y = -100;
-                    object3D.transform.rotation.x = -90;
-                    object = object3D;
-                    useMatrial(object3D, image);
-                    object.transform.position.z = 300;
-                    scene.addChild(object3D);
-                    skeletonAnimator = animator;
-                    //
-                    md5Loader.loadAnim(md5animUrl, function (skeletonClipNode) {
-                        skeletonClipNode.name = "idle2";
-                        skeletonAnimator.animations.push(skeletonClipNode);
-                        skeletonClipNode.looping = true;
-                        skeletonAnimator.play();
-                    });
+            var md5Loader = new feng3d.MD5Loader();
+            md5Loader.load(md5meshUrl, function (object3D, animator) {
+                object3D.transform.position.y = -100;
+                object3D.transform.rotation.x = -90;
+                object = object3D;
+                useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
+                object.transform.position.z = 300;
+                scene.addChild(object3D);
+                skeletonAnimator = animator;
+                //
+                md5Loader.loadAnim(md5animUrl, function (skeletonClipNode) {
+                    skeletonClipNode.name = "idle2";
+                    skeletonAnimator.animations.push(skeletonClipNode);
+                    skeletonClipNode.looping = true;
+                    skeletonAnimator.play();
                 });
-            };
-            image.src = "resources/hellknight/hellknight_diffuse.jpg";
+            });
         }
-        useMatrial(object3D, image) {
+        useMatrial(object3D, imageUrl) {
             var material = new feng3d.SkeletonAnimatorMaterial();
-            material.texture = new feng3d.Texture2D(image);
+            material.texture = new feng3d.Texture2D(imageUrl);
             for (var i = 0; i < object3D.numChildren; i++) {
                 var child = object3D.getChildAt(i);
                 var model = child.getComponentByType(feng3d.Model);

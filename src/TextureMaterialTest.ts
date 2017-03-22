@@ -24,25 +24,10 @@ module feng3d
                 cube.transform.rotation.y += 1;
             }, 15);
 
-            var image = new Image();  // Create the image object
-            if (!image)
-            {
-                console.log('Failed to create the image object');
-                return false;
-            }
-            // Register the event handler to be called on loading an image
-            image.onload = function ()
-            {
-
-                //材质
-                var textureMaterial = cube.getOrCreateComponentByClass(Model).material = new TextureMaterial();
-                //
-                textureMaterial.texture = new Texture2D(image);
-
-            };
-            // Tell the browser to load an image
-            image.src = 'resources/sky.jpg';
-
+            //材质
+            var textureMaterial = cube.getOrCreateComponentByClass(Model).material = new TextureMaterial();
+            //
+            textureMaterial.texture = new Texture2D('resources/sky.jpg');
         }
     }
 }

@@ -52,19 +52,21 @@ module feng3d
 
             var scene = this.view3D.scene;
 
-            // var imagePaths = ['floor_diffuse.jpg', 'floor_normal.jpg'];
-
             //初始化立方体
-            var cube = new PlaneObject3D(300);
+            var cube = new Object3D();
             cube.transform.position.y = -100;
-            var material = cube.getOrCreateComponentByClass(Model).material = new StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
-            material.normalMethod.normalTexture.url = 'resources/head_normal.jpg';
+            var model = new Model();
+            cube.addComponent(model);
+            var geometry = model.geometry = new PlaneGeometry(1000, 1000);
+            // geometry.scaleUV(2, 2);
+            var material = model.material = new StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
+            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
             material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
             scene.addChild(cube);
 
             //
-            var lightColor0 = new Color(1, 1, 1, 1);
+            var lightColor0 = new Color(1, 0, 0, 1);
             light0.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
             light0.getOrCreateComponentByClass(Model);
             //初始化点光源
@@ -75,21 +77,18 @@ module feng3d
             scene.addChild(light0);
 
             //
-            var lightColor1 = new Color(1, 1, 1, 1);
+            var lightColor1 = new Color(0, 1, 0, 1);
             light1.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
             light1.getOrCreateComponentByClass(Model);
             //初始化点光源
-            var pointLight1 = new PointLight();
+            var pointLight1 = new DirectionalLight();
             pointLight1.color = lightColor1;
             light1.addComponent(pointLight1);
             light1.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor1);
             scene.addChild(light1);
 
             setPointLightPosition();
-
-
         }
-
     }
 }
 
@@ -109,4 +108,5 @@ function setPointLightPosition()
     angle = angle + Math.PI / 2;
     light1.transform.position.x = Math.sin(angle) * 300;
     light1.transform.position.z = Math.cos(angle) * 300;
+    light1.transform.lookAt(new feng3d.Vector3D());
 }

@@ -52,15 +52,17 @@ module feng3d
 
             var scene = this.view3D.scene;
 
-            // var imagePaths = ['floor_diffuse.jpg', 'floor_normal.jpg'];
-
             //初始化立方体
-            var cube = new CubeObject3D();
-            cube.transform.position.y = -200;
-            var material = cube.getOrCreateComponentByClass(Model).material = new StandardMaterial();
+            var cube = new Object3D();
+            cube.transform.position.y = -100;
+            var model = new Model();
+            cube.addComponent(model);
+            var geometry = model.geometry = new PlaneGeometry(1000, 1000);
+            // geometry.scaleUV(2, 2);
+            var material = model.material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
-            material.diffuseMethod.color.setTo(0.8, 1.0, 1.0);
-            material.roughness = 0.7;
+            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
+            material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
             scene.addChild(cube);
 
             //
@@ -79,17 +81,14 @@ module feng3d
             light1.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
             light1.getOrCreateComponentByClass(Model);
             //初始化点光源
-            var pointLight1 = new PointLight();
+            var pointLight1 = new DirectionalLight();
             pointLight1.color = lightColor1;
             light1.addComponent(pointLight1);
             light1.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor1);
             scene.addChild(light1);
 
             setPointLightPosition();
-
-
         }
-
     }
 }
 
@@ -109,4 +108,5 @@ function setPointLightPosition()
     angle = angle + Math.PI / 2;
     light1.transform.position.x = Math.sin(angle) * 300;
     light1.transform.position.z = Math.cos(angle) * 300;
+    light1.transform.lookAt(new feng3d.Vector3D());
 }

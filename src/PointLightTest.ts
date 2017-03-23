@@ -55,17 +55,16 @@ module feng3d
             // var imagePaths = ['floor_diffuse.jpg', 'floor_normal.jpg'];
 
             //初始化立方体
-            var cube = new CubeObject3D();
-            cube.transform.position.y = -200;
+            var cube = new PlaneObject3D(300);
+            cube.transform.position.y = -100;
             var material = cube.getOrCreateComponentByClass(Model).material = new StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
-            material.diffuseMethod.color.setTo(0.8, 1.0, 1.0);
-            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
-            material.roughness = 0.7;
+            material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
+            material.normalMethod.normalTexture.url = 'resources/head_normal.jpg';
+            material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
             scene.addChild(cube);
 
             //
-            var lightColor0 = new Color(1, 0, 0, 1);
+            var lightColor0 = new Color(1, 1, 1, 1);
             light0.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
             light0.getOrCreateComponentByClass(Model);
             //初始化点光源
@@ -76,7 +75,7 @@ module feng3d
             scene.addChild(light0);
 
             //
-            var lightColor1 = new Color(0, 1, 0, 1);
+            var lightColor1 = new Color(1, 1, 1, 1);
             light1.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
             light1.getOrCreateComponentByClass(Model);
             //初始化点光源

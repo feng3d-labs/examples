@@ -36,6 +36,7 @@ var feng3d;
             var material = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
             material.diffuseMethod.color.setTo(0.8, 1.0, 1.0);
+            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
             material.roughness = 0.7;
             scene.addChild(cube);
             //

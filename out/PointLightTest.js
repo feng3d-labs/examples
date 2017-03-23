@@ -50,7 +50,7 @@ var feng3d;
             pointLight0.color = lightColor0;
             light0.addComponent(pointLight0);
             light0.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial(lightColor0);
-            // scene.addChild(light0);
+            scene.addChild(light0);
             //
             var lightColor1 = new feng3d.Color(0, 1, 0, 1);
             light1.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.SphereGeometry(5);

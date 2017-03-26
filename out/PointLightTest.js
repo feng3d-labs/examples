@@ -28,19 +28,31 @@ var feng3d;
         init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
-            var scene = this.view3D.scene;
-            //初始化立方体
-            var cube = new feng3d.Object3D();
-            cube.transform.position.y = -100;
-            var model = new feng3d.Model();
-            cube.addComponent(model);
-            var geometry = model.geometry = new feng3d.PlaneGeometry(1000, 1000);
-            // geometry.scaleUV(2, 2);
-            var material = model.material = new feng3d.StandardMaterial();
+            this.scene = this.view3D.scene;
+            this.initObjects();
+            this.initLights();
+            setPointLightPosition();
+        }
+        initObjects() {
+            var material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
             material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
             material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
-            scene.addChild(cube);
+            //初始化立方体
+            var plane = new feng3d.Object3D();
+            plane.transform.position.y = -100;
+            var model = plane.getOrCreateComponentByClass(feng3d.Model);
+            var geometry = model.geometry = new feng3d.PlaneGeometry(1000, 1000);
+            // geometry.scaleUV(2, 2);
+            model.material = material;
+            this.scene.addChild(plane);
+            var cube = new feng3d.Object3D();
+            var model = cube.getOrCreateComponentByClass(feng3d.Model);
+            model.material = material;
+            model.geometry = new feng3d.CubeGeometry();
+            this.scene.addChild(cube);
+        }
+        initLights() {
             //
             var lightColor0 = new feng3d.Color(1, 0, 0, 1);
             light0.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.SphereGeometry(5);
@@ -50,7 +62,7 @@ var feng3d;
             pointLight0.color = lightColor0;
             light0.addComponent(pointLight0);
             light0.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial(lightColor0);
-            scene.addChild(light0);
+            this.scene.addChild(light0);
             //
             var lightColor1 = new feng3d.Color(0, 1, 0, 1);
             light1.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.SphereGeometry(5);
@@ -60,8 +72,7 @@ var feng3d;
             pointLight1.color = lightColor1;
             light1.addComponent(pointLight1);
             light1.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial(lightColor1);
-            scene.addChild(light1);
-            setPointLightPosition();
+            this.scene.addChild(light1);
         }
     }
     feng3d.PointLightTest = PointLightTest;

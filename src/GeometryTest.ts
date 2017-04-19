@@ -1,21 +1,37 @@
-module feng3d {
-    export class GeometryTest {
+module feng3d
+{
+    export class GeometryTest
+    {
         view3D: View3D;
-        constructor() {
+        constructor()
+        {
 
             this.init();
         }
 
-        init() {
+        init()
+        {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
             var object3d = new Object3D();
             var model = object3d.getOrCreateComponentByClass(Model);
 
+
             var geometry = model.geometry = new Geometry();
             geometry.addGeometry(new PlaneGeometry());
-            geometry.addGeometry(new SphereGeometry(50));
+            var transform = new Matrix3D();
+            transform.appendTranslation(0, 50, 0);
+            geometry.addGeometry(new SphereGeometry(50), transform);
+
+            transform.appendTranslation(0, 50, 0);
+            var addGeometry = new CubeGeometry();
+            geometry.addGeometry(addGeometry, transform);
+
+            transform.appendTranslation(0, 50, 0);
+            transform.appendRotation(45, Vector3D.Z_AXIS);
+            geometry.addGeometry(addGeometry, transform);
+
 
             object3d.transform.position.z = 300;
             object3d.transform.position.y = -100;
@@ -25,10 +41,12 @@ module feng3d {
             var colorMaterial = model.material = new ColorMaterial();
 
             //变化旋转与颜色
-            setInterval(function () {
+            setInterval(function ()
+            {
                 object3d.transform.rotation.y += 1;
             }, 15);
-            setInterval(function () {
+            setInterval(function ()
+            {
                 colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
             }, 1000);
         }

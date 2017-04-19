@@ -11,8 +11,8 @@ var feng3d;
             //
             this.process();
             setInterval(this.process.bind(this), 17);
-            feng3d.engine.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.engine.input.addEventListener("mouseup", this.onMouseup, this);
+            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
+            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
         }
         onMousedown() {
             this.controller.target = this.cameraObj.transform;
@@ -30,7 +30,7 @@ var feng3d;
             var loader = new feng3d.Loader();
             loader.addEventListener(feng3d.LoaderEvent.COMPLETE, function () {
                 var json = JSON.parse(loader.content);
-                var scene = feng3d.engine.serialization.readObject(json);
+                var scene = feng3d.serialization.readObject(json);
                 for (var i = 0; i < scene.numChildren; i++) {
                     scene3D.addChild(scene.getChildAt(i));
                 }

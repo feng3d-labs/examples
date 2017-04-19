@@ -11,8 +11,8 @@ var feng3d;
             //
             this.process();
             setInterval(this.process.bind(this), 17);
-            feng3d.engine.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.engine.input.addEventListener("mouseup", this.onMouseup, this);
+            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
+            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
         }
         onMousedown() {
             this.controller.target = this.cameraObj.transform;

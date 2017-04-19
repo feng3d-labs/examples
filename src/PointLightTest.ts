@@ -23,10 +23,10 @@ module feng3d
             setInterval(this.process.bind(this), 17);
 
 
-            engine.input.addEventListener("mousedown", this.onMousedown, this);
-            engine.input.addEventListener("mouseup", this.onMouseup, this);
+            input.addEventListener("mousedown", this.onMousedown, this);
+            input.addEventListener("mouseup", this.onMouseup, this);
 
-            engine.input.addEventListener(engine.inputType.KEY_UP, this.onKeyUp, this);
+            input.addEventListener(inputType.KEY_UP, this.onKeyUp, this);
         }
 
         private onKeyUp(event: InputEvent)
@@ -81,8 +81,8 @@ module feng3d
         {
             var material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
-            // material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
-            // material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
+            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
+            material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
 
             //初始化立方体
             var plane = new Object3D();

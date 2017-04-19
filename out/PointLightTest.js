@@ -12,9 +12,9 @@ var feng3d;
             //
             this.process();
             setInterval(this.process.bind(this), 17);
-            feng3d.engine.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.engine.input.addEventListener("mouseup", this.onMouseup, this);
-            feng3d.engine.input.addEventListener(feng3d.engine.inputType.KEY_UP, this.onKeyUp, this);
+            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
+            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyUp, this);
         }
         onKeyUp(event) {
             var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
@@ -50,8 +50,8 @@ var feng3d;
         initObjects() {
             var material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
-            // material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
-            // material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
+            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
+            material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
             //初始化立方体
             var plane = new feng3d.Object3D();
             plane.transform.position.y = -100;

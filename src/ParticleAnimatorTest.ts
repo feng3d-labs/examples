@@ -21,8 +21,8 @@ module feng3d
             setInterval(this.process.bind(this), 17);
 
 
-            engine.input.addEventListener("mousedown", this.onMousedown, this);
-            engine.input.addEventListener("mouseup", this.onMouseup, this);
+            input.addEventListener("mousedown", this.onMousedown, this);
+            input.addEventListener("mouseup", this.onMouseup, this);
         }
 
         private onMousedown()

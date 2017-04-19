@@ -23,8 +23,8 @@ module feng3d
             setInterval(this.process.bind(this), 17);
 
 
-            engine.input.addEventListener("mousedown", this.onMousedown, this);
-            engine.input.addEventListener("mouseup", this.onMouseup, this);
+            input.addEventListener("mousedown", this.onMousedown, this);
+            input.addEventListener("mouseup", this.onMouseup, this);
         }
 
         private onMousedown()
@@ -55,7 +55,7 @@ module feng3d
             loader.addEventListener(LoaderEvent.COMPLETE, function ()
             {
                 var json = JSON.parse(loader.content);
-                var scene: Scene3D = engine.serialization.readObject(json);
+                var scene: Scene3D = serialization.readObject(json);
                 for (var i = 0; i < scene.numChildren; i++)
                 {
                     scene3D.addChild(scene.getChildAt(i));

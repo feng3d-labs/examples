@@ -14,6 +14,20 @@ var feng3d;
             setInterval(this.process.bind(this), 17);
             feng3d.engine.input.addEventListener("mousedown", this.onMousedown, this);
             feng3d.engine.input.addEventListener("mouseup", this.onMouseup, this);
+            feng3d.engine.input.addEventListener(feng3d.engine.inputType.KEY_UP, this.onKeyUp, this);
+        }
+        onKeyUp(event) {
+            var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
+            switch (boardKey) {
+                case "c":
+                    this.clearObjects();
+                    break;
+                case "b":
+                    this.initObjects();
+                    this.scene.addChild(light0);
+                    this.scene.addChild(light1);
+                    break;
+            }
         }
         onMousedown() {
             this.controller.target = this.cameraObj.transform;
@@ -36,8 +50,8 @@ var feng3d;
         initObjects() {
             var material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
-            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
-            material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
+            // material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
+            // material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
             //初始化立方体
             var plane = new feng3d.Object3D();
             plane.transform.position.y = -100;
@@ -51,6 +65,11 @@ var feng3d;
             model.material = material;
             model.geometry = new feng3d.CubeGeometry();
             this.scene.addChild(cube);
+        }
+        clearObjects() {
+            for (var i = this.scene.numChildren - 1; i >= 0; i--) {
+                this.scene.removeChildAt(i);
+            }
         }
         initLights() {
             //

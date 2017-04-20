@@ -27,7 +27,10 @@ module feng3d
             //材质
             var textureMaterial = cube.getOrCreateComponentByClass(Model).material = new TextureMaterial();
             //
-            textureMaterial.texture = new Texture2D('resources/sky.jpg');
+            // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
+            var texture = textureMaterial.texture = new Texture2D('resources/m.png');
+            texture.flipY = false;
+            texture.premulAlpha = true;
         }
     }
 }

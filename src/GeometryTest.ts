@@ -28,6 +28,7 @@ module feng3d
             var addGeometry = new CubeGeometry();
             geometry.addGeometry(addGeometry, transform);
 
+            addGeometry.width = 50;
             transform.appendTranslation(0, 50, 0);
             transform.appendRotation(45, Vector3D.Z_AXIS);
             geometry.addGeometry(addGeometry, transform);

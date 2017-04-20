@@ -17,7 +17,10 @@ var feng3d;
             //材质
             var textureMaterial = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.TextureMaterial();
             //
-            textureMaterial.texture = new feng3d.Texture2D('resources/sky.jpg');
+            // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
+            var texture = textureMaterial.texture = new feng3d.Texture2D('resources/m.png');
+            texture.flipY = false;
+            texture.premulAlpha = true;
         }
     }
     feng3d.TextureMaterialTest = TextureMaterialTest;

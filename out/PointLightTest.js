@@ -49,21 +49,28 @@ var feng3d;
         }
         initObjects() {
             var material = new feng3d.StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
-            material.normalMethod.normalTexture.url = 'resources/floor_normal.jpg';
+            material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
+            material.normalMethod.normalTexture.url = 'resources/head_normal.jpg';
             material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
+            material.diffuseMethod.difuseTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
+            material.diffuseMethod.difuseTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
+            material.normalMethod.normalTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
+            material.normalMethod.normalTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
+            material.specularMethod.specularTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
+            material.specularMethod.specularTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
             //初始化立方体
             var plane = new feng3d.Object3D();
             plane.transform.position.y = -100;
             var model = plane.getOrCreateComponentByClass(feng3d.Model);
             var geometry = model.geometry = new feng3d.PlaneGeometry(1000, 1000);
-            // geometry.scaleUV(2, 2);
+            geometry.scaleUV(2, 2);
             model.material = material;
             this.scene.addChild(plane);
             var cube = new feng3d.Object3D();
             var model = cube.getOrCreateComponentByClass(feng3d.Model);
             model.material = material;
-            model.geometry = new feng3d.CubeGeometry();
+            model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            model.geometry.scaleUV(2, 2);
             this.scene.addChild(cube);
         }
         clearObjects() {

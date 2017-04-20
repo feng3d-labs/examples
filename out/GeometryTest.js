@@ -17,6 +17,7 @@ var feng3d;
             transform.appendTranslation(0, 50, 0);
             var addGeometry = new feng3d.CubeGeometry();
             geometry.addGeometry(addGeometry, transform);
+            addGeometry.width = 50;
             transform.appendTranslation(0, 50, 0);
             transform.appendRotation(45, feng3d.Vector3D.Z_AXIS);
             geometry.addGeometry(addGeometry, transform);

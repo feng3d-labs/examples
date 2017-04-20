@@ -7,8 +7,8 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
-            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
+            this.cameraObj.position.z = -500;
+            this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();
             //
@@ -18,7 +18,7 @@ var feng3d;
             feng3d.input.addEventListener("mouseup", this.onMouseup, this);
         }
         onMousedown() {
-            this.controller.target = this.cameraObj.transform;
+            this.controller.target = this.cameraObj;
         }
         onMouseup() {
             this.controller.target = null;
@@ -31,20 +31,20 @@ var feng3d;
             this.view3D = new feng3d.View3D(canvas);
             var scene3D = this.view3D.scene;
             var cube = new feng3d.CubeObject3D();
-            cube.transform.position = new feng3d.Vector3D(0, 0, 0);
+            cube.position = new feng3d.Vector3D(0, 0, 0);
             scene3D.addChild(cube);
             var plane = new feng3d.PlaneObject3D();
-            plane.transform.position = new feng3d.Vector3D(150, 0, 0);
-            plane.transform.rotation = new feng3d.Vector3D(90, 0, 0);
+            plane.position = new feng3d.Vector3D(150, 0, 0);
+            plane.rotation = new feng3d.Vector3D(90, 0, 0);
             scene3D.addChild(plane);
             var sphere = new feng3d.SphereObject3D();
-            sphere.transform.position = new feng3d.Vector3D(-150, 0, 0);
+            sphere.position = new feng3d.Vector3D(-150, 0, 0);
             scene3D.addChild(sphere);
             var capsule = new feng3d.CapsuleObject3D();
-            capsule.transform.position = new feng3d.Vector3D(300, 0, 0);
+            capsule.position = new feng3d.Vector3D(300, 0, 0);
             scene3D.addChild(capsule);
             var cylinder = new feng3d.CylinderObject3D();
-            cylinder.transform.position = new feng3d.Vector3D(-300, 0, 0);
+            cylinder.position = new feng3d.Vector3D(-300, 0, 0);
             scene3D.addChild(cylinder);
         }
     }

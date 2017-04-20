@@ -11,24 +11,24 @@ var feng3d;
             var model = object3d.getOrCreateComponentByClass(feng3d.Model);
             var geometry = model.geometry = new feng3d.Geometry();
             geometry.addGeometry(new feng3d.PlaneGeometry());
-            var transform = new feng3d.Matrix3D();
-            transform.appendTranslation(0, 50, 0);
-            geometry.addGeometry(new feng3d.SphereGeometry(50), transform);
-            transform.appendTranslation(0, 50, 0);
+            var matrix3D = new feng3d.Matrix3D();
+            matrix3D.appendTranslation(0, 50, 0);
+            geometry.addGeometry(new feng3d.SphereGeometry(50), matrix3D);
+            matrix3D.appendTranslation(0, 50, 0);
             var addGeometry = new feng3d.CubeGeometry();
-            geometry.addGeometry(addGeometry, transform);
+            geometry.addGeometry(addGeometry, matrix3D);
             addGeometry.width = 50;
-            transform.appendTranslation(0, 50, 0);
-            transform.appendRotation(45, feng3d.Vector3D.Z_AXIS);
-            geometry.addGeometry(addGeometry, transform);
-            object3d.transform.position.z = 300;
-            object3d.transform.position.y = -100;
+            matrix3D.appendTranslation(0, 50, 0);
+            matrix3D.appendRotation(45, feng3d.Vector3D.Z_AXIS);
+            geometry.addGeometry(addGeometry, matrix3D);
+            object3d.position.z = 300;
+            object3d.position.y = -100;
             this.view3D.scene.addChild(object3d);
             //初始化颜色材质
             var colorMaterial = model.material = new feng3d.ColorMaterial();
             //变化旋转与颜色
             setInterval(function () {
-                object3d.transform.rotation.y += 1;
+                object3d.rotation.y += 1;
             }, 15);
             setInterval(function () {
                 colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);

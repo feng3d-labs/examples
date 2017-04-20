@@ -4,9 +4,9 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
-            this.cameraObj.transform.position.y = 200;
-            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
+            this.cameraObj.position.z = -500;
+            this.cameraObj.position.y = 200;
+            this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();
             //
@@ -16,7 +16,7 @@ var feng3d;
             feng3d.input.addEventListener("mouseup", this.onMouseup, this);
         }
         onMousedown() {
-            this.controller.target = this.cameraObj.transform;
+            this.controller.target = this.cameraObj;
         }
         onMouseup() {
             this.controller.target = null;

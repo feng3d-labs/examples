@@ -19,7 +19,7 @@ module feng3d
 
         private onMousedown()
         {
-            this.controller.target = this.view3D.camera.transform;
+            this.controller.target = this.view3D.camera;
         }
 
         private onMouseup()
@@ -37,7 +37,7 @@ module feng3d
             this.view3D = new View3D(canvas);
 
             var object3d = new Object3D();
-            object3d.transform.position.z = 300;
+            object3d.position.z = 300;
             object3d.isBillboard = true;
             this.view3D.scene.addChild(object3d);
 

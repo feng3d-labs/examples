@@ -4,7 +4,7 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.controller = new feng3d.LookAtController(this.cameraObj.transform);
+            this.controller = new feng3d.LookAtController(this.cameraObj);
             this.controller.lookAtPosition = new feng3d.Vector3D();
             //
             this.process();
@@ -14,7 +14,7 @@ var feng3d;
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
             angle = angle * feng3d.MathConsts.DEGREES_TO_RADIANS;
-            this.cameraObj.transform.position = new feng3d.Vector3D(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
+            this.cameraObj.position = new feng3d.Vector3D(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
             this.controller.update();
         }
         init() {
@@ -22,20 +22,20 @@ var feng3d;
             this.view3D = new feng3d.View3D(canvas);
             var scene3D = this.view3D.scene;
             var cube = new feng3d.CubeObject3D();
-            cube.transform.position = new feng3d.Vector3D(0, 0, 0);
+            cube.position = new feng3d.Vector3D(0, 0, 0);
             scene3D.addChild(cube);
             var plane = new feng3d.PlaneObject3D();
-            plane.transform.position = new feng3d.Vector3D(150, 0, 0);
-            plane.transform.rotation = new feng3d.Vector3D(90, 0, 0);
+            plane.position = new feng3d.Vector3D(150, 0, 0);
+            plane.rotation = new feng3d.Vector3D(90, 0, 0);
             scene3D.addChild(plane);
             var sphere = new feng3d.SphereObject3D();
-            sphere.transform.position = new feng3d.Vector3D(-150, 0, 0);
+            sphere.position = new feng3d.Vector3D(-150, 0, 0);
             scene3D.addChild(sphere);
             var capsule = new feng3d.CapsuleObject3D();
-            capsule.transform.position = new feng3d.Vector3D(300, 0, 0);
+            capsule.position = new feng3d.Vector3D(300, 0, 0);
             scene3D.addChild(capsule);
             var cylinder = new feng3d.CylinderObject3D();
-            cylinder.transform.position = new feng3d.Vector3D(-300, 0, 0);
+            cylinder.position = new feng3d.Vector3D(-300, 0, 0);
             scene3D.addChild(cylinder);
         }
     }

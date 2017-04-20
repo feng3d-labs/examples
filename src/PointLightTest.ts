@@ -13,9 +13,9 @@ module feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
-            this.cameraObj.transform.position.y = 200;
-            this.cameraObj.transform.lookAt(new Vector3D());
+            this.cameraObj.position.z = -500;
+            this.cameraObj.position.y = 200;
+            this.cameraObj.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
             //
@@ -48,7 +48,7 @@ module feng3d
         private onMousedown()
         {
 
-            this.controller.target = this.cameraObj.transform;
+            this.controller.target = this.cameraObj;
         }
 
         private onMouseup()
@@ -92,7 +92,7 @@ module feng3d
 
             //初始化立方体
             var plane = new Object3D();
-            plane.transform.position.y = -100;
+            plane.position.y = -100;
             var model = plane.getOrCreateComponentByClass(Model);
             var geometry = model.geometry = new PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
@@ -153,11 +153,11 @@ function setPointLightPosition()
     var time = new Date().getTime();
     //
     var angle = time / 1000;
-    light0.transform.position.x = Math.sin(angle) * 300;
-    light0.transform.position.z = Math.cos(angle) * 300;
+    light0.position.x = Math.sin(angle) * 300;
+    light0.position.z = Math.cos(angle) * 300;
     //
     angle = angle + Math.PI / 2;
-    light1.transform.position.x = Math.sin(angle) * 300;
-    light1.transform.position.z = Math.cos(angle) * 300;
-    light1.transform.lookAt(new feng3d.Vector3D());
+    light1.position.x = Math.sin(angle) * 300;
+    light1.position.z = Math.cos(angle) * 300;
+    light1.lookAt(new feng3d.Vector3D());
 }

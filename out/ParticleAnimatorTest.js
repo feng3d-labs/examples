@@ -4,8 +4,8 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
-            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
+            this.cameraObj.position.z = -500;
+            this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();
             //
@@ -15,7 +15,7 @@ var feng3d;
             feng3d.input.addEventListener("mouseup", this.onMouseup, this);
         }
         onMousedown() {
-            this.controller.target = this.cameraObj.transform;
+            this.controller.target = this.cameraObj;
         }
         onMouseup() {
             this.controller.target = null;
@@ -30,7 +30,7 @@ var feng3d;
             var particle = new feng3d.Object3D("particle");
             particle.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.PointGeometry();
             particle.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ParticleMaterial();
-            particle.transform.position.y = -100;
+            particle.position.y = -100;
             scene.addChild(particle);
             var particleAnimator = particle.getOrCreateComponentByClass(feng3d.ParticleAnimator);
             particleAnimator.cycle = 10;

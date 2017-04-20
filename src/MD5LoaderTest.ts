@@ -20,7 +20,7 @@ module feng3d
             {
                 if (object)
                 {
-                    object.transform.rotation.y += 1;
+                    object.rotation.y += 1;
                 }
             }, 15);
 
@@ -34,14 +34,14 @@ module feng3d
             md5Loader.load(md5meshUrl, function (object3D: Object3D, animator: SkeletonAnimator)
             {
 
-                object3D.transform.position.y = -100;
-                object3D.transform.rotation.x = -90;
+                object3D.position.y = -100;
+                object3D.rotation.x = -90;
 
                 object = object3D;
 
                 useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
 
-                object.transform.position.z = 300;
+                object.position.z = 300;
                 scene.addChild(object3D);
                 skeletonAnimator = animator;
                 //

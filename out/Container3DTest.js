@@ -12,15 +12,15 @@ var feng3d;
             this.view3D = new feng3d.View3D(canvas);
             //初始化颜色材质
             var cube = new feng3d.CubeObject3D();
-            cube.transform.position.z = 500;
+            cube.position.z = 500;
             this.view3D.scene.addChild(cube);
             var colorMaterial = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
             var cylinder = new feng3d.CylinderObject3D();
-            cylinder.transform.position.x = 200;
+            cylinder.position.x = 200;
             cube.addChild(cylinder);
             //变化旋转与颜色
             setInterval(function () {
-                cube.transform.rotation.y += 1;
+                cube.rotation.y += 1;
             }, 15);
             setInterval(function () {
                 colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);

@@ -1,21 +1,24 @@
-module feng3d {
+module feng3d
+{
 
     /**
      * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
      */
-    export class FPSControllerTest {
+    export class FPSControllerTest
+    {
 
         view3D: View3D;
         controller: FPSController;
         cameraObj: Object3D;
 
-        constructor() {
+        constructor()
+        {
 
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
-            this.cameraObj.transform.lookAt(new Vector3D());
+            this.cameraObj.position.z = -500;
+            this.cameraObj.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
             //
@@ -27,45 +30,48 @@ module feng3d {
             input.addEventListener("mouseup", this.onMouseup, this);
         }
 
-        private onMousedown() {
-
-            this.controller.target = this.cameraObj.transform;
+        private onMousedown()
+        {
+            this.controller.target = this.cameraObj;
         }
 
-        private onMouseup() {
+        private onMouseup()
+        {
 
             this.controller.target = null;
         }
 
-        process() {
+        process()
+        {
 
             this.controller.update();
         }
 
-        init() {
+        init()
+        {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
             var scene3D = this.view3D.scene;
 
             var cube = new CubeObject3D();
-            cube.transform.position = new Vector3D(0, 0, 0);
+            cube.position = new Vector3D(0, 0, 0);
             scene3D.addChild(cube);
 
             var plane = new PlaneObject3D();
-            plane.transform.position = new Vector3D(150, 0, 0);
-            plane.transform.rotation = new Vector3D(90, 0, 0);
+            plane.position = new Vector3D(150, 0, 0);
+            plane.rotation = new Vector3D(90, 0, 0);
             scene3D.addChild(plane);
 
             var sphere = new SphereObject3D();
-            sphere.transform.position = new Vector3D(-150, 0, 0);
+            sphere.position = new Vector3D(-150, 0, 0);
             scene3D.addChild(sphere);
 
             var capsule = new CapsuleObject3D();
-            capsule.transform.position = new Vector3D(300, 0, 0);
+            capsule.position = new Vector3D(300, 0, 0);
             scene3D.addChild(capsule);
 
             var cylinder = new CylinderObject3D();
-            cylinder.transform.position = new Vector3D(-300, 0, 0);
+            cylinder.position = new Vector3D(-300, 0, 0);
             scene3D.addChild(cylinder);
         }
     }

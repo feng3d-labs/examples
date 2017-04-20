@@ -17,14 +17,13 @@ module feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
-            this.cameraObj.transform.lookAt(new Vector3D());
+            this.cameraObj.position.z = -500;
+            this.cameraObj.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
             //
             this.process();
             setInterval(this.process.bind(this), 17);
-
 
             input.addEventListener("mousedown", this.onMousedown, this);
             input.addEventListener("mouseup", this.onMouseup, this);
@@ -32,13 +31,11 @@ module feng3d
 
         private onMousedown()
         {
-
-            this.controller.target = this.cameraObj.transform;
+            this.controller.target = this.cameraObj;
         }
 
         private onMouseup()
         {
-
             this.controller.target = null;
         }
 
@@ -55,24 +52,24 @@ module feng3d
             var scene3D = this.view3D.scene;
 
             var cube = new CubeObject3D();
-            cube.transform.position = new Vector3D(0, 0, 0);
+            cube.position = new Vector3D(0, 0, 0);
             scene3D.addChild(cube);
 
             var plane = new PlaneObject3D();
-            plane.transform.position = new Vector3D(150, 0, 0);
-            plane.transform.rotation = new Vector3D(90, 0, 0);
+            plane.position = new Vector3D(150, 0, 0);
+            plane.rotation = new Vector3D(90, 0, 0);
             scene3D.addChild(plane);
 
             var sphere = new SphereObject3D();
-            sphere.transform.position = new Vector3D(-150, 0, 0);
+            sphere.position = new Vector3D(-150, 0, 0);
             scene3D.addChild(sphere);
 
             var capsule = new CapsuleObject3D();
-            capsule.transform.position = new Vector3D(300, 0, 0);
+            capsule.position = new Vector3D(300, 0, 0);
             scene3D.addChild(capsule);
 
             var cylinder = new CylinderObject3D();
-            cylinder.transform.position = new Vector3D(-300, 0, 0);
+            cylinder.position = new Vector3D(-300, 0, 0);
             scene3D.addChild(cylinder);
 
             scene3D.addEventListener(Mouse3DEvent.CLICK, this.onMouseClick, this);

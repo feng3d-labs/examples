@@ -21,19 +21,19 @@ module feng3d
 
             //初始化颜色材质
             var cube = new CubeObject3D();
-            cube.transform.position.z = 500;
+            cube.position.z = 500;
             this.view3D.scene.addChild(cube);
 
             var colorMaterial = cube.getOrCreateComponentByClass(Model).material = new ColorMaterial();
 
             var cylinder = new CylinderObject3D();
-            cylinder.transform.position.x = 200;
+            cylinder.position.x = 200;
             cube.addChild(cylinder);
 
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.transform.rotation.y += 1;
+                cube.rotation.y += 1;
             }, 15);
             setInterval(function ()
             {

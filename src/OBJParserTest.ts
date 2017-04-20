@@ -20,7 +20,7 @@ module feng3d
             {
                 if (object)
                 {
-                    object.transform.rotation.y += 1;
+                    object.rotation.y += 1;
                 }
             }, 15);
 
@@ -32,10 +32,10 @@ module feng3d
             objLoader.load(objUrl, function (object3D: Object3D)
             {
                 object = object3D;
-                object.transform.scale.x = 20;
-                object.transform.scale.y = 20;
-                object.transform.scale.z = 20;
-                object.transform.position.z = 300;
+                object.scale.x = 20;
+                object.scale.y = 20;
+                object.scale.z = 20;
+                object.position.z = 300;
                 scene.addChild(object3D);
             });
         }

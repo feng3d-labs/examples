@@ -20,22 +20,22 @@ module feng3d
 
             var geometry = model.geometry = new Geometry();
             geometry.addGeometry(new PlaneGeometry());
-            var transform = new Matrix3D();
-            transform.appendTranslation(0, 50, 0);
-            geometry.addGeometry(new SphereGeometry(50), transform);
+            var matrix3D = new Matrix3D();
+            matrix3D.appendTranslation(0, 50, 0);
+            geometry.addGeometry(new SphereGeometry(50), matrix3D);
 
-            transform.appendTranslation(0, 50, 0);
+            matrix3D.appendTranslation(0, 50, 0);
             var addGeometry = new CubeGeometry();
-            geometry.addGeometry(addGeometry, transform);
+            geometry.addGeometry(addGeometry, matrix3D);
 
             addGeometry.width = 50;
-            transform.appendTranslation(0, 50, 0);
-            transform.appendRotation(45, Vector3D.Z_AXIS);
-            geometry.addGeometry(addGeometry, transform);
+            matrix3D.appendTranslation(0, 50, 0);
+            matrix3D.appendRotation(45, Vector3D.Z_AXIS);
+            geometry.addGeometry(addGeometry, matrix3D);
 
 
-            object3d.transform.position.z = 300;
-            object3d.transform.position.y = -100;
+            object3d.position.z = 300;
+            object3d.position.y = -100;
             this.view3D.scene.addChild(object3d);
 
             //初始化颜色材质
@@ -44,7 +44,7 @@ module feng3d
             //变化旋转与颜色
             setInterval(function ()
             {
-                object3d.transform.rotation.y += 1;
+                object3d.rotation.y += 1;
             }, 15);
             setInterval(function ()
             {

@@ -10,7 +10,7 @@ var feng3d;
             // //变化旋转
             setInterval(function () {
                 if (object) {
-                    object.transform.rotation.y += 1;
+                    object.rotation.y += 1;
                 }
             }, 15);
             var md5meshUrl = "resources/hellknight/hellknight.md5mesh";
@@ -20,11 +20,11 @@ var feng3d;
             var useMatrial = this.useMatrial;
             var md5Loader = new feng3d.MD5Loader();
             md5Loader.load(md5meshUrl, function (object3D, animator) {
-                object3D.transform.position.y = -100;
-                object3D.transform.rotation.x = -90;
+                object3D.position.y = -100;
+                object3D.rotation.x = -90;
                 object = object3D;
                 useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
-                object.transform.position.z = 300;
+                object.position.z = 300;
                 scene.addChild(object3D);
                 skeletonAnimator = animator;
                 //

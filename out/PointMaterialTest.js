@@ -12,7 +12,7 @@ var feng3d;
             var object3D = new feng3d.Object3D("plane");
             object3D.getOrCreateComponentByClass(feng3d.Model).geometry = pointGeometry;
             object3D.getOrCreateComponentByClass(feng3d.Model).material = pointMaterial;
-            object3D.transform.position.z = 300;
+            object3D.position.z = 300;
             this.view3D.scene.addChild(object3D);
             var length = 200;
             var height = 200 / Math.PI;
@@ -23,8 +23,8 @@ var feng3d;
             }
             //变化旋转
             setInterval(function () {
-                object3D.transform.rotation.y += 1;
-                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.rotation.y / 30);
+                object3D.rotation.y += 1;
+                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.rotation.y / 30);
             }, 15);
         }
     }

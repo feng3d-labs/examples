@@ -12,7 +12,7 @@ var feng3d;
             feng3d.input.addEventListener("mouseup", this.onMouseup, this);
         }
         onMousedown() {
-            this.controller.target = this.view3D.camera.transform;
+            this.controller.target = this.view3D.camera;
         }
         onMouseup() {
             this.controller.target = null;
@@ -24,7 +24,7 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var object3d = new feng3d.Object3D();
-            object3d.transform.position.z = 300;
+            object3d.position.z = 300;
             object3d.isBillboard = true;
             this.view3D.scene.addChild(object3d);
             //材质

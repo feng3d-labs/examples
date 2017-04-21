@@ -26,7 +26,7 @@ var feng3d;
             scene3D.addChild(cube);
             var plane = new feng3d.PlaneObject3D();
             plane.position = new feng3d.Vector3D(150, 0, 0);
-            plane.rotation = new feng3d.Vector3D(90, 0, 0);
+            plane.rotationX = 90;
             scene3D.addChild(plane);
             var sphere = new feng3d.SphereObject3D();
             sphere.position = new feng3d.Vector3D(-150, 0, 0);

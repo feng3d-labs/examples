@@ -15,7 +15,7 @@ module feng3d
             this.view3D = new View3D(canvas);
 
             var cube = new CubeObject3D();
-            cube.position.z = 300;
+            cube.z = 300;
             this.view3D.scene.addChild(cube);
 
             //初始化颜色材质
@@ -24,7 +24,7 @@ module feng3d
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.rotation.y += 1;
+                cube.rotationY += 1;
             }, 15);
             setInterval(function ()
             {

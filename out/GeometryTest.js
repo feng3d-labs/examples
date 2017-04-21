@@ -7,7 +7,7 @@ var feng3d;
         init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
-            var object3d = new feng3d.Object3D();
+            var object3d = new feng3d.GameObject();
             var model = object3d.getOrCreateComponentByClass(feng3d.Model);
             var geometry = model.geometry = new feng3d.Geometry();
             geometry.addGeometry(new feng3d.PlaneGeometry());
@@ -21,14 +21,14 @@ var feng3d;
             matrix3D.appendTranslation(0, 50, 0);
             matrix3D.appendRotation(45, feng3d.Vector3D.Z_AXIS);
             geometry.addGeometry(addGeometry, matrix3D);
-            object3d.position.z = 300;
-            object3d.position.y = -100;
+            object3d.z = 300;
+            object3d.y = -100;
             this.view3D.scene.addChild(object3d);
             //初始化颜色材质
             var colorMaterial = model.material = new feng3d.ColorMaterial();
             //变化旋转与颜色
             setInterval(function () {
-                object3d.rotation.y += 1;
+                object3d.rotationY += 1;
             }, 15);
             setInterval(function () {
                 colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);

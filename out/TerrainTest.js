@@ -4,8 +4,8 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
-            this.cameraObj.position.y = 200;
+            this.cameraObj.z = -500;
+            this.cameraObj.y = 200;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();
@@ -30,7 +30,7 @@ var feng3d;
             var scene = this.view3D.scene;
             var root = 'resources/terrain/';
             //
-            terrain = new feng3d.Object3D("terrain");
+            terrain = new feng3d.GameObject("terrain");
             terrain.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
             var terrainMaterial = new feng3d.TerrainMaterial();
             terrainMaterial.diffuseTexture = new feng3d.Texture2D(root + 'terrain_diffuse.jpg');

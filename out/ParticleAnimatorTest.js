@@ -4,7 +4,7 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
+            this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();
@@ -27,10 +27,10 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var scene = this.view3D.scene;
-            var particle = new feng3d.Object3D("particle");
+            var particle = new feng3d.GameObject("particle");
             particle.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.PointGeometry();
             particle.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ParticleMaterial();
-            particle.position.y = -100;
+            particle.y = -100;
             scene.addChild(particle);
             var particleAnimator = particle.getOrCreateComponentByClass(feng3d.ParticleAnimator);
             particleAnimator.cycle = 10;

@@ -23,12 +23,12 @@ var feng3d;
         init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
-            var object3d = new feng3d.Object3D();
-            object3d.position.z = 300;
-            object3d.isBillboard = true;
-            this.view3D.scene.addChild(object3d);
+            var gameObject = new feng3d.GameObject();
+            gameObject.z = 300;
+            gameObject.isBillboard = true;
+            this.view3D.scene.addChild(gameObject);
             //材质
-            var model = object3d.getOrCreateComponentByClass(feng3d.Model);
+            var model = gameObject.getOrCreateComponentByClass(feng3d.Model);
             model.geometry = new feng3d.PlaneGeometry(100, 100, 1, 1, false);
             var textureMaterial = model.material = new feng3d.TextureMaterial();
             //

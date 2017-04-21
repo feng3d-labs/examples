@@ -36,13 +36,13 @@ module feng3d
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
-            var object3d = new Object3D();
-            object3d.position.z = 300;
-            object3d.isBillboard = true;
-            this.view3D.scene.addChild(object3d);
+            var gameObject = new GameObject();
+            gameObject.z = 300;
+            gameObject.isBillboard = true;
+            this.view3D.scene.addChild(gameObject);
 
             //材质
-            var model = object3d.getOrCreateComponentByClass(Model);
+            var model = gameObject.getOrCreateComponentByClass(Model);
             model.geometry = new PlaneGeometry(100, 100, 1, 1, false);
             var textureMaterial = model.material = new TextureMaterial();
             //

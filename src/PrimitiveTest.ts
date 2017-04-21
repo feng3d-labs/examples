@@ -44,7 +44,7 @@ module feng3d
 
             var plane = new PlaneObject3D();
             plane.position = new Vector3D(150, 0, 0);
-            plane.rotation = new Vector3D(90, 0, 0);
+            plane.rotationX = 90;
             scene3D.addChild(plane);
 
             var sphere = new SphereObject3D();

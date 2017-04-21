@@ -12,7 +12,7 @@ module feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
+            this.cameraObj.z = -500;
             this.cameraObj.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
@@ -57,7 +57,7 @@ module feng3d
                 imagePaths[i] = root + imagePaths[i];
             }
 
-            var skybox = new Object3D("skybox");
+            var skybox = new GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(Model);
             model.geometry = new SkyBoxGeometry();
             model.material = new SkyBoxMaterial(imagePaths);

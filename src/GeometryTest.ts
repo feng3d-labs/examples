@@ -14,7 +14,7 @@ module feng3d
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
-            var object3d = new Object3D();
+            var object3d = new GameObject();
             var model = object3d.getOrCreateComponentByClass(Model);
 
 
@@ -34,8 +34,8 @@ module feng3d
             geometry.addGeometry(addGeometry, matrix3D);
 
 
-            object3d.position.z = 300;
-            object3d.position.y = -100;
+            object3d.z = 300;
+            object3d.y = -100;
             this.view3D.scene.addChild(object3d);
 
             //初始化颜色材质
@@ -44,7 +44,7 @@ module feng3d
             //变化旋转与颜色
             setInterval(function ()
             {
-                object3d.rotation.y += 1;
+                object3d.rotationY += 1;
             }, 15);
             setInterval(function ()
             {

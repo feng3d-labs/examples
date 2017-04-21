@@ -4,8 +4,8 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
-            this.cameraObj.position.y = 200;
+            this.cameraObj.z = -500;
+            this.cameraObj.y = 200;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();
@@ -59,14 +59,14 @@ var feng3d;
             material.specularMethod.specularTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
             material.specularMethod.specularTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
             //初始化立方体
-            var plane = new feng3d.Object3D();
-            plane.position.y = -100;
+            var plane = new feng3d.GameObject();
+            plane.y = -100;
             var model = plane.getOrCreateComponentByClass(feng3d.Model);
             var geometry = model.geometry = new feng3d.PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
             model.material = material;
             this.scene.addChild(plane);
-            var cube = new feng3d.Object3D();
+            var cube = new feng3d.GameObject();
             var model = cube.getOrCreateComponentByClass(feng3d.Model);
             model.material = material;
             model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
@@ -103,19 +103,19 @@ var feng3d;
     }
     feng3d.PointLightTest = PointLightTest;
 })(feng3d || (feng3d = {}));
-var light0 = new feng3d.Object3D("pointLight");
-var light1 = new feng3d.Object3D("pointLight");
+var light0 = new feng3d.GameObject("pointLight");
+var light1 = new feng3d.GameObject("pointLight");
 new feng3d.PointLightTest();
 function setPointLightPosition() {
     var time = new Date().getTime();
     //
     var angle = time / 1000;
-    light0.position.x = Math.sin(angle) * 300;
-    light0.position.z = Math.cos(angle) * 300;
+    light0.x = Math.sin(angle) * 300;
+    light0.z = Math.cos(angle) * 300;
     //
     angle = angle + Math.PI / 2;
-    light1.position.x = Math.sin(angle) * 300;
-    light1.position.z = Math.cos(angle) * 300;
+    light1.x = Math.sin(angle) * 300;
+    light1.z = Math.cos(angle) * 300;
     light1.lookAt(new feng3d.Vector3D());
 }
 //# sourceMappingURL=PointLightTest.js.map

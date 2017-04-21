@@ -11,8 +11,8 @@ module feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
-            this.cameraObj.position.y = 200;
+            this.cameraObj.z = -500;
+            this.cameraObj.y = 200;
             this.cameraObj.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
@@ -47,7 +47,7 @@ module feng3d
             var scene = this.view3D.scene;
             var root = 'resources/terrain/';
             //
-            terrain = new Object3D("terrain");
+            terrain = new GameObject("terrain");
             terrain.getOrCreateComponentByClass(Model).geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
             var terrainMaterial = new TerrainMaterial();
             terrainMaterial.diffuseTexture = new Texture2D(root + 'terrain_diffuse.jpg');

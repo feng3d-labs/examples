@@ -14,8 +14,8 @@ module feng3d
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
-            var segment = new Object3D("segment");
-            segment.position.z = 300;
+            var segment = new GameObject("segment");
+            segment.z = 300;
             this.view3D.scene.addChild(segment);
 
             //初始化材质
@@ -43,7 +43,7 @@ module feng3d
             //变化旋转
             setInterval(function ()
             {
-                segment.rotation.y += 1;
+                segment.rotationY += 1;
             }, 15);
         }
     }

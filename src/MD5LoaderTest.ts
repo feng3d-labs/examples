@@ -20,7 +20,7 @@ module feng3d
             {
                 if (object)
                 {
-                    object.rotation.y += 1;
+                    object.rotationY += 1;
                 }
             }, 15);
 
@@ -31,17 +31,17 @@ module feng3d
             var useMatrial = this.useMatrial;
 
             var md5Loader = new MD5Loader();
-            md5Loader.load(md5meshUrl, function (object3D: Object3D, animator: SkeletonAnimator)
+            md5Loader.load(md5meshUrl, function (object3D: GameObject, animator: SkeletonAnimator)
             {
 
-                object3D.position.y = -100;
-                object3D.rotation.x = -90;
+                object3D.y = -100;
+                object3D.rotationX = -90;
 
                 object = object3D;
 
                 useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
 
-                object.position.z = 300;
+                object.z = 300;
                 scene.addChild(object3D);
                 skeletonAnimator = animator;
                 //
@@ -55,9 +55,8 @@ module feng3d
             });
         }
 
-        private useMatrial(object3D: Object3D, imageUrl: string)
+        private useMatrial(object3D: GameObject, imageUrl: string)
         {
-
             var material = new SkeletonAnimatorMaterial();
             material.texture = new Texture2D(imageUrl);
 

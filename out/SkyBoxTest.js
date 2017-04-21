@@ -4,7 +4,7 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
+            this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();
@@ -32,7 +32,7 @@ var feng3d;
             for (var i = 0; i < imagePaths.length; i++) {
                 imagePaths[i] = root + imagePaths[i];
             }
-            var skybox = new feng3d.Object3D("skybox");
+            var skybox = new feng3d.GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(feng3d.Model);
             model.geometry = new feng3d.SkyBoxGeometry();
             model.material = new feng3d.SkyBoxMaterial(imagePaths);

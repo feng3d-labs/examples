@@ -10,7 +10,7 @@ var feng3d;
             // //变化旋转
             setInterval(function () {
                 if (object) {
-                    object.rotation.y += 1;
+                    object.rotationY += 1;
                 }
             }, 15);
             // var objUrl = "resources/cube.obj";
@@ -19,10 +19,10 @@ var feng3d;
             var objLoader = new feng3d.ObjLoader();
             objLoader.load(objUrl, function (object3D) {
                 object = object3D;
-                object.scale.x = 20;
-                object.scale.y = 20;
-                object.scale.z = 20;
-                object.position.z = 300;
+                object.scaleX = 20;
+                object.scaleY = 20;
+                object.scaleZ = 20;
+                object.z = 300;
                 scene.addChild(object3D);
             });
         }

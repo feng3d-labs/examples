@@ -20,7 +20,7 @@ module feng3d
             {
                 if (object)
                 {
-                    object.rotation.y += 1;
+                    object.rotationY += 1;
                 }
             }, 15);
 
@@ -29,18 +29,18 @@ module feng3d
             var scene = this.view3D.scene;
 
             var objLoader = new ObjLoader();
-            objLoader.load(objUrl, function (object3D: Object3D)
+            objLoader.load(objUrl, function (object3D: GameObject)
             {
                 object = object3D;
-                object.scale.x = 20;
-                object.scale.y = 20;
-                object.scale.z = 20;
-                object.position.z = 300;
+                object.scaleX = 20;
+                object.scaleY = 20;
+                object.scaleZ = 20;
+                object.z = 300;
                 scene.addChild(object3D);
             });
         }
     }
-    var object: Object3D;
+    var object: GameObject;
 }
 
 new feng3d.OBJParserTest();

@@ -4,7 +4,7 @@ var feng3d;
         constructor() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
+            this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController();

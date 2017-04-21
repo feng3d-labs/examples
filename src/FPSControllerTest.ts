@@ -17,7 +17,7 @@ module feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.position.z = -500;
+            this.cameraObj.z = -500;
             this.cameraObj.lookAt(new Vector3D());
             //
             this.controller = new FPSController();
@@ -59,7 +59,7 @@ module feng3d
 
             var plane = new PlaneObject3D();
             plane.position = new Vector3D(150, 0, 0);
-            plane.rotation = new Vector3D(90, 0, 0);
+            plane.rotationX = 90;
             scene3D.addChild(plane);
 
             var sphere = new SphereObject3D();

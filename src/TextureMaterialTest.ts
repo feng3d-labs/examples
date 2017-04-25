@@ -19,7 +19,7 @@ module feng3d
             cube.y = -100;
             this.view3D.scene.addChild(cube);
 
-            this.view3D.scene.background.setTo(1, 1, 0, 0.2);
+            // this.view3D.scene.background.setTo(1, 1, 0, 0.2);
 
             //变化旋转与颜色
             setInterval(function ()
@@ -31,15 +31,20 @@ module feng3d
             model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
             // model.geometry = new PlaneGeometry();
             //材质
-            var textureMaterial = model.material = new TextureMaterial();
+            // var textureMaterial = model.material = new TextureMaterial();
             //
             // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
-            var texture = textureMaterial.texture = new Texture2D('resources/m.png');
-            texture.flipY = false;
+            // var texture = textureMaterial.texture = new Texture2D('resources/m.png');
+            // texture.flipY = false;
 
-            textureMaterial.enableBlend = true;
-            textureMaterial.sfactor = GL.SRC_ALPHA;
-            textureMaterial.dfactor = GL.ONE_MINUS_SRC_ALPHA;
+            // textureMaterial.enableBlend = true;
+            // textureMaterial.sfactor = GL.SRC_ALPHA;
+            // textureMaterial.dfactor = GL.ONE_MINUS_SRC_ALPHA;
+
+            var textureMaterial = model.material = new StandardMaterial();
+            textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
+            textureMaterial.diffuseMethod.alphaThreshold = 0.1;
+
         }
     }
 }

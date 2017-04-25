@@ -53,23 +53,28 @@ module feng3d
 
             var cube = new CubeObject3D();
             cube.position = new Vector3D(0, 0, 0);
+            cube.mouseEnabled = true;
             scene3D.addChild(cube);
 
             var plane = new PlaneObject3D();
             plane.position = new Vector3D(150, 0, 0);
             plane.rotationX = 90;
+            plane.mouseEnabled = true;
             scene3D.addChild(plane);
 
             var sphere = new SphereObject3D();
             sphere.position = new Vector3D(-150, 0, 0);
+            sphere.mouseEnabled = true;
             scene3D.addChild(sphere);
 
             var capsule = new CapsuleObject3D();
             capsule.position = new Vector3D(300, 0, 0);
+            capsule.mouseEnabled = true;
             scene3D.addChild(capsule);
 
             var cylinder = new CylinderObject3D();
             cylinder.position = new Vector3D(-300, 0, 0);
+            cylinder.mouseEnabled = true;
             scene3D.addChild(cylinder);
 
             scene3D.addEventListener(Mouse3DEvent.CLICK, this.onMouseClick, this);
@@ -77,7 +82,6 @@ module feng3d
 
         onMouseClick(event: Event)
         {
-
             var object3D: Object3D = <Object3D>event.target;
             var material = object3D.getComponentByType(Model).material = new ColorMaterial();
             material.color.fromUnit(Math.random() * (1 << 24));

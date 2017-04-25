@@ -14,9 +14,12 @@ module feng3d
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
 
-            var cube = new CubeObject3D();
+            var cube = new GameObject();
             cube.z = 300;
+            cube.y = -100;
             this.view3D.scene.addChild(cube);
+
+            this.view3D.scene.background.setTo(1, 1, 0, 0.2);
 
             //变化旋转与颜色
             setInterval(function ()
@@ -24,13 +27,19 @@ module feng3d
                 cube.rotationY += 1;
             }, 15);
 
+            var model = cube.getOrCreateComponentByClass(Model);
+            model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            // model.geometry = new PlaneGeometry();
             //材质
-            var textureMaterial = cube.getOrCreateComponentByClass(Model).material = new TextureMaterial();
+            var textureMaterial = model.material = new TextureMaterial();
             //
             // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
             var texture = textureMaterial.texture = new Texture2D('resources/m.png');
             texture.flipY = false;
-            texture.premulAlpha = true;
+
+            textureMaterial.enableBlend = true;
+            textureMaterial.sfactor = GL.SRC_ALPHA;
+            textureMaterial.dfactor = GL.ONE_MINUS_SRC_ALPHA;
         }
     }
 }

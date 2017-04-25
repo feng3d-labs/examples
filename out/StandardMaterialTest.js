@@ -7,18 +7,21 @@ var feng3d;
         init() {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
-            var cube = new feng3d.SphereObject3D();
-            cube.transform.position.z = 300;
+            var cube = new feng3d.GameObject();
+            cube.z = 300;
+            cube.y = -100;
             this.view3D.scene.addChild(cube);
             //变化旋转与颜色
             setInterval(function () {
-                cube.transform.rotation.y += 1;
+                cube.rotationY += 1;
             }, 15);
+            var model = cube.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            // model.geometry = new PlaneGeometry();
             //材质
-            var material = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.StandardMaterial();
-            //
-            material.diffuseMethod.difuseTexture.url = 'resources/floor_diffuse.jpg';
-            material.diffuseMethod.color.setTo(0.8, 1.0, 1.0);
+            var textureMaterial = model.material = new feng3d.StandardMaterial();
+            textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
+            textureMaterial.diffuseMethod.alphaThreshold = 0.1;
         }
     }
     feng3d.StandardMaterialTest = StandardMaterialTest;

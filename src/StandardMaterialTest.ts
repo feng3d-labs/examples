@@ -1,11 +1,10 @@
 module feng3d
 {
-    export class TextureMaterialTest
+    export class StandardMaterialTest
     {
         view3D: View3D;
         constructor()
         {
-
             this.init();
         }
 
@@ -29,13 +28,12 @@ module feng3d
             model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
             // model.geometry = new PlaneGeometry();
             //材质
-            var textureMaterial = model.material = new TextureMaterial();
-            //
-            // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
-            var texture = textureMaterial.texture = new Texture2D('resources/m.png');
-            texture.flipY = false;
+            var textureMaterial = model.material = new StandardMaterial();
+            textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
+            textureMaterial.diffuseMethod.alphaThreshold = 0.1;
+
         }
     }
 }
 
-new feng3d.TextureMaterialTest();
+new feng3d.StandardMaterialTest();

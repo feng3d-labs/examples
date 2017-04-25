@@ -33,8 +33,6 @@ var feng3d;
             var textureMaterial = model.material = new feng3d.TextureMaterial();
             //
             var texture = textureMaterial.texture = new feng3d.Texture2D('resources/m.png');
-            texture.flipY = false;
-            texture.premulAlpha = true;
         }
     }
     feng3d.BillboardTest = BillboardTest;

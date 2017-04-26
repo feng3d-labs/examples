@@ -37,8 +37,8 @@ var feng3d;
             });
         }
         useMatrial(object3D, imageUrl) {
-            var material = new feng3d.SkeletonAnimatorMaterial();
-            material.texture = new feng3d.Texture2D(imageUrl);
+            var material = new feng3d.StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = imageUrl;
             for (var i = 0; i < object3D.numChildren; i++) {
                 var child = object3D.getChildAt(i);
                 var model = child.getComponentByType(feng3d.Model);

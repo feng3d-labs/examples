@@ -57,8 +57,8 @@ module feng3d
 
         private useMatrial(object3D: GameObject, imageUrl: string)
         {
-            var material = new SkeletonAnimatorMaterial();
-            material.texture = new Texture2D(imageUrl);
+            var material = new StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = imageUrl;
 
             for (var i = 0; i < object3D.numChildren; i++)
             {

@@ -32,6 +32,7 @@ module feng3d
             textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
             textureMaterial.diffuseMethod.alphaThreshold = 0.1;
 
+            textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
         }
     }
 }

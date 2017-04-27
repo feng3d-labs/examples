@@ -30,9 +30,14 @@ module feng3d
             //材质
             var textureMaterial = model.material = new StandardMaterial();
             textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
-            textureMaterial.diffuseMethod.alphaThreshold = 0.1;
+            // textureMaterial.diffuseMethod.difuseTexture.url = 'resources/nonpowerof2.png';
+            textureMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+            // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
 
-            textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
+            // textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
+
+            // textureMaterial.enableBlend = true;
+            textureMaterial.diffuseMethod.color.a = 0.2;
         }
     }
 }

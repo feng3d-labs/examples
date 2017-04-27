@@ -53,8 +53,20 @@ module feng3d
             terrainMaterial.diffuseTexture = new Texture2D(root + 'terrain_diffuse.jpg');
             terrainMaterial.blendTexture = new Texture2D(root + 'terrain_splats.png');
             terrainMaterial.splatTexture1 = new Texture2D(root + 'beach.jpg');
+            terrainMaterial.splatTexture1.generateMipmap = true;
+            terrainMaterial.splatTexture1.minFilter = GL.NEAREST_MIPMAP_LINEAR;
+            terrainMaterial.splatTexture1.wrapS = GL.REPEAT;
+            terrainMaterial.splatTexture1.wrapT = GL.REPEAT;
             terrainMaterial.splatTexture2 = new Texture2D(root + 'grass.jpg');
+            terrainMaterial.splatTexture2.generateMipmap = true;
+            terrainMaterial.splatTexture2.minFilter = GL.NEAREST_MIPMAP_LINEAR;
+            terrainMaterial.splatTexture2.wrapS = GL.REPEAT;
+            terrainMaterial.splatTexture2.wrapT = GL.REPEAT;
             terrainMaterial.splatTexture3 = new Texture2D(root + 'rock.jpg');
+            terrainMaterial.splatTexture3.generateMipmap = true;
+            terrainMaterial.splatTexture3.minFilter = GL.NEAREST_MIPMAP_LINEAR;
+            terrainMaterial.splatTexture3.wrapS = GL.REPEAT;
+            terrainMaterial.splatTexture3.wrapT = GL.REPEAT;
             terrainMaterial.splatRepeats = new Vector3D(1, 50, 150, 100);
 
             terrain.getOrCreateComponentByClass(Model).material = terrainMaterial;

@@ -50,7 +50,7 @@ var feng3d;
         initObjects() {
             var material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
-            material.normalMethod.normalTexture.url = 'resources/head_normal.jpg';
+            material.normalMethod.normalTexture.url = 'resources/head_normals.jpg';
             material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
             material.diffuseMethod.difuseTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
             material.diffuseMethod.difuseTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;

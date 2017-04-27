@@ -20,8 +20,8 @@ var feng3d;
             // model.geometry = new PlaneGeometry();
             //材质
             var textureMaterial = model.material = new feng3d.StandardMaterial();
-            textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
-            // textureMaterial.diffuseMethod.difuseTexture.url = 'resources/nonpowerof2.png';
+            // textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
+            textureMaterial.diffuseMethod.difuseTexture.url = 'resources/nonpowerof2.png';
             textureMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
             // textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;

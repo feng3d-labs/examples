@@ -45,6 +45,9 @@ module feng3d
         {
 
             this.controller.update();
+
+            var screenPos = this.view3D.project(sphere.scenePosition);
+            console.log("球体视窗坐标" + screenPos.toString());
         }
 
         init()
@@ -61,7 +64,7 @@ module feng3d
             plane.rotationX = 90;
             scene3D.addChild(plane);
 
-            var sphere = new SphereObject3D();
+            sphere = new SphereObject3D();
             sphere.setPosition(-150, 0, 0);
             scene3D.addChild(sphere);
 
@@ -74,6 +77,7 @@ module feng3d
             scene3D.addChild(cylinder);
         }
     }
+    var sphere: SphereObject3D;
 }
 
 new feng3d.FPSControllerTest();

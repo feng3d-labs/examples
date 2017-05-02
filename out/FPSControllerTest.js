@@ -25,6 +25,8 @@ var feng3d;
         }
         process() {
             this.controller.update();
+            var screenPos = this.view3D.project(sphere.scenePosition);
+            console.log("球体视窗坐标" + screenPos.toString());
         }
         init() {
             var canvas = document.getElementById("glcanvas");
@@ -36,7 +38,7 @@ var feng3d;
             plane.setPosition(150, 0, 0);
             plane.rotationX = 90;
             scene3D.addChild(plane);
-            var sphere = new feng3d.SphereObject3D();
+            sphere = new feng3d.SphereObject3D();
             sphere.setPosition(-150, 0, 0);
             scene3D.addChild(sphere);
             var capsule = new feng3d.CapsuleObject3D();
@@ -48,6 +50,7 @@ var feng3d;
         }
     }
     feng3d.FPSControllerTest = FPSControllerTest;
+    var sphere;
 })(feng3d || (feng3d = {}));
 new feng3d.FPSControllerTest();
 //# sourceMappingURL=FPSControllerTest.js.map

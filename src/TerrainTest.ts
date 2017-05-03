@@ -53,6 +53,7 @@ module feng3d
             terrainMaterial.diffuseTexture = new Texture2D(root + 'terrain_diffuse.jpg');
             terrainMaterial.blendTexture = new Texture2D(root + 'terrain_splats.png');
             terrainMaterial.splatTexture1 = new Texture2D(root + 'beach.jpg');
+            // terrainMaterial.splatTexture1 = new Texture2D(root + '111.jpg');
             terrainMaterial.splatTexture1.generateMipmap = true;
             terrainMaterial.splatTexture1.minFilter = GL.NEAREST_MIPMAP_LINEAR;
             terrainMaterial.splatTexture1.wrapS = GL.REPEAT;

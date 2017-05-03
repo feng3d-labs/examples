@@ -36,6 +36,7 @@ var feng3d;
             terrainMaterial.diffuseTexture = new feng3d.Texture2D(root + 'terrain_diffuse.jpg');
             terrainMaterial.blendTexture = new feng3d.Texture2D(root + 'terrain_splats.png');
             terrainMaterial.splatTexture1 = new feng3d.Texture2D(root + 'beach.jpg');
+            // terrainMaterial.splatTexture1 = new Texture2D(root + '111.jpg');
             terrainMaterial.splatTexture1.generateMipmap = true;
             terrainMaterial.splatTexture1.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
             terrainMaterial.splatTexture1.wrapS = feng3d.GL.REPEAT;

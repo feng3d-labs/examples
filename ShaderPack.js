@@ -2,13 +2,16 @@ var fs = require("fs");
 const util = require("util");
 const debuglog = util.debuglog('foo');
 
+var root = "feng3d/";
+
 // fs.watch("./shaders", (event, filename) => {
 //     try {
-        var savePath = "src/autofiles/shaders.ts";
-        var filesContent = readFiles(getFilePaths("shaders"));
-        var contentStr = JSON.stringify(filesContent);
-        writeFile(savePath, `module feng3d\n{\nfeng3d.shaderFileMap = ${contentStr}\n}`);
-        debuglog("自动生成" + savePath)
+var savePath = root + "src/autofiles/shaders.ts";
+var filesContent = readFiles(getFilePaths(root + "shaders"));
+var contentStr = JSON.stringify(filesContent, null, '\t');
+contentStr = contentStr.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1');
+writeFile(savePath, `module feng3d\n{\nfeng3d.shaderFileMap = ${contentStr}\n}`);
+debuglog("自动生成" + savePath)
 //     } catch (error) {
 //         debuglog("error!!!!!\n" + error);
 //     }

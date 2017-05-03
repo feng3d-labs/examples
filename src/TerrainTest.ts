@@ -47,7 +47,7 @@ module feng3d
             var scene = this.view3D.scene;
             var root = 'resources/terrain/';
             //
-            terrain = new GameObject("terrain");
+            var terrain = new GameObject("terrain");
             terrain.getOrCreateComponentByClass(Model).geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
             var terrainMaterial = new TerrainMaterial();
             terrainMaterial.diffuseTexture = new Texture2D(root + 'terrain_diffuse.jpg');
@@ -75,7 +75,3 @@ module feng3d
         }
     }
 }
-
-new feng3d.TerrainTest();
-
-var terrain;

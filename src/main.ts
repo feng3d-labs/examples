@@ -7,7 +7,7 @@ function init() {
     type = GetQueryString("type");
     type = type || "PrimitiveTest";
     select.value = type;
-    jsCtrl.src = "out/" + type + ".js";
+    new feng3d[type]();
     document.onkeyup = function (e) {
         var keycode = e.which;
         if (keycode == 37) {
@@ -33,6 +33,6 @@ function selectChanged() {
 function GetQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
     var r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
+    if (r != null) return r[2];
     return null;
 }

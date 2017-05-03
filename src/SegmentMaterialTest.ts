@@ -48,5 +48,3 @@ module feng3d
         }
     }
 }
-
-new feng3d.SegmentMaterialTest();

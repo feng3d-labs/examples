@@ -73,5 +73,3 @@ module feng3d
     }
     var object: Object3D;
 }
-
-new feng3d.MD5LoaderTest();

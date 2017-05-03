@@ -42,5 +42,3 @@ module feng3d
     }
     var object: GameObject;
 }
-
-new feng3d.OBJParserTest();

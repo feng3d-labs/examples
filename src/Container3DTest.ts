@@ -42,4 +42,3 @@ module feng3d
         }
     }
 }
-new feng3d.Container3DTest();

@@ -1,13 +1,32 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es6",
+        "target": "es5",
         "noImplicitAny": false,
         "sourceMap": true,
-        "outDir": "out"
+        // "declaration": true,
+        // "outDir": "out"
+        "outFile": "out/examples.js"
     },
-    "exclude": [
-        "node_modules",
-        "feng3d"
+    "files": [ //注：如果有继承关系的，父类必须排在子类前面
+        "typings/index.d.ts",
+        "src/BillboardTest.ts",
+        "src/ColorMaterialTest.ts",
+        "src/Container3DTest.ts",
+        "src/FPSControllerTest.ts",
+        "src/GeometryTest.ts",
+        "src/MD5LoaderTest.ts",
+        "src/MousePickTest.ts",
+        "src/OBJParserTest.ts",
+        "src/ParticleAnimatorTest.ts",
+        "src/PointLightTest.ts",
+        "src/PointMaterialTest.ts",
+        "src/PrimitiveTest.ts",
+        "src/SceneLoadTest.ts",
+        "src/SegmentMaterialTest.ts",
+        "src/SkyBoxTest.ts",
+        "src/StandardMaterialTest.ts",
+        "src/TerrainTest.ts",
+        "src/TextureMaterialTest.ts",
+        "src/main.ts"
     ]
 }

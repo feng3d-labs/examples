@@ -79,5 +79,3 @@ module feng3d
     }
     var sphere: SphereObject3D;
 }
-
-new feng3d.FPSControllerTest();

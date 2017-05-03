@@ -7,6 +7,9 @@ module feng3d
         controller: FPSController;
         cameraObj: Object3D;
 
+        light0 = new feng3d.GameObject("pointLight");
+        light1 = new feng3d.GameObject("pointLight");
+
         constructor()
         {
 
@@ -39,8 +42,8 @@ module feng3d
                     break;
                 case "b":
                     this.initObjects();
-                    this.scene.addChild(light0);
-                    this.scene.addChild(light1);
+                    this.scene.addChild(this.light0);
+                    this.scene.addChild(this.light1);
                     break;
             }
         }
@@ -61,7 +64,7 @@ module feng3d
         {
 
             this.controller.update();
-            setPointLightPosition();
+            this.setPointLightPosition();
         }
 
         init()
@@ -74,7 +77,7 @@ module feng3d
             this.initObjects();
             this.initLights();
 
-            setPointLightPosition();
+            this.setPointLightPosition();
         }
 
         private initObjects()
@@ -120,44 +123,40 @@ module feng3d
 
             //
             var lightColor0 = new Color(1, 0, 0, 1);
-            light0.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
-            light0.getOrCreateComponentByClass(Model);
+            this.light0.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
+            this.light0.getOrCreateComponentByClass(Model);
             //初始化点光源
             var pointLight0 = new PointLight();
             pointLight0.color = lightColor0;
-            light0.addComponent(pointLight0);
-            light0.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor0);
-            this.scene.addChild(light0);
+            this.light0.addComponent(pointLight0);
+            this.light0.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor0);
+            this.scene.addChild(this.light0);
 
             //
             var lightColor1 = new Color(0, 1, 0, 1);
-            light1.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
-            light1.getOrCreateComponentByClass(Model);
+            this.light1.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
+            this.light1.getOrCreateComponentByClass(Model);
             //初始化点光源
             var pointLight1 = new DirectionalLight();
             pointLight1.color = lightColor1;
-            light1.addComponent(pointLight1);
-            light1.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor1);
-            this.scene.addChild(light1);
+            this.light1.addComponent(pointLight1);
+            this.light1.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor1);
+            this.scene.addChild(this.light1);
+        }
+        setPointLightPosition()
+        {
+
+            var time = new Date().getTime();
+            //
+            var angle = time / 1000;
+            this.light0.x = Math.sin(angle) * 300;
+            this.light0.z = Math.cos(angle) * 300;
+            //
+            angle = angle + Math.PI / 2;
+            this.light1.x = Math.sin(angle) * 300;
+            this.light1.z = Math.cos(angle) * 300;
+            this.light1.lookAt(new feng3d.Vector3D());
         }
     }
 }
 
-var light0 = new feng3d.GameObject("pointLight");
-var light1 = new feng3d.GameObject("pointLight");
-new feng3d.PointLightTest();
-
-function setPointLightPosition()
-{
-
-    var time = new Date().getTime();
-    //
-    var angle = time / 1000;
-    light0.x = Math.sin(angle) * 300;
-    light0.z = Math.cos(angle) * 300;
-    //
-    angle = angle + Math.PI / 2;
-    light1.x = Math.sin(angle) * 300;
-    light1.z = Math.cos(angle) * 300;
-    light1.lookAt(new feng3d.Vector3D());
-}

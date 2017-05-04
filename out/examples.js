@@ -8420,6 +8420,9 @@ var feng3d;
              * 是否为公告牌（默认永远朝向摄像机），默认false。
              */
             this.isBillboard = false;
+            /**
+             * 保持缩放尺寸
+             */
             this.holdSize = NaN;
             this.name = name;
         }

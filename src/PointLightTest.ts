@@ -20,14 +20,7 @@ module feng3d
             this.cameraObj.y = 200;
             this.cameraObj.lookAt(new Vector3D());
             //
-            this.controller = new FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-
-
-            input.addEventListener("mousedown", this.onMousedown, this);
-            input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new FPSController(this.view3D.camera);
 
             input.addEventListener(inputType.KEY_UP, this.onKeyUp, this);
         }
@@ -46,25 +39,6 @@ module feng3d
                     this.scene.addChild(this.light1);
                     break;
             }
-        }
-
-        private onMousedown()
-        {
-
-            this.controller.target = this.cameraObj;
-        }
-
-        private onMouseup()
-        {
-
-            this.controller.target = null;
-        }
-
-        process()
-        {
-
-            this.controller.update();
-            this.setPointLightPosition();
         }
 
         init()

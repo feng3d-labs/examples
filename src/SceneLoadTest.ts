@@ -3,46 +3,19 @@ module feng3d
 
     export class SceneLoadTest
     {
-
         view3D: View3D;
         controller: FPSController;
         cameraObj: GameObject;
 
         constructor()
         {
-
             this.init();
 
             this.cameraObj = this.view3D.camera;
             this.cameraObj.z = -500;
             this.cameraObj.lookAt(new Vector3D());
             //
-            this.controller = new FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-
-
-            input.addEventListener("mousedown", this.onMousedown, this);
-            input.addEventListener("mouseup", this.onMouseup, this);
-        }
-
-        private onMousedown()
-        {
-
-            this.controller.target = this.cameraObj;
-        }
-
-        private onMouseup()
-        {
-
-            this.controller.target = null;
-        }
-
-        process()
-        {
-
-            this.controller.update();
+            this.controller = new FPSController(this.view3D.camera);
         }
 
         init()

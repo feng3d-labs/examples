@@ -8,29 +8,9 @@ module feng3d
         {
             this.init();
             //
-            this.controller = new FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-
-            input.addEventListener("mousedown", this.onMousedown, this);
-            input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new FPSController(this.view3D.camera);
         }
 
-        private onMousedown()
-        {
-            this.controller.target = this.view3D.camera;
-        }
-
-        private onMouseup()
-        {
-            this.controller.target = null;
-        }
-
-        process()
-        {
-            this.controller.update();
-        }
         init()
         {
             var canvas = document.getElementById("glcanvas");

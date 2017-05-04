@@ -20,32 +20,14 @@ module feng3d
             this.cameraObj.z = -500;
             this.cameraObj.lookAt(new Vector3D());
             //
-            this.controller = new FPSController();
+            this.controller = new FPSController(this.cameraObj);
             //
             this.process();
             setInterval(this.process.bind(this), 17);
-
-
-            input.addEventListener("mousedown", this.onMousedown, this);
-            input.addEventListener("mouseup", this.onMouseup, this);
-        }
-
-        private onMousedown()
-        {
-            this.controller.target = this.cameraObj;
-        }
-
-        private onMouseup()
-        {
-
-            this.controller.target = null;
         }
 
         process()
         {
-
-            this.controller.update();
-
             var screenPos = this.view3D.project(sphere.scenePosition);
             console.log("球体视窗坐标" + screenPos.toString());
         }

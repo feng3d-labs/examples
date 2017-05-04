@@ -13357,23 +13357,36 @@ var feng3d;
             },
             set: function (value) {
                 if (this._target != null) {
-                    feng3d.input.removeEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
-                    feng3d.input.removeEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
-                    feng3d.input.removeEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
+                    feng3d.input.removeEventListener(feng3d.inputType.MOUSE_DOWN, this.onMousedown, this);
+                    feng3d.input.removeEventListener(feng3d.inputType.MOUSE_UP, this.onMouseup, this);
                 }
                 this._target = value;
                 if (this._target != null) {
-                    feng3d.input.addEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
-                    feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
-                    feng3d.input.addEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
-                    this.preMousePoint = null;
-                    this.velocity = new feng3d.Vector3D();
-                    this.keyDownDic = {};
+                    feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMousedown, this);
+                    feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseup, this);
                 }
             },
             enumerable: true,
             configurable: true
         });
+        FPSController.prototype.onMousedown = function () {
+            this.preMousePoint = null;
+            this.velocity = new feng3d.Vector3D();
+            this.keyDownDic = {};
+            feng3d.input.addEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
+            feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
+        };
+        FPSController.prototype.onMouseup = function () {
+            feng3d.input.removeEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
+            feng3d.input.removeEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
+            feng3d.input.removeEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
+            feng3d.ticker.removeEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
+        };
+        FPSController.prototype.onEnterFrame = function () {
+            this.update();
+        };
         /**
          * 初始化
          */
@@ -16908,22 +16921,8 @@ var feng3d;
         function BillboardTest() {
             this.init();
             //
-            this.controller = new feng3d.FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new feng3d.FPSController(this.view3D.camera);
         }
-        BillboardTest.prototype.onMousedown = function () {
-            this.controller.target = this.view3D.camera;
-        };
-        BillboardTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
-        BillboardTest.prototype.process = function () {
-            this.controller.update();
-        };
         BillboardTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
@@ -17020,21 +17019,12 @@ var feng3d;
             this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
-            this.controller = new feng3d.FPSController();
+            this.controller = new feng3d.FPSController(this.cameraObj);
             //
             this.process();
             setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
         }
-        FPSControllerTest.prototype.onMousedown = function () {
-            this.controller.target = this.cameraObj;
-        };
-        FPSControllerTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
         FPSControllerTest.prototype.process = function () {
-            this.controller.update();
             var screenPos = this.view3D.project(sphere.scenePosition);
             console.log("球体视窗坐标" + screenPos.toString());
         };
@@ -17169,22 +17159,8 @@ var feng3d;
             this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
-            this.controller = new feng3d.FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new feng3d.FPSController(this.cameraObj);
         }
-        MousePickTest.prototype.onMousedown = function () {
-            this.controller.target = this.cameraObj;
-        };
-        MousePickTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
-        MousePickTest.prototype.process = function () {
-            this.controller.update();
-        };
         MousePickTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
@@ -17263,22 +17239,8 @@ var feng3d;
             this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
-            this.controller = new feng3d.FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new feng3d.FPSController(this.view3D.camera);
         }
-        ParticleAnimatorTest.prototype.onMousedown = function () {
-            this.controller.target = this.cameraObj;
-        };
-        ParticleAnimatorTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
-        ParticleAnimatorTest.prototype.process = function () {
-            this.controller.update();
-        };
         ParticleAnimatorTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
@@ -17325,12 +17287,7 @@ var feng3d;
             this.cameraObj.y = 200;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
-            this.controller = new feng3d.FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new feng3d.FPSController(this.view3D.camera);
             feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyUp, this);
         }
         PointLightTest.prototype.onKeyUp = function (event) {
@@ -17345,16 +17302,6 @@ var feng3d;
                     this.scene.addChild(this.light1);
                     break;
             }
-        };
-        PointLightTest.prototype.onMousedown = function () {
-            this.controller.target = this.cameraObj;
-        };
-        PointLightTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
-        PointLightTest.prototype.process = function () {
-            this.controller.update();
-            this.setPointLightPosition();
         };
         PointLightTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
@@ -17519,22 +17466,8 @@ var feng3d;
             this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
-            this.controller = new feng3d.FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new feng3d.FPSController(this.view3D.camera);
         }
-        SceneLoadTest.prototype.onMousedown = function () {
-            this.controller.target = this.cameraObj;
-        };
-        SceneLoadTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
-        SceneLoadTest.prototype.process = function () {
-            this.controller.update();
-        };
         SceneLoadTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
@@ -17600,22 +17533,8 @@ var feng3d;
             this.cameraObj.z = -500;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
-            this.controller = new feng3d.FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new feng3d.FPSController(this.view3D.camera);
         }
-        SkyBoxTest.prototype.onMousedown = function () {
-            this.controller.target = this.cameraObj;
-        };
-        SkyBoxTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
-        SkyBoxTest.prototype.process = function () {
-            this.controller.update();
-        };
         SkyBoxTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
@@ -17679,22 +17598,8 @@ var feng3d;
             this.cameraObj.y = 200;
             this.cameraObj.lookAt(new feng3d.Vector3D());
             //
-            this.controller = new feng3d.FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-            feng3d.input.addEventListener("mousedown", this.onMousedown, this);
-            feng3d.input.addEventListener("mouseup", this.onMouseup, this);
+            this.controller = new feng3d.FPSController(this.cameraObj);
         }
-        TerrainTest.prototype.onMousedown = function () {
-            this.controller.target = this.cameraObj;
-        };
-        TerrainTest.prototype.onMouseup = function () {
-            this.controller.target = null;
-        };
-        TerrainTest.prototype.process = function () {
-            this.controller.update();
-        };
         TerrainTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);

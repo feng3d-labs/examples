@@ -6,7 +6,7 @@ module feng3d
 
         view3D: View3D;
         controller: LookAtController;
-        cameraObj: Object3D;
+        cameraObj: GameObject;
 
         constructor()
         {

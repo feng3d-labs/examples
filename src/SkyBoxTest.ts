@@ -4,7 +4,7 @@ module feng3d
     {
         view3D: View3D;
         controller: FPSController;
-        cameraObj: Object3D;
+        cameraObj: GameObject;
 
         constructor()
         {

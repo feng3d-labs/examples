@@ -35,11 +35,19 @@ module feng3d
         {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
+            var scene = this.view3D.scene;
+
+            var cube = new GameObject();
+            var model = cube.getOrCreateComponentByClass(Model);
+            model.geometry = new CubeGeometry();
+            model.material = new StandardMaterial();
+            cube.z = 300;
+            scene.addChild(cube);
 
             var gameObject = new GameObject();
-            gameObject.z = 300;
+            gameObject.y = 150;
             gameObject.isBillboard = true;
-            this.view3D.scene.addChild(gameObject);
+            cube.addChild(gameObject);
 
             //材质
             var model = gameObject.getOrCreateComponentByClass(Model);
@@ -47,6 +55,8 @@ module feng3d
             var textureMaterial = model.material = new TextureMaterial();
             //
             var texture = textureMaterial.texture = new Texture2D('resources/m.png');
+
+            gameObject.holdSize = 1;
         }
     }
 }

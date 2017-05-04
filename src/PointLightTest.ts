@@ -5,7 +5,7 @@ module feng3d
         view3D: View3D;
         scene: Scene3D;
         controller: FPSController;
-        cameraObj: Object3D;
+        cameraObj: GameObject;
 
         light0 = new feng3d.GameObject("pointLight");
         light1 = new feng3d.GameObject("pointLight");

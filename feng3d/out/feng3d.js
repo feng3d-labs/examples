@@ -7160,9 +7160,6 @@ var feng3d;
             this._pos = new feng3d.Vector3D();
             this._rot = new feng3d.Vector3D();
             this._sca = new feng3d.Vector3D();
-            tempAxeX = tempAxeX || new feng3d.Vector3D();
-            tempAxeY = tempAxeY || new feng3d.Vector3D();
-            tempAxeZ = tempAxeZ || new feng3d.Vector3D();
             this._transformComponents = [];
             this._transformComponents[0] = this._pos;
             this._transformComponents[1] = this._rot;
@@ -7630,9 +7627,15 @@ var feng3d;
         };
         Object3D.prototype.lookAt = function (target, upAxis) {
             if (upAxis === void 0) { upAxis = null; }
-            var xAxis = tempAxeX;
-            var yAxis = tempAxeY;
-            var zAxis = tempAxeZ;
+            if (!Object3D.tempAxeX)
+                Object3D.tempAxeX = new feng3d.Vector3D();
+            if (!Object3D.tempAxeY)
+                Object3D.tempAxeY = new feng3d.Vector3D();
+            if (!Object3D.tempAxeZ)
+                Object3D.tempAxeZ = new feng3d.Vector3D();
+            var xAxis = Object3D.tempAxeX;
+            var yAxis = Object3D.tempAxeY;
+            var zAxis = Object3D.tempAxeZ;
             var raw;
             upAxis = upAxis || feng3d.Vector3D.Y_AXIS;
             if (this._transformDirty) {
@@ -7731,9 +7734,6 @@ var feng3d;
         return Object3D;
     }(feng3d.Component));
     feng3d.Object3D = Object3D;
-    var tempAxeX;
-    var tempAxeY;
-    var tempAxeZ;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -8430,10 +8430,7 @@ var feng3d;
         });
         GameObject.prototype.updateRender = function (renderContext) {
             if (this.isBillboard) {
-                var parentInverseSceneTransform = (this.parent && this.parent.inverseSceneTransform) || new feng3d.Matrix3D();
-                var cameraPos = parentInverseSceneTransform.transformVector(renderContext.camera.sceneTransform.position);
-                var yAxis = parentInverseSceneTransform.deltaTransformVector(feng3d.Vector3D.Y_AXIS);
-                this.lookAt(cameraPos, yAxis);
+                this.lookAt(renderContext.camera.sceneTransform.position);
             }
             if (this.holdSize) {
                 var depthScale = this.getDepthScale(renderContext);
@@ -8767,33 +8764,19 @@ var feng3d;
         function Model() {
             _super.call(this);
             this._single = true;
+            feng3d.Watcher.watch(this, ["geometry"], this.invalidateRenderHolder, this);
+            feng3d.Watcher.watch(this, ["material"], this.invalidateRenderHolder, this);
         }
-        Object.defineProperty(Model.prototype, "geometry", {
-            /**
-             * 几何体
-             */
-            get: function () { return this._geometry || feng3d.defaultGeometry; },
-            set: function (value) { this._geometry = value; this.invalidateRenderHolder(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Model.prototype, "material", {
-            /**
-             * 材质
-             */
-            get: function () { return this._material || feng3d.defaultMaterial; },
-            set: function (value) { this._material = value; this.invalidateRenderHolder(); },
-            enumerable: true,
-            configurable: true
-        });
         /**
          * 收集渲染数据拥有者
          * @param renderAtomic 渲染原子
          */
         Model.prototype.collectRenderDataHolder = function (renderAtomic) {
             if (renderAtomic === void 0) { renderAtomic = null; }
-            this.geometry.collectRenderDataHolder(renderAtomic);
-            this.material.collectRenderDataHolder(renderAtomic);
+            var material = this.material || feng3d.defaultMaterial;
+            var geometry = this.geometry || feng3d.defaultGeometry;
+            geometry && geometry.collectRenderDataHolder(renderAtomic);
+            material && material.collectRenderDataHolder(renderAtomic);
             _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
         };
         return Model;
@@ -13357,36 +13340,23 @@ var feng3d;
             },
             set: function (value) {
                 if (this._target != null) {
-                    feng3d.input.removeEventListener(feng3d.inputType.MOUSE_DOWN, this.onMousedown, this);
-                    feng3d.input.removeEventListener(feng3d.inputType.MOUSE_UP, this.onMouseup, this);
+                    feng3d.input.removeEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
+                    feng3d.input.removeEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
+                    feng3d.input.removeEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
                 }
                 this._target = value;
                 if (this._target != null) {
-                    feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMousedown, this);
-                    feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseup, this);
+                    feng3d.input.addEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
+                    feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
+                    feng3d.input.addEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
+                    this.preMousePoint = null;
+                    this.velocity = new feng3d.Vector3D();
+                    this.keyDownDic = {};
                 }
             },
             enumerable: true,
             configurable: true
         });
-        FPSController.prototype.onMousedown = function () {
-            this.preMousePoint = null;
-            this.velocity = new feng3d.Vector3D();
-            this.keyDownDic = {};
-            feng3d.input.addEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
-            feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
-        };
-        FPSController.prototype.onMouseup = function () {
-            feng3d.input.removeEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
-            feng3d.input.removeEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
-            feng3d.input.removeEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseMove, this);
-            feng3d.ticker.removeEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
-        };
-        FPSController.prototype.onEnterFrame = function () {
-            this.update();
-        };
         /**
          * 初始化
          */
@@ -13445,15 +13415,12 @@ var feng3d;
             var offsetPoint = mousePoint.subtract(this.preMousePoint);
             offsetPoint.x *= 0.15;
             offsetPoint.y *= 0.15;
-            var matrix3d = this.target.sceneTransform;
-            matrix3d.appendRotation(offsetPoint.y, matrix3d.right, matrix3d.position);
-            var up = feng3d.Vector3D.Y_AXIS;
-            if (matrix3d.up.dotProduct(up) < 0) {
-                up = up.clone();
-                up.scaleBy(-1);
-            }
-            matrix3d.appendRotation(offsetPoint.x, up, matrix3d.position);
-            this.target.sceneTransform = matrix3d;
+            var matrix3d = this.target.transform;
+            var right = matrix3d.right;
+            var position = matrix3d.position;
+            matrix3d.appendRotation(offsetPoint.y, right, position);
+            matrix3d.appendRotation(offsetPoint.x, feng3d.Vector3D.Y_AXIS, position);
+            this.target.transform = matrix3d;
             //
             this.preMousePoint = mousePoint;
         };
@@ -16874,34 +16841,7 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    feng3d.shaderFileMap = {
-        "feng3d/shaders/color.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform vec4 u_diffuseInput;\r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = u_diffuseInput;\r\n}\r\n",
-        "feng3d/shaders/color.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}",
-        "feng3d/shaders/modules/pointLightShading.declare.glsl.bak": "//参考资料\r\n//http://blog.csdn.net/leonwei/article/details/44539217\r\n//https://github.com/mcleary/pbr/blob/master/shaders/phong_pbr_frag.glsl\r\n\r\n#if NUM_POINTLIGHT > 0\r\n    //点光源位置列表\r\n    uniform vec3 u_pointLightPositions[NUM_POINTLIGHT];\r\n    //点光源漫反射颜色\r\n    uniform vec3 u_pointLightColors[NUM_POINTLIGHT];\r\n    //点光源镜面反射颜色\r\n    uniform float u_pointLightIntensitys[NUM_POINTLIGHT];\r\n    //反射率\r\n    uniform float u_reflectance;\r\n    //粗糙度\r\n    uniform float u_roughness;\r\n    //金属度\r\n    uniform float u_metalic;\r\n\r\n    vec3 fresnelSchlick(float VdotH,vec3 reflectance){\r\n\r\n        return reflectance + (1.0 - reflectance) * pow(clamp(1.0 - VdotH, 0.0, 1.0), 5.0);\r\n        // return reflectance;\r\n    }\r\n\r\n    float normalDistributionGGX(float NdotH,float alphaG){\r\n\r\n        float alphaG2 = alphaG * alphaG;\r\n        float d = NdotH * NdotH * (alphaG2 - 1.0) + 1.0; \r\n        return alphaG2 / (3.1415926 * d * d);\r\n    }\r\n\r\n    float smithVisibility(float dot,float alphaG){\r\n\r\n        float tanSquared = (1.0 - dot * dot) / (dot * dot);\r\n        return 2.0 / (1.0 + sqrt(1.0 + alphaG * alphaG * tanSquared));\r\n    }\r\n\r\n    vec3 calculateLight(vec3 normal,vec3 viewDir,vec3 lightDir,vec3 lightColor,float lightIntensity,vec3 baseColor,vec3 reflectance,float roughness){\r\n\r\n        //BRDF = D(h) * F(1, h) * V(l, v, h) / (4 * dot(n, l) * dot(n, v));\r\n\r\n        vec3 halfVec = normalize(lightDir + viewDir);\r\n        float NdotL = clamp(dot(normal,lightDir),0.0,1.0);\r\n        float NdotH = clamp(dot(normal,halfVec),0.0,1.0);\r\n        float NdotV = max(abs(dot(normal,viewDir)),0.000001);\r\n        float VdotH = clamp(dot(viewDir, halfVec),0.0,1.0);\r\n        \r\n        float alphaG = max(roughness * roughness,0.0005);\r\n\r\n        //F(v,h)\r\n        vec3 F = fresnelSchlick(VdotH, reflectance);\r\n\r\n        //D(h)\r\n        float D = normalDistributionGGX(NdotH,alphaG);\r\n\r\n        //V(l,h)\r\n        float V = smithVisibility(NdotL,alphaG) * smithVisibility(NdotV,alphaG) / (4.0 * NdotL * NdotV);\r\n\r\n        vec3 specular = max(0.0, D * V) * 3.1415926 * F;\r\n        \r\n        return (baseColor + specular) * NdotL * lightColor * lightIntensity;\r\n    }\r\n\r\n    //渲染点光源\r\n    vec3 pointLightShading(vec3 normal,vec3 baseColor){\r\n\r\n        float reflectance = u_reflectance;\r\n        float roughness = u_roughness;\r\n        float metalic = u_metalic;\r\n\r\n        reflectance = mix(0.0,0.5,reflectance);\r\n        vec3 realBaseColor = (1.0 - metalic) * baseColor;\r\n        vec3 realReflectance = mix(vec3(reflectance),baseColor,metalic);\r\n\r\n        vec3 totalLightColor = vec3(0.0,0.0,0.0);\r\n        for(int i = 0;i<NUM_POINTLIGHT;i++){\r\n            //光照方向\r\n            vec3 lightDir = normalize(u_pointLightPositions[i] - v_globalPosition);\r\n            //视线方向\r\n            vec3 viewDir = normalize(u_cameraMatrix[3].xyz - v_globalPosition);\r\n            //灯光颜色\r\n            vec3 lightColor = u_pointLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_pointLightIntensitys[i];\r\n\r\n            totalLightColor = totalLightColor + calculateLight(normal,viewDir,lightDir,lightColor,lightIntensity,realBaseColor,realReflectance,roughness);\r\n        }\r\n        \r\n        return totalLightColor;\r\n    }\r\n#endif",
-        "feng3d/shaders/modules/pointLightShading.fragment.glsl": "#if NUM_POINTLIGHT > 0\r\n    //点光源位置数组\r\n    uniform vec3 u_pointLightPositions[NUM_POINTLIGHT];\r\n    //点光源颜色数组\r\n    uniform vec3 u_pointLightColors[NUM_POINTLIGHT];\r\n    //点光源光照强度数组\r\n    uniform float u_pointLightIntensitys[NUM_POINTLIGHT];\r\n    //点光源光照范围数组\r\n    uniform float u_pointLightRanges[NUM_POINTLIGHT];\r\n#endif\r\n#if NUM_DIRECTIONALLIGHT > 0\r\n    //方向光源方向数组\r\n    uniform vec3 u_directionalLightDirections[NUM_DIRECTIONALLIGHT];\r\n    //方向光源颜色数组\r\n    uniform vec3 u_directionalLightColors[NUM_DIRECTIONALLIGHT];\r\n    //方向光源光照强度数组\r\n    uniform float u_directionalLightIntensitys[NUM_DIRECTIONALLIGHT];\r\n#endif\r\n\r\n//计算光照漫反射系数\r\nvec3 calculateLightDiffuse(vec3 normal,vec3 lightDir,vec3 lightColor,float lightIntensity){\r\n\r\n    vec3 diffuse = lightColor * lightIntensity * clamp(dot(normal,lightDir),0.0,1.0);\r\n    return diffuse;\r\n}\r\n\r\n//计算光照镜面反射系数\r\nvec3 calculateLightSpecular(vec3 normal,vec3 lightDir,vec3 lightColor,float lightIntensity,vec3 viewDir,float glossiness){\r\n\r\n    vec3 halfVec = normalize(lightDir + viewDir);\r\n    float specComp = clamp(dot(normal,halfVec),0.0,1.0);\r\n    specComp = pow(specComp, max(1., glossiness));\r\n\r\n    vec3 diffuse = lightColor * lightIntensity * specComp;\r\n    return diffuse;\r\n}\r\n\r\n//根据距离计算衰减\r\nfloat computeDistanceLightFalloff(float lightDistance, float range)\r\n{\r\n    #ifdef USEPHYSICALLIGHTFALLOFF\r\n        float lightDistanceFalloff = 1.0 / ((lightDistance * lightDistance + 0.0001));\r\n    #else\r\n        float lightDistanceFalloff = max(0., 1.0 - lightDistance / range);\r\n    #endif\r\n    \r\n    return lightDistanceFalloff;\r\n}\r\n\r\n//渲染点光源\r\nvec3 pointLightShading(vec3 normal,vec3 diffuseColor,vec3 specularColor,vec3 ambientColor,float glossiness){\r\n\r\n    //视线方向\r\n    vec3 viewDir = normalize(u_cameraMatrix[3].xyz - v_globalPosition);\r\n\r\n    vec3 totalDiffuseLightColor = vec3(0.0,0.0,0.0);\r\n    vec3 totalSpecularLightColor = vec3(0.0,0.0,0.0);\r\n    #if NUM_POINTLIGHT > 0\r\n        for(int i = 0;i<NUM_POINTLIGHT;i++){\r\n            //\r\n            vec3 lightOffset = u_pointLightPositions[i] - v_globalPosition;\r\n            float lightDistance = length(lightOffset);\r\n            //光照方向\r\n            vec3 lightDir = normalize(lightOffset);\r\n            //灯光颜色\r\n            vec3 lightColor = u_pointLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_pointLightIntensitys[i];\r\n            //光照范围\r\n            float range = u_pointLightRanges[i];\r\n            float attenuation = computeDistanceLightFalloff(lightDistance,range);\r\n            lightIntensity = lightIntensity * attenuation;\r\n            //\r\n            totalDiffuseLightColor = totalDiffuseLightColor +  calculateLightDiffuse(normal,lightDir,lightColor,lightIntensity);\r\n            totalSpecularLightColor = totalSpecularLightColor +  calculateLightSpecular(normal,lightDir,lightColor,lightIntensity,viewDir,glossiness);\r\n        }\r\n    #endif\r\n    #if NUM_DIRECTIONALLIGHT > 0\r\n        for(int i = 0;i<NUM_DIRECTIONALLIGHT;i++){\r\n            //光照方向\r\n            vec3 lightDir = normalize(-u_directionalLightDirections[i]);\r\n            //灯光颜色\r\n            vec3 lightColor = u_directionalLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_directionalLightIntensitys[i];\r\n            //\r\n            totalDiffuseLightColor = totalDiffuseLightColor +  calculateLightDiffuse(normal,lightDir,lightColor,lightIntensity);\r\n            totalSpecularLightColor = totalSpecularLightColor +  calculateLightSpecular(normal,lightDir,lightColor,lightIntensity,viewDir,glossiness);\r\n        }\r\n    #endif\r\n\r\n    vec3 resultColor = vec3(0.0,0.0,0.0);\r\n    resultColor = resultColor + totalDiffuseLightColor * diffuseColor;\r\n    resultColor = resultColor + totalSpecularLightColor * specularColor;\r\n    resultColor = resultColor + ambientColor * diffuseColor;\r\n    return resultColor;\r\n}",
-        "feng3d/shaders/modules/pointLightShading.main.glsl.bak": "#if NUM_POINTLIGHT > 0\r\n    // finalColor = finalColor * 0.5 +  pointLightShading(v_normal,u_baseColor) * 0.5;\r\n    finalColor.xyz = pointLightShading(v_normal,finalColor.xyz);\r\n#endif",
-        "feng3d/shaders/modules/skeleton.vertex.glsl": "attribute vec4 a_jointindex0;\r\nattribute vec4 a_jointweight0;\r\n\r\nattribute vec4 a_jointindex1;\r\nattribute vec4 a_jointweight1;\r\nuniform mat4 u_skeletonGlobalMatriices[NUM_SKELETONJOINT];\r\n\r\nvec4 skeletonAnimation(vec4 position) {\r\n\r\n    int jointIndics[8];\r\n    jointIndics[0] = int(a_jointindex0.x);\r\n    jointIndics[1] = int(a_jointindex0.y);\r\n    jointIndics[2] = int(a_jointindex0.z);\r\n    jointIndics[3] = int(a_jointindex0.w);\r\n    jointIndics[4] = int(a_jointindex1.x);\r\n    jointIndics[5] = int(a_jointindex1.y);\r\n    jointIndics[6] = int(a_jointindex1.z);\r\n    jointIndics[7] = int(a_jointindex1.w);\r\n\r\n    float jointweights[8];\r\n    jointweights[0] = a_jointweight0.x;\r\n    jointweights[1] = a_jointweight0.y;\r\n    jointweights[2] = a_jointweight0.z;\r\n    jointweights[3] = a_jointweight0.w;\r\n    jointweights[4] = a_jointweight1.x;\r\n    jointweights[5] = a_jointweight1.y;\r\n    jointweights[6] = a_jointweight1.z;\r\n    jointweights[7] = a_jointweight1.w;\r\n\r\n    vec4 totalPosition = vec4(0.0,0.0,0.0,1.0);\r\n    for(int i = 0; i < 8; i++){\r\n\r\n        totalPosition += u_skeletonGlobalMatriices[jointIndics[i]] * position * jointweights[i];\r\n    }\r\n    position.xyz = totalPosition.xyz;\r\n    return position;\r\n}",
-        "feng3d/shaders/mouse.fragment.glsl": "\r\n\r\nprecision highp float;\r\n\r\nuniform int u_objectID;\r\n\r\nvoid main(){\r\n\r\n    //支持 255*255*255*255 个索引\r\n    const float invColor = 1.0/255.0;\r\n    float temp = float(u_objectID);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.x = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.y = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.z = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.w = fract(temp);\r\n}",
-        "feng3d/shaders/mouse.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(){\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}",
-        "feng3d/shaders/particle.fragment.glsl": "\r\nprecision mediump float;\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nvarying vec4 v_particle_color;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    gl_FragColor = v_particle_color;\r\n}\r\n",
-        "feng3d/shaders/particle.vertex.glsl": "\r\nprecision mediump float;\r\n\r\n//根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nattribute float a_particle_birthTime;\r\n\r\n#ifdef D_a_particle_position\r\n    attribute vec3 a_particle_position;\r\n#endif\r\n\r\n#ifdef D_a_particle_velocity\r\n    attribute vec3 a_particle_velocity;\r\n#endif\r\n\r\n#ifdef D_a_particle_color\r\n    attribute vec4 a_particle_color;\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nuniform float u_particleTime;\r\n\r\n#ifdef D_u_particle_acceleration\r\n    uniform vec3 u_particle_acceleration;\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec3 position = a_position;\r\n\r\n    float pTime = u_particleTime - a_particle_birthTime;\r\n    if(pTime > 0.0){\r\n\r\n        vec3 pPosition = vec3(0.0,0.0,0.0);\r\n        vec3 pVelocity = vec3(0.0,0.0,0.0);\r\n\r\n        #ifdef D_a_particle_position\r\n            pPosition = pPosition + a_particle_position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_velocity\r\n            pVelocity = pVelocity + a_particle_velocity;\r\n        #endif\r\n\r\n        #ifdef D_u_particle_acceleration\r\n            pVelocity = pVelocity + u_particle_acceleration * pTime;\r\n        #endif\r\n        \r\n        #ifdef D_a_particle_color\r\n            v_particle_color = a_particle_color;\r\n        #endif\r\n\r\n        pPosition = pPosition + pVelocity * pTime;\r\n        position = position + pPosition;\r\n    }\r\n    \r\n    vec4 globalPosition = u_modelMatrix * vec4(position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    gl_PointSize = 1.0;\r\n}",
-        "feng3d/shaders/point.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = vec4(1.0,1.0,1.0,1.0);\r\n}\r\n",
-        "feng3d/shaders/point.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform float u_PointSize;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    gl_PointSize = u_PointSize;\r\n}",
-        "feng3d/shaders/postEffect/fxaa.fragment.glsl": "\r\n\r\n#define FXAA_REDUCE_Mvarying   (1.0/128.0)\r\n#define FXAA_REDUCE_MUL   (1.0/8.0)\r\n#define FXAA_SPAN_MAX     8.0\r\n\r\nvarying vec2 vUV;\r\nuniform sampler2D textureSampler;\r\nuniform vec2 texelSize;\r\n\r\n\r\n\r\nvoid main(){\r\n\tvec2 localTexelSize = texelSize;\r\n\tvec4 rgbNW = texture2D(textureSampler, (vUV + vec2(-1.0, -1.0) * localTexelSize));\r\n\tvec4 rgbNE = texture2D(textureSampler, (vUV + vec2(1.0, -1.0) * localTexelSize));\r\n\tvec4 rgbSW = texture2D(textureSampler, (vUV + vec2(-1.0, 1.0) * localTexelSize));\r\n\tvec4 rgbSE = texture2D(textureSampler, (vUV + vec2(1.0, 1.0) * localTexelSize));\r\n\tvec4 rgbM = texture2D(textureSampler, vUV);\r\n\tvec4 luma = vec4(0.299, 0.587, 0.114, 1.0);\r\n\tfloat lumaNW = dot(rgbNW, luma);\r\n\tfloat lumaNE = dot(rgbNE, luma);\r\n\tfloat lumaSW = dot(rgbSW, luma);\r\n\tfloat lumaSE = dot(rgbSE, luma);\r\n\tfloat lumaM = dot(rgbM, luma);\r\n\tfloat lumaMvarying = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\r\n\tfloat lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\r\n\r\n\tvec2 dir = vec2(-((lumaNW + lumaNE) - (lumaSW + lumaSE)), ((lumaNW + lumaSW) - (lumaNE + lumaSE)));\r\n\r\n\tfloat dirReduce = max(\r\n\t\t(lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL),\r\n\t\tFXAA_REDUCE_MIN);\r\n\r\n\tfloat rcpDirMvarying = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\r\n\tdir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),\r\n\t\tmax(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),\r\n\t\tdir * rcpDirMin)) * localTexelSize;\r\n\r\n\tvec4 rgbA = 0.5 * (\r\n\t\ttexture2D(textureSampler, vUV + dir * (1.0 / 3.0 - 0.5)) +\r\n\t\ttexture2D(textureSampler, vUV + dir * (2.0 / 3.0 - 0.5)));\r\n\r\n\tvec4 rgbB = rgbA * 0.5 + 0.25 * (\r\n\t\ttexture2D(textureSampler, vUV + dir *  -0.5) +\r\n\t\ttexture2D(textureSampler, vUV + dir * 0.5));\r\n\tfloat lumaB = dot(rgbB, luma);\r\n\tif ((lumaB < lumaMin) || (lumaB > lumaMax)) {\r\n\t\tgl_FragColor = rgbA;\r\n\t}\r\n\telse {\r\n\t\tgl_FragColor = rgbB;\r\n\t}\r\n}",
-        "feng3d/shaders/segment.fragment.glsl": "\r\nprecision mediump float;\r\n\r\nvarying vec4 v_color;\r\n\r\n\r\n\r\nvoid main(void) {\r\n    gl_FragColor = v_color;\r\n}",
-        "feng3d/shaders/segment.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main(void) {\r\n    gl_Position = u_viewProjection * u_modelMatrix * vec4(a_position, 1.0);\r\n    v_color = a_color;\r\n}",
-        "feng3d/shaders/shadow.fragment.glsl": "precision mediump float;\r\n\r\nvoid main() {\r\n    const vec4 bitShift = vec4(1.0, 256.0, 256.0 * 256.0, 256.0 * 256.0 * 256.0);\r\n    const vec4 bitMask = vec4(1.0/256.0, 1.0/256.0, 1.0/256.0, 0.0);\r\n    vec4 rgbaDepth = fract(gl_FragCoord.z * bitShift); // Calculate the value stored into each byte\r\n    rgbaDepth -= rgbaDepth.gbaa * bitMask; // Cut off the value which do not fit in 8 bits\r\n    gl_FragColor = rgbaDepth;\r\n}",
-        "feng3d/shaders/shadow.vertex.glsl": "attribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}",
-        "feng3d/shaders/skybox.fragment.glsl": "\r\n\r\nprecision highp float;\r\n\r\nuniform samplerCube s_skyboxTexture;\r\nuniform mat4 u_cameraMatrix;\r\n\r\nvarying vec3 v_worldPos;\r\n\r\n\r\n\r\nvoid main(){\r\n    vec3 viewDir = normalize(v_worldPos - u_cameraMatrix[3].xyz);\r\n    gl_FragColor = textureCube(s_skyboxTexture, viewDir);\r\n}",
-        "feng3d/shaders/skybox.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_cameraMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nuniform float u_skyBoxSize;\r\n\r\nvarying vec3 v_worldPos;\r\n\r\nvoid main(){\r\n    vec3 worldPos = a_position.xyz * u_skyBoxSize + u_cameraMatrix[3].xyz;\r\n    gl_Position = u_viewProjection * vec4(worldPos.xyz,1.0);\r\n    v_worldPos = worldPos;\r\n}",
-        "feng3d/shaders/standard.fragment.glsl": "\r\nprecision mediump float;\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\n#ifdef HAS_NORMAL_SAMPLER\r\n    varying vec3 v_tangent;\r\n    varying vec3 v_bitangent;\r\n#endif\r\n\r\nuniform mat4 u_cameraMatrix;\r\n\r\n//环境\r\nuniform vec4 u_ambient;\r\n#ifdef HAS_AMBIENT_SAMPLER\r\n    uniform sampler2D s_ambient;\r\n#endif\r\n\r\nuniform float u_alphaThreshold;\r\n//漫反射\r\nuniform vec4 u_diffuse;\r\n#ifdef HAS_DIFFUSE_SAMPLER\r\n    uniform sampler2D s_diffuse;\r\n#endif\r\n\r\n//法线贴图\r\n#ifdef HAS_NORMAL_SAMPLER\r\n    uniform sampler2D s_normal;\r\n#endif\r\n\r\n//镜面反射\r\nuniform vec3 u_specular;\r\nuniform float u_glossiness;\r\n#ifdef HAS_SPECULAR_SAMPLER\r\n    uniform sampler2D s_specular;\r\n#endif\r\n\r\n#if NUM_LIGHT > 0\r\n    #include<modules/pointLightShading.fragment>\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec4 finalColor = vec4(1.0,1.0,1.0,1.0);\r\n\r\n    //环境光\r\n    vec3 ambientColor = u_ambient.xyz;\r\n    #ifdef HAS_AMBIENT_SAMPLER\r\n        ambientColor = ambientColor * texture2D(s_diffuse, v_uv).xyz;\r\n    #endif\r\n\r\n    //获取法线\r\n    vec3 normal;\r\n    #ifdef HAS_NORMAL_SAMPLER\r\n        normal = texture2D(s_normal,v_uv).xyz * 2.0 - 1.0;\r\n        normal = normalize(normal.x * v_tangent + normal.y * v_bitangent + normal.z * v_normal);\r\n    #else\r\n        normal = normalize(v_normal);\r\n    #endif\r\n\r\n    //获取漫反射基本颜色\r\n    vec4 diffuseColor = u_diffuse;\r\n    #ifdef HAS_DIFFUSE_SAMPLER\r\n        diffuseColor = diffuseColor * texture2D(s_diffuse, v_uv);\r\n    #endif\r\n\r\n    if(diffuseColor.w < u_alphaThreshold)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    finalColor = diffuseColor;\r\n\r\n\r\n    //渲染灯光\r\n    #if NUM_LIGHT > 0\r\n\r\n        //获取高光值\r\n        float glossiness = u_glossiness;\r\n        //获取镜面反射基本颜色\r\n        vec3 specularColor = u_specular;\r\n        #ifdef HAS_SPECULAR_SAMPLER\r\n            vec4 specularMapColor = texture2D(s_specular, v_uv);\r\n            specularColor.xyz = specularMapColor.xyz;\r\n            glossiness = glossiness * specularMapColor.w;\r\n        #endif\r\n        \r\n        finalColor.xyz = pointLightShading(normal, diffuseColor.xyz, specularColor, ambientColor, glossiness);\r\n    #endif\r\n\r\n    gl_FragColor = finalColor;\r\n}",
-        "feng3d/shaders/standard.vertex.glsl": "//此处将填充宏定义\r\n#define macros\r\n\r\n//坐标属性\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\nattribute vec3 a_normal;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\n#ifdef HAS_NORMAL_SAMPLER\r\n    attribute vec3 a_tangent;\r\n\r\n    varying vec3 v_tangent;\r\n    varying vec3 v_bitangent;\r\n#endif\r\n\r\n#ifdef HAS_SKELETON_ANIMATION\r\n    #include<modules/skeleton.vertex>\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec4 position = vec4(a_position,1.0);\r\n\r\n    #ifdef HAS_SKELETON_ANIMATION\r\n        position = skeletonAnimation(position);\r\n    #endif\r\n\r\n    //获取全局坐标\r\n    vec4 globalPosition = u_modelMatrix * position;\r\n    //计算投影坐标\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    //输出全局坐标\r\n    v_globalPosition = globalPosition.xyz;\r\n    //输出uv\r\n    v_uv = a_uv;\r\n\r\n    //计算法线\r\n    v_normal = normalize((u_modelMatrix * vec4(a_normal,0.0)).xyz);\r\n    #ifdef HAS_NORMAL_SAMPLER\r\n        v_tangent = normalize((u_modelMatrix * vec4(a_tangent,0.0)).xyz);\r\n        v_bitangent = cross(v_normal,v_tangent);\r\n    #endif\r\n}",
-        "feng3d/shaders/terrain.fragment.1.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform sampler2D s_texture;\r\nuniform sampler2D s_blendTexture;\r\nuniform sampler2D s_splatTexture1;\r\nuniform sampler2D s_splatTexture2;\r\nuniform sampler2D s_splatTexture3;\r\n\r\nuniform vec4 u_splatRepeats;\r\n\r\nvarying vec2 v_uv;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    vec2 t_uv = v_uv.xy * u_splatRepeats.x;\r\n    // vec4 finalColor = texture2D(s_texture,t_uv);\r\n    vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);\r\n    \r\n    vec4 blend = texture2D(s_blendTexture,v_uv);\r\n\r\n    float offset = 1.0/512.0;\r\n    // float offset = 1.0 / 1024.0;\r\n    // float offset = 0.000000001;\r\n   // float width = 0.5 - offset;\r\n   // float delta = 0.5 + offset;\r\n\r\n     float width = 0.5;\r\n     float delta = 0.5;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.y;\r\n    t_uv.x = fract(t_uv.x);\r\n    t_uv.y = fract(t_uv.y);\r\n    t_uv.x = t_uv.x * width;\r\n    t_uv.y = t_uv.y * width;\r\n    vec4 tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.x + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.z;\r\n    t_uv.x = fract(t_uv.x);\r\n    t_uv.y = fract(t_uv.y);\r\n    t_uv.x = t_uv.x * width + delta;\r\n    t_uv.y = t_uv.y * width;\r\n    tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.y + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.w;\r\n    t_uv.x = fract(t_uv.x);\r\n    t_uv.y = fract(t_uv.y);\r\n    t_uv.x = t_uv.x * width;\r\n    t_uv.y = t_uv.y * width + delta;\r\n    tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.z + finalColor;\r\n\r\n    gl_FragColor = finalColor;\r\n}",
-        "feng3d/shaders/terrain.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform sampler2D s_texture;\r\nuniform sampler2D s_blendTexture;\r\nuniform sampler2D s_splatTexture1;\r\nuniform sampler2D s_splatTexture2;\r\nuniform sampler2D s_splatTexture3;\r\n\r\nuniform vec4 u_splatRepeats;\r\n\r\nvarying vec2 v_uv;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    vec2 t_uv = v_uv.xy * u_splatRepeats.x;\r\n    vec4 finalColor = texture2D(s_texture,t_uv);\r\n    \r\n    vec4 blend = texture2D(s_blendTexture,v_uv);\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.y;\r\n    vec4 tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.x + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.z;\r\n    tColor = texture2D(s_splatTexture2,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.y + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.w;\r\n    tColor = texture2D(s_splatTexture3,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.z + finalColor;\r\n\r\n    gl_FragColor = finalColor;\r\n}",
-        "feng3d/shaders/terrain.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvarying vec2 v_uv;\r\n\r\nvoid main(void) {\r\n\r\n    gl_Position = u_viewProjection * u_modelMatrix * vec4(a_position, 1.0);\r\n\r\n    v_uv = a_uv;\r\n}",
-        "feng3d/shaders/texture.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform sampler2D s_texture;\r\nvarying vec2 v_uv;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    gl_FragColor = texture2D(s_texture, v_uv);\r\n}\r\n",
-        "feng3d/shaders/texture.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\n\r\nvarying vec2 v_uv;\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    gl_Position = u_viewProjection * u_modelMatrix * vec4(a_position, 1.0);\r\n    v_uv = a_uv;\r\n}"
-    };
+    feng3d.shaderFileMap = { "shaders/color.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform vec4 u_diffuseInput;\r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = u_diffuseInput;\r\n}\r\n", "shaders/color.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}", "shaders/modules/pointLightShading.declare.glsl.bak": "//参考资料\r\n//http://blog.csdn.net/leonwei/article/details/44539217\r\n//https://github.com/mcleary/pbr/blob/master/shaders/phong_pbr_frag.glsl\r\n\r\n#if NUM_POINTLIGHT > 0\r\n    //点光源位置列表\r\n    uniform vec3 u_pointLightPositions[NUM_POINTLIGHT];\r\n    //点光源漫反射颜色\r\n    uniform vec3 u_pointLightColors[NUM_POINTLIGHT];\r\n    //点光源镜面反射颜色\r\n    uniform float u_pointLightIntensitys[NUM_POINTLIGHT];\r\n    //反射率\r\n    uniform float u_reflectance;\r\n    //粗糙度\r\n    uniform float u_roughness;\r\n    //金属度\r\n    uniform float u_metalic;\r\n\r\n    vec3 fresnelSchlick(float VdotH,vec3 reflectance){\r\n\r\n        return reflectance + (1.0 - reflectance) * pow(clamp(1.0 - VdotH, 0.0, 1.0), 5.0);\r\n        // return reflectance;\r\n    }\r\n\r\n    float normalDistributionGGX(float NdotH,float alphaG){\r\n\r\n        float alphaG2 = alphaG * alphaG;\r\n        float d = NdotH * NdotH * (alphaG2 - 1.0) + 1.0; \r\n        return alphaG2 / (3.1415926 * d * d);\r\n    }\r\n\r\n    float smithVisibility(float dot,float alphaG){\r\n\r\n        float tanSquared = (1.0 - dot * dot) / (dot * dot);\r\n        return 2.0 / (1.0 + sqrt(1.0 + alphaG * alphaG * tanSquared));\r\n    }\r\n\r\n    vec3 calculateLight(vec3 normal,vec3 viewDir,vec3 lightDir,vec3 lightColor,float lightIntensity,vec3 baseColor,vec3 reflectance,float roughness){\r\n\r\n        //BRDF = D(h) * F(1, h) * V(l, v, h) / (4 * dot(n, l) * dot(n, v));\r\n\r\n        vec3 halfVec = normalize(lightDir + viewDir);\r\n        float NdotL = clamp(dot(normal,lightDir),0.0,1.0);\r\n        float NdotH = clamp(dot(normal,halfVec),0.0,1.0);\r\n        float NdotV = max(abs(dot(normal,viewDir)),0.000001);\r\n        float VdotH = clamp(dot(viewDir, halfVec),0.0,1.0);\r\n        \r\n        float alphaG = max(roughness * roughness,0.0005);\r\n\r\n        //F(v,h)\r\n        vec3 F = fresnelSchlick(VdotH, reflectance);\r\n\r\n        //D(h)\r\n        float D = normalDistributionGGX(NdotH,alphaG);\r\n\r\n        //V(l,h)\r\n        float V = smithVisibility(NdotL,alphaG) * smithVisibility(NdotV,alphaG) / (4.0 * NdotL * NdotV);\r\n\r\n        vec3 specular = max(0.0, D * V) * 3.1415926 * F;\r\n        \r\n        return (baseColor + specular) * NdotL * lightColor * lightIntensity;\r\n    }\r\n\r\n    //渲染点光源\r\n    vec3 pointLightShading(vec3 normal,vec3 baseColor){\r\n\r\n        float reflectance = u_reflectance;\r\n        float roughness = u_roughness;\r\n        float metalic = u_metalic;\r\n\r\n        reflectance = mix(0.0,0.5,reflectance);\r\n        vec3 realBaseColor = (1.0 - metalic) * baseColor;\r\n        vec3 realReflectance = mix(vec3(reflectance),baseColor,metalic);\r\n\r\n        vec3 totalLightColor = vec3(0.0,0.0,0.0);\r\n        for(int i = 0;i<NUM_POINTLIGHT;i++){\r\n            //光照方向\r\n            vec3 lightDir = normalize(u_pointLightPositions[i] - v_globalPosition);\r\n            //视线方向\r\n            vec3 viewDir = normalize(u_cameraMatrix[3].xyz - v_globalPosition);\r\n            //灯光颜色\r\n            vec3 lightColor = u_pointLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_pointLightIntensitys[i];\r\n\r\n            totalLightColor = totalLightColor + calculateLight(normal,viewDir,lightDir,lightColor,lightIntensity,realBaseColor,realReflectance,roughness);\r\n        }\r\n        \r\n        return totalLightColor;\r\n    }\r\n#endif", "shaders/modules/pointLightShading.fragment.glsl": "#if NUM_POINTLIGHT > 0\r\n    //点光源位置数组\r\n    uniform vec3 u_pointLightPositions[NUM_POINTLIGHT];\r\n    //点光源颜色数组\r\n    uniform vec3 u_pointLightColors[NUM_POINTLIGHT];\r\n    //点光源光照强度数组\r\n    uniform float u_pointLightIntensitys[NUM_POINTLIGHT];\r\n    //点光源光照范围数组\r\n    uniform float u_pointLightRanges[NUM_POINTLIGHT];\r\n#endif\r\n#if NUM_DIRECTIONALLIGHT > 0\r\n    //方向光源方向数组\r\n    uniform vec3 u_directionalLightDirections[NUM_DIRECTIONALLIGHT];\r\n    //方向光源颜色数组\r\n    uniform vec3 u_directionalLightColors[NUM_DIRECTIONALLIGHT];\r\n    //方向光源光照强度数组\r\n    uniform float u_directionalLightIntensitys[NUM_DIRECTIONALLIGHT];\r\n#endif\r\n\r\n//计算光照漫反射系数\r\nvec3 calculateLightDiffuse(vec3 normal,vec3 lightDir,vec3 lightColor,float lightIntensity){\r\n\r\n    vec3 diffuse = lightColor * lightIntensity * clamp(dot(normal,lightDir),0.0,1.0);\r\n    return diffuse;\r\n}\r\n\r\n//计算光照镜面反射系数\r\nvec3 calculateLightSpecular(vec3 normal,vec3 lightDir,vec3 lightColor,float lightIntensity,vec3 viewDir,float glossiness){\r\n\r\n    vec3 halfVec = normalize(lightDir + viewDir);\r\n    float specComp = clamp(dot(normal,halfVec),0.0,1.0);\r\n    specComp = pow(specComp, max(1., glossiness));\r\n\r\n    vec3 diffuse = lightColor * lightIntensity * specComp;\r\n    return diffuse;\r\n}\r\n\r\n//根据距离计算衰减\r\nfloat computeDistanceLightFalloff(float lightDistance, float range)\r\n{\r\n    #ifdef USEPHYSICALLIGHTFALLOFF\r\n        float lightDistanceFalloff = 1.0 / ((lightDistance * lightDistance + 0.0001));\r\n    #else\r\n        float lightDistanceFalloff = max(0., 1.0 - lightDistance / range);\r\n    #endif\r\n    \r\n    return lightDistanceFalloff;\r\n}\r\n\r\n//渲染点光源\r\nvec3 pointLightShading(vec3 normal,vec3 diffuseColor,vec3 specularColor,vec3 ambientColor,float glossiness){\r\n\r\n    //视线方向\r\n    vec3 viewDir = normalize(u_cameraMatrix[3].xyz - v_globalPosition);\r\n\r\n    vec3 totalDiffuseLightColor = vec3(0.0,0.0,0.0);\r\n    vec3 totalSpecularLightColor = vec3(0.0,0.0,0.0);\r\n    #if NUM_POINTLIGHT > 0\r\n        for(int i = 0;i<NUM_POINTLIGHT;i++){\r\n            //\r\n            vec3 lightOffset = u_pointLightPositions[i] - v_globalPosition;\r\n            float lightDistance = length(lightOffset);\r\n            //光照方向\r\n            vec3 lightDir = normalize(lightOffset);\r\n            //灯光颜色\r\n            vec3 lightColor = u_pointLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_pointLightIntensitys[i];\r\n            //光照范围\r\n            float range = u_pointLightRanges[i];\r\n            float attenuation = computeDistanceLightFalloff(lightDistance,range);\r\n            lightIntensity = lightIntensity * attenuation;\r\n            //\r\n            totalDiffuseLightColor = totalDiffuseLightColor +  calculateLightDiffuse(normal,lightDir,lightColor,lightIntensity);\r\n            totalSpecularLightColor = totalSpecularLightColor +  calculateLightSpecular(normal,lightDir,lightColor,lightIntensity,viewDir,glossiness);\r\n        }\r\n    #endif\r\n    #if NUM_DIRECTIONALLIGHT > 0\r\n        for(int i = 0;i<NUM_DIRECTIONALLIGHT;i++){\r\n            //光照方向\r\n            vec3 lightDir = normalize(-u_directionalLightDirections[i]);\r\n            //灯光颜色\r\n            vec3 lightColor = u_directionalLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_directionalLightIntensitys[i];\r\n            //\r\n            totalDiffuseLightColor = totalDiffuseLightColor +  calculateLightDiffuse(normal,lightDir,lightColor,lightIntensity);\r\n            totalSpecularLightColor = totalSpecularLightColor +  calculateLightSpecular(normal,lightDir,lightColor,lightIntensity,viewDir,glossiness);\r\n        }\r\n    #endif\r\n\r\n    vec3 resultColor = vec3(0.0,0.0,0.0);\r\n    resultColor = resultColor + totalDiffuseLightColor * diffuseColor;\r\n    resultColor = resultColor + totalSpecularLightColor * specularColor;\r\n    resultColor = resultColor + ambientColor * diffuseColor;\r\n    return resultColor;\r\n}", "shaders/modules/pointLightShading.main.glsl.bak": "#if NUM_POINTLIGHT > 0\r\n    // finalColor = finalColor * 0.5 +  pointLightShading(v_normal,u_baseColor) * 0.5;\r\n    finalColor.xyz = pointLightShading(v_normal,finalColor.xyz);\r\n#endif", "shaders/modules/skeleton.vertex.glsl": "attribute vec4 a_jointindex0;\r\nattribute vec4 a_jointweight0;\r\n\r\nattribute vec4 a_jointindex1;\r\nattribute vec4 a_jointweight1;\r\nuniform mat4 u_skeletonGlobalMatriices[NUM_SKELETONJOINT];\r\n\r\nvec4 skeletonAnimation(vec4 position) {\r\n\r\n    int jointIndics[8];\r\n    jointIndics[0] = int(a_jointindex0.x);\r\n    jointIndics[1] = int(a_jointindex0.y);\r\n    jointIndics[2] = int(a_jointindex0.z);\r\n    jointIndics[3] = int(a_jointindex0.w);\r\n    jointIndics[4] = int(a_jointindex1.x);\r\n    jointIndics[5] = int(a_jointindex1.y);\r\n    jointIndics[6] = int(a_jointindex1.z);\r\n    jointIndics[7] = int(a_jointindex1.w);\r\n\r\n    float jointweights[8];\r\n    jointweights[0] = a_jointweight0.x;\r\n    jointweights[1] = a_jointweight0.y;\r\n    jointweights[2] = a_jointweight0.z;\r\n    jointweights[3] = a_jointweight0.w;\r\n    jointweights[4] = a_jointweight1.x;\r\n    jointweights[5] = a_jointweight1.y;\r\n    jointweights[6] = a_jointweight1.z;\r\n    jointweights[7] = a_jointweight1.w;\r\n\r\n    vec4 totalPosition = vec4(0.0,0.0,0.0,1.0);\r\n    for(int i = 0; i < 8; i++){\r\n\r\n        totalPosition += u_skeletonGlobalMatriices[jointIndics[i]] * position * jointweights[i];\r\n    }\r\n    position.xyz = totalPosition.xyz;\r\n    return position;\r\n}", "shaders/mouse.fragment.glsl": "\r\n\r\nprecision highp float;\r\n\r\nuniform int u_objectID;\r\n\r\nvoid main(){\r\n\r\n    //支持 255*255*255*255 个索引\r\n    const float invColor = 1.0/255.0;\r\n    float temp = float(u_objectID);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.x = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.y = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.z = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.w = fract(temp);\r\n}", "shaders/mouse.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(){\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}", "shaders/particle.fragment.glsl": "\r\nprecision mediump float;\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nvarying vec4 v_particle_color;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    gl_FragColor = v_particle_color;\r\n}\r\n", "shaders/particle.vertex.glsl": "\r\nprecision mediump float;\r\n\r\n//根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nattribute float a_particle_birthTime;\r\n\r\n#ifdef D_a_particle_position\r\n    attribute vec3 a_particle_position;\r\n#endif\r\n\r\n#ifdef D_a_particle_velocity\r\n    attribute vec3 a_particle_velocity;\r\n#endif\r\n\r\n#ifdef D_a_particle_color\r\n    attribute vec4 a_particle_color;\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nuniform float u_particleTime;\r\n\r\n#ifdef D_u_particle_acceleration\r\n    uniform vec3 u_particle_acceleration;\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec3 position = a_position;\r\n\r\n    float pTime = u_particleTime - a_particle_birthTime;\r\n    if(pTime > 0.0){\r\n\r\n        vec3 pPosition = vec3(0.0,0.0,0.0);\r\n        vec3 pVelocity = vec3(0.0,0.0,0.0);\r\n\r\n        #ifdef D_a_particle_position\r\n            pPosition = pPosition + a_particle_position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_velocity\r\n            pVelocity = pVelocity + a_particle_velocity;\r\n        #endif\r\n\r\n        #ifdef D_u_particle_acceleration\r\n            pVelocity = pVelocity + u_particle_acceleration * pTime;\r\n        #endif\r\n        \r\n        #ifdef D_a_particle_color\r\n            v_particle_color = a_particle_color;\r\n        #endif\r\n\r\n        pPosition = pPosition + pVelocity * pTime;\r\n        position = position + pPosition;\r\n    }\r\n    \r\n    vec4 globalPosition = u_modelMatrix * vec4(position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    gl_PointSize = 1.0;\r\n}", "shaders/point.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = vec4(1.0,1.0,1.0,1.0);\r\n}\r\n", "shaders/point.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform float u_PointSize;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    gl_PointSize = u_PointSize;\r\n}", "shaders/postEffect/fxaa.fragment.glsl": "\r\n\r\n#define FXAA_REDUCE_Mvarying   (1.0/128.0)\r\n#define FXAA_REDUCE_MUL   (1.0/8.0)\r\n#define FXAA_SPAN_MAX     8.0\r\n\r\nvarying vec2 vUV;\r\nuniform sampler2D textureSampler;\r\nuniform vec2 texelSize;\r\n\r\n\r\n\r\nvoid main(){\r\n\tvec2 localTexelSize = texelSize;\r\n\tvec4 rgbNW = texture2D(textureSampler, (vUV + vec2(-1.0, -1.0) * localTexelSize));\r\n\tvec4 rgbNE = texture2D(textureSampler, (vUV + vec2(1.0, -1.0) * localTexelSize));\r\n\tvec4 rgbSW = texture2D(textureSampler, (vUV + vec2(-1.0, 1.0) * localTexelSize));\r\n\tvec4 rgbSE = texture2D(textureSampler, (vUV + vec2(1.0, 1.0) * localTexelSize));\r\n\tvec4 rgbM = texture2D(textureSampler, vUV);\r\n\tvec4 luma = vec4(0.299, 0.587, 0.114, 1.0);\r\n\tfloat lumaNW = dot(rgbNW, luma);\r\n\tfloat lumaNE = dot(rgbNE, luma);\r\n\tfloat lumaSW = dot(rgbSW, luma);\r\n\tfloat lumaSE = dot(rgbSE, luma);\r\n\tfloat lumaM = dot(rgbM, luma);\r\n\tfloat lumaMvarying = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\r\n\tfloat lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\r\n\r\n\tvec2 dir = vec2(-((lumaNW + lumaNE) - (lumaSW + lumaSE)), ((lumaNW + lumaSW) - (lumaNE + lumaSE)));\r\n\r\n\tfloat dirReduce = max(\r\n\t\t(lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL),\r\n\t\tFXAA_REDUCE_MIN);\r\n\r\n\tfloat rcpDirMvarying = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\r\n\tdir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),\r\n\t\tmax(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),\r\n\t\tdir * rcpDirMin)) * localTexelSize;\r\n\r\n\tvec4 rgbA = 0.5 * (\r\n\t\ttexture2D(textureSampler, vUV + dir * (1.0 / 3.0 - 0.5)) +\r\n\t\ttexture2D(textureSampler, vUV + dir * (2.0 / 3.0 - 0.5)));\r\n\r\n\tvec4 rgbB = rgbA * 0.5 + 0.25 * (\r\n\t\ttexture2D(textureSampler, vUV + dir *  -0.5) +\r\n\t\ttexture2D(textureSampler, vUV + dir * 0.5));\r\n\tfloat lumaB = dot(rgbB, luma);\r\n\tif ((lumaB < lumaMin) || (lumaB > lumaMax)) {\r\n\t\tgl_FragColor = rgbA;\r\n\t}\r\n\telse {\r\n\t\tgl_FragColor = rgbB;\r\n\t}\r\n}", "shaders/segment.fragment.glsl": "\r\nprecision mediump float;\r\n\r\nvarying vec4 v_color;\r\n\r\n\r\n\r\nvoid main(void) {\r\n    gl_FragColor = v_color;\r\n}", "shaders/segment.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main(void) {\r\n    gl_Position = u_viewProjection * u_modelMatrix * vec4(a_position, 1.0);\r\n    v_color = a_color;\r\n}", "shaders/shadow.fragment.glsl": "precision mediump float;\r\n\r\nvoid main() {\r\n    const vec4 bitShift = vec4(1.0, 256.0, 256.0 * 256.0, 256.0 * 256.0 * 256.0);\r\n    const vec4 bitMask = vec4(1.0/256.0, 1.0/256.0, 1.0/256.0, 0.0);\r\n    vec4 rgbaDepth = fract(gl_FragCoord.z * bitShift); // Calculate the value stored into each byte\r\n    rgbaDepth -= rgbaDepth.gbaa * bitMask; // Cut off the value which do not fit in 8 bits\r\n    gl_FragColor = rgbaDepth;\r\n}", "shaders/shadow.vertex.glsl": "attribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}", "shaders/skybox.fragment.glsl": "\r\n\r\nprecision highp float;\r\n\r\nuniform samplerCube s_skyboxTexture;\r\nuniform mat4 u_cameraMatrix;\r\n\r\nvarying vec3 v_worldPos;\r\n\r\n\r\n\r\nvoid main(){\r\n    vec3 viewDir = normalize(v_worldPos - u_cameraMatrix[3].xyz);\r\n    gl_FragColor = textureCube(s_skyboxTexture, viewDir);\r\n}", "shaders/skybox.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_cameraMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nuniform float u_skyBoxSize;\r\n\r\nvarying vec3 v_worldPos;\r\n\r\nvoid main(){\r\n    vec3 worldPos = a_position.xyz * u_skyBoxSize + u_cameraMatrix[3].xyz;\r\n    gl_Position = u_viewProjection * vec4(worldPos.xyz,1.0);\r\n    v_worldPos = worldPos;\r\n}", "shaders/standard.fragment.glsl": "\r\nprecision mediump float;\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\n#ifdef HAS_NORMAL_SAMPLER\r\n    varying vec3 v_tangent;\r\n    varying vec3 v_bitangent;\r\n#endif\r\n\r\nuniform mat4 u_cameraMatrix;\r\n\r\n//环境\r\nuniform vec4 u_ambient;\r\n#ifdef HAS_AMBIENT_SAMPLER\r\n    uniform sampler2D s_ambient;\r\n#endif\r\n\r\nuniform float u_alphaThreshold;\r\n//漫反射\r\nuniform vec4 u_diffuse;\r\n#ifdef HAS_DIFFUSE_SAMPLER\r\n    uniform sampler2D s_diffuse;\r\n#endif\r\n\r\n//法线贴图\r\n#ifdef HAS_NORMAL_SAMPLER\r\n    uniform sampler2D s_normal;\r\n#endif\r\n\r\n//镜面反射\r\nuniform vec3 u_specular;\r\nuniform float u_glossiness;\r\n#ifdef HAS_SPECULAR_SAMPLER\r\n    uniform sampler2D s_specular;\r\n#endif\r\n\r\n#if NUM_LIGHT > 0\r\n    #include<modules/pointLightShading.fragment>\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec4 finalColor = vec4(1.0,1.0,1.0,1.0);\r\n\r\n    //环境光\r\n    vec3 ambientColor = u_ambient.xyz;\r\n    #ifdef HAS_AMBIENT_SAMPLER\r\n        ambientColor = ambientColor * texture2D(s_diffuse, v_uv).xyz;\r\n    #endif\r\n\r\n    //获取法线\r\n    vec3 normal;\r\n    #ifdef HAS_NORMAL_SAMPLER\r\n        normal = texture2D(s_normal,v_uv).xyz * 2.0 - 1.0;\r\n        normal = normalize(normal.x * v_tangent + normal.y * v_bitangent + normal.z * v_normal);\r\n    #else\r\n        normal = normalize(v_normal);\r\n    #endif\r\n\r\n    //获取漫反射基本颜色\r\n    vec4 diffuseColor = u_diffuse;\r\n    #ifdef HAS_DIFFUSE_SAMPLER\r\n        diffuseColor = diffuseColor * texture2D(s_diffuse, v_uv);\r\n    #endif\r\n\r\n    if(diffuseColor.w < u_alphaThreshold)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    finalColor = diffuseColor;\r\n\r\n\r\n    //渲染灯光\r\n    #if NUM_LIGHT > 0\r\n\r\n        //获取高光值\r\n        float glossiness = u_glossiness;\r\n        //获取镜面反射基本颜色\r\n        vec3 specularColor = u_specular;\r\n        #ifdef HAS_SPECULAR_SAMPLER\r\n            vec4 specularMapColor = texture2D(s_specular, v_uv);\r\n            specularColor.xyz = specularMapColor.xyz;\r\n            glossiness = glossiness * specularMapColor.w;\r\n        #endif\r\n        \r\n        finalColor.xyz = pointLightShading(normal, diffuseColor.xyz, specularColor, ambientColor, glossiness);\r\n    #endif\r\n\r\n    gl_FragColor = finalColor;\r\n}", "shaders/standard.vertex.glsl": "//此处将填充宏定义\r\n#define macros\r\n\r\n//坐标属性\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\nattribute vec3 a_normal;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\n#ifdef HAS_NORMAL_SAMPLER\r\n    attribute vec3 a_tangent;\r\n\r\n    varying vec3 v_tangent;\r\n    varying vec3 v_bitangent;\r\n#endif\r\n\r\n#ifdef HAS_SKELETON_ANIMATION\r\n    #include<modules/skeleton.vertex>\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec4 position = vec4(a_position,1.0);\r\n\r\n    #ifdef HAS_SKELETON_ANIMATION\r\n        position = skeletonAnimation(position);\r\n    #endif\r\n\r\n    //获取全局坐标\r\n    vec4 globalPosition = u_modelMatrix * position;\r\n    //计算投影坐标\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    //输出全局坐标\r\n    v_globalPosition = globalPosition.xyz;\r\n    //输出uv\r\n    v_uv = a_uv;\r\n\r\n    //计算法线\r\n    v_normal = normalize((u_modelMatrix * vec4(a_normal,0.0)).xyz);\r\n    #ifdef HAS_NORMAL_SAMPLER\r\n        v_tangent = normalize((u_modelMatrix * vec4(a_tangent,0.0)).xyz);\r\n        v_bitangent = cross(v_normal,v_tangent);\r\n    #endif\r\n}", "shaders/terrain.fragment.1.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform sampler2D s_texture;\r\nuniform sampler2D s_blendTexture;\r\nuniform sampler2D s_splatTexture1;\r\nuniform sampler2D s_splatTexture2;\r\nuniform sampler2D s_splatTexture3;\r\n\r\nuniform vec4 u_splatRepeats;\r\n\r\nvarying vec2 v_uv;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    vec2 t_uv = v_uv.xy * u_splatRepeats.x;\r\n    // vec4 finalColor = texture2D(s_texture,t_uv);\r\n    vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);\r\n    \r\n    vec4 blend = texture2D(s_blendTexture,v_uv);\r\n\r\n    float offset = 1.0/512.0;\r\n    // float offset = 1.0 / 1024.0;\r\n    // float offset = 0.000000001;\r\n   // float width = 0.5 - offset;\r\n   // float delta = 0.5 + offset;\r\n\r\n     float width = 0.5;\r\n     float delta = 0.5;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.y;\r\n    t_uv.x = fract(t_uv.x);\r\n    t_uv.y = fract(t_uv.y);\r\n    t_uv.x = t_uv.x * width;\r\n    t_uv.y = t_uv.y * width;\r\n    vec4 tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.x + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.z;\r\n    t_uv.x = fract(t_uv.x);\r\n    t_uv.y = fract(t_uv.y);\r\n    t_uv.x = t_uv.x * width + delta;\r\n    t_uv.y = t_uv.y * width;\r\n    tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.y + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.w;\r\n    t_uv.x = fract(t_uv.x);\r\n    t_uv.y = fract(t_uv.y);\r\n    t_uv.x = t_uv.x * width;\r\n    t_uv.y = t_uv.y * width + delta;\r\n    tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.z + finalColor;\r\n\r\n    gl_FragColor = finalColor;\r\n}", "shaders/terrain.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform sampler2D s_texture;\r\nuniform sampler2D s_blendTexture;\r\nuniform sampler2D s_splatTexture1;\r\nuniform sampler2D s_splatTexture2;\r\nuniform sampler2D s_splatTexture3;\r\n\r\nuniform vec4 u_splatRepeats;\r\n\r\nvarying vec2 v_uv;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    vec2 t_uv = v_uv.xy * u_splatRepeats.x;\r\n    vec4 finalColor = texture2D(s_texture,t_uv);\r\n    \r\n    vec4 blend = texture2D(s_blendTexture,v_uv);\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.y;\r\n    vec4 tColor = texture2D(s_splatTexture1,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.x + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.z;\r\n    tColor = texture2D(s_splatTexture2,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.y + finalColor;\r\n\r\n    t_uv = v_uv.xy * u_splatRepeats.w;\r\n    tColor = texture2D(s_splatTexture3,t_uv);\r\n    finalColor = (tColor - finalColor) * blend.z + finalColor;\r\n\r\n    gl_FragColor = finalColor;\r\n}", "shaders/terrain.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvarying vec2 v_uv;\r\n\r\nvoid main(void) {\r\n\r\n    gl_Position = u_viewProjection * u_modelMatrix * vec4(a_position, 1.0);\r\n\r\n    v_uv = a_uv;\r\n}", "shaders/texture.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform sampler2D s_texture;\r\nvarying vec2 v_uv;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    gl_FragColor = texture2D(s_texture, v_uv);\r\n}\r\n", "shaders/texture.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\n\r\nvarying vec2 v_uv;\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    gl_Position = u_viewProjection * u_modelMatrix * vec4(a_position, 1.0);\r\n    v_uv = a_uv;\r\n}" };
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -16942,793 +16882,4 @@ var feng3d;
     feng3d.initEngine = initEngine;
     var isInit = false;
 })(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var BillboardTest = (function () {
-        function BillboardTest() {
-            this.init();
-            //
-            this.controller = new feng3d.FPSController(this.view3D.camera);
-        }
-        BillboardTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene = this.view3D.scene;
-            var cube = new feng3d.GameObject();
-            var model = cube.getOrCreateComponentByClass(feng3d.Model);
-            model.geometry = new feng3d.CubeGeometry();
-            model.material = new feng3d.StandardMaterial();
-            cube.z = 300;
-            scene.addChild(cube);
-            var gameObject = new feng3d.GameObject();
-            gameObject.y = 150;
-            gameObject.isBillboard = true;
-            cube.addChild(gameObject);
-            //材质
-            var model = gameObject.getOrCreateComponentByClass(feng3d.Model);
-            model.geometry = new feng3d.PlaneGeometry(100, 100, 1, 1, false);
-            var textureMaterial = model.material = new feng3d.TextureMaterial();
-            //
-            var texture = textureMaterial.texture = new feng3d.Texture2D('resources/m.png');
-            gameObject.holdSize = 1;
-        };
-        return BillboardTest;
-    }());
-    feng3d.BillboardTest = BillboardTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var ColorMaterialTest = (function () {
-        function ColorMaterialTest() {
-            this.init();
-        }
-        ColorMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var cube = new feng3d.CubeObject3D();
-            cube.z = 300;
-            this.view3D.scene.addChild(cube);
-            //初始化颜色材质
-            var colorMaterial = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
-            //变化旋转与颜色
-            setInterval(function () {
-                cube.rotationY += 1;
-            }, 15);
-            setInterval(function () {
-                colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
-            }, 1000);
-        };
-        return ColorMaterialTest;
-    }());
-    feng3d.ColorMaterialTest = ColorMaterialTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 测试3D容器
-     */
-    var Container3DTest = (function () {
-        function Container3DTest() {
-            this.init();
-        }
-        Container3DTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            //初始化颜色材质
-            var cube = new feng3d.CubeObject3D();
-            cube.z = 500;
-            this.view3D.scene.addChild(cube);
-            var colorMaterial = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
-            var cylinder = new feng3d.CylinderObject3D();
-            cylinder.x = 200;
-            cube.addChild(cylinder);
-            //变化旋转与颜色
-            setInterval(function () {
-                cube.rotationY += 1;
-            }, 15);
-            setInterval(function () {
-                colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
-            }, 1000);
-        };
-        return Container3DTest;
-    }());
-    feng3d.Container3DTest = Container3DTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
-     */
-    var FPSControllerTest = (function () {
-        function FPSControllerTest() {
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
-            //
-            this.controller = new feng3d.FPSController(this.cameraObj);
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-        }
-        FPSControllerTest.prototype.process = function () {
-            var screenPos = this.view3D.project(sphere.scenePosition);
-            console.log("球体视窗坐标" + screenPos.toString());
-        };
-        FPSControllerTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene3D = this.view3D.scene;
-            var cube = new feng3d.CubeObject3D();
-            scene3D.addChild(cube);
-            var plane = new feng3d.PlaneObject3D();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            scene3D.addChild(plane);
-            sphere = new feng3d.SphereObject3D();
-            sphere.setPosition(-150, 0, 0);
-            scene3D.addChild(sphere);
-            var capsule = new feng3d.CapsuleObject3D();
-            capsule.setPosition(300, 0, 0);
-            scene3D.addChild(capsule);
-            var cylinder = new feng3d.CylinderObject3D();
-            cylinder.setPosition(-300, 0, 0);
-            scene3D.addChild(cylinder);
-        };
-        return FPSControllerTest;
-    }());
-    feng3d.FPSControllerTest = FPSControllerTest;
-    var sphere;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var GeometryTest = (function () {
-        function GeometryTest() {
-            this.init();
-        }
-        GeometryTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var object3d = new feng3d.GameObject();
-            var model = object3d.getOrCreateComponentByClass(feng3d.Model);
-            var geometry = model.geometry = new feng3d.Geometry();
-            geometry.addGeometry(new feng3d.PlaneGeometry());
-            var matrix3D = new feng3d.Matrix3D();
-            matrix3D.appendTranslation(0, 50, 0);
-            geometry.addGeometry(new feng3d.SphereGeometry(50), matrix3D);
-            matrix3D.appendTranslation(0, 50, 0);
-            var addGeometry = new feng3d.CubeGeometry();
-            geometry.addGeometry(addGeometry, matrix3D);
-            addGeometry.width = 50;
-            matrix3D.appendTranslation(0, 50, 0);
-            matrix3D.appendRotation(45, feng3d.Vector3D.Z_AXIS);
-            geometry.addGeometry(addGeometry, matrix3D);
-            object3d.z = 300;
-            object3d.y = -100;
-            this.view3D.scene.addChild(object3d);
-            //初始化颜色材质
-            var colorMaterial = model.material = new feng3d.ColorMaterial();
-            //变化旋转与颜色
-            setInterval(function () {
-                object3d.rotationY += 1;
-            }, 15);
-            setInterval(function () {
-                colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
-            }, 1000);
-        };
-        return GeometryTest;
-    }());
-    feng3d.GeometryTest = GeometryTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var MD5LoaderTest = (function () {
-        function MD5LoaderTest() {
-            this.init();
-        }
-        MD5LoaderTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            // //变化旋转
-            setInterval(function () {
-                if (object) {
-                    object.rotationY += 1;
-                }
-            }, 15);
-            var md5meshUrl = "resources/hellknight/hellknight.md5mesh";
-            var md5animUrl = "resources/hellknight/idle2.md5anim";
-            var scene = this.view3D.scene;
-            var skeletonAnimator;
-            var useMatrial = this.useMatrial;
-            var md5Loader = new feng3d.MD5Loader();
-            md5Loader.load(md5meshUrl, function (object3D, animator) {
-                object3D.y = -100;
-                object3D.rotationX = -90;
-                object = object3D;
-                useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
-                object.z = 300;
-                scene.addChild(object3D);
-                skeletonAnimator = animator;
-                //
-                md5Loader.loadAnim(md5animUrl, function (skeletonClipNode) {
-                    skeletonClipNode.name = "idle2";
-                    skeletonAnimator.animations.push(skeletonClipNode);
-                    skeletonClipNode.looping = true;
-                    skeletonAnimator.play();
-                });
-            });
-        };
-        MD5LoaderTest.prototype.useMatrial = function (object3D, imageUrl) {
-            var material = new feng3d.StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = imageUrl;
-            for (var i = 0; i < object3D.numChildren; i++) {
-                var child = object3D.getChildAt(i);
-                var model = child.getComponentByType(feng3d.Model);
-                if (model) {
-                    model.material = material;
-                }
-            }
-        };
-        return MD5LoaderTest;
-    }());
-    feng3d.MD5LoaderTest = MD5LoaderTest;
-    var object;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
-     */
-    var MousePickTest = (function () {
-        function MousePickTest() {
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
-            //
-            this.controller = new feng3d.FPSController(this.cameraObj);
-        }
-        MousePickTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene3D = this.view3D.scene;
-            var cube = new feng3d.CubeObject3D();
-            cube.setPosition(0, 0, 0);
-            cube.mouseEnabled = true;
-            scene3D.addChild(cube);
-            var plane = new feng3d.PlaneObject3D();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            plane.mouseEnabled = true;
-            scene3D.addChild(plane);
-            var sphere = new feng3d.SphereObject3D();
-            sphere.setPosition(-150, 0, 0);
-            sphere.mouseEnabled = true;
-            scene3D.addChild(sphere);
-            var capsule = new feng3d.CapsuleObject3D();
-            capsule.setPosition(300, 0, 0);
-            capsule.mouseEnabled = true;
-            scene3D.addChild(capsule);
-            var cylinder = new feng3d.CylinderObject3D();
-            cylinder.setPosition(-300, 0, 0);
-            cylinder.mouseEnabled = true;
-            scene3D.addChild(cylinder);
-            scene3D.addEventListener(feng3d.Mouse3DEvent.CLICK, this.onMouseClick, this);
-        };
-        MousePickTest.prototype.onMouseClick = function (event) {
-            var object3D = event.target;
-            var material = object3D.getComponentByType(feng3d.Model).material = new feng3d.ColorMaterial();
-            material.color.fromUnit(Math.random() * (1 << 24));
-        };
-        return MousePickTest;
-    }());
-    feng3d.MousePickTest = MousePickTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var OBJParserTest = (function () {
-        function OBJParserTest() {
-            this.init();
-        }
-        OBJParserTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            // //变化旋转
-            setInterval(function () {
-                if (object) {
-                    object.rotationY += 1;
-                }
-            }, 15);
-            // var objUrl = "resources/cube.obj";
-            var objUrl = "resources/head.obj";
-            var scene = this.view3D.scene;
-            var objLoader = new feng3d.ObjLoader();
-            objLoader.load(objUrl, function (object3D) {
-                object = object3D;
-                object.scaleX = 20;
-                object.scaleY = 20;
-                object.scaleZ = 20;
-                object.z = 300;
-                scene.addChild(object3D);
-            });
-        };
-        return OBJParserTest;
-    }());
-    feng3d.OBJParserTest = OBJParserTest;
-    var object;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var ParticleAnimatorTest = (function () {
-        function ParticleAnimatorTest() {
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
-            //
-            this.controller = new feng3d.FPSController(this.view3D.camera);
-        }
-        ParticleAnimatorTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene = this.view3D.scene;
-            var particle = new feng3d.GameObject("particle");
-            particle.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.PointGeometry();
-            particle.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ParticleMaterial();
-            particle.y = -100;
-            scene.addChild(particle);
-            var particleAnimator = particle.getOrCreateComponentByClass(feng3d.ParticleAnimator);
-            particleAnimator.cycle = 10;
-            particleAnimator.numParticles = 1000;
-            //发射组件
-            var emission = new feng3d.ParticleEmission();
-            //每秒发射数量
-            emission.rate = 50;
-            //批量发射
-            emission.bursts.push({ time: 1, particles: 100 }, { time: 2, particles: 100 }, { time: 3, particles: 100 }, { time: 4, particles: 100 }, { time: 5, particles: 100 });
-            //通过组件来创建粒子初始状态
-            particleAnimator.addComponent(emission);
-            particleAnimator.addComponent(new feng3d.ParticlePosition());
-            particleAnimator.addComponent(new feng3d.ParticleVelocity());
-            particleAnimator.particleGlobal.acceleration = new feng3d.Vector3D(0, -9.8, 0);
-            //通过函数来创建粒子初始状态
-            particleAnimator.generateFunctions.push({
-                generate: function (particle) {
-                    particle.color = new feng3d.Color(1, 0, 0, 1).mix(new feng3d.Color(0, 1, 0, 1), particle.index / particle.total);
-                }, priority: 0
-            });
-        };
-        return ParticleAnimatorTest;
-    }());
-    feng3d.ParticleAnimatorTest = ParticleAnimatorTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var PointLightTest = (function () {
-        function PointLightTest() {
-            this.light0 = new feng3d.GameObject("pointLight");
-            this.light1 = new feng3d.GameObject("pointLight");
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.y = 200;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
-            //
-            this.controller = new feng3d.FPSController(this.view3D.camera);
-            feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyUp, this);
-        }
-        PointLightTest.prototype.onKeyUp = function (event) {
-            var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
-            switch (boardKey) {
-                case "c":
-                    this.clearObjects();
-                    break;
-                case "b":
-                    this.initObjects();
-                    this.scene.addChild(this.light0);
-                    this.scene.addChild(this.light1);
-                    break;
-            }
-        };
-        PointLightTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            this.scene = this.view3D.scene;
-            this.initObjects();
-            this.initLights();
-            this.setPointLightPosition();
-        };
-        PointLightTest.prototype.initObjects = function () {
-            var material = new feng3d.StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
-            material.normalMethod.normalTexture.url = 'resources/head_normals.jpg';
-            material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
-            material.diffuseMethod.difuseTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
-            material.diffuseMethod.difuseTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
-            material.normalMethod.normalTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
-            material.normalMethod.normalTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
-            material.specularMethod.specularTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
-            material.specularMethod.specularTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
-            //初始化立方体
-            var plane = new feng3d.GameObject();
-            plane.y = -100;
-            var model = plane.getOrCreateComponentByClass(feng3d.Model);
-            var geometry = model.geometry = new feng3d.PlaneGeometry(1000, 1000);
-            geometry.scaleUV(2, 2);
-            model.material = material;
-            this.scene.addChild(plane);
-            var cube = new feng3d.GameObject();
-            var model = cube.getOrCreateComponentByClass(feng3d.Model);
-            model.material = material;
-            model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
-            model.geometry.scaleUV(2, 2);
-            this.scene.addChild(cube);
-        };
-        PointLightTest.prototype.clearObjects = function () {
-            for (var i = this.scene.numChildren - 1; i >= 0; i--) {
-                this.scene.removeChildAt(i);
-            }
-        };
-        PointLightTest.prototype.initLights = function () {
-            //
-            var lightColor0 = new feng3d.Color(1, 0, 0, 1);
-            this.light0.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.SphereGeometry(5);
-            this.light0.getOrCreateComponentByClass(feng3d.Model);
-            //初始化点光源
-            var pointLight0 = new feng3d.PointLight();
-            pointLight0.color = lightColor0;
-            this.light0.addComponent(pointLight0);
-            this.light0.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial(lightColor0);
-            this.scene.addChild(this.light0);
-            //
-            var lightColor1 = new feng3d.Color(0, 1, 0, 1);
-            this.light1.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.SphereGeometry(5);
-            this.light1.getOrCreateComponentByClass(feng3d.Model);
-            //初始化点光源
-            var pointLight1 = new feng3d.DirectionalLight();
-            pointLight1.color = lightColor1;
-            this.light1.addComponent(pointLight1);
-            this.light1.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial(lightColor1);
-            this.scene.addChild(this.light1);
-        };
-        PointLightTest.prototype.setPointLightPosition = function () {
-            var time = new Date().getTime();
-            //
-            var angle = time / 1000;
-            this.light0.x = Math.sin(angle) * 300;
-            this.light0.z = Math.cos(angle) * 300;
-            //
-            angle = angle + Math.PI / 2;
-            this.light1.x = Math.sin(angle) * 300;
-            this.light1.z = Math.cos(angle) * 300;
-            this.light1.lookAt(new feng3d.Vector3D());
-        };
-        return PointLightTest;
-    }());
-    feng3d.PointLightTest = PointLightTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var PointMaterialTest = (function () {
-        function PointMaterialTest() {
-            this.init();
-        }
-        PointMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var pointGeometry = new feng3d.PointGeometry();
-            var pointMaterial = new feng3d.PointMaterial();
-            var object3D = new feng3d.GameObject("plane");
-            object3D.getOrCreateComponentByClass(feng3d.Model).geometry = pointGeometry;
-            object3D.getOrCreateComponentByClass(feng3d.Model).material = pointMaterial;
-            object3D.z = 300;
-            this.view3D.scene.addChild(object3D);
-            var length = 200;
-            var height = 200 / Math.PI;
-            for (var x = -length; x <= length; x = x + 4) {
-                var angle = x / length * Math.PI;
-                var vec = new feng3d.Vector3D(x, Math.sin(angle) * height, 0);
-                pointGeometry.addPoint(new feng3d.PointInfo(vec));
-            }
-            //变化旋转
-            setInterval(function () {
-                object3D.rotationY += 1;
-                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.rotationY / 30);
-            }, 15);
-        };
-        return PointMaterialTest;
-    }());
-    feng3d.PointMaterialTest = PointMaterialTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var PrimitiveTest = (function () {
-        function PrimitiveTest() {
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.controller = new feng3d.LookAtController(this.cameraObj);
-            this.controller.lookAtPosition = new feng3d.Vector3D();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-        }
-        PrimitiveTest.prototype.process = function () {
-            var time = new Date().getTime();
-            var angle = (Math.round(time / 17) % 360);
-            angle = angle * feng3d.MathConsts.DEGREES_TO_RADIANS;
-            this.cameraObj.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
-            this.controller.update();
-        };
-        PrimitiveTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene3D = this.view3D.scene;
-            var cube = new feng3d.CubeObject3D();
-            cube.setPosition(0, 0, 0);
-            scene3D.addChild(cube);
-            var plane = new feng3d.PlaneObject3D();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            scene3D.addChild(plane);
-            var sphere = new feng3d.SphereObject3D();
-            sphere.setPosition(-150, 0, 0);
-            scene3D.addChild(sphere);
-            var capsule = new feng3d.CapsuleObject3D();
-            capsule.setPosition(300, 0, 0);
-            scene3D.addChild(capsule);
-            var cylinder = new feng3d.CylinderObject3D();
-            cylinder.setPosition(-300, 0, 0);
-            scene3D.addChild(cylinder);
-        };
-        return PrimitiveTest;
-    }());
-    feng3d.PrimitiveTest = PrimitiveTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var SceneLoadTest = (function () {
-        function SceneLoadTest() {
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
-            //
-            this.controller = new feng3d.FPSController(this.view3D.camera);
-        }
-        SceneLoadTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene3D = this.view3D.scene;
-            var loader = new feng3d.Loader();
-            loader.addEventListener(feng3d.LoaderEvent.COMPLETE, function () {
-                var json = JSON.parse(loader.content);
-                var scene = feng3d.serialization.readObject(json);
-                for (var i = 0; i < scene.numChildren; i++) {
-                    scene3D.addChild(scene.getChildAt(i));
-                }
-            }, this);
-            loader.loadText("resources/scene/scene.json");
-        };
-        return SceneLoadTest;
-    }());
-    feng3d.SceneLoadTest = SceneLoadTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var SegmentMaterialTest = (function () {
-        function SegmentMaterialTest() {
-            this.init();
-        }
-        SegmentMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var segment = new feng3d.GameObject("segment");
-            segment.z = 300;
-            this.view3D.scene.addChild(segment);
-            //初始化材质
-            segment.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.SegmentMaterial();
-            var segmentGeometry = segment.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.SegmentGeometry();
-            var length = 200;
-            var height = 200 / Math.PI;
-            var preVec;
-            for (var x = -length; x <= length; x++) {
-                var angle = x / length * Math.PI;
-                if (preVec == null) {
-                    preVec = new feng3d.Vector3D(x, Math.sin(angle) * height, 0);
-                }
-                else {
-                    var vec = new feng3d.Vector3D(x, Math.sin(angle) * height, 0);
-                    segmentGeometry.addSegment(new feng3d.Segment(preVec, vec));
-                    preVec = vec;
-                }
-            }
-            //变化旋转
-            setInterval(function () {
-                segment.rotationY += 1;
-            }, 15);
-        };
-        return SegmentMaterialTest;
-    }());
-    feng3d.SegmentMaterialTest = SegmentMaterialTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var SkyBoxTest = (function () {
-        function SkyBoxTest() {
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
-            //
-            this.controller = new feng3d.FPSController(this.view3D.camera);
-        }
-        SkyBoxTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene = this.view3D.scene;
-            var root = 'resources/skybox/';
-            var imagePaths = ['px.jpg', 'py.jpg', 'pz.jpg', 'nx.jpg', 'ny.jpg', 'nz.jpg'];
-            for (var i = 0; i < imagePaths.length; i++) {
-                imagePaths[i] = root + imagePaths[i];
-            }
-            var skybox = new feng3d.GameObject("skybox");
-            var model = skybox.getOrCreateComponentByClass(feng3d.Model);
-            model.geometry = new feng3d.SkyBoxGeometry();
-            model.material = new feng3d.SkyBoxMaterial(imagePaths);
-            scene.addChild(skybox);
-        };
-        return SkyBoxTest;
-    }());
-    feng3d.SkyBoxTest = SkyBoxTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var StandardMaterialTest = (function () {
-        function StandardMaterialTest() {
-            this.init();
-        }
-        StandardMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var cube = new feng3d.GameObject();
-            cube.z = 300;
-            cube.y = -100;
-            this.view3D.scene.addChild(cube);
-            //变化旋转与颜色
-            setInterval(function () {
-                cube.rotationY += 1;
-            }, 15);
-            var model = cube.getOrCreateComponentByClass(feng3d.Model);
-            model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
-            // model.geometry = new PlaneGeometry();
-            //材质
-            var textureMaterial = model.material = new feng3d.StandardMaterial();
-            // textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
-            textureMaterial.diffuseMethod.difuseTexture.url = 'resources/nonpowerof2.png';
-            textureMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
-            // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
-            // textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
-            // textureMaterial.enableBlend = true;
-            textureMaterial.diffuseMethod.color.a = 0.2;
-        };
-        return StandardMaterialTest;
-    }());
-    feng3d.StandardMaterialTest = StandardMaterialTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var TerrainTest = (function () {
-        function TerrainTest() {
-            this.init();
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.y = 200;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
-            //
-            this.controller = new feng3d.FPSController(this.cameraObj);
-        }
-        TerrainTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var scene = this.view3D.scene;
-            var root = 'resources/terrain/';
-            //
-            var terrain = new feng3d.GameObject("terrain");
-            terrain.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
-            var terrainMaterial = new feng3d.TerrainMaterial();
-            terrainMaterial.diffuseTexture = new feng3d.Texture2D(root + 'terrain_diffuse.jpg');
-            terrainMaterial.blendTexture = new feng3d.Texture2D(root + 'terrain_splats.png');
-            terrainMaterial.splatTexture1 = new feng3d.Texture2D(root + 'beach.jpg');
-            // terrainMaterial.splatTexture1 = new Texture2D(root + '111.jpg');
-            terrainMaterial.splatTexture1.generateMipmap = true;
-            terrainMaterial.splatTexture1.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
-            terrainMaterial.splatTexture1.wrapS = feng3d.GL.REPEAT;
-            terrainMaterial.splatTexture1.wrapT = feng3d.GL.REPEAT;
-            terrainMaterial.splatTexture2 = new feng3d.Texture2D(root + 'grass.jpg');
-            terrainMaterial.splatTexture2.generateMipmap = true;
-            terrainMaterial.splatTexture2.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
-            terrainMaterial.splatTexture2.wrapS = feng3d.GL.REPEAT;
-            terrainMaterial.splatTexture2.wrapT = feng3d.GL.REPEAT;
-            terrainMaterial.splatTexture3 = new feng3d.Texture2D(root + 'rock.jpg');
-            terrainMaterial.splatTexture3.generateMipmap = true;
-            terrainMaterial.splatTexture3.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
-            terrainMaterial.splatTexture3.wrapS = feng3d.GL.REPEAT;
-            terrainMaterial.splatTexture3.wrapT = feng3d.GL.REPEAT;
-            terrainMaterial.splatRepeats = new feng3d.Vector3D(1, 50, 150, 100);
-            terrain.getOrCreateComponentByClass(feng3d.Model).material = terrainMaterial;
-            scene.addChild(terrain);
-        };
-        return TerrainTest;
-    }());
-    feng3d.TerrainTest = TerrainTest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var TextureMaterialTest = (function () {
-        function TextureMaterialTest() {
-            this.init();
-        }
-        TextureMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
-            var cube = new feng3d.GameObject();
-            cube.z = 300;
-            cube.y = -100;
-            this.view3D.scene.addChild(cube);
-            //变化旋转与颜色
-            setInterval(function () {
-                cube.rotationY += 1;
-            }, 15);
-            var model = cube.getOrCreateComponentByClass(feng3d.Model);
-            model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
-            // model.geometry = new PlaneGeometry();
-            //材质
-            var textureMaterial = model.material = new feng3d.TextureMaterial();
-            //
-            // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
-            var texture = textureMaterial.texture = new feng3d.Texture2D('resources/m.png');
-            texture.flipY = false;
-        };
-        return TextureMaterialTest;
-    }());
-    feng3d.TextureMaterialTest = TextureMaterialTest;
-})(feng3d || (feng3d = {}));
-var editor;
-var jsCtrl, select, type;
-function init() {
-    jsCtrl = document.getElementById("jsCtrl");
-    select = document.getElementById("select");
-    type = GetQueryString("type");
-    type = type || "PrimitiveTest";
-    select.value = type;
-    new feng3d[type]();
-    document.onkeyup = function (e) {
-        var keycode = e.which;
-        if (keycode == 37) {
-            if (select.selectedIndex > 0)
-                select.selectedIndex--;
-            else
-                select.selectedIndex = select.options.length - 1;
-        }
-        else if (keycode == 39) {
-            if (select.selectedIndex < select.options.length - 1)
-                select.selectedIndex++;
-            else
-                select.selectedIndex = 0;
-        }
-        selectChanged();
-    };
-}
-function selectChanged() {
-    if (type != select.value) {
-        window.location.href = window.location.pathname + "?type=" + select.value;
-    }
-}
-function GetQueryString(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null)
-        return r[2];
-    return null;
-}
-//# sourceMappingURL=examples.js.map
+//# sourceMappingURL=feng3d.js.map

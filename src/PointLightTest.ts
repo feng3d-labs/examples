@@ -51,7 +51,7 @@ module feng3d
             this.initObjects();
             this.initLights();
 
-            this.setPointLightPosition();
+            ticker.addEventListener(Event.ENTER_FRAME, this.setPointLightPosition, this);
         }
 
         private initObjects()

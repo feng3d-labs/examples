@@ -16,6 +16,7 @@ module feng3d
             var canvas = document.getElementById("glcanvas");
             this.view3D = new View3D(canvas);
             var scene = this.view3D.scene;
+            scene.background.setTo(0.3, 0.3, 0.3);
 
             var cube = new GameObject();
             var model = cube.getOrCreateComponentByClass(Model);
@@ -41,8 +42,8 @@ module feng3d
             canvas2D.width = 300;
             canvas2D.height = 150;
             var context2D = canvas2D.getContext("2d");
-            context2D.fillStyle = "red";
-            context2D.fillRect(0, 0, canvas2D.width, canvas2D.height);
+            // context2D.fillStyle = "red";
+            // context2D.fillRect(0, 0, canvas2D.width, canvas2D.height);
             context2D.fillStyle = "green";
             context2D.font = '48px serif';
             // context2D.fillText('Hello world', 50, 100);
@@ -51,7 +52,7 @@ module feng3d
             var imageData = context2D.getImageData(0, 0, canvas2D.width, canvas2D.height);
             texture.pixels = imageData;
 
-            gameObject.holdSize = 1;
+            // gameObject.holdSize = 1;
 
             var canvas2D = <HTMLCanvasElement>document.getElementById('canvas');
             var ctx = canvas2D.getContext('2d');

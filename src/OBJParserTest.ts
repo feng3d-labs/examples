@@ -6,7 +6,6 @@ module feng3d
 
         constructor()
         {
-
             this.init();
         }
 

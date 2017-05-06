@@ -12,7 +12,6 @@ module feng3d
 
         constructor()
         {
-
             this.init();
 
             this.cameraObj = this.view3D.camera;
@@ -94,7 +93,6 @@ module feng3d
 
         private initLights()
         {
-
             //
             var lightColor0 = new Color(1, 0, 0, 1);
             this.light0.getOrCreateComponentByClass(Model).geometry = new SphereGeometry(5);
@@ -117,9 +115,9 @@ module feng3d
             this.light1.getOrCreateComponentByClass(Model).material = new ColorMaterial(lightColor1);
             this.scene.addChild(this.light1);
         }
+        
         setPointLightPosition()
         {
-
             var time = new Date().getTime();
             //
             var angle = time / 1000;

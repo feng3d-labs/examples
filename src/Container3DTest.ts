@@ -10,7 +10,6 @@ module feng3d
         view3D: View3D;
         constructor()
         {
-
             this.init();
         }
 
@@ -20,13 +19,13 @@ module feng3d
             this.view3D = new View3D(canvas);
 
             //初始化颜色材质
-            var cube = new CubeObject3D();
+            var cube = GameObjectFactory.createCube();
             cube.z = 500;
             this.view3D.scene.addChild(cube);
 
             var colorMaterial = cube.getOrCreateComponentByClass(Model).material = new ColorMaterial();
 
-            var cylinder = new CylinderObject3D();
+            var cylinder = GameObjectFactory.createCylinder();
             cylinder.x = 200;
             cube.addChild(cylinder);
 

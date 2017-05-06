@@ -27,7 +27,6 @@ module feng3d
             var preVec: Vector3D;
             for (var x = -length; x <= length; x++)
             {
-
                 var angle = x / length * Math.PI;
                 if (preVec == null)
                 {

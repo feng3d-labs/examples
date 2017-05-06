@@ -18,14 +18,11 @@ module feng3d
             var scene = this.view3D.scene;
             scene.background.setTo(0.3, 0.3, 0.3);
 
-            var cube = new GameObject();
-            var model = cube.getOrCreateComponentByClass(Model);
-            model.geometry = new CubeGeometry();
-            model.material = new StandardMaterial();
+            var cube = GameObjectFactory.createCube();
             cube.z = 300;
             scene.addChild(cube);
 
-            var gameObject = new GameObject();
+           var gameObject =  GameObjectFactory.createPlane();
             gameObject.y = 150;
             gameObject.isBillboard = true;
             cube.addChild(gameObject);

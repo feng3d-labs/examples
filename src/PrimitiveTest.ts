@@ -1,16 +1,13 @@
 module feng3d
 {
-
     export class PrimitiveTest
     {
-
         view3D: View3D;
         controller: LookAtController;
         cameraObj: GameObject;
 
         constructor()
         {
-
             this.init();
 
             this.cameraObj = this.view3D.camera;
@@ -23,7 +20,6 @@ module feng3d
 
         process()
         {
-
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
             angle = angle * MathConsts.DEGREES_TO_RADIANS;
@@ -38,24 +34,23 @@ module feng3d
             this.view3D = new View3D(canvas);
             var scene3D = this.view3D.scene;
 
-            var cube = new CubeObject3D();
-            cube.setPosition(0, 0, 0);
+            var cube = GameObjectFactory.createCube();
             scene3D.addChild(cube);
 
-            var plane = new PlaneObject3D();
+            var plane = GameObjectFactory.createPlane();
             plane.setPosition(150, 0, 0);
             plane.rotationX = 90;
             scene3D.addChild(plane);
 
-            var sphere = new SphereObject3D();
+            var sphere = GameObjectFactory.createSphere();
             sphere.setPosition(-150, 0, 0);
             scene3D.addChild(sphere);
 
-            var capsule = new CapsuleObject3D();
+            var capsule = GameObjectFactory.createCapsule();
             capsule.setPosition(300, 0, 0);
             scene3D.addChild(capsule);
 
-            var cylinder = new CylinderObject3D();
+            var cylinder = GameObjectFactory.createCylinder();
             cylinder.setPosition(-300, 0, 0);
             scene3D.addChild(cylinder);
         }

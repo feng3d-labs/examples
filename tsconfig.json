@@ -1,4 +1,4 @@
-//由node mergeTSConfig.js合并  自动生成
+//由node mergeTSConfig.js合并examples_tsconfig.json与feng3d/tsconfig.json生成
 {
 	"compilerOptions": {
 		"target": "es5",
@@ -169,16 +169,7 @@
 		"feng3d/src/assets/loader/MD5Loader.ts",
 		"feng3d/src/debug/Trident.ts",
 		"feng3d/src/object3ds/CameraObject3D.ts",
-		"feng3d/src/object3ds/PlaneObject3D.ts",
-		"feng3d/src/object3ds/CubeObject3D.ts",
-		"feng3d/src/object3ds/TorusObect3D.ts",
-		"feng3d/src/object3ds/SphereObject3D.ts",
-		"feng3d/src/object3ds/CapsuleObject3D.ts",
-		"feng3d/src/object3ds/CylinderObject3D.ts",
-		"feng3d/src/object3ds/ConeObject3D.ts",
-		"feng3d/src/object3ds/SegmentObject3D.ts",
-		"feng3d/src/object3ds/ParticleObject3D.ts",
-		"feng3d/src/object3ds/PointLightObject3D.ts",
+		"feng3d/src/utils/GameObjectFactory.ts",
 		"feng3d/src/core/Mouse3DManager.ts",
 		"feng3d/src/autofiles/shaders.ts",
 		"feng3d/src/Feng3d.ts",

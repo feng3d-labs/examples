@@ -5,7 +5,6 @@ module feng3d
         view3D: View3D;
         constructor()
         {
-
             this.init();
         }
 

@@ -5,7 +5,6 @@ module feng3d
         view3D: View3D;
         constructor()
         {
-
             this.init();
         }
 
@@ -26,7 +25,6 @@ module feng3d
             var height = 200 / Math.PI;
             for (var x = -length; x <= length; x = x + 4)
             {
-
                 var angle = x / length * Math.PI;
                 var vec = new Vector3D(x, Math.sin(angle) * height, 0);
                 pointGeometry.addPoint(new PointInfo(vec));
@@ -36,9 +34,7 @@ module feng3d
             setInterval(function ()
             {
                 object3D.rotationY += 1;
-
                 pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.rotationY / 30);
-
             }, 15);
         }
     }

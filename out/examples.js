@@ -16427,264 +16427,52 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    /**
-     * 平面3D对象
-     * @author feng 2017-02-06
-     */
-    var PlaneObject3D = (function (_super) {
-        __extends(PlaneObject3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function PlaneObject3D(width, name) {
-            if (width === void 0) { width = 100; }
-            if (name === void 0) { name = "plane"; }
-            _super.call(this, name);
-            var model = new feng3d.Model();
-            model.geometry = new feng3d.PlaneGeometry(width, width);
-            model.material = new feng3d.StandardMaterial();
-            this.addComponent(model);
+    var GameObjectFactory = (function () {
+        function GameObjectFactory() {
         }
-        return PlaneObject3D;
-    }(feng3d.GameObject));
-    feng3d.PlaneObject3D = PlaneObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 立方体3D对象
-     * @author feng 2017-02-06
-     */
-    var CubeObject3D = (function (_super) {
-        __extends(CubeObject3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function CubeObject3D(width, name) {
-            if (width === void 0) { width = 100; }
+        GameObjectFactory.createCube = function (name) {
             if (name === void 0) { name = "cube"; }
-            _super.call(this, name);
-            var model = new feng3d.Model();
-            model.geometry = new feng3d.CubeGeometry(width, width, width);
+            var gameobject = new feng3d.GameObject(name);
+            var model = gameobject.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.CubeGeometry();
             model.material = new feng3d.StandardMaterial();
-            this.addComponent(model);
-        }
-        return CubeObject3D;
-    }(feng3d.GameObject));
-    feng3d.CubeObject3D = CubeObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 圆环3D对象
-     * @author feng 2017-02-06
-     */
-    var TorusObect3D = (function (_super) {
-        __extends(TorusObect3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function TorusObect3D(name) {
-            if (name === void 0) { name = "torus"; }
-            _super.call(this, name);
-            var model = new feng3d.Model();
-            this.torusGeometry = model.geometry = new feng3d.TorusGeometry();
+            return gameobject;
+        };
+        GameObjectFactory.createPlane = function (name) {
+            if (name === void 0) { name = "plane"; }
+            var gameobject = new feng3d.GameObject(name);
+            var model = gameobject.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.PlaneGeometry();
             model.material = new feng3d.StandardMaterial();
-            this.addComponent(model);
-        }
-        return TorusObect3D;
-    }(feng3d.GameObject));
-    feng3d.TorusObect3D = TorusObect3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 球体3D对象
-     * @author feng 2017-02-06
-     */
-    var SphereObject3D = (function (_super) {
-        __extends(SphereObject3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function SphereObject3D(name) {
+            return gameobject;
+        };
+        GameObjectFactory.createCylinder = function (name) {
+            if (name === void 0) { name = "cylinder"; }
+            var gameobject = new feng3d.GameObject(name);
+            var model = gameobject.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.CylinderGeometry();
+            model.material = new feng3d.StandardMaterial();
+            return gameobject;
+        };
+        GameObjectFactory.createSphere = function (name) {
             if (name === void 0) { name = "sphere"; }
-            _super.call(this, name);
-            var model = this.getOrCreateComponentByClass(feng3d.Model);
+            var gameobject = new feng3d.GameObject(name);
+            var model = gameobject.getOrCreateComponentByClass(feng3d.Model);
             model.geometry = new feng3d.SphereGeometry();
             model.material = new feng3d.StandardMaterial();
-        }
-        return SphereObject3D;
-    }(feng3d.GameObject));
-    feng3d.SphereObject3D = SphereObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 胶囊体3D对象
-     * @author feng 2017-02-06
-     */
-    var CapsuleObject3D = (function (_super) {
-        __extends(CapsuleObject3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function CapsuleObject3D(name) {
+            return gameobject;
+        };
+        GameObjectFactory.createCapsule = function (name) {
             if (name === void 0) { name = "capsule"; }
-            _super.call(this, name);
-            var model = this.getOrCreateComponentByClass(feng3d.Model);
+            var gameobject = new feng3d.GameObject(name);
+            var model = gameobject.getOrCreateComponentByClass(feng3d.Model);
             model.geometry = new feng3d.CapsuleGeometry();
             model.material = new feng3d.StandardMaterial();
-        }
-        return CapsuleObject3D;
-    }(feng3d.GameObject));
-    feng3d.CapsuleObject3D = CapsuleObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 圆柱体3D对象
-     * @author feng 2017-02-06
-     */
-    var CylinderObject3D = (function (_super) {
-        __extends(CylinderObject3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function CylinderObject3D(name, topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed, yUp) {
-            if (name === void 0) { name = "cylinder"; }
-            if (topRadius === void 0) { topRadius = 50; }
-            if (bottomRadius === void 0) { bottomRadius = 50; }
-            if (height === void 0) { height = 100; }
-            if (segmentsW === void 0) { segmentsW = 16; }
-            if (segmentsH === void 0) { segmentsH = 1; }
-            if (topClosed === void 0) { topClosed = true; }
-            if (bottomClosed === void 0) { bottomClosed = true; }
-            if (surfaceClosed === void 0) { surfaceClosed = true; }
-            if (yUp === void 0) { yUp = true; }
-            _super.call(this, name);
-            var model = this.getOrCreateComponentByClass(feng3d.Model);
-            model.geometry = new feng3d.CylinderGeometry(topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed, yUp);
-            model.material = new feng3d.StandardMaterial();
-        }
-        return CylinderObject3D;
-    }(feng3d.GameObject));
-    feng3d.CylinderObject3D = CylinderObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 圆锥体3D对象
-     * @author feng 2017-02-06
-     */
-    var ConeObject3D = (function (_super) {
-        __extends(ConeObject3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function ConeObject3D(radius, height, name) {
-            if (radius === void 0) { radius = 50; }
-            if (height === void 0) { height = 100; }
-            if (name === void 0) { name = "cone"; }
-            _super.call(this, name);
-            var model = new feng3d.Model();
-            model.geometry = new feng3d.ConeGeometry(radius, height);
-            model.material = new feng3d.StandardMaterial();
-            this.addComponent(model);
-        }
-        return ConeObject3D;
-    }(feng3d.GameObject));
-    feng3d.ConeObject3D = ConeObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 线条3D对象
-     * @author feng 2017-02-06
-     */
-    var SegmentObject3D = (function (_super) {
-        __extends(SegmentObject3D, _super);
-        function SegmentObject3D(name) {
-            if (name === void 0) { name = "Segment3D"; }
-            _super.call(this, name);
-            var model = new feng3d.Model();
-            model.material = new feng3d.SegmentMaterial();
-            model.geometry = new feng3d.SegmentGeometry();
-            this.addComponent(model);
-        }
-        return SegmentObject3D;
-    }(feng3d.GameObject));
-    feng3d.SegmentObject3D = SegmentObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 天空盒3D对象
-     * @author feng 2017-02-06
-     */
-    var ParticleObject3D = (function (_super) {
-        __extends(ParticleObject3D, _super);
-        /**
-         * 构建3D对象
-         */
-        function ParticleObject3D(name) {
-            if (name === void 0) { name = "particle"; }
-            _super.call(this, name);
-            this.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.PointGeometry();
-            this.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ParticleMaterial();
-            var particleAnimator = this.getOrCreateComponentByClass(feng3d.ParticleAnimator);
-            particleAnimator.cycle = 10;
-            particleAnimator.numParticles = 1000;
-            //发射组件
-            var emission = new feng3d.ParticleEmission();
-            //每秒发射数量
-            emission.rate = 50;
-            //批量发射
-            emission.bursts.push({ time: 1, particles: 100 }, { time: 2, particles: 100 }, { time: 3, particles: 100 }, { time: 4, particles: 100 }, { time: 5, particles: 100 });
-            //通过组件来创建粒子初始状态
-            particleAnimator.addComponent(emission);
-            particleAnimator.addComponent(new feng3d.ParticlePosition());
-            particleAnimator.addComponent(new feng3d.ParticleVelocity());
-            // particleAnimator.addComponent(new ParticleAcceleration());
-            particleAnimator.particleGlobal.acceleration = new feng3d.Vector3D(0, -9.8, 0);
-            //通过函数来创建粒子初始状态
-            particleAnimator.addComponent(new feng3d.ParticleColor());
-            // particleAnimator.generateFunctions.push({
-            //     generate: (particle) =>
-            //     {
-            //         particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
-            //     }, priority: 0
-            // });
-        }
-        return ParticleObject3D;
-    }(feng3d.GameObject));
-    feng3d.ParticleObject3D = ParticleObject3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 点光源3D对象
-     * @author feng 2017-03-10
-     */
-    var PointLightObject3D = (function (_super) {
-        __extends(PointLightObject3D, _super);
-        function PointLightObject3D(name) {
-            if (name === void 0) { name = "PointLight"; }
-            _super.call(this, name);
-            //
-            var model = new feng3d.Model();
-            model.geometry = new feng3d.SphereGeometry(5);
-            var material = model.material = new feng3d.ColorMaterial();
-            this.addComponent(model);
-            //初始化点光源
-            var pointLight = new feng3d.PointLight();
-            this.addComponent(pointLight);
-            material.color = pointLight.color;
-            feng3d.Binding.bindProperty(pointLight, ["color"], material, "color");
-        }
-        return PointLightObject3D;
-    }(feng3d.GameObject));
-    feng3d.PointLightObject3D = PointLightObject3D;
+            return gameobject;
+        };
+        return GameObjectFactory;
+    }());
+    feng3d.GameObjectFactory = GameObjectFactory;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -16922,6 +16710,13 @@ var feng3d;
      * 初始化引擎
      */
     function initEngine() {
+        if (feng3d.initFunctions) {
+            for (var i = 0; i < feng3d.initFunctions.length; i++) {
+                var element = feng3d.initFunctions[i];
+                element();
+            }
+            delete feng3d.initFunctions;
+        }
         if (!isInit) {
             isInit = true;
             console.log("Feng3D version " + this.revision);
@@ -16933,13 +16728,6 @@ var feng3d;
             feng3d.defaultGeometry = new feng3d.CubeGeometry();
             feng3d.ticker = new feng3d.SystemTicker();
             feng3d.context3DPool = new feng3d.RenderBufferPool();
-        }
-        if (feng3d.initFunctions) {
-            for (var i = 0; i < feng3d.initFunctions.length; i++) {
-                var element = feng3d.initFunctions[i];
-                element();
-            }
-            delete feng3d.initFunctions;
         }
     }
     feng3d.initEngine = initEngine;
@@ -16958,13 +16746,10 @@ var feng3d;
             this.view3D = new feng3d.View3D(canvas);
             var scene = this.view3D.scene;
             scene.background.setTo(0.3, 0.3, 0.3);
-            var cube = new feng3d.GameObject();
-            var model = cube.getOrCreateComponentByClass(feng3d.Model);
-            model.geometry = new feng3d.CubeGeometry();
-            model.material = new feng3d.StandardMaterial();
+            var cube = feng3d.GameObjectFactory.createCube();
             cube.z = 300;
             scene.addChild(cube);
-            var gameObject = new feng3d.GameObject();
+            var gameObject = feng3d.GameObjectFactory.createPlane();
             gameObject.y = 150;
             gameObject.isBillboard = true;
             cube.addChild(gameObject);
@@ -17007,7 +16792,7 @@ var feng3d;
         ColorMaterialTest.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
-            var cube = new feng3d.CubeObject3D();
+            var cube = feng3d.GameObjectFactory.createCube();
             cube.z = 300;
             this.view3D.scene.addChild(cube);
             //初始化颜色材质
@@ -17037,11 +16822,11 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             //初始化颜色材质
-            var cube = new feng3d.CubeObject3D();
+            var cube = feng3d.GameObjectFactory.createCube();
             cube.z = 500;
             this.view3D.scene.addChild(cube);
             var colorMaterial = cube.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
-            var cylinder = new feng3d.CylinderObject3D();
+            var cylinder = feng3d.GameObjectFactory.createCylinder();
             cylinder.x = 200;
             cube.addChild(cylinder);
             //变化旋转与颜色
@@ -17081,19 +16866,19 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var scene3D = this.view3D.scene;
-            var cube = new feng3d.CubeObject3D();
+            var cube = feng3d.GameObjectFactory.createCube();
             scene3D.addChild(cube);
-            var plane = new feng3d.PlaneObject3D();
+            var plane = feng3d.GameObjectFactory.createPlane();
             plane.setPosition(150, 0, 0);
             plane.rotationX = 90;
             scene3D.addChild(plane);
-            sphere = new feng3d.SphereObject3D();
+            sphere = feng3d.GameObjectFactory.createSphere();
             sphere.setPosition(-150, 0, 0);
             scene3D.addChild(sphere);
-            var capsule = new feng3d.CapsuleObject3D();
+            var capsule = feng3d.GameObjectFactory.createCapsule();
             capsule.setPosition(300, 0, 0);
             scene3D.addChild(capsule);
-            var cylinder = new feng3d.CylinderObject3D();
+            var cylinder = feng3d.GameObjectFactory.createCylinder();
             cylinder.setPosition(-300, 0, 0);
             scene3D.addChild(cylinder);
         };
@@ -17214,24 +16999,23 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var scene3D = this.view3D.scene;
-            var cube = new feng3d.CubeObject3D();
-            cube.setPosition(0, 0, 0);
+            var cube = feng3d.GameObjectFactory.createCube();
             cube.mouseEnabled = true;
             scene3D.addChild(cube);
-            var plane = new feng3d.PlaneObject3D();
+            var plane = feng3d.GameObjectFactory.createPlane();
             plane.setPosition(150, 0, 0);
             plane.rotationX = 90;
             plane.mouseEnabled = true;
             scene3D.addChild(plane);
-            var sphere = new feng3d.SphereObject3D();
+            var sphere = feng3d.GameObjectFactory.createSphere();
             sphere.setPosition(-150, 0, 0);
             sphere.mouseEnabled = true;
             scene3D.addChild(sphere);
-            var capsule = new feng3d.CapsuleObject3D();
+            var capsule = feng3d.GameObjectFactory.createCapsule();
             capsule.setPosition(300, 0, 0);
             capsule.mouseEnabled = true;
             scene3D.addChild(capsule);
-            var cylinder = new feng3d.CylinderObject3D();
+            var cylinder = feng3d.GameObjectFactory.createCylinder();
             cylinder.setPosition(-300, 0, 0);
             cylinder.mouseEnabled = true;
             scene3D.addChild(cylinder);
@@ -17485,20 +17269,19 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var scene3D = this.view3D.scene;
-            var cube = new feng3d.CubeObject3D();
-            cube.setPosition(0, 0, 0);
+            var cube = feng3d.GameObjectFactory.createCube();
             scene3D.addChild(cube);
-            var plane = new feng3d.PlaneObject3D();
+            var plane = feng3d.GameObjectFactory.createPlane();
             plane.setPosition(150, 0, 0);
             plane.rotationX = 90;
             scene3D.addChild(plane);
-            var sphere = new feng3d.SphereObject3D();
+            var sphere = feng3d.GameObjectFactory.createSphere();
             sphere.setPosition(-150, 0, 0);
             scene3D.addChild(sphere);
-            var capsule = new feng3d.CapsuleObject3D();
+            var capsule = feng3d.GameObjectFactory.createCapsule();
             capsule.setPosition(300, 0, 0);
             scene3D.addChild(capsule);
-            var cylinder = new feng3d.CylinderObject3D();
+            var cylinder = feng3d.GameObjectFactory.createCylinder();
             cylinder.setPosition(-300, 0, 0);
             scene3D.addChild(cylinder);
         };

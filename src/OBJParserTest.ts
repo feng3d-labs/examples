@@ -27,8 +27,14 @@ module feng3d
             var objUrl = "resources/head.obj";
             var scene = this.view3D.scene;
 
+            // var material = new StandardMaterial();
+            // material.diffuseMethod.difuseTexture.url = "resources/head_diffuse.jpg";
+            // material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
+            // material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
+            var material = new ColorMaterial();
+
             var objLoader = new ObjLoader();
-            objLoader.load(objUrl, function (object3D: GameObject)
+            objLoader.load(objUrl, material, function (object3D: GameObject)
             {
                 object = object3D;
                 object.scaleX = 20;
@@ -37,6 +43,13 @@ module feng3d
                 object.z = 300;
                 scene.addChild(object3D);
             });
+
+            //初始化光源
+            var light1 = new GameObject();
+            var pointLight1 = new DirectionalLight();
+            pointLight1.color = new Color(0, 1, 0, 1);
+            light1.addComponent(pointLight1);
+            scene.addChild(light1);
         }
     }
     var object: GameObject;

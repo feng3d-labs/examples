@@ -15967,64 +15967,65 @@ var feng3d;
      * Obj模型加载类
      * @author feng 2017-01-18
      */
-    var ObjLoader = (function (_super) {
-        __extends(ObjLoader, _super);
+    var ObjLoader = (function () {
         function ObjLoader() {
-            _super.apply(this, arguments);
         }
         /**
          * 加载资源
          * @param url   路径
          */
-        ObjLoader.prototype.load = function (url, completed) {
+        ObjLoader.prototype.load = function (url, material, completed) {
             if (completed === void 0) { completed = null; }
-            this._url = url;
             this._completed = completed;
+            this._url = url;
+            this._material = material;
             var loader = new feng3d.Loader();
-            loader.addEventListener(feng3d.LoaderEvent.COMPLETE, function (e) {
-                var objData = this._objData = feng3d.OBJParser.parser(e.data.content);
-                var mtl = objData.mtl;
-                if (mtl) {
-                    var mtlRoot = url.substring(0, url.lastIndexOf("/") + 1);
-                    var mtlLoader = new feng3d.Loader();
-                    mtlLoader.loadText(mtlRoot + mtl);
-                    mtlLoader.addEventListener(feng3d.LoaderEvent.COMPLETE, function (e) {
-                        var mtlData = this._mtlData = feng3d.MtlParser.parser(e.data.content);
-                        this.createObj();
-                    }, this);
-                }
-                else {
-                    this.createObj();
-                }
-            }, this);
+            loader.addEventListener(feng3d.LoaderEvent.COMPLETE, this.onComplete, this);
             loader.loadText(url);
         };
-        ObjLoader.prototype.createObj = function () {
+        ObjLoader.prototype.onComplete = function (e) {
+            var objData = this._objData = feng3d.OBJParser.parser(e.data.content);
+            var mtl = objData.mtl;
+            if (mtl) {
+                var mtlRoot = this._url.substring(0, this._url.lastIndexOf("/") + 1);
+                var mtlLoader = new feng3d.Loader();
+                mtlLoader.loadText(mtlRoot + mtl);
+                mtlLoader.addEventListener(feng3d.LoaderEvent.COMPLETE, function (e) {
+                    var mtlData = this._mtlData = feng3d.MtlParser.parser(e.data.content);
+                    this.createObj(this._material);
+                }, this);
+            }
+            else {
+                this.createObj(this._material);
+            }
+        };
+        ObjLoader.prototype.createObj = function (material) {
             var object = new feng3d.GameObject();
             var objData = this._objData;
             var objs = objData.objs;
             for (var i = 0; i < objs.length; i++) {
                 var obj = objs[i];
-                var object3D = this.createSubObj(obj);
+                var object3D = this.createSubObj(obj, material);
                 object.addChild(object3D);
             }
             if (this._completed) {
                 this._completed(object);
             }
         };
-        ObjLoader.prototype.createSubObj = function (obj) {
+        ObjLoader.prototype.createSubObj = function (obj, material) {
             var object3D = new feng3d.GameObject(obj.name);
             var vertex = new Float32Array(obj.vertex);
             var subObjs = obj.subObjs;
             for (var i = 0; i < subObjs.length; i++) {
-                var materialObj = this.createMaterialObj(vertex, subObjs[i]);
+                var materialObj = this.createMaterialObj(vertex, subObjs[i], material);
                 object3D.addChild(materialObj);
             }
             return object3D;
         };
-        ObjLoader.prototype.createMaterialObj = function (vertex, subObj) {
+        ObjLoader.prototype.createMaterialObj = function (vertex, subObj, material) {
             var object3D = new feng3d.GameObject();
             var model = object3D.getOrCreateComponentByClass(feng3d.Model);
+            model.material = material || new feng3d.ColorMaterial();
             var geometry = model.geometry = new feng3d.Geometry();
             geometry.setVAData(feng3d.GLAttribute.a_position, vertex, 3);
             var faces = subObj.faces;
@@ -16037,18 +16038,19 @@ var feng3d;
                 }
             }
             geometry.setIndices(new Uint16Array(indices));
-            var material = object3D.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
             if (this._mtlData && this._mtlData[subObj.material]) {
                 var materialInfo = this._mtlData[subObj.material];
                 var kd = materialInfo.kd;
-                material.color.r = kd[0];
-                material.color.g = kd[1];
-                material.color.b = kd[2];
+                var colorMaterial = new feng3d.ColorMaterial();
+                colorMaterial.color.r = kd[0];
+                colorMaterial.color.g = kd[1];
+                colorMaterial.color.b = kd[2];
+                model.material = colorMaterial;
             }
             return object3D;
         };
         return ObjLoader;
-    }(feng3d.Loader));
+    }());
     feng3d.ObjLoader = ObjLoader;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -17048,8 +17050,13 @@ var feng3d;
             // var objUrl = "resources/cube.obj";
             var objUrl = "resources/head.obj";
             var scene = this.view3D.scene;
+            // var material = new StandardMaterial();
+            // material.diffuseMethod.difuseTexture.url = "resources/head_diffuse.jpg";
+            // material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
+            // material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
+            var material = new feng3d.ColorMaterial();
             var objLoader = new feng3d.ObjLoader();
-            objLoader.load(objUrl, function (object3D) {
+            objLoader.load(objUrl, material, function (object3D) {
                 object = object3D;
                 object.scaleX = 20;
                 object.scaleY = 20;
@@ -17057,6 +17064,12 @@ var feng3d;
                 object.z = 300;
                 scene.addChild(object3D);
             });
+            //初始化光源
+            var light1 = new feng3d.GameObject();
+            var pointLight1 = new feng3d.DirectionalLight();
+            pointLight1.color = new feng3d.Color(0, 1, 0, 1);
+            light1.addComponent(pointLight1);
+            scene.addChild(light1);
         };
         return OBJParserTest;
     }());

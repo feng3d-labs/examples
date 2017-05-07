@@ -6797,25 +6797,26 @@ var feng3d;
             //更新数据
             object3D.updateRender(renderContext);
             var gl = renderContext.gl;
-            try {
-                //绘制
-                var material = meshRenderer.material;
-                if (material.enableBlend) {
-                    //
-                    gl.enable(feng3d.GL.BLEND);
-                    gl.blendEquation(material.blendEquation);
-                    gl.depthMask(false);
-                    gl.blendFunc(material.sfactor, material.dfactor);
-                }
-                else {
-                    gl.disable(feng3d.GL.BLEND);
-                    gl.depthMask(true);
-                }
-                this.drawObject3D(gl, object3D.renderData); //
+            // try
+            // {
+            //绘制
+            var material = meshRenderer.material;
+            if (material.enableBlend) {
+                //
+                gl.enable(feng3d.GL.BLEND);
+                gl.blendEquation(material.blendEquation);
+                gl.depthMask(false);
+                gl.blendFunc(material.sfactor, material.dfactor);
             }
-            catch (error) {
-                console.log(error);
+            else {
+                gl.disable(feng3d.GL.BLEND);
+                gl.depthMask(true);
             }
+            this.drawObject3D(gl, object3D.renderData); //
+            // } catch (error)
+            // {
+            //     console.log(error);
+            // }
         };
         /**
          * 绘制3D对象
@@ -9001,6 +9002,7 @@ var feng3d;
              */
             this._attributes = {};
             this._geometryInvalid = true;
+            this._useFaceWeights = false;
             this._scaleU = 1;
             this._scaleV = 1;
             this._single = true;
@@ -9010,19 +9012,49 @@ var feng3d;
              * 坐标数据
              */
             get: function () {
-                this.updateGrometry();
-                var positionData = this._attributes[feng3d.GLAttribute.a_position];
-                return positionData && positionData.data;
+                return this.getVAData1(feng3d.GLAttribute.a_position);
             },
             set: function (value) {
-                if (value) {
-                    var positionData = this._attributes[feng3d.GLAttribute.a_position] = this._attributes[feng3d.GLAttribute.a_position] || new feng3d.AttributeRenderData(value, 3);
-                    ;
-                    positionData.data = value;
-                }
-                else {
-                    delete this._attributes[feng3d.GLAttribute.a_position];
-                }
+                this.setVAData(feng3d.GLAttribute.a_position, value, 3);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Geometry.prototype, "uvs", {
+            /**
+             * uv数据
+             */
+            get: function () {
+                return this.getVAData1(feng3d.GLAttribute.a_uv);
+            },
+            set: function (value) {
+                this.setVAData(feng3d.GLAttribute.a_uv, value, 2);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Geometry.prototype, "normals", {
+            /**
+             * 法线数据
+             */
+            get: function () {
+                return this.getVAData1(feng3d.GLAttribute.a_normal);
+            },
+            set: function (value) {
+                this.setVAData(feng3d.GLAttribute.a_normal, value, 3);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Geometry.prototype, "tangents", {
+            /**
+             * 切线数据
+             */
+            get: function () {
+                return this.getVAData1(feng3d.GLAttribute.a_tangent);
+            },
+            set: function (value) {
+                this.setVAData(feng3d.GLAttribute.a_tangent, value, 3);
             },
             enumerable: true,
             configurable: true
@@ -9060,6 +9092,16 @@ var feng3d;
          */
         Geometry.prototype.buildGeometry = function () {
         };
+        Object.defineProperty(Geometry.prototype, "indices", {
+            /**
+             * 索引数据
+             */
+            get: function () {
+                return this._indexBuffer && this._indexBuffer.indices;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新顶点索引数据
          */
@@ -9083,7 +9125,14 @@ var feng3d;
          * @param stride        顶点数据步长
          */
         Geometry.prototype.setVAData = function (vaId, data, stride) {
-            this._attributes[vaId] = new feng3d.AttributeRenderData(data, stride);
+            if (data) {
+                if (!this._attributes[vaId])
+                    this._attributes[vaId] = new feng3d.AttributeRenderData(data, stride);
+                this._attributes[vaId].data = data;
+            }
+            else {
+                delete this._attributes[vaId];
+            }
             this.invalidateRenderData();
             this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_VA_DATA, vaId));
         };
@@ -9093,8 +9142,18 @@ var feng3d;
          * @return 顶点属性数据
          */
         Geometry.prototype.getVAData = function (vaId) {
+            this.updateGrometry();
             this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.GET_VA_DATA, vaId));
             return this._attributes[vaId];
+        };
+        /**
+         * 获取顶点属性数据
+         * @param vaId 数据类型编号
+         * @return 顶点属性数据
+         */
+        Geometry.prototype.getVAData1 = function (vaId) {
+            var attributeRenderData = this.getVAData(vaId);
+            return attributeRenderData && attributeRenderData.data;
         };
         Object.defineProperty(Geometry.prototype, "numVertex", {
             /**
@@ -9280,6 +9339,22 @@ var feng3d;
             this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.BOUNDS_INVALID));
         };
         /**
+         * 创建顶点法线
+         */
+        Geometry.prototype.createVertexNormals = function () {
+            //生成法线
+            var normals = feng3d.GeometryUtils.createVertexNormals(this.indices, this.positions, this._useFaceWeights);
+            this.normals = new Float32Array(normals);
+        };
+        /**
+         * 创建顶点切线
+         */
+        Geometry.prototype.createVertexTangents = function () {
+            //生成法线
+            var tangents = feng3d.GeometryUtils.createVertexTangents(this.indices, this.positions, this.uvs, this._useFaceWeights);
+            this.tangents = new Float32Array(tangents);
+        };
+        /**
          * 克隆一个几何体
          */
         Geometry.prototype.clone = function () {
@@ -9343,11 +9418,11 @@ var feng3d;
     var GeometryUtils = (function () {
         function GeometryUtils() {
         }
-        GeometryUtils.createFaceNormals = function (_indices, vertices, _useFaceWeights) {
-            if (_useFaceWeights === void 0) { _useFaceWeights = false; }
+        GeometryUtils.createFaceNormals = function (indices, positions, useFaceWeights) {
+            if (useFaceWeights === void 0) { useFaceWeights = false; }
             var i = 0, j = 0, k = 0;
             var index = 0;
-            var len = _indices.length;
+            var len = indices.length;
             var x1 = 0, x2 = 0, x3 = 0;
             var y1 = 0, y2 = 0, y3 = 0;
             var z1 = 0, z2 = 0, z3 = 0;
@@ -9356,22 +9431,22 @@ var feng3d;
             var cx = 0, cy = 0, cz = 0;
             var d = 0;
             var posStride = 3;
-            var _faceNormals = new Array(len);
-            if (_useFaceWeights)
-                var _faceWeights = new Array(len / 3);
+            var faceNormals = new Array(len);
+            if (useFaceWeights)
+                var faceWeights = new Array(len / 3);
             while (i < len) {
-                index = _indices[i++] * posStride;
-                x1 = vertices[index];
-                y1 = vertices[index + 1];
-                z1 = vertices[index + 2];
-                index = _indices[i++] * posStride;
-                x2 = vertices[index];
-                y2 = vertices[index + 1];
-                z2 = vertices[index + 2];
-                index = _indices[i++] * posStride;
-                x3 = vertices[index];
-                y3 = vertices[index + 1];
-                z3 = vertices[index + 2];
+                index = indices[i++] * posStride;
+                x1 = positions[index];
+                y1 = positions[index + 1];
+                z1 = positions[index + 2];
+                index = indices[i++] * posStride;
+                x2 = positions[index];
+                y2 = positions[index + 1];
+                z2 = positions[index + 2];
+                index = indices[i++] * posStride;
+                x3 = positions[index];
+                y3 = positions[index + 1];
+                z3 = positions[index + 2];
                 dx1 = x3 - x1;
                 dy1 = y3 - y1;
                 dz1 = z3 - z1;
@@ -9382,27 +9457,27 @@ var feng3d;
                 cy = dx1 * dz2 - dz1 * dx2;
                 cz = dy1 * dx2 - dx1 * dy2;
                 d = Math.sqrt(cx * cx + cy * cy + cz * cz);
-                if (_useFaceWeights) {
+                if (useFaceWeights) {
                     var w = d * 10000;
                     if (w < 1)
                         w = 1;
-                    _faceWeights[k++] = w;
+                    faceWeights[k++] = w;
                 }
                 d = 1 / d;
-                _faceNormals[j++] = cx * d;
-                _faceNormals[j++] = cy * d;
-                _faceNormals[j++] = cz * d;
+                faceNormals[j++] = cx * d;
+                faceNormals[j++] = cy * d;
+                faceNormals[j++] = cz * d;
             }
-            return { faceNormals: _faceNormals, faceWeights: _faceWeights };
+            return { faceNormals: faceNormals, faceWeights: faceWeights };
         };
-        GeometryUtils.createVertexNormals = function (_indices, vertices, _useFaceWeights) {
-            if (_useFaceWeights === void 0) { _useFaceWeights = false; }
-            var faceNormalsResult = GeometryUtils.createFaceNormals(_indices, vertices, _useFaceWeights);
-            var _faceWeights = faceNormalsResult.faceWeights;
-            var _faceNormals = faceNormalsResult.faceNormals;
+        GeometryUtils.createVertexNormals = function (_indices, positions, useFaceWeights) {
+            if (useFaceWeights === void 0) { useFaceWeights = false; }
+            var faceNormalsResult = GeometryUtils.createFaceNormals(_indices, positions, useFaceWeights);
+            var faceWeights = faceNormalsResult.faceWeights;
+            var faceNormals = faceNormalsResult.faceNormals;
             var v1 = 0;
             var f1 = 0, f2 = 1, f3 = 2;
-            var lenV = vertices.length;
+            var lenV = positions.length;
             var normalStride = 3;
             var normalOffset = 0;
             var normals = new Array(lenV);
@@ -9418,19 +9493,19 @@ var feng3d;
             var index = 0;
             var weight = 0;
             while (i < lenI) {
-                weight = _useFaceWeights ? _faceWeights[k++] : 1;
+                weight = useFaceWeights ? faceWeights[k++] : 1;
                 index = normalOffset + _indices[i++] * normalStride;
-                normals[index++] += _faceNormals[f1] * weight;
-                normals[index++] += _faceNormals[f2] * weight;
-                normals[index] += _faceNormals[f3] * weight;
+                normals[index++] += faceNormals[f1] * weight;
+                normals[index++] += faceNormals[f2] * weight;
+                normals[index] += faceNormals[f3] * weight;
                 index = normalOffset + _indices[i++] * normalStride;
-                normals[index++] += _faceNormals[f1] * weight;
-                normals[index++] += _faceNormals[f2] * weight;
-                normals[index] += _faceNormals[f3] * weight;
+                normals[index++] += faceNormals[f1] * weight;
+                normals[index++] += faceNormals[f2] * weight;
+                normals[index] += faceNormals[f3] * weight;
                 index = normalOffset + _indices[i++] * normalStride;
-                normals[index++] += _faceNormals[f1] * weight;
-                normals[index++] += _faceNormals[f2] * weight;
-                normals[index] += _faceNormals[f3] * weight;
+                normals[index++] += faceNormals[f1] * weight;
+                normals[index++] += faceNormals[f2] * weight;
+                normals[index] += faceNormals[f3] * weight;
                 f1 += 3;
                 f2 += 3;
                 f3 += 3;
@@ -9448,13 +9523,13 @@ var feng3d;
             }
             return normals;
         };
-        GeometryUtils.createVertexTangents = function (_indices, vertices, uvs, _useFaceWeights) {
+        GeometryUtils.createVertexTangents = function (indices, positions, uvs, _useFaceWeights) {
             if (_useFaceWeights === void 0) { _useFaceWeights = false; }
-            var faceTangentsResult = GeometryUtils.createFaceTangents(_indices, vertices, uvs);
-            var _faceWeights = faceTangentsResult.faceWeights;
-            var _faceTangents = faceTangentsResult.faceTangents;
+            var faceTangentsResult = GeometryUtils.createFaceTangents(indices, positions, uvs);
+            var faceWeights = faceTangentsResult.faceWeights;
+            var faceTangents = faceTangentsResult.faceTangents;
             var i = 0;
-            var lenV = vertices.length;
+            var lenV = positions.length;
             var tangentStride = 3;
             var tangentOffset = 0;
             var target = new Array(lenV);
@@ -9466,25 +9541,25 @@ var feng3d;
                 i += tangentStride;
             }
             var k = 0;
-            var lenI = _indices.length;
+            var lenI = indices.length;
             var index = 0;
             var weight = 0;
             var f1 = 0, f2 = 1, f3 = 2;
             i = 0;
             while (i < lenI) {
-                weight = _useFaceWeights ? _faceWeights[k++] : 1;
-                index = tangentOffset + _indices[i++] * tangentStride;
-                target[index++] += _faceTangents[f1] * weight;
-                target[index++] += _faceTangents[f2] * weight;
-                target[index] += _faceTangents[f3] * weight;
-                index = tangentOffset + _indices[i++] * tangentStride;
-                target[index++] += _faceTangents[f1] * weight;
-                target[index++] += _faceTangents[f2] * weight;
-                target[index] += _faceTangents[f3] * weight;
-                index = tangentOffset + _indices[i++] * tangentStride;
-                target[index++] += _faceTangents[f1] * weight;
-                target[index++] += _faceTangents[f2] * weight;
-                target[index] += _faceTangents[f3] * weight;
+                weight = _useFaceWeights ? faceWeights[k++] : 1;
+                index = tangentOffset + indices[i++] * tangentStride;
+                target[index++] += faceTangents[f1] * weight;
+                target[index++] += faceTangents[f2] * weight;
+                target[index] += faceTangents[f3] * weight;
+                index = tangentOffset + indices[i++] * tangentStride;
+                target[index++] += faceTangents[f1] * weight;
+                target[index++] += faceTangents[f2] * weight;
+                target[index] += faceTangents[f3] * weight;
+                index = tangentOffset + indices[i++] * tangentStride;
+                target[index++] += faceTangents[f1] * weight;
+                target[index++] += faceTangents[f2] * weight;
+                target[index] += faceTangents[f3] * weight;
                 f1 += 3;
                 f2 += 3;
                 f3 += 3;
@@ -9502,11 +9577,11 @@ var feng3d;
             }
             return target;
         };
-        GeometryUtils.createFaceTangents = function (_indices, vertices, uvs, _useFaceWeights) {
-            if (_useFaceWeights === void 0) { _useFaceWeights = false; }
+        GeometryUtils.createFaceTangents = function (indices, positions, uvs, useFaceWeights) {
+            if (useFaceWeights === void 0) { useFaceWeights = false; }
             var i = 0, k = 0;
             var index1 = 0, index2 = 0, index3 = 0;
-            var len = _indices.length;
+            var len = indices.length;
             var ui = 0, vi = 0;
             var v0 = 0;
             var dv1 = 0, dv2 = 0;
@@ -9519,13 +9594,13 @@ var feng3d;
             var posOffset = 0;
             var texStride = 2;
             var texOffset = 0;
-            var _faceTangents = new Array(_indices.length);
-            if (_useFaceWeights)
-                var _faceWeights = new Array(len / 3);
+            var faceTangents = new Array(indices.length);
+            if (useFaceWeights)
+                var faceWeights = new Array(len / 3);
             while (i < len) {
-                index1 = _indices[i];
-                index2 = _indices[i + 1];
-                index3 = _indices[i + 2];
+                index1 = indices[i];
+                index2 = indices[i + 1];
+                index3 = indices[i + 2];
                 ui = texOffset + index1 * texStride + 1;
                 v0 = uvs[ui];
                 ui = texOffset + index2 * texStride + 1;
@@ -9533,33 +9608,33 @@ var feng3d;
                 ui = texOffset + index3 * texStride + 1;
                 dv2 = uvs[ui] - v0;
                 vi = posOffset + index1 * posStride;
-                x0 = vertices[vi];
-                y0 = vertices[vi + 1];
-                z0 = vertices[vi + 2];
+                x0 = positions[vi];
+                y0 = positions[vi + 1];
+                z0 = positions[vi + 2];
                 vi = posOffset + index2 * posStride;
-                dx1 = vertices[vi] - x0;
-                dy1 = vertices[vi + 1] - y0;
-                dz1 = vertices[vi + 2] - z0;
+                dx1 = positions[vi] - x0;
+                dy1 = positions[vi + 1] - y0;
+                dz1 = positions[vi + 2] - z0;
                 vi = posOffset + index3 * posStride;
-                dx2 = vertices[vi] - x0;
-                dy2 = vertices[vi + 1] - y0;
-                dz2 = vertices[vi + 2] - z0;
+                dx2 = positions[vi] - x0;
+                dy2 = positions[vi + 1] - y0;
+                dz2 = positions[vi + 2] - z0;
                 cx = dv2 * dx1 - dv1 * dx2;
                 cy = dv2 * dy1 - dv1 * dy2;
                 cz = dv2 * dz1 - dv1 * dz2;
                 denom = Math.sqrt(cx * cx + cy * cy + cz * cz);
-                if (_useFaceWeights) {
+                if (useFaceWeights) {
                     var w = denom * 10000;
                     if (w < 1)
                         w = 1;
-                    _faceWeights[k++] = w;
+                    faceWeights[k++] = w;
                 }
                 denom = 1 / denom;
-                _faceTangents[i++] = denom * cx;
-                _faceTangents[i++] = denom * cy;
-                _faceTangents[i++] = denom * cz;
+                faceTangents[i++] = denom * cx;
+                faceTangents[i++] = denom * cy;
+                faceTangents[i++] = denom * cz;
             }
-            return { faceTangents: _faceTangents, faceWeights: _faceWeights };
+            return { faceTangents: faceTangents, faceWeights: faceWeights };
         };
         return GeometryUtils;
     }());
@@ -16015,19 +16090,23 @@ var feng3d;
         ObjLoader.prototype.createSubObj = function (obj, material) {
             var object3D = new feng3d.GameObject(obj.name);
             var vertex = new Float32Array(obj.vertex);
+            var normals = new Float32Array(obj.vn);
+            var uvs = new Float32Array(obj.vt);
             var subObjs = obj.subObjs;
             for (var i = 0; i < subObjs.length; i++) {
-                var materialObj = this.createMaterialObj(vertex, subObjs[i], material);
+                var materialObj = this.createMaterialObj(vertex, normals, uvs, subObjs[i], material);
                 object3D.addChild(materialObj);
             }
             return object3D;
         };
-        ObjLoader.prototype.createMaterialObj = function (vertex, subObj, material) {
+        ObjLoader.prototype.createMaterialObj = function (vertex, normals, uvs, subObj, material) {
             var object3D = new feng3d.GameObject();
             var model = object3D.getOrCreateComponentByClass(feng3d.Model);
             model.material = material || new feng3d.ColorMaterial();
             var geometry = model.geometry = new feng3d.Geometry();
             geometry.setVAData(feng3d.GLAttribute.a_position, vertex, 3);
+            geometry.setVAData(feng3d.GLAttribute.a_normal, normals, 3);
+            geometry.setVAData(feng3d.GLAttribute.a_uv, uvs, 2);
             var faces = subObj.faces;
             var indices = [];
             for (var i = 0; i < faces.length; i++) {
@@ -16038,6 +16117,7 @@ var feng3d;
                 }
             }
             geometry.setIndices(new Uint16Array(indices));
+            geometry.createVertexTangents();
             if (this._mtlData && this._mtlData[subObj.material]) {
                 var materialInfo = this._mtlData[subObj.material];
                 var kd = materialInfo.kd;
@@ -16254,9 +16334,7 @@ var feng3d;
             //更新顶点坐标与uv数据
             geometry.setVAData(feng3d.GLAttribute.a_position, new Float32Array(vertices), 3);
             geometry.setVAData(feng3d.GLAttribute.a_uv, new Float32Array(uvs), 2);
-            //生成法线
-            var normals = feng3d.GeometryUtils.createVertexNormals(indices, vertices);
-            geometry.setVAData(feng3d.GLAttribute.a_normal, new Float32Array(normals), 3);
+            geometry.createVertexNormals();
             //
             var tangents = feng3d.GeometryUtils.createVertexTangents(indices, vertices, uvs);
             geometry.setVAData(feng3d.GLAttribute.a_tangent, new Float32Array(tangents), 3);
@@ -17050,11 +17128,11 @@ var feng3d;
             // var objUrl = "resources/cube.obj";
             var objUrl = "resources/head.obj";
             var scene = this.view3D.scene;
-            // var material = new StandardMaterial();
-            // material.diffuseMethod.difuseTexture.url = "resources/head_diffuse.jpg";
-            // material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
-            // material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
-            var material = new feng3d.ColorMaterial();
+            var material = new feng3d.StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = "resources/head_diffuse.jpg";
+            material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
+            material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
+            // var material = new ColorMaterial();
             var objLoader = new feng3d.ObjLoader();
             objLoader.load(objUrl, material, function (object3D) {
                 object = object3D;
@@ -17066,7 +17144,7 @@ var feng3d;
             });
             //初始化光源
             var light1 = new feng3d.GameObject();
-            var pointLight1 = new feng3d.DirectionalLight();
+            var pointLight1 = new feng3d.PointLight();
             pointLight1.color = new feng3d.Color(0, 1, 0, 1);
             light1.addComponent(pointLight1);
             scene.addChild(light1);

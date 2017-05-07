@@ -68,16 +68,19 @@ module feng3d
         {
             var object3D = new GameObject(obj.name);
             var vertex = new Float32Array(obj.vertex);
+            var normals = new Float32Array(obj.vn);
+            var uvs = new Float32Array(obj.vt);
+
             var subObjs = obj.subObjs;
             for (var i = 0; i < subObjs.length; i++)
             {
-                var materialObj = this.createMaterialObj(vertex, subObjs[i], material);
+                var materialObj = this.createMaterialObj(vertex, normals, uvs, subObjs[i], material);
                 object3D.addChild(materialObj);
             }
             return object3D;
         }
 
-        private createMaterialObj(vertex: Float32Array, subObj: OBJ_SubOBJ, material: Material)
+        private createMaterialObj(vertex: Float32Array, normals: Float32Array, uvs: Float32Array, subObj: OBJ_SubOBJ, material: Material)
         {
             var object3D = new GameObject();
             var model = object3D.getOrCreateComponentByClass(Model);
@@ -85,6 +88,8 @@ module feng3d
 
             var geometry = model.geometry = new Geometry();
             geometry.setVAData(GLAttribute.a_position, vertex, 3);
+            geometry.setVAData(GLAttribute.a_normal, normals, 3);
+            geometry.setVAData(GLAttribute.a_uv, uvs, 2);
 
             var faces = subObj.faces;
 
@@ -99,6 +104,8 @@ module feng3d
                 }
             }
             geometry.setIndices(new Uint16Array(indices));
+            geometry.createVertexTangents();
+
             if (this._mtlData && this._mtlData[subObj.material])
             {
                 var materialInfo = this._mtlData[subObj.material];

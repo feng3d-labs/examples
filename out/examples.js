@@ -15663,7 +15663,7 @@ var feng3d;
             currentObj.vn.push({ x: parseFloat(result[1]), y: parseFloat(result[2]), z: parseFloat(result[3]) });
         }
         else if ((result = vtReg.exec(line)) && result[0] == line) {
-            currentObj.vt.push({ u: parseFloat(result[1]), v: parseFloat(result[2]), s: parseFloat(result[3]) });
+            currentObj.vt.push({ u: parseFloat(result[1]), v: 1 - parseFloat(result[2]), s: parseFloat(result[3]) });
         }
         else if ((result = gReg.exec(line)) && result[0] == line) {
             if (currentSubObj == null) {

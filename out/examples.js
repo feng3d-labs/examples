@@ -17089,6 +17089,12 @@ var feng3d;
                     skeletonAnimator.play();
                 });
             });
+            //初始化光源
+            var light1 = new feng3d.GameObject();
+            var pointLight1 = new feng3d.PointLight();
+            pointLight1.color = new feng3d.Color(0, 1, 0, 1);
+            light1.addComponent(pointLight1);
+            scene.addChild(light1);
         };
         MD5LoaderTest.prototype.useMatrial = function (object3D, imageUrl) {
             var material = new feng3d.StandardMaterial();

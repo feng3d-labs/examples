@@ -52,6 +52,13 @@ module feng3d
                     skeletonAnimator.play();
                 });
             });
+
+            //初始化光源
+            var light1 = new GameObject();
+            var pointLight1 = new PointLight();
+            pointLight1.color = new Color(0, 1, 0, 1);
+            light1.addComponent(pointLight1);
+            scene.addChild(light1);
         }
 
         private useMatrial(object3D: GameObject, imageUrl: string)

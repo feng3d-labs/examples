@@ -67,43 +67,55 @@ module feng3d
         private createSubObj(obj: OBJ_OBJ, material: Material)
         {
             var object3D = new GameObject(obj.name);
-            var vertex = new Float32Array(obj.vertex);
-            var normals = new Float32Array(obj.vn);
-            var uvs = new Float32Array(obj.vt);
 
             var subObjs = obj.subObjs;
             for (var i = 0; i < subObjs.length; i++)
             {
-                var materialObj = this.createMaterialObj(vertex, normals, uvs, subObjs[i], material);
+                var materialObj = this.createMaterialObj(obj, subObjs[i], material);
                 object3D.addChild(materialObj);
             }
             return object3D;
         }
 
-        private createMaterialObj(vertex: Float32Array, normals: Float32Array, uvs: Float32Array, subObj: OBJ_SubOBJ, material: Material)
+        private _vertices: {x: number;y: number;z: number;}[];
+        private _vertexNormals :{x: number;y: number;z: number;}[];
+        private _uvs:{u:number,v:number,s:number}[];
+        private _realIndices:string[];
+        private _vertexIndex:number;
+        
+        private createMaterialObj(obj: OBJ_OBJ, subObj: OBJ_SubOBJ, material: Material)
         {
             var object3D = new GameObject();
             var model = object3D.getOrCreateComponentByClass(Model);
             model.material = material || new ColorMaterial();
 
+            this._vertices = obj.vertex;
+            this._vertexNormals = obj.vn;
+            this._uvs = obj.vt;
+
             var geometry = model.geometry = new Geometry();
-            geometry.setVAData(GLAttribute.a_position, vertex, 3);
-            geometry.setVAData(GLAttribute.a_normal, normals, 3);
-            geometry.setVAData(GLAttribute.a_uv, uvs, 2);
-
+            var vertices: number[] = [];
+            var normals: number[] = [];
+            var uvs: number[] = [];
+            this._realIndices = [];
+            this._vertexIndex = 0;
             var faces = subObj.faces;
-
             var indices: number[] = [];
             for (var i = 0; i < faces.length; i++)
             {
-                var vertexIndices = faces[i].vertexIndices;
-                indices.push(vertexIndices[0] - 1, vertexIndices[1] - 1, vertexIndices[2] - 1);
-                if (vertexIndices.length == 4)
+                var face = faces[i];
+                var numVerts = face.indexIds.length - 1;
+                for (var j = 1; j < numVerts; ++j)
                 {
-                    indices.push(vertexIndices[2] - 1, vertexIndices[3] - 1, vertexIndices[0] - 1);
+                    this.translateVertexData(face, j, vertices, uvs, indices, normals);
+                    this.translateVertexData(face, 0, vertices, uvs, indices, normals);
+                    this.translateVertexData(face, j + 1, vertices, uvs, indices, normals);
                 }
             }
             geometry.setIndices(new Uint16Array(indices));
+            geometry.setVAData(GLAttribute.a_position, new Float32Array(vertices), 3);
+            geometry.setVAData(GLAttribute.a_normal, new Float32Array(normals), 3);
+            geometry.setVAData(GLAttribute.a_uv, new Float32Array(uvs), 2);
             geometry.createVertexTangents();
 
             if (this._mtlData && this._mtlData[subObj.material])
@@ -117,6 +129,51 @@ module feng3d
                 model.material = colorMaterial;
             }
             return object3D;
+        }
+
+        private translateVertexData(face: OBJ_Face, vertexIndex: number, vertices: Array<number>, uvs: Array<number>, indices: Array<number>, normals: Array<number>)
+        {
+            var index: number;
+            var vertex: {x: number;y: number;z: number;};
+            var vertexNormal: {x: number;y: number;z: number;};
+            var uv: {u:number,v:number,s:number};
+            if (!this._realIndices[face.indexIds[vertexIndex]])
+            {
+                index = this._vertexIndex;
+                this._realIndices[face.indexIds[vertexIndex]] = ++this._vertexIndex;
+                vertex = this._vertices[face.vertexIndices[vertexIndex] - 1];
+                vertices.push(vertex.x, vertex.y, vertex.z);
+                if (face.normalIndices.length > 0)
+                {
+                    vertexNormal = this._vertexNormals[face.normalIndices[vertexIndex] - 1];
+                    normals.push(vertexNormal.x, vertexNormal.y, vertexNormal.z);
+                }
+                if (face.uvIndices.length > 0)
+                {
+                    try 
+                    {
+                        uv = this._uvs[face.uvIndices[vertexIndex] - 1];
+                        uvs.push(uv.u, uv.v);
+                    }
+                    catch (e)
+                    {
+                        switch (vertexIndex)
+                        {
+                            case 0:
+                                uvs.push(0, 1);
+                                break;
+                            case 1:
+                                uvs.push(.5, 0);
+                                break;
+                            case 2:
+                                uvs.push(1, 1);
+                        }
+                    }
+                }
+            }
+            else
+                index = this._realIndices[face.indexIds[vertexIndex]] - 1;
+            indices.push(index);
         }
     }
 }

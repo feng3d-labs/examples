@@ -15630,7 +15630,7 @@ var feng3d;
     /** 面正则 vertex */
     var faceVReg = /f\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
     /** 面正则 vertex/uv/normal */
-    var faceVUNReg = /f\s+(\d+)\/(\d+)\/(\d+)\s+(\d+)\/(\d+)\/(\d+)\s+(\d+)\/(\d+)\/(\d+)/;
+    var faceVUNReg = /f\s+((\d+)\/(\d+)\/(\d+))\s+((\d+)\/(\d+)\/(\d+))\s+((\d+)\/(\d+)\/(\d+))/;
     var gReg = /g\s+(\w+)/;
     var sReg = /s\s+(\w+)/;
     //
@@ -15657,13 +15657,13 @@ var feng3d;
                 currentObj = { name: "", vertex: [], subObjs: [], vn: [], vt: [] };
                 objData.objs.push(currentObj);
             }
-            currentObj.vertex.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
+            currentObj.vertex.push({ x: parseFloat(result[1]), y: parseFloat(result[2]), z: parseFloat(result[3]) });
         }
         else if ((result = vnReg.exec(line)) && result[0] == line) {
-            currentObj.vn.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
+            currentObj.vn.push({ x: parseFloat(result[1]), y: parseFloat(result[2]), z: parseFloat(result[3]) });
         }
         else if ((result = vtReg.exec(line)) && result[0] == line) {
-            currentObj.vt.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
+            currentObj.vt.push({ u: parseFloat(result[1]), v: parseFloat(result[2]), s: parseFloat(result[3]) });
         }
         else if ((result = gReg.exec(line)) && result[0] == line) {
             if (currentSubObj == null) {
@@ -15681,14 +15681,16 @@ var feng3d;
         }
         else if ((result = faceVReg.exec(line)) && result[0] == line) {
             currentSubObj.faces.push({
+                indexIds: [result[1], result[2], result[3], result[3]],
                 vertexIndices: [parseInt(result[1]), parseInt(result[2]), parseInt(result[3]), parseInt(result[4])]
             });
         }
         else if ((result = faceVUNReg.exec(line)) && result[0] == line) {
             currentSubObj.faces.push({
-                vertexIndices: [parseInt(result[1]), parseInt(result[4]), parseInt(result[7])],
-                uvIndices: [parseInt(result[2]), parseInt(result[5]), parseInt(result[8])],
-                normalIndices: [parseInt(result[3]), parseInt(result[6]), parseInt(result[9])]
+                indexIds: [result[1], result[5], result[9]],
+                vertexIndices: [parseInt(result[2]), parseInt(result[6]), parseInt(result[10])],
+                uvIndices: [parseInt(result[3]), parseInt(result[7]), parseInt(result[11])],
+                normalIndices: [parseInt(result[4]), parseInt(result[8]), parseInt(result[12])]
             });
         }
         else {
@@ -16088,34 +16090,41 @@ var feng3d;
         };
         ObjLoader.prototype.createSubObj = function (obj, material) {
             var object3D = new feng3d.GameObject(obj.name);
-            var vertex = new Float32Array(obj.vertex);
-            var normals = new Float32Array(obj.vn);
-            var uvs = new Float32Array(obj.vt);
             var subObjs = obj.subObjs;
             for (var i = 0; i < subObjs.length; i++) {
-                var materialObj = this.createMaterialObj(vertex, normals, uvs, subObjs[i], material);
+                var materialObj = this.createMaterialObj(obj, subObjs[i], material);
                 object3D.addChild(materialObj);
             }
             return object3D;
         };
-        ObjLoader.prototype.createMaterialObj = function (vertex, normals, uvs, subObj, material) {
+        ObjLoader.prototype.createMaterialObj = function (obj, subObj, material) {
             var object3D = new feng3d.GameObject();
             var model = object3D.getOrCreateComponentByClass(feng3d.Model);
             model.material = material || new feng3d.ColorMaterial();
+            this._vertices = obj.vertex;
+            this._vertexNormals = obj.vn;
+            this._uvs = obj.vt;
             var geometry = model.geometry = new feng3d.Geometry();
-            geometry.setVAData(feng3d.GLAttribute.a_position, vertex, 3);
-            geometry.setVAData(feng3d.GLAttribute.a_normal, normals, 3);
-            geometry.setVAData(feng3d.GLAttribute.a_uv, uvs, 2);
+            var vertices = [];
+            var normals = [];
+            var uvs = [];
+            this._realIndices = [];
+            this._vertexIndex = 0;
             var faces = subObj.faces;
             var indices = [];
             for (var i = 0; i < faces.length; i++) {
-                var vertexIndices = faces[i].vertexIndices;
-                indices.push(vertexIndices[0] - 1, vertexIndices[1] - 1, vertexIndices[2] - 1);
-                if (vertexIndices.length == 4) {
-                    indices.push(vertexIndices[2] - 1, vertexIndices[3] - 1, vertexIndices[0] - 1);
+                var face = faces[i];
+                var numVerts = face.indexIds.length - 1;
+                for (var j = 1; j < numVerts; ++j) {
+                    this.translateVertexData(face, j, vertices, uvs, indices, normals);
+                    this.translateVertexData(face, 0, vertices, uvs, indices, normals);
+                    this.translateVertexData(face, j + 1, vertices, uvs, indices, normals);
                 }
             }
             geometry.setIndices(new Uint16Array(indices));
+            geometry.setVAData(feng3d.GLAttribute.a_position, new Float32Array(vertices), 3);
+            geometry.setVAData(feng3d.GLAttribute.a_normal, new Float32Array(normals), 3);
+            geometry.setVAData(feng3d.GLAttribute.a_uv, new Float32Array(uvs), 2);
             geometry.createVertexTangents();
             if (this._mtlData && this._mtlData[subObj.material]) {
                 var materialInfo = this._mtlData[subObj.material];
@@ -16127,6 +16136,43 @@ var feng3d;
                 model.material = colorMaterial;
             }
             return object3D;
+        };
+        ObjLoader.prototype.translateVertexData = function (face, vertexIndex, vertices, uvs, indices, normals) {
+            var index;
+            var vertex;
+            var vertexNormal;
+            var uv;
+            if (!this._realIndices[face.indexIds[vertexIndex]]) {
+                index = this._vertexIndex;
+                this._realIndices[face.indexIds[vertexIndex]] = ++this._vertexIndex;
+                vertex = this._vertices[face.vertexIndices[vertexIndex] - 1];
+                vertices.push(vertex.x, vertex.y, vertex.z);
+                if (face.normalIndices.length > 0) {
+                    vertexNormal = this._vertexNormals[face.normalIndices[vertexIndex] - 1];
+                    normals.push(vertexNormal.x, vertexNormal.y, vertexNormal.z);
+                }
+                if (face.uvIndices.length > 0) {
+                    try {
+                        uv = this._uvs[face.uvIndices[vertexIndex] - 1];
+                        uvs.push(uv.u, uv.v);
+                    }
+                    catch (e) {
+                        switch (vertexIndex) {
+                            case 0:
+                                uvs.push(0, 1);
+                                break;
+                            case 1:
+                                uvs.push(.5, 0);
+                                break;
+                            case 2:
+                                uvs.push(1, 1);
+                        }
+                    }
+                }
+            }
+            else
+                index = this._realIndices[face.indexIds[vertexIndex]] - 1;
+            indices.push(index);
         };
         return ObjLoader;
     }());

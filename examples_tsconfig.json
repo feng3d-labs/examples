@@ -27,6 +27,6 @@
         "src/StandardMaterialTest.ts",
         "src/TerrainTest.ts",
         "src/TextureMaterialTest.ts",
-        "src/main.ts"
+        "src/FogTest.ts"
     ]
 }

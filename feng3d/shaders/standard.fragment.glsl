@@ -52,6 +52,10 @@ uniform float u_glossiness;
     #include<modules/pointLightShading.fragment>
 #endif
 
+#ifdef HAS_FOG_METHOD
+    #include<modules/fog.fragment>
+#endif
+
 void main(void) {
 
     vec4 finalColor = vec4(1.0,1.0,1.0,1.0);
@@ -103,6 +107,10 @@ void main(void) {
         #endif
         
         finalColor.xyz = pointLightShading(normal, diffuseColor.xyz, specularColor, ambientColor, glossiness);
+    #endif
+
+    #ifdef HAS_FOG_METHOD
+        finalColor.xyz = fogMethod(finalColor.xyz);
     #endif
 
     gl_FragColor = finalColor;

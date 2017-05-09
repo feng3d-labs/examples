@@ -138,6 +138,7 @@
         //材质
         "src/materials/Material.ts",
         "src/materials/PointMaterial.ts",
+        "src/materials/ColorMaterial.ts",
         "src/materials/SegmentMaterial.ts",
         "src/materials/components/MaterialComponent.ts",
         "src/materials/TextureMaterial.ts",
@@ -149,6 +150,7 @@
         "src/materials/methods/NormalMethod.ts",
         "src/materials/methods/SpecularMethod.ts",
         "src/materials/methods/AmbientMethod.ts",
+        "src/materials/methods/FogMethod.ts",
         //灯光
         "src/light/LightType.ts",
         "src/light/Light.ts",

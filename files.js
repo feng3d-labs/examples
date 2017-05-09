@@ -5,6 +5,7 @@ var files = {
         "BillboardTest",
         "MousePickTest",
         "SkyBoxTest",
+        "FogTest",
     ],
     "material": [
         "ColorMaterialTest",

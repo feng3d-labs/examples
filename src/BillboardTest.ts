@@ -50,12 +50,6 @@ module feng3d
             texture.pixels = imageData;
 
             // gameObject.holdSize = 1;
-
-            var canvas2D = <HTMLCanvasElement>document.getElementById('canvas');
-            var ctx = canvas2D.getContext('2d');
-
-            ctx.font = '48px serif';
-            ctx.strokeText('Hello world', 50, 100);
         }
     }
 }

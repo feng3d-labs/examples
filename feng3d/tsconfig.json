@@ -138,7 +138,6 @@
         //材质
         "src/materials/Material.ts",
         "src/materials/PointMaterial.ts",
-        "src/materials/ColorMaterial.ts",
         "src/materials/SegmentMaterial.ts",
         "src/materials/components/MaterialComponent.ts",
         "src/materials/TextureMaterial.ts",

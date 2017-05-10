@@ -14594,11 +14594,106 @@ var feng3d;
         /**
          * 构建材质
          */
-        function TerrainMethod(blendUrl) {
+        function TerrainMethod(blendUrl, splatUrls, splatRepeats) {
             if (blendUrl === void 0) { blendUrl = ""; }
+            if (splatUrls === void 0) { splatUrls = ["", "", ""]; }
+            if (splatRepeats === void 0) { splatRepeats = new feng3d.Vector3D(1, 1, 1, 1); }
             _super.call(this);
-            // this.shaderName = "terrain";
+            this.blendTexture = new feng3d.Texture2D(blendUrl);
+            this.splatTexture1 = new feng3d.Texture2D(splatUrls[0] || "");
+            this.splatTexture2 = new feng3d.Texture2D(splatUrls[1] || "");
+            this.splatTexture3 = new feng3d.Texture2D(splatUrls[2] || "");
+            this.splatTexture1.generateMipmap = true;
+            this.splatTexture1.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
+            this.splatTexture1.wrapS = feng3d.GL.REPEAT;
+            this.splatTexture1.wrapT = feng3d.GL.REPEAT;
+            this.splatTexture2.generateMipmap = true;
+            this.splatTexture2.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
+            this.splatTexture2.wrapS = feng3d.GL.REPEAT;
+            this.splatTexture2.wrapT = feng3d.GL.REPEAT;
+            this.splatTexture3.generateMipmap = true;
+            this.splatTexture3.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
+            this.splatTexture3.wrapS = feng3d.GL.REPEAT;
+            this.splatTexture3.wrapT = feng3d.GL.REPEAT;
+            this.splatRepeats = splatRepeats;
         }
+        Object.defineProperty(TerrainMethod.prototype, "splatTexture1", {
+            get: function () {
+                return this._splatTexture1;
+            },
+            set: function (value) {
+                if (this._splatTexture1)
+                    this._splatTexture1.removeEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
+                this._splatTexture1 = value;
+                if (this._splatTexture1)
+                    this._splatTexture1.addEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainMethod.prototype, "splatTexture2", {
+            get: function () {
+                return this._splatTexture2;
+            },
+            set: function (value) {
+                if (this._splatTexture2)
+                    this._splatTexture2.removeEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
+                this._splatTexture2 = value;
+                if (this._splatTexture2)
+                    this._splatTexture2.addEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainMethod.prototype, "splatTexture3", {
+            get: function () {
+                return this._splatTexture3;
+            },
+            set: function (value) {
+                if (this._splatTexture3)
+                    this._splatTexture3.removeEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
+                this._splatTexture3 = value;
+                if (this._splatTexture3)
+                    this._splatTexture3.addEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainMethod.prototype, "blendTexture", {
+            get: function () {
+                return this._blendTexture;
+            },
+            set: function (value) {
+                if (this._blendTexture)
+                    this._blendTexture.removeEventListener(feng3d.Event.LOADED, this.onBlendTextureLoaded, this);
+                this._blendTexture = value;
+                if (this._blendTexture)
+                    this._blendTexture.addEventListener(feng3d.Event.LOADED, this.onBlendTextureLoaded, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainMethod.prototype, "splatRepeats", {
+            get: function () {
+                return this._splatRepeats;
+            },
+            set: function (value) {
+                this._splatRepeats = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        TerrainMethod.prototype.onSplatTextureLoaded = function () {
+            this.invalidateRenderData();
+        };
+        TerrainMethod.prototype.onBlendTextureLoaded = function () {
+            this.invalidateRenderData();
+        };
         /**
          * 更新渲染数据
          */
@@ -18135,25 +18230,7 @@ var feng3d;
             var terrain = new feng3d.GameObject("terrain");
             terrain.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new feng3d.StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
-            var terrainMethod = new feng3d.TerrainMethod(root + 'terrain_splats.png');
-            terrainMethod.blendTexture = new feng3d.Texture2D(root + 'terrain_splats.png');
-            terrainMethod.splatTexture1 = new feng3d.Texture2D(root + 'beach.jpg');
-            // terrainMaterial.splatTexture1 = new Texture2D(root + '111.jpg');
-            terrainMethod.splatTexture1.generateMipmap = true;
-            terrainMethod.splatTexture1.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
-            terrainMethod.splatTexture1.wrapS = feng3d.GL.REPEAT;
-            terrainMethod.splatTexture1.wrapT = feng3d.GL.REPEAT;
-            terrainMethod.splatTexture2 = new feng3d.Texture2D(root + 'grass.jpg');
-            terrainMethod.splatTexture2.generateMipmap = true;
-            terrainMethod.splatTexture2.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
-            terrainMethod.splatTexture2.wrapS = feng3d.GL.REPEAT;
-            terrainMethod.splatTexture2.wrapT = feng3d.GL.REPEAT;
-            terrainMethod.splatTexture3 = new feng3d.Texture2D(root + 'rock.jpg');
-            terrainMethod.splatTexture3.generateMipmap = true;
-            terrainMethod.splatTexture3.minFilter = feng3d.GL.NEAREST_MIPMAP_LINEAR;
-            terrainMethod.splatTexture3.wrapS = feng3d.GL.REPEAT;
-            terrainMethod.splatTexture3.wrapT = feng3d.GL.REPEAT;
-            terrainMethod.splatRepeats = new feng3d.Vector3D(1, 50, 150, 100);
+            var terrainMethod = new feng3d.TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new feng3d.Vector3D(1, 50, 150, 100));
             material.addMethod(terrainMethod);
             terrain.getOrCreateComponentByClass(feng3d.Model).material = material;
             scene.addChild(terrain);

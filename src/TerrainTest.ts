@@ -38,28 +38,7 @@ module feng3d
             var terrain = new GameObject("terrain");
             terrain.getOrCreateComponentByClass(Model).geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
-
-            var terrainMethod = new TerrainMethod(root + 'terrain_splats.png');
-
-            
-            terrainMethod.blendTexture = new Texture2D(root + 'terrain_splats.png');
-            terrainMethod.splatTexture1 = new Texture2D(root + 'beach.jpg');
-            // terrainMaterial.splatTexture1 = new Texture2D(root + '111.jpg');
-            terrainMethod.splatTexture1.generateMipmap = true;
-            terrainMethod.splatTexture1.minFilter = GL.NEAREST_MIPMAP_LINEAR;
-            terrainMethod.splatTexture1.wrapS = GL.REPEAT;
-            terrainMethod.splatTexture1.wrapT = GL.REPEAT;
-            terrainMethod.splatTexture2 = new Texture2D(root + 'grass.jpg');
-            terrainMethod.splatTexture2.generateMipmap = true;
-            terrainMethod.splatTexture2.minFilter = GL.NEAREST_MIPMAP_LINEAR;
-            terrainMethod.splatTexture2.wrapS = GL.REPEAT;
-            terrainMethod.splatTexture2.wrapT = GL.REPEAT;
-            terrainMethod.splatTexture3 = new Texture2D(root + 'rock.jpg');
-            terrainMethod.splatTexture3.generateMipmap = true;
-            terrainMethod.splatTexture3.minFilter = GL.NEAREST_MIPMAP_LINEAR;
-            terrainMethod.splatTexture3.wrapS = GL.REPEAT;
-            terrainMethod.splatTexture3.wrapT = GL.REPEAT;
-            terrainMethod.splatRepeats = new Vector3D(1, 50, 150, 100);
+            var terrainMethod = new TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new Vector3D(1, 50, 150, 100));
             material.addMethod(terrainMethod);
 
             terrain.getOrCreateComponentByClass(Model).material = material;

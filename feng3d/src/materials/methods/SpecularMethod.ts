@@ -15,6 +15,15 @@ module feng3d
          */
         public specularColor = new Color();
         /**
+		 * 镜面反射光反射强度
+		 */
+        public get specular(){
+            return this.specularColor.a;
+        }
+        public set specular(value){
+            this.specularColor.a = value;
+        }
+        /**
          * 高光系数
          */
         public glossiness = 5;

@@ -8576,6 +8576,16 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(View3D.prototype, "width", {
+            /**
+             * 视窗宽度
+             */
+            get: function () {
+                return this._canvas.width;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 绘制场景
          */
@@ -12945,9 +12955,12 @@ var feng3d;
     var SkyBoxMaterial = (function (_super) {
         __extends(SkyBoxMaterial, _super);
         function SkyBoxMaterial(images) {
+            if (images === void 0) { images = null; }
             _super.call(this);
             this.shaderName = "skybox";
-            this.skyBoxTextureCube = new feng3d.TextureCube(images);
+            if (images) {
+                this.texture = new feng3d.TextureCube(images);
+            }
             feng3d.Watcher.watch(this, ["skyBoxTextureCube"], this.invalidateRenderData, this);
         }
         /**
@@ -12955,7 +12968,7 @@ var feng3d;
          */
         SkyBoxMaterial.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.uniforms[feng3d.RenderDataID.s_skyboxTexture] = this.skyBoxTextureCube;
+            renderData.uniforms[feng3d.RenderDataID.s_skyboxTexture] = this.texture;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return SkyBoxMaterial;
@@ -13206,6 +13219,19 @@ var feng3d;
             this.glossiness = 5;
             this.specularTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
         }
+        Object.defineProperty(SpecularMethod.prototype, "specular", {
+            /**
+             * 镜面反射光反射强度
+             */
+            get: function () {
+                return this.specularColor.a;
+            },
+            set: function (value) {
+                this.specularColor.a = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新渲染数据
          */
@@ -16813,6 +16839,8 @@ var feng3d;
     var Mouse3DManager = (function () {
         function Mouse3DManager() {
             this.viewRect = new feng3d.Rectangle(0, 0, 100, 100);
+            this.mouseX = 0;
+            this.mouseY = 0;
             this.mouseEventTypes = [];
             /** 射线采集器(采集射线穿过场景中物体的列表) */
             this._mousePicker = new feng3d.RaycastPicker(false);
@@ -17715,15 +17743,17 @@ var feng3d;
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);
             var scene = this.view3D.scene;
-            var root = 'resources/skybox/';
-            var imagePaths = ['px.jpg', 'py.jpg', 'pz.jpg', 'nx.jpg', 'ny.jpg', 'nz.jpg'];
-            for (var i = 0; i < imagePaths.length; i++) {
-                imagePaths[i] = root + imagePaths[i];
-            }
             var skybox = new feng3d.GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(feng3d.Model);
             model.geometry = new feng3d.SkyBoxGeometry();
-            model.material = new feng3d.SkyBoxMaterial(imagePaths);
+            model.material = new feng3d.SkyBoxMaterial([
+                'resources/skybox/px.jpg',
+                'resources/skybox/py.jpg',
+                'resources/skybox/pz.jpg',
+                'resources/skybox/nx.jpg',
+                'resources/skybox/ny.jpg',
+                'resources/skybox/nz.jpg'
+            ]);
             scene.addChild(skybox);
         };
         return SkyBoxTest;
@@ -17888,5 +17918,52 @@ var feng3d;
         return FogTest;
     }());
     feng3d.FogTest = FogTest;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Basic_SkyBox = (function () {
+        function Basic_SkyBox() {
+            var canvas = document.getElementById("glcanvas");
+            var view3D = this._view = new feng3d.View3D(canvas);
+            var scene = view3D.scene;
+            var cubeTexture = new feng3d.TextureCube([
+                'resources/skybox/px.jpg',
+                'resources/skybox/py.jpg',
+                'resources/skybox/pz.jpg',
+                'resources/skybox/nx.jpg',
+                'resources/skybox/ny.jpg',
+                'resources/skybox/nz.jpg'
+            ]);
+            var skybox = new feng3d.GameObject("skybox");
+            var model = skybox.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.SkyBoxGeometry();
+            var material = model.material = new feng3d.SkyBoxMaterial();
+            material.texture = cubeTexture;
+            scene.addChild(skybox);
+            var camera = this.camera = view3D.camera;
+            // camera.z = -600;
+            // camera.lookAt(new Vector3D());
+            // camera.camera.lens = new PerspectiveLens(90);
+            var torusMaterial = new feng3d.StandardMaterial();
+            torusMaterial.specularMethod.specular = 0.5;
+            torusMaterial.ambientMethod.color.fromUnit(0x111199);
+            // torusMaterial.addMethod(new EnvMapMethod(cubeTexture, 1));
+            var torus = this._torus = new feng3d.GameObject("torus");
+            var model = torus.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.TorusGeometry(150, 60, 40, 20);
+            model.material = torusMaterial;
+            scene.addChild(torus);
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
+        }
+        Basic_SkyBox.prototype._onEnterFrame = function (e) {
+            this._torus.rotationX += 2;
+            this._torus.rotationY += 1;
+            this.camera.setPosition(0, 0, 0);
+            this.camera.rotationY += 0.5 * (this._view.mousePos.x - this._view.width / 2) / 800;
+            this.camera.moveBackward(600);
+        };
+        return Basic_SkyBox;
+    }());
+    feng3d.Basic_SkyBox = Basic_SkyBox;
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=examples.js.map

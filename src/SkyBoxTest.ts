@@ -24,17 +24,17 @@ module feng3d
 
             var scene = this.view3D.scene;
 
-            var root = 'resources/skybox/';
-            var imagePaths = ['px.jpg', 'py.jpg', 'pz.jpg', 'nx.jpg', 'ny.jpg', 'nz.jpg'];
-            for (var i = 0; i < imagePaths.length; i++)
-            {
-                imagePaths[i] = root + imagePaths[i];
-            }
-
             var skybox = new GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(Model);
             model.geometry = new SkyBoxGeometry();
-            model.material = new SkyBoxMaterial(imagePaths);
+            model.material = new SkyBoxMaterial([
+                'resources/skybox/px.jpg',
+                'resources/skybox/py.jpg',
+                'resources/skybox/pz.jpg',
+                'resources/skybox/nx.jpg',
+                'resources/skybox/ny.jpg',
+                'resources/skybox/nz.jpg'
+            ]);
             scene.addChild(skybox);
         }
     }

@@ -97,6 +97,14 @@ module feng3d
         }
 
         /**
+         * 视窗宽度
+         */
+        public get width()
+        {
+            return this._canvas.width;
+        }
+
+        /**
          * 绘制场景
          */
         private drawScene(event: Event)

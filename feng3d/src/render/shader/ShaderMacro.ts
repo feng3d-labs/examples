@@ -91,6 +91,10 @@ module feng3d
          * 雾函数
          */
         public HAS_FOG_METHOD: boolean;
+        /**
+         * 环境映射函数
+         */
+        public HAS_ENV_METHOD: boolean;
     }
 
     /**

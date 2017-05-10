@@ -8555,6 +8555,10 @@ var feng3d;
         function View3D(canvas, scene, camera) {
             if (scene === void 0) { scene = null; }
             if (camera === void 0) { camera = null; }
+            /**
+             * 鼠标在3D视图中的位置
+             */
+            this.mousePos = new feng3d.Point();
             //初始化引擎
             feng3d.initEngine();
             feng3d.debuger && feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
@@ -8567,6 +8571,7 @@ var feng3d;
             this.mouse3DManager = new feng3d.Mouse3DManager();
             this.shadowRenderer = new feng3d.ShadowRenderer();
             this._renderContext = new feng3d.RenderContext();
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseEvent, this);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.drawScene, this);
         }
         /**
@@ -8635,18 +8640,12 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(View3D.prototype, "mousePos", {
-            /**
-             * 鼠标在3D视图中的位置
-             */
-            get: function () {
-                var viewRect = this._viewRect;
-                var pos = new feng3d.Point(this.mouse3DManager.mouseX - viewRect.x, this.mouse3DManager.mouseY - viewRect.y);
-                return pos;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+         * 监听鼠标事件收集事件类型
+         */
+        View3D.prototype.onMouseEvent = function (event) {
+            this.mousePos.setTo(event.clientX - this._viewRect.x, event.clientY - this._viewRect.y);
+        };
         /**
          * 获取鼠标射线（与鼠标重叠的摄像机射线）
          */
@@ -8660,7 +8659,8 @@ var feng3d;
          * @param y view3D上的X坐标
          * @return
          */
-        View3D.prototype.getRay3D = function (x, y) {
+        View3D.prototype.getRay3D = function (x, y, ray3D) {
+            if (ray3D === void 0) { ray3D = null; }
             //摄像机坐标
             var rayPosition = this.unproject(x, y, 0, View3D.tempRayPosition);
             //摄像机前方1处坐标
@@ -8671,7 +8671,7 @@ var feng3d;
             rayDirection.z = rayDirection.z - rayPosition.z;
             rayDirection.normalize();
             //定义射线
-            var ray3D = new feng3d.Ray3D(rayPosition, rayDirection);
+            ray3D = ray3D || new feng3d.Ray3D(rayPosition, rayDirection);
             return ray3D;
         };
         /**

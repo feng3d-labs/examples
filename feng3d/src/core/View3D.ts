@@ -44,6 +44,11 @@ module feng3d
         private _renderContext: RenderContext;
 
         /**
+         * 鼠标在3D视图中的位置
+         */
+        public mousePos = new Point();
+
+        /**
          * 构建3D视图
          * @param canvas    画布
          * @param scene     3D场景
@@ -70,6 +75,7 @@ module feng3d
 
             this._renderContext = new RenderContext();
 
+            input.addEventListener(inputType.MOUSE_MOVE, this.onMouseEvent, this);
             ticker.addEventListener(Event.ENTER_FRAME, this.drawScene, this);
         }
 
@@ -78,7 +84,6 @@ module feng3d
          */
         private initGL()
         {
-
             this._gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
             this._gl.clearDepth(1.0);                 // Clear everything
             this._gl.enable(GL.DEPTH_TEST);           // Enable depth testing
@@ -148,13 +153,11 @@ module feng3d
         }
 
         /**
-         * 鼠标在3D视图中的位置
+         * 监听鼠标事件收集事件类型
          */
-        public get mousePos()
+        private onMouseEvent(event: InputEvent)
         {
-            var viewRect: Rectangle = this._viewRect;
-            var pos = new Point(this.mouse3DManager.mouseX - viewRect.x, this.mouse3DManager.mouseY - viewRect.y);
-            return pos;
+            this.mousePos.setTo(event.clientX - this._viewRect.x, event.clientY - this._viewRect.y);
         }
 
         /**
@@ -172,7 +175,7 @@ module feng3d
 		 * @param y view3D上的X坐标
 		 * @return
 		 */
-        public getRay3D(x: number, y: number): Ray3D
+        public getRay3D(x: number, y: number, ray3D: Ray3D = null): Ray3D
         {
             //摄像机坐标
             var rayPosition: Vector3D = this.unproject(x, y, 0, View3D.tempRayPosition);
@@ -184,7 +187,7 @@ module feng3d
             rayDirection.z = rayDirection.z - rayPosition.z;
             rayDirection.normalize();
             //定义射线
-            var ray3D: Ray3D = new Ray3D(rayPosition, rayDirection);
+            ray3D = ray3D || new Ray3D(rayPosition, rayDirection);
             return ray3D;
         }
 

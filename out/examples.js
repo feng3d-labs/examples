@@ -12436,11 +12436,11 @@ var feng3d;
             /**
              * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
              */
-            this.wrapS = feng3d.GL.CLAMP_TO_EDGE;
+            this.wrapS = feng3d.GL.REPEAT;
             /**
              * 表示y轴的纹理回环方式。 magFilter和minFilter表示过滤的方式，这是OpenGL的基本概念，我将在下面讲一下，目前你不用担心它的使用。当您不设置的时候，它会取默认值，所以，我们这里暂时不理睬他。
              */
-            this.wrapT = feng3d.GL.CLAMP_TO_EDGE;
+            this.wrapT = feng3d.GL.REPEAT;
             /**
              * 各向异性过滤。使用各向异性过滤能够使纹理的效果更好，但是会消耗更多的内存、CPU、GPU时间。默认为0。
              */
@@ -13821,8 +13821,8 @@ var feng3d;
         /**
          * 控制器基类，用于动态调整3D对象的属性
          */
-        function ControllerBase(target) {
-            this.target = target;
+        function ControllerBase(targetObject) {
+            this.targetObject = targetObject;
         }
         /**
          * 手动应用更新到目标3D对象
@@ -13831,16 +13831,18 @@ var feng3d;
             if (interpolate === void 0) { interpolate = true; }
             throw new Error("Abstract method");
         };
-        Object.defineProperty(ControllerBase.prototype, "target", {
+        Object.defineProperty(ControllerBase.prototype, "targetObject", {
             get: function () {
-                return this._target;
+                return this._targetObject;
             },
             set: function (val) {
-                this._target = val;
+                this._targetObject = val;
             },
             enumerable: true,
             configurable: true
         });
+        ControllerBase.prototype.notifyUpdate = function () {
+        };
         return ControllerBase;
     }());
     feng3d.ControllerBase = ControllerBase;
@@ -13895,19 +13897,268 @@ var feng3d;
         });
         LookAtController.prototype.update = function (interpolate) {
             if (interpolate === void 0) { interpolate = true; }
-            if (this._target) {
+            if (this._targetObject) {
                 if (this._lookAtPosition) {
-                    this._target.lookAt(this.lookAtPosition, this._upAxis);
+                    this._targetObject.lookAt(this.lookAtPosition, this._upAxis);
                 }
                 else if (this._lookAtObject) {
                     this._lookAtObject.getPosition(this._pos);
-                    this._target.lookAt(this._pos, this._upAxis);
+                    this._targetObject.lookAt(this._pos, this._upAxis);
                 }
             }
         };
         return LookAtController;
     }(feng3d.ControllerBase));
     feng3d.LookAtController = LookAtController;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var HoverController = (function (_super) {
+        __extends(HoverController, _super);
+        function HoverController(targetObject, lookAtObject, panAngle, tiltAngle, distance, minTiltAngle, maxTiltAngle, minPanAngle, maxPanAngle, steps, yFactor, wrapPanAngle) {
+            if (targetObject === void 0) { targetObject = null; }
+            if (lookAtObject === void 0) { lookAtObject = null; }
+            if (panAngle === void 0) { panAngle = 0; }
+            if (tiltAngle === void 0) { tiltAngle = 90; }
+            if (distance === void 0) { distance = 1000; }
+            if (minTiltAngle === void 0) { minTiltAngle = -90; }
+            if (maxTiltAngle === void 0) { maxTiltAngle = 90; }
+            if (minPanAngle === void 0) { minPanAngle = NaN; }
+            if (maxPanAngle === void 0) { maxPanAngle = NaN; }
+            if (steps === void 0) { steps = 8; }
+            if (yFactor === void 0) { yFactor = 2; }
+            if (wrapPanAngle === void 0) { wrapPanAngle = false; }
+            _super.call(this, targetObject, lookAtObject);
+            this._currentPanAngle = 0;
+            this._currentTiltAngle = 90;
+            this._panAngle = 0;
+            this._tiltAngle = 90;
+            this._distance = 1000;
+            this._minPanAngle = -Infinity;
+            this._maxPanAngle = Infinity;
+            this._minTiltAngle = -90;
+            this._maxTiltAngle = 90;
+            this._steps = 8;
+            this._yFactor = 2;
+            this._wrapPanAngle = false;
+            this.distance = distance;
+            this.panAngle = panAngle;
+            this.tiltAngle = tiltAngle;
+            this.minPanAngle = minPanAngle || -Infinity;
+            this.maxPanAngle = maxPanAngle || Infinity;
+            this.minTiltAngle = minTiltAngle;
+            this.maxTiltAngle = maxTiltAngle;
+            this.steps = steps;
+            this.yFactor = yFactor;
+            this.wrapPanAngle = wrapPanAngle;
+            this._currentPanAngle = this._panAngle;
+            this._currentTiltAngle = this._tiltAngle;
+        }
+        Object.defineProperty(HoverController.prototype, "steps", {
+            get: function () {
+                return this._steps;
+            },
+            set: function (val) {
+                val = (val < 1) ? 1 : val;
+                if (this._steps == val)
+                    return;
+                this._steps = val;
+                this.notifyUpdate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "panAngle", {
+            get: function () {
+                return this._panAngle;
+            },
+            set: function (val) {
+                val = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, val));
+                if (this._panAngle == val)
+                    return;
+                this._panAngle = val;
+                this.notifyUpdate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "tiltAngle", {
+            get: function () {
+                return this._tiltAngle;
+            },
+            set: function (val) {
+                val = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, val));
+                if (this._tiltAngle == val)
+                    return;
+                this._tiltAngle = val;
+                this.notifyUpdate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "distance", {
+            get: function () {
+                return this._distance;
+            },
+            set: function (val) {
+                if (this._distance == val)
+                    return;
+                this._distance = val;
+                this.notifyUpdate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "minPanAngle", {
+            get: function () {
+                return this._minPanAngle;
+            },
+            set: function (val) {
+                if (this._minPanAngle == val)
+                    return;
+                this._minPanAngle = val;
+                this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "maxPanAngle", {
+            get: function () {
+                return this._maxPanAngle;
+            },
+            set: function (val) {
+                if (this._maxPanAngle == val)
+                    return;
+                this._maxPanAngle = val;
+                this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "minTiltAngle", {
+            get: function () {
+                return this._minTiltAngle;
+            },
+            set: function (val) {
+                if (this._minTiltAngle == val)
+                    return;
+                this._minTiltAngle = val;
+                this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "maxTiltAngle", {
+            get: function () {
+                return this._maxTiltAngle;
+            },
+            set: function (val) {
+                if (this._maxTiltAngle == val)
+                    return;
+                this._maxTiltAngle = val;
+                this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "yFactor", {
+            get: function () {
+                return this._yFactor;
+            },
+            set: function (val) {
+                if (this._yFactor == val)
+                    return;
+                this._yFactor = val;
+                this.notifyUpdate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(HoverController.prototype, "wrapPanAngle", {
+            get: function () {
+                return this._wrapPanAngle;
+            },
+            set: function (val) {
+                if (this._wrapPanAngle == val)
+                    return;
+                this._wrapPanAngle = val;
+                this.notifyUpdate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        HoverController.prototype.update = function (interpolate) {
+            if (interpolate === void 0) { interpolate = true; }
+            if (this._tiltAngle != this._currentTiltAngle || this._panAngle != this._currentPanAngle) {
+                this.notifyUpdate();
+                if (this._wrapPanAngle) {
+                    if (this._panAngle < 0) {
+                        this._currentPanAngle += this._panAngle % 360 + 360 - this._panAngle;
+                        this._panAngle = this._panAngle % 360 + 360;
+                    }
+                    else {
+                        this._currentPanAngle += this._panAngle % 360 - this._panAngle;
+                        this._panAngle = this._panAngle % 360;
+                    }
+                    while (this._panAngle - this._currentPanAngle < -180)
+                        this._currentPanAngle -= 360;
+                    while (this._panAngle - this._currentPanAngle > 180)
+                        this._currentPanAngle += 360;
+                }
+                if (interpolate) {
+                    this._currentTiltAngle += (this._tiltAngle - this._currentTiltAngle) / (this.steps + 1);
+                    this._currentPanAngle += (this._panAngle - this._currentPanAngle) / (this.steps + 1);
+                }
+                else {
+                    this._currentPanAngle = this._panAngle;
+                    this._currentTiltAngle = this._tiltAngle;
+                }
+                if ((Math.abs(this.tiltAngle - this._currentTiltAngle) < 0.01) && (Math.abs(this._panAngle - this._currentPanAngle) < 0.01)) {
+                    this._currentTiltAngle = this._tiltAngle;
+                    this._currentPanAngle = this._panAngle;
+                }
+            }
+            if (!this._targetObject)
+                return;
+            if (this._lookAtPosition) {
+                this._pos["x"] = this._lookAtPosition["x"];
+                this._pos["y"] = this._lookAtPosition["y"];
+                this._pos["z"] = this._lookAtPosition["z"];
+            }
+            else if (this._lookAtObject) {
+                if (this._targetObject.parent && this._lookAtObject.parent) {
+                    if (this._targetObject.parent != this._lookAtObject.parent) {
+                        this._pos["x"] = this._lookAtObject.scenePosition["x"];
+                        this._pos["y"] = this._lookAtObject.scenePosition["y"];
+                        this._pos["z"] = this._lookAtObject.scenePosition["z"];
+                        this._targetObject.parent.inverseSceneTransform.transformVector(this._pos, this._pos);
+                    }
+                    else {
+                        this._pos.copyFrom(this._lookAtObject.transform.position);
+                    }
+                }
+                else if (this._lookAtObject.scene) {
+                    this._pos["x"] = this._lookAtObject.scenePosition["x"];
+                    this._pos["y"] = this._lookAtObject.scenePosition["y"];
+                    this._pos["z"] = this._lookAtObject.scenePosition["z"];
+                }
+                else {
+                    this._pos.copyFrom(this._lookAtObject.transform.position);
+                }
+            }
+            else {
+                this._pos["x"] = this._origin["x"];
+                this._pos["y"] = this._origin["y"];
+                this._pos["z"] = this._origin["z"];
+            }
+            this._targetObject.x = this._pos["x"] + this._distance * Math.sin(this._currentPanAngle * feng3d.MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * feng3d.MathConsts.DEGREES_TO_RADIANS);
+            this._targetObject.z = this._pos["z"] + this._distance * Math.cos(this._currentPanAngle * feng3d.MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * feng3d.MathConsts.DEGREES_TO_RADIANS);
+            this._targetObject.y = this._pos["y"] + this._distance * Math.sin(this._currentTiltAngle * feng3d.MathConsts.DEGREES_TO_RADIANS) * this._yFactor;
+            _super.prototype.update.call(this);
+        };
+        return HoverController;
+    }(feng3d.LookAtController));
+    feng3d.HoverController = HoverController;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -13934,17 +14185,17 @@ var feng3d;
             this.acceleration = 0.2;
             this.init();
         }
-        Object.defineProperty(FPSController.prototype, "target", {
+        Object.defineProperty(FPSController.prototype, "targetObject", {
             get: function () {
-                return this._target;
+                return this._targetObject;
             },
             set: function (value) {
-                if (this._target != null) {
+                if (this._targetObject != null) {
                     feng3d.input.removeEventListener(feng3d.inputType.MOUSE_DOWN, this.onMousedown, this);
                     feng3d.input.removeEventListener(feng3d.inputType.MOUSE_UP, this.onMouseup, this);
                 }
-                this._target = value;
-                if (this._target != null) {
+                this._targetObject = value;
+                if (this._targetObject != null) {
                     feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMousedown, this);
                     feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseup, this);
                 }
@@ -13986,7 +14237,7 @@ var feng3d;
          */
         FPSController.prototype.update = function (interpolate) {
             if (interpolate === void 0) { interpolate = true; }
-            if (this.target == null)
+            if (this.targetObject == null)
                 return;
             //计算加速度
             var accelerationVec = new feng3d.Vector3D();
@@ -13999,9 +14250,9 @@ var feng3d;
             accelerationVec.scaleBy(this.acceleration);
             //计算速度
             this.velocity.incrementBy(accelerationVec);
-            var right = this.target.rightVector;
-            var up = this.target.upVector;
-            var forward = this.target.forwardVector;
+            var right = this.targetObject.rightVector;
+            var up = this.targetObject.upVector;
+            var forward = this.targetObject.forwardVector;
             right.scaleBy(this.velocity.x);
             up.scaleBy(this.velocity.y);
             forward.scaleBy(this.velocity.z);
@@ -14009,15 +14260,15 @@ var feng3d;
             var displacement = right.clone();
             displacement.incrementBy(up);
             displacement.incrementBy(forward);
-            this.target.x += displacement.x;
-            this.target.y += displacement.y;
-            this.target.z += displacement.z;
+            this.targetObject.x += displacement.x;
+            this.targetObject.y += displacement.y;
+            this.targetObject.z += displacement.z;
         };
         /**
          * 处理鼠标移动事件
          */
         FPSController.prototype.onMouseMove = function (event) {
-            if (this.target == null)
+            if (this.targetObject == null)
                 return;
             var mousePoint = new feng3d.Point(feng3d.input.clientX, feng3d.input.clientY);
             if (this.preMousePoint == null) {
@@ -14028,7 +14279,7 @@ var feng3d;
             var offsetPoint = mousePoint.subtract(this.preMousePoint);
             offsetPoint.x *= 0.15;
             offsetPoint.y *= 0.15;
-            var matrix3d = this.target.sceneTransform;
+            var matrix3d = this.targetObject.sceneTransform;
             matrix3d.appendRotation(offsetPoint.y, matrix3d.right, matrix3d.position);
             var up = feng3d.Vector3D.Y_AXIS;
             if (matrix3d.up.dotProduct(up) < 0) {
@@ -14036,7 +14287,7 @@ var feng3d;
                 up.scaleBy(-1);
             }
             matrix3d.appendRotation(offsetPoint.x, up, matrix3d.position);
-            this.target.sceneTransform = matrix3d;
+            this.targetObject.sceneTransform = matrix3d;
             //
             this.preMousePoint = mousePoint;
         };
@@ -18414,6 +18665,122 @@ var feng3d;
         return Basic_SkyBox;
     }());
     feng3d.Basic_SkyBox = Basic_SkyBox;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Basic_Shading = (function () {
+        function Basic_Shading() {
+            this.move = false;
+            this.lastPanAngle = 0;
+            this.lastTiltAngle = 0;
+            this.lastMouseX = 0;
+            this.lastMouseY = 0;
+            this.init();
+        }
+        Basic_Shading.prototype.init = function () {
+            this.initEngine();
+            this.initLights();
+            this.initMaterials();
+            this.initObjects();
+            this.initListeners();
+        };
+        Basic_Shading.prototype.initEngine = function () {
+            var canvas = document.getElementById("glcanvas");
+            var view3D = this.view = new feng3d.View3D(canvas);
+            this.scene = view3D.scene;
+            this.camera = view3D.camera;
+            this.camera.z = -1000;
+            this.camera.y = 1000;
+            this.camera.lookAt(new feng3d.Vector3D());
+            this.cameraController = new feng3d.HoverController(this.camera);
+            this.cameraController.distance = 1000;
+            this.cameraController.minTiltAngle = 0;
+            this.cameraController.maxTiltAngle = 90;
+            this.cameraController.panAngle = 45;
+            this.cameraController.tiltAngle = 20;
+        };
+        Basic_Shading.prototype.initMaterials = function () {
+            this.planeMaterial = new feng3d.StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
+            this.sphereMaterial = new feng3d.StandardMaterial("resources/beachball_diffuse.jpg", "", "resources/beachball_specular.jpg");
+            this.cubeMaterial = new feng3d.StandardMaterial("resources/trinket_diffuse.jpg", "resources/trinket_normal.jpg", "resources/trinket_specular.jpg");
+            this.torusMaterial = new feng3d.StandardMaterial("resources/weave_diffuse.jpg", "resources/weave_normal.jpg", "resources/weave_diffuse.jpg");
+        };
+        Basic_Shading.prototype.initLights = function () {
+            this.light1 = new feng3d.GameObject();
+            var directionalLight = new feng3d.DirectionalLight();
+            // this.light1.ambient = 0.1;
+            // this.light1.diffuse = 0.7;
+            this.light1.addComponent(directionalLight);
+            this.light1.rotationX = 90;
+            this.scene.addChild(this.light1);
+            this.light2 = new feng3d.GameObject();
+            var directionalLight = new feng3d.DirectionalLight();
+            directionalLight.color.fromUnit(0x00FFFF);
+            // this.light2["ambient"] = 0.1;
+            // this.light2["diffuse"] = 0.7;
+            this.light2.addComponent(directionalLight);
+            this.light2.rotationX = 90;
+            this.scene.addChild(this.light2);
+        };
+        Basic_Shading.prototype.initObjects = function () {
+            this.plane = new feng3d.GameObject();
+            var model = this.plane.getOrCreateComponentByClass(feng3d.Model);
+            var geometry = model.geometry = new feng3d.PlaneGeometry(1000, 1000);
+            model.material = this.planeMaterial;
+            geometry.scaleUV(2, 2);
+            this.plane.y = -20;
+            this.scene.addChild(this.plane);
+            this.sphere = new feng3d.GameObject();
+            var model = this.plane.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.SphereGeometry(150, 40, 20);
+            model.material = this.sphereMaterial;
+            this.sphere.x = 300;
+            this.sphere.y = 160;
+            this.sphere.z = 300;
+            this.scene.addChild(this.sphere);
+            this.cube = new feng3d.GameObject();
+            var model = this.plane.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.CubeGeometry(200, 200, 200, 1, 1, 1, false);
+            model.material = this.cubeMaterial;
+            this.cube.x = 300;
+            this.cube.y = 160;
+            this.cube.z = -250;
+            this.scene.addChild(this.cube);
+            this.torus = new feng3d.GameObject();
+            var model = this.plane.getOrCreateComponentByClass(feng3d.Model);
+            geometry = model.geometry = new feng3d.TorusGeometry(150, 60, 40, 20);
+            model.material = this.torusMaterial;
+            geometry.scaleUV(10, 5);
+            this.torus.x = -250;
+            this.torus.y = 160;
+            this.torus.z = -250;
+            this.scene.addChild(this.torus);
+        };
+        Basic_Shading.prototype.initListeners = function () {
+            feng3d.input.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
+        };
+        Basic_Shading.prototype.onEnterFrame = function (event) {
+            if (this.move) {
+                this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
+                this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
+            }
+            this.light1.rotationZ = feng3d.getTimer() / 10000;
+        };
+        Basic_Shading.prototype.onMouseDown = function (event) {
+            this.lastPanAngle = this.cameraController.panAngle;
+            this.lastTiltAngle = this.cameraController.tiltAngle;
+            this.lastMouseX = this.view.mousePos.x;
+            this.lastMouseY = this.view.mousePos.y;
+            this.move = true;
+        };
+        Basic_Shading.prototype.onMouseUp = function (event) {
+            this.move = false;
+        };
+        return Basic_Shading;
+    }());
+    feng3d.Basic_Shading = Basic_Shading;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

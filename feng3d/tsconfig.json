@@ -160,6 +160,7 @@
         //镜头控制
         "src/controllers/ControllerBase.ts",
         "src/controllers/LookAtController.ts",
+        "src/controllers/HoverController.ts",
         "src/controllers/FPSController.ts",
         //拾取
         "src/pick/PickingCollisionVO.ts",

@@ -34,7 +34,8 @@ var files = {
         "TerrainMergeTest",
     ],
     "away3d": [
-        "Basic_SkyBox",
         "Basic_View",
+        "Basic_SkyBox",
+        "Basic_Shading",
     ]
 };

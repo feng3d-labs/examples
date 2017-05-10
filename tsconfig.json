@@ -132,6 +132,7 @@
 		"feng3d/src/light/PointLight.ts",
 		"feng3d/src/controllers/ControllerBase.ts",
 		"feng3d/src/controllers/LookAtController.ts",
+		"feng3d/src/controllers/HoverController.ts",
 		"feng3d/src/controllers/FPSController.ts",
 		"feng3d/src/pick/PickingCollisionVO.ts",
 		"feng3d/src/pick/PickingCollider.ts",
@@ -197,5 +198,6 @@
 		"src/TextureMaterialTest.ts",
 		"src/FogTest.ts",
 		"src/away3d/Basic_SkyBox.ts",
+		"src/away3d/Basic_Shading.ts",
 		"src/away3d/Basic_View.ts"]
 }

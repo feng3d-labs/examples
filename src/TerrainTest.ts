@@ -15,10 +15,11 @@ module feng3d
             this.cameraObj.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.cameraObj);
-            ticker.addEventListener(Event.ENTER_FRAME,this.onEnterFrame,this);
+            ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);
         }
 
-        private onEnterFrame(){
+        private onEnterFrame()
+        {
 
             var time = new Date().getTime();
             var angle = time / 1000;
@@ -36,11 +37,11 @@ module feng3d
             //
             var terrain = new GameObject("terrain");
             terrain.getOrCreateComponentByClass(Model).geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
-            var material = new StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = root + 'terrain_diffuse.jpg';
-            material.normalMethod.normalTexture.url = root + "terrain_normals.jpg";
+            var material = new StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
 
-            var terrainMethod = new TerrainMethod();
+            var terrainMethod = new TerrainMethod(root + 'terrain_splats.png');
+
+            
             terrainMethod.blendTexture = new Texture2D(root + 'terrain_splats.png');
             terrainMethod.splatTexture1 = new Texture2D(root + 'beach.jpg');
             // terrainMaterial.splatTexture1 = new Texture2D(root + '111.jpg');
@@ -59,7 +60,7 @@ module feng3d
             terrainMethod.splatTexture3.wrapS = GL.REPEAT;
             terrainMethod.splatTexture3.wrapT = GL.REPEAT;
             terrainMethod.splatRepeats = new Vector3D(1, 50, 150, 100);
-            material.terrainMethod = terrainMethod;
+            material.addMethod(terrainMethod);
 
             terrain.getOrCreateComponentByClass(Model).material = material;
             scene.addChild(terrain);
@@ -74,6 +75,6 @@ module feng3d
             scene.addChild(light1);
         }
 
-        private light1:GameObject;
+        private light1: GameObject;
     }
 }

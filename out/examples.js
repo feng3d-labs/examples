@@ -8565,6 +8565,7 @@ var feng3d;
             this._canvas = canvas;
             this._gl = feng3d.getWebGLContext(canvas, false);
             this.initGL();
+            this._viewRect = new feng3d.Rectangle(this._canvas.clientLeft, this._canvas.clientTop, this._canvas.clientWidth, this._canvas.clientHeight);
             this.scene = scene || new feng3d.Scene3D();
             this.camera = camera || new feng3d.CameraObject3D();
             this.defaultRenderer = new feng3d.ForwardRenderer();
@@ -12683,10 +12684,8 @@ var feng3d;
             this._textureType = feng3d.TextureType.TEXTURE_2D;
             this._pixels = new Image();
             this._pixels.crossOrigin = "Anonymous";
-            // this._pixels.addEventListener("load", this.invalidate.bind(this));
             this._pixels.addEventListener("load", this.onLoad.bind(this));
             this._pixels.src = url;
-            // Binding.bindProperty(this, ["url"], this._pixels, "src");
         }
         Object.defineProperty(Texture2D.prototype, "url", {
             get: function () {
@@ -12804,6 +12803,7 @@ var feng3d;
              * 目标混合因子，默认BlendFactor.ONE_MINUS_SRC_ALPHA
              */
             this.dfactor = feng3d.BlendFactor.ONE_MINUS_SRC_ALPHA;
+            this._methods = [];
             this._single = true;
             this._type = Material;
             feng3d.Watcher.watch(this, ["shaderName"], this.invalidateRenderData, this);
@@ -12838,6 +12838,37 @@ var feng3d;
             configurable: true
         });
         /**
+         * 添加方法
+         */
+        Material.prototype.addMethod = function (method) {
+            var index = this._methods.indexOf(method);
+            if (index != -1)
+                return;
+            this._methods.push(method);
+            this.invalidateRenderHolder();
+        };
+        /**
+         * 删除方法
+         */
+        Material.prototype.removeMethod = function (method) {
+            var index = this._methods.indexOf(method);
+            if (index != -1) {
+                this._methods.splice(index, 1);
+                this.invalidateRenderData();
+            }
+        };
+        /**
+         * 收集渲染数据拥有者
+         * @param renderAtomic 渲染原子
+         */
+        Material.prototype.collectRenderDataHolder = function (renderAtomic) {
+            if (renderAtomic === void 0) { renderAtomic = null; }
+            for (var i = 0; i < this._methods.length; i++) {
+                this._methods[i].collectRenderDataHolder(renderAtomic);
+            }
+            _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
+        };
+        /**
          * 更新渲染数据
          */
         Material.prototype.updateRenderData = function (renderContext, renderData) {
@@ -12859,6 +12890,9 @@ var feng3d;
             else {
                 renderData.shaderMacro.boolMacros.IS_POINTS_MODE = false;
                 delete renderData.uniforms[feng3d.RenderDataID.u_PointSize];
+            }
+            for (var i = 0; i < this._methods.length; i++) {
+                this._methods[i].updateRenderData(renderContext, renderData);
             }
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13041,35 +13075,82 @@ var feng3d;
         /**
          * 构建
          */
-        function StandardMaterial() {
+        function StandardMaterial(diffuseUrl, normalUrl, specularUrl, ambientUrl) {
+            if (diffuseUrl === void 0) { diffuseUrl = ""; }
+            if (normalUrl === void 0) { normalUrl = ""; }
+            if (specularUrl === void 0) { specularUrl = ""; }
+            if (ambientUrl === void 0) { ambientUrl = ""; }
             _super.call(this);
-            /**
-             * 漫反射函数
-             */
-            this.diffuseMethod = new feng3d.DiffuseMethod();
-            /**
-             * 法线函数
-             */
-            this.normalMethod = new feng3d.NormalMethod();
-            /**
-             * 镜面反射函数
-             */
-            this.specularMethod = new feng3d.SpecularMethod();
-            /**
-             * 环境反射函数
-             */
-            this.ambientMethod = new feng3d.AmbientMethod();
-            this._methods = [];
             this.shaderName = "standard";
-            this.addComponent(this.diffuseMethod);
-            this.addComponent(this.normalMethod);
-            this.addComponent(this.specularMethod);
-            this.addComponent(this.ambientMethod);
+            this.diffuseMethod = new feng3d.DiffuseMethod(diffuseUrl);
+            this.normalMethod = new feng3d.NormalMethod(normalUrl);
+            this.specularMethod = new feng3d.SpecularMethod(specularUrl);
+            this.ambientMethod = new feng3d.AmbientMethod(ambientUrl);
             // Watcher.watch(this, ["ambientColor"], this.invalidateRenderData, this);
             // Watcher.watch(this, ["reflectance"], this.invalidateRenderData, this);
             // Watcher.watch(this, ["roughness"], this.invalidateRenderData, this);
             // Watcher.watch(this, ["metalic"], this.invalidateRenderData, this);
         }
+        Object.defineProperty(StandardMaterial.prototype, "diffuseMethod", {
+            /**
+             * 漫反射函数
+             */
+            get: function () {
+                return this._diffuseMethod;
+            },
+            set: function (value) {
+                this._diffuseMethod = value;
+                if (this._diffuseMethod)
+                    this.addMethod(this._diffuseMethod);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(StandardMaterial.prototype, "normalMethod", {
+            /**
+             * 法线函数
+             */
+            get: function () {
+                return this._normalMethod;
+            },
+            set: function (value) {
+                this._normalMethod = value;
+                if (this._normalMethod)
+                    this.addMethod(this._normalMethod);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(StandardMaterial.prototype, "specularMethod", {
+            /**
+             * 镜面反射函数
+             */
+            get: function () {
+                return this._specularMethod;
+            },
+            set: function (value) {
+                this._specularMethod = value;
+                if (this._specularMethod)
+                    this.addMethod(this._specularMethod);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(StandardMaterial.prototype, "ambientMethod", {
+            /**
+             * 环境反射函数
+             */
+            get: function () {
+                return this._ambientMethod;
+            },
+            set: function (value) {
+                this._ambientMethod = value;
+                if (this._ambientMethod)
+                    this.addMethod(this._ambientMethod);
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(StandardMaterial.prototype, "terrainMethod", {
             /**
              * 地形函数
@@ -13090,16 +13171,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 添加方法
-         */
-        StandardMaterial.prototype.addMethod = function (method) {
-            var index = this._methods.indexOf(method);
-            if (index != -1)
-                return;
-            this._methods.push(method);
-            this.invalidateRenderData();
-        };
         Object.defineProperty(StandardMaterial.prototype, "enableBlend", {
             // /**
             //  * 反射率
@@ -13132,9 +13203,6 @@ var feng3d;
             // renderData.uniforms[RenderDataID.u_reflectance] = this.reflectance;
             // renderData.uniforms[RenderDataID.u_roughness] = this.roughness;
             // renderData.uniforms[RenderDataID.u_metalic] = this.metalic;
-            for (var i = 0; i < this._methods.length; i++) {
-                this._methods[i].updateRenderData(renderContext, renderData);
-            }
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13170,24 +13238,60 @@ var feng3d;
         /**
          * 构建
          */
-        function DiffuseMethod() {
+        function DiffuseMethod(diffuseUrl) {
+            if (diffuseUrl === void 0) { diffuseUrl = ""; }
             _super.call(this);
+            this._color = new feng3d.Color(1, 1, 1, 1);
+            this._alphaThreshold = 0;
+            this.difuseTexture = new feng3d.Texture2D(diffuseUrl);
+            this.color = new feng3d.Color(1, 1, 1, 1);
+        }
+        Object.defineProperty(DiffuseMethod.prototype, "difuseTexture", {
             /**
              * 漫反射纹理
              */
-            this.difuseTexture = new feng3d.Texture2D();
+            get: function () {
+                return this._difuseTexture;
+            },
+            set: function (value) {
+                if (this._difuseTexture)
+                    this.difuseTexture.removeEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                this._difuseTexture = value;
+                if (this._difuseTexture)
+                    this.difuseTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(DiffuseMethod.prototype, "color", {
             /**
              * 基本颜色
              */
-            this.color = new feng3d.Color(1, 1, 1, 1);
+            get: function () {
+                return this._color;
+            },
+            set: function (value) {
+                this._color = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(DiffuseMethod.prototype, "alphaThreshold", {
             /**
              * 透明阈值，透明度小于该值的像素被片段着色器丢弃
              */
-            this.alphaThreshold = 0;
-            this.difuseTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
-            feng3d.Watcher.watch(this, ["color"], this.invalidateRenderData, this);
-            feng3d.Watcher.watch(this, ["alphaThreshold"], this.invalidateRenderData, this);
-        }
+            get: function () {
+                return this._alphaThreshold;
+            },
+            set: function (value) {
+                this._alphaThreshold = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新渲染数据
          */
@@ -13220,14 +13324,35 @@ var feng3d;
         /**
          * 构建
          */
-        function NormalMethod() {
+        function NormalMethod(normalUrl) {
+            if (normalUrl === void 0) { normalUrl = ""; }
             _super.call(this);
+            this.normalTexture = new feng3d.Texture2D(normalUrl);
+        }
+        Object.defineProperty(NormalMethod.prototype, "normalTexture", {
             /**
              * 漫反射纹理
              */
-            this.normalTexture = new feng3d.Texture2D();
-            this.normalTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
-        }
+            get: function () {
+                return this._normalTexture;
+            },
+            set: function (value) {
+                if (this._normalTexture)
+                    this._normalTexture.removeEventListener(feng3d.Event.LOADED, this.onLoaded, this);
+                this._normalTexture = value;
+                if (this._normalTexture)
+                    this._normalTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 加载完成
+         */
+        NormalMethod.prototype.onLoaded = function () {
+            this.invalidateRenderData();
+        };
         /**
          * 更新渲染数据
          */
@@ -13258,12 +13383,9 @@ var feng3d;
         /**
          * 构建
          */
-        function SpecularMethod() {
+        function SpecularMethod(specularUrl) {
+            if (specularUrl === void 0) { specularUrl = ""; }
             _super.call(this);
-            /**
-             * 镜面反射光泽图
-             */
-            this.specularTexture = new feng3d.Texture2D();
             /**
              * 镜面反射颜色
              */
@@ -13272,8 +13394,26 @@ var feng3d;
              * 高光系数
              */
             this.glossiness = 5;
-            this.specularTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+            this.specularTexture = new feng3d.Texture2D(specularUrl);
         }
+        Object.defineProperty(SpecularMethod.prototype, "specularTexture", {
+            /**
+             * 镜面反射光泽图
+             */
+            get: function () {
+                return this._specularTexture;
+            },
+            set: function (value) {
+                if (this._specularTexture)
+                    this._specularTexture.removeEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                this._specularTexture = value;
+                if (this._specularTexture)
+                    this._specularTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(SpecularMethod.prototype, "specular", {
             /**
              * 镜面反射光反射强度
@@ -13319,26 +13459,52 @@ var feng3d;
         /**
          * 构建
          */
-        function AmbientMethod() {
+        function AmbientMethod(ambientUrl, color) {
+            if (ambientUrl === void 0) { ambientUrl = ""; }
+            if (color === void 0) { color = null; }
             _super.call(this);
+            this.ambientTexture = new feng3d.Texture2D(ambientUrl);
+            this.color = color || new feng3d.Color();
+        }
+        Object.defineProperty(AmbientMethod.prototype, "ambientTexture", {
             /**
              * 环境纹理
              */
-            this.ambientTexture = new feng3d.Texture2D();
+            get: function () {
+                return this._ambientTexture;
+            },
+            set: function (value) {
+                if (this.ambientTexture)
+                    this.ambientTexture.removeEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                this._ambientTexture = value;
+                if (this.ambientTexture)
+                    this.ambientTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AmbientMethod.prototype, "color", {
             /**
              * 颜色
              */
-            this.color = new feng3d.Color(0.7, 0.7, 0.7, 1);
-            this.ambientTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
-            feng3d.Watcher.watch(this, ["color"], this.invalidateRenderData, this);
-        }
+            get: function () {
+                return this._color;
+            },
+            set: function (value) {
+                this._color = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新渲染数据
          */
         AmbientMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms[feng3d.RenderDataID.u_ambient] = this.color;
+            renderData.uniforms[feng3d.RenderDataID.u_ambient] = this._color;
             if (this.ambientTexture.checkRenderData()) {
-                renderData.uniforms[feng3d.RenderDataID.s_ambient] = this.ambientTexture;
+                renderData.uniforms[feng3d.RenderDataID.s_ambient] = this._ambientTexture;
                 renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
             }
             else {
@@ -14428,7 +14594,8 @@ var feng3d;
         /**
          * 构建材质
          */
-        function TerrainMethod() {
+        function TerrainMethod(blendUrl) {
+            if (blendUrl === void 0) { blendUrl = ""; }
             _super.call(this);
             // this.shaderName = "terrain";
         }
@@ -17967,10 +18134,8 @@ var feng3d;
             //
             var terrain = new feng3d.GameObject("terrain");
             terrain.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
-            var material = new feng3d.StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = root + 'terrain_diffuse.jpg';
-            material.normalMethod.normalTexture.url = root + "terrain_normals.jpg";
-            var terrainMethod = new feng3d.TerrainMethod();
+            var material = new feng3d.StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
+            var terrainMethod = new feng3d.TerrainMethod(root + 'terrain_splats.png');
             terrainMethod.blendTexture = new feng3d.Texture2D(root + 'terrain_splats.png');
             terrainMethod.splatTexture1 = new feng3d.Texture2D(root + 'beach.jpg');
             // terrainMaterial.splatTexture1 = new Texture2D(root + '111.jpg');
@@ -17989,7 +18154,7 @@ var feng3d;
             terrainMethod.splatTexture3.wrapS = feng3d.GL.REPEAT;
             terrainMethod.splatTexture3.wrapT = feng3d.GL.REPEAT;
             terrainMethod.splatRepeats = new feng3d.Vector3D(1, 50, 150, 100);
-            material.terrainMethod = terrainMethod;
+            material.addMethod(terrainMethod);
             terrain.getOrCreateComponentByClass(feng3d.Model).material = material;
             scene.addChild(terrain);
             //初始化光源
@@ -18186,8 +18351,7 @@ var feng3d;
             this._plane = new feng3d.GameObject();
             var model = this._plane.getOrCreateComponentByClass(feng3d.Model);
             model.geometry = new feng3d.PlaneGeometry(700, 700);
-            var material = model.material = new feng3d.StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = "resources/floor_diffuse.jpg";
+            var material = model.material = new feng3d.StandardMaterial("resources/floor_diffuse.jpg");
             scene.addChild(this._plane);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
         }

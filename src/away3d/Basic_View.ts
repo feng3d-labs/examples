@@ -19,8 +19,7 @@ module feng3d
             this._plane = new GameObject();
             var model = this._plane.getOrCreateComponentByClass(Model);
             model.geometry = new PlaneGeometry(700, 700);
-            var material = model.material = new StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = "resources/floor_diffuse.jpg";
+            var material = model.material = new StandardMaterial("resources/floor_diffuse.jpg");
             scene.addChild(this._plane);
 
             ticker.addEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);

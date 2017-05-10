@@ -17,7 +17,7 @@ module feng3d
         /**
          * 构建材质
          */
-        constructor()
+        constructor(blendUrl:string = "")
         {
             super();
             // this.shaderName = "terrain";

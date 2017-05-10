@@ -66,6 +66,7 @@ module feng3d
 
             this.initGL();
 
+            this._viewRect = new Rectangle(this._canvas.clientLeft,this._canvas.clientTop,this._canvas.clientWidth,this._canvas.clientHeight);
             this.scene = scene || new Scene3D();
             this.camera = camera || new CameraObject3D();
 

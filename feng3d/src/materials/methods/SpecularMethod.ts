@@ -9,7 +9,20 @@ module feng3d
         /**
          * 镜面反射光泽图
          */
-        public specularTexture = new Texture2D();
+        public get specularTexture ()
+        {
+            return this._specularTexture;
+        }
+        public set specularTexture (value)
+        {
+            if(this._specularTexture)
+                this._specularTexture.removeEventListener(Event.LOADED, this.invalidateRenderData, this);
+            this._specularTexture = value;
+            if(this._specularTexture)
+                this._specularTexture.addEventListener(Event.LOADED, this.invalidateRenderData, this);
+            this.invalidateRenderData();
+        }
+        private _specularTexture: Texture2D;
         /**
          * 镜面反射颜色
          */
@@ -31,10 +44,10 @@ module feng3d
         /**
          * 构建
          */
-        constructor()
+        constructor(specularUrl = "")
         {
             super();
-            this.specularTexture.addEventListener(Event.LOADED, this.invalidateRenderData, this);
+            this.specularTexture = new Texture2D(specularUrl);
         }
 
         /**

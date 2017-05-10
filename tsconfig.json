@@ -196,5 +196,6 @@
 		"src/TerrainMergeTest.ts",
 		"src/TextureMaterialTest.ts",
 		"src/FogTest.ts",
-		"src/away3d/Basic_SkyBox.ts"]
+		"src/away3d/Basic_SkyBox.ts",
+		"src/away3d/Basic_View.ts"]
 }

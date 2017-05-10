@@ -35,5 +35,6 @@ var files = {
     ],
     "away3d": [
         "Basic_SkyBox",
+        "Basic_View",
     ]
 };

@@ -18173,4 +18173,29 @@ var feng3d;
     }());
     feng3d.Basic_SkyBox = Basic_SkyBox;
 })(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Basic_View = (function () {
+        function Basic_View() {
+            var canvas = document.getElementById("glcanvas");
+            this._view = new feng3d.View3D(canvas);
+            var scene = this._view.scene;
+            this._view.camera.z = -600;
+            this._view.camera.y = 500;
+            this._view.camera.lookAt(new feng3d.Vector3D());
+            this._plane = new feng3d.GameObject();
+            var model = this._plane.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.PlaneGeometry(700, 700);
+            var material = model.material = new feng3d.StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = "resources/floor_diffuse.jpg";
+            scene.addChild(this._plane);
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
+        }
+        Basic_View.prototype._onEnterFrame = function (e) {
+            this._plane.rotationY += 1;
+        };
+        return Basic_View;
+    }());
+    feng3d.Basic_View = Basic_View;
+})(feng3d || (feng3d = {}));
 //# sourceMappingURL=examples.js.map

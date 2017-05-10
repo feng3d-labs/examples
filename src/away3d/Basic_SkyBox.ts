@@ -37,7 +37,7 @@ module feng3d
             var torusMaterial = new StandardMaterial();
             torusMaterial.specularMethod.specular = 0.5;
             torusMaterial.ambientMethod.color.fromUnit(0x111199);
-            // torusMaterial.addMethod(new EnvMapMethod(cubeTexture, 1));
+            torusMaterial.addMethod(new EnvMapMethod(cubeTexture, 1));
 
             var torus = this._torus= new GameObject("torus");
             var model=            torus.getOrCreateComponentByClass(Model);

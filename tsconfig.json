@@ -125,6 +125,7 @@
 		"feng3d/src/materials/methods/SpecularMethod.ts",
 		"feng3d/src/materials/methods/AmbientMethod.ts",
 		"feng3d/src/materials/methods/FogMethod.ts",
+		"feng3d/src/materials/methods/EnvMapMethod.ts",
 		"feng3d/src/light/LightType.ts",
 		"feng3d/src/light/Light.ts",
 		"feng3d/src/light/DirectionalLight.ts",

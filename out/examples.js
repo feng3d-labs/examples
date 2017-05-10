@@ -13422,6 +13422,74 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
+     * 环境映射函数
+     */
+    var EnvMapMethod = (function (_super) {
+        __extends(EnvMapMethod, _super);
+        /**
+         * 创建EnvMapMethod实例
+         * @param envMap		环境映射贴图
+         * @param alpha			反射率
+         */
+        function EnvMapMethod(envMap, alpha) {
+            if (alpha === void 0) { alpha = 1; }
+            _super.call(this);
+            this._cubeTexture = envMap;
+            this.alpha = alpha;
+        }
+        Object.defineProperty(EnvMapMethod.prototype, "envMap", {
+            /**
+             * 环境映射贴图
+             */
+            get: function () {
+                return this._cubeTexture;
+            },
+            set: function (value) {
+                this._cubeTexture = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(EnvMapMethod.prototype, "alpha", {
+            /**
+             * 反射率
+             */
+            get: function () {
+                return this._alpha;
+            },
+            set: function (value) {
+                this._alpha = value;
+                // this._envMapData[0] = this._alpha;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 更新渲染数据
+         */
+        EnvMapMethod.prototype.updateRenderData = function (renderContext, renderData) {
+            // renderData.uniforms[RenderDataID.u_diffuse] = this.color;
+            // if (this.difuseTexture.checkRenderData())
+            // {
+            //     renderData.uniforms[RenderDataID.s_diffuse] = this.difuseTexture;
+            //     renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
+            // } else
+            // {
+            //     renderData.uniforms[RenderDataID.s_diffuse] = null;
+            //     renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
+            // }
+            // renderData.uniforms[RenderDataID.u_alphaThreshold] = this.alphaThreshold;
+            //
+            _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        return EnvMapMethod;
+    }(feng3d.RenderDataHolder));
+    feng3d.EnvMapMethod = EnvMapMethod;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
      * 灯光类型
      * @author feng 2016-12-12
      */
@@ -17947,7 +18015,7 @@ var feng3d;
             var torusMaterial = new feng3d.StandardMaterial();
             torusMaterial.specularMethod.specular = 0.5;
             torusMaterial.ambientMethod.color.fromUnit(0x111199);
-            // torusMaterial.addMethod(new EnvMapMethod(cubeTexture, 1));
+            torusMaterial.addMethod(new feng3d.EnvMapMethod(cubeTexture, 1));
             var torus = this._torus = new feng3d.GameObject("torus");
             var model = torus.getOrCreateComponentByClass(feng3d.Model);
             model.geometry = new feng3d.TorusGeometry(150, 60, 40, 20);

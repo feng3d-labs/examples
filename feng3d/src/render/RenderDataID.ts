@@ -82,6 +82,10 @@ module feng3d
          */
         public static s_splatTexture3 = "s_splatTexture3";
         /**
+         * 地形块混合贴图
+         */
+        public static s_splatMergeTexture = "s_splatMergeTexture";
+        /**
          * 地形块重复次数
          */
         public static u_splatRepeats = "u_splatRepeats";

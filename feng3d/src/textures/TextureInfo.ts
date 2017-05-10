@@ -21,6 +21,39 @@ module feng3d
         protected _pixels: ImageData | HTMLVideoElement | HTMLImageElement | HTMLCanvasElement | ImageData[] | HTMLVideoElement[] | HTMLImageElement[] | HTMLCanvasElement[];
 
         /**
+         * 纹理宽度
+         */
+        public get width()
+        {
+            var o = {};
+            if (this._pixels && this._pixels.hasOwnProperty("width"))
+                return this._pixels["width"];
+            return this._width;
+        };
+        public set width(value) { this._width = value; }
+        protected _width: number = 100;
+
+        /**
+         * 纹理高度
+         */
+        public get height()
+        {
+            var o = {};
+            if (this._pixels && this._pixels.hasOwnProperty("height"))
+                return this._pixels["height"];
+            return this._height;
+        };
+        public set height(value) { this._height = value; }
+        protected _height: number = 100;
+
+        /**
+         * 纹理尺寸
+         */
+        public get size() { this._size.setTo(this.width, this.height); return this._size; }
+        public set size(value) { this.width = value.x; this.height = value.y; }
+        protected _size: Point = new Point(100, 100);
+
+        /**
          * 格式
          */
         public get format() { return this._format; }
@@ -79,8 +112,6 @@ module feng3d
          * 是否失效
          */
         private _invalid = true;
-
-
 
         /**
          * 构建纹理

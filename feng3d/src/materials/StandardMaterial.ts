@@ -47,7 +47,7 @@ module feng3d
                 this.invalidateRenderData();
             }
         }
-        private _terrainMethod: TerrainMethod;
+        private _terrainMethod: RenderDataHolder;
 
         private _methods: RenderDataHolder[] = [];
 

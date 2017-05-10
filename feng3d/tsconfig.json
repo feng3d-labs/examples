@@ -167,7 +167,8 @@
         "src/pick/RaycastPicker.ts",
         //地形
         "src/terrain/TerrainGeometry.ts",
-        "src/terrain/TerrainMaterial.ts",
+        "src/terrain/TerrainMethod.ts",
+        "src/terrain/TerrainMergeMethod.ts",
         //
         "src/animators/base/states/AnimationStateBase.ts",
         "src/animators/base/states/AnimationClipState.ts",

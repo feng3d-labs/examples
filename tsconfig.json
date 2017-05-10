@@ -137,7 +137,8 @@
 		"feng3d/src/pick/PickingCollider.ts",
 		"feng3d/src/pick/RaycastPicker.ts",
 		"feng3d/src/terrain/TerrainGeometry.ts",
-		"feng3d/src/terrain/TerrainMaterial.ts",
+		"feng3d/src/terrain/TerrainMethod.ts",
+		"feng3d/src/terrain/TerrainMergeMethod.ts",
 		"feng3d/src/animators/base/states/AnimationStateBase.ts",
 		"feng3d/src/animators/base/states/AnimationClipState.ts",
 		"feng3d/src/animators/particle/Particle.ts",
@@ -192,6 +193,7 @@
 		"src/SkyBoxTest.ts",
 		"src/StandardMaterialTest.ts",
 		"src/TerrainTest.ts",
+		"src/TerrainMergeTest.ts",
 		"src/TextureMaterialTest.ts",
 		"src/FogTest.ts",
 		"src/away3d/Basic_SkyBox.ts"]

@@ -26,6 +26,7 @@
         "src/SkyBoxTest.ts",
         "src/StandardMaterialTest.ts",
         "src/TerrainTest.ts",
+        "src/TerrainMergeTest.ts",
         "src/TextureMaterialTest.ts",
         "src/FogTest.ts",
         //

@@ -31,6 +31,7 @@ var files = {
     ],
     "advanced": [
         "TerrainTest",
+        "TerrainMergeTest",
     ],
     "away3d": [
         "Basic_SkyBox",

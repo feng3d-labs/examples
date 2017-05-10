@@ -200,5 +200,14 @@ module feng3d
          * 雾模式
          */
         public static u_fogMode = "u_fogMode";
+
+        /**
+         * 环境反射纹理
+         */
+        public static s_envMap = "s_envMap";
+		/**
+		 * 反射率
+		 */
+        public static u_reflectivity = "u_reflectivity";
     }
 }

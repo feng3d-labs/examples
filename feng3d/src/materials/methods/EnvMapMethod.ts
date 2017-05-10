@@ -1,31 +1,35 @@
-module feng3d {
+module feng3d
+{
 	/**
 	 * 环境映射函数
 	 */
     export class EnvMapMethod extends RenderDataHolder
     {
         private _cubeTexture: TextureCube;
-        private _alpha: number;
-        
+        private _reflectivity: number;
+
         /**
 		 * 创建EnvMapMethod实例
-		 * @param envMap		环境映射贴图
-		 * @param alpha			反射率
+		 * @param envMap		        环境映射贴图
+		 * @param reflectivity			反射率
 		 */
-        constructor(envMap: TextureCube, alpha: number = 1){
+        constructor(envMap: TextureCube, reflectivity: number = 1)
+        {
             super();
             this._cubeTexture = envMap;
-            this.alpha = alpha;
+            this.reflectivity = reflectivity;
         }
 
         /**
 		 * 环境映射贴图
 		 */
-        public get envMap(){
+        public get envMap()
+        {
             return this._cubeTexture;
         }
 
-        public set envMap(value) {
+        public set envMap(value)
+        {
             this._cubeTexture = value;
             this.invalidateRenderData();
         }
@@ -33,13 +37,15 @@ module feng3d {
         /**
 		 * 反射率
 		 */
-        public get alpha(): number {
-            return this._alpha;
+        public get reflectivity(): number
+        {
+            return this._reflectivity;
         }
 
-        public set alpha(value: number) {
-            this._alpha = value;
-            // this._envMapData[0] = this._alpha;
+        public set reflectivity(value: number)
+        {
+            this._reflectivity = value;
+            this.invalidateRenderData();
         }
 
         /**
@@ -47,18 +53,9 @@ module feng3d {
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            // renderData.uniforms[RenderDataID.u_diffuse] = this.color;
-
-            // if (this.difuseTexture.checkRenderData())
-            // {
-            //     renderData.uniforms[RenderDataID.s_diffuse] = this.difuseTexture;
-            //     renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
-            // } else
-            // {
-            //     renderData.uniforms[RenderDataID.s_diffuse] = null;
-            //     renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
-            // }
-            // renderData.uniforms[RenderDataID.u_alphaThreshold] = this.alphaThreshold;
+            renderData.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
+            renderData.uniforms[RenderDataID.s_envMap] = this._cubeTexture;
+            renderData.uniforms[RenderDataID.u_reflectivity] = this._reflectivity;
 
             //
             super.updateRenderData(renderContext, renderData);

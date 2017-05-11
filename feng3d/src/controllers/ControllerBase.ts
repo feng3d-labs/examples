@@ -32,10 +32,5 @@ module feng3d
         {
             this._targetObject = val;
         }
-
-        protected notifyUpdate()
-        {
-
-        }
     }
 }

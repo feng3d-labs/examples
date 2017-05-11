@@ -25,7 +25,7 @@ module feng3d
             if (this._steps == val)
                 return;
             this._steps = val;
-            this.notifyUpdate();
+            this.update();
         }
 
         public get panAngle(): number
@@ -39,7 +39,7 @@ module feng3d
             if (this._panAngle == val)
                 return;
             this._panAngle = val;
-            this.notifyUpdate();
+            this.update();
         }
 
         public get tiltAngle(): number
@@ -53,7 +53,7 @@ module feng3d
             if (this._tiltAngle == val)
                 return;
             this._tiltAngle = val;
-            this.notifyUpdate();
+            this.update();
         }
 
         public get distance(): number
@@ -66,7 +66,7 @@ module feng3d
             if (this._distance == val)
                 return;
             this._distance = val;
-            this.notifyUpdate();
+            this.update();
         }
 
         public get minPanAngle(): number
@@ -131,7 +131,7 @@ module feng3d
             if (this._yFactor == val)
                 return;
             this._yFactor = val;
-            this.notifyUpdate();
+            this.update();
         }
 
         public get wrapPanAngle(): boolean
@@ -144,7 +144,7 @@ module feng3d
             if (this._wrapPanAngle == val)
                 return;
             this._wrapPanAngle = val;
-            this.notifyUpdate();
+            this.update();
         }
 
 
@@ -169,7 +169,6 @@ module feng3d
         {
             if (this._tiltAngle != this._currentTiltAngle || this._panAngle != this._currentPanAngle)
             {
-                this.notifyUpdate();
                 if (this._wrapPanAngle)
                 {
                     if (this._panAngle < 0)

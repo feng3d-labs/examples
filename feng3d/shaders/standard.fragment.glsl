@@ -35,6 +35,8 @@ uniform float u_glossiness;
     uniform sampler2D s_specular;
 #endif
 
+uniform vec4 u_sceneAmbientColor;
+
 //环境
 uniform vec4 u_ambient;
 #ifdef HAS_AMBIENT_SAMPLER
@@ -88,7 +90,7 @@ void main(void) {
     #endif
 
     //环境光
-    vec3 ambientColor = u_ambient.w * u_ambient.xyz;
+    vec3 ambientColor = u_ambient.w * u_ambient.xyz * u_sceneAmbientColor.xyz * u_sceneAmbientColor.w;
     #ifdef HAS_AMBIENT_SAMPLER
         ambientColor = ambientColor * texture2D(s_ambient, v_uv).xyz;
     #endif

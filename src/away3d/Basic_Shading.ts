@@ -44,9 +44,6 @@ module feng3d
 
             this.scene = view3D.scene;
             this.camera = view3D.camera;
-            this.camera.z = -1000;
-            this.camera.y = 1000;
-            this.camera.lookAt(new Vector3D());
 
             this.cameraController = new HoverController(this.camera);
             this.cameraController.distance = 1000;
@@ -66,10 +63,11 @@ module feng3d
 
         private initLights()
         {
+            this.scene.ambientColor.a = 0.2;
+            
             this.light1 = new GameObject();
             var directionalLight = new DirectionalLight();
-            // this.light1.ambient = 0.1;
-            // this.light1.diffuse = 0.7;
+            directionalLight.intensity = 0.7;
             this.light1.addComponent(directionalLight);
             this.light1.rotationX = 90;
             this.scene.addChild(this.light1);
@@ -77,8 +75,7 @@ module feng3d
             this.light2 = new GameObject();
             var directionalLight = new DirectionalLight();
             directionalLight.color.fromUnit(0x00FFFF);
-            // this.light2["ambient"] = 0.1;
-            // this.light2["diffuse"] = 0.7;
+            directionalLight.intensity = 0.7;
             this.light2.addComponent(directionalLight);
             this.light2.rotationX = 90;
             this.scene.addChild(this.light2);
@@ -94,7 +91,7 @@ module feng3d
             this.plane.y = -20;
             this.scene.addChild(this.plane);
             this.sphere = new GameObject();
-            var model = this.plane.getOrCreateComponentByClass(Model);
+            var model = this.sphere.getOrCreateComponentByClass(Model);
             model.geometry = new SphereGeometry(150, 40, 20)
             model.material = this.sphereMaterial;
             this.sphere.x = 300;
@@ -102,7 +99,7 @@ module feng3d
             this.sphere.z = 300;
             this.scene.addChild(this.sphere);
             this.cube = new GameObject();
-            var model = this.plane.getOrCreateComponentByClass(Model);
+            var model = this.cube.getOrCreateComponentByClass(Model);
             model.geometry = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
             model.material = this.cubeMaterial;
             this.cube.x = 300;
@@ -110,7 +107,7 @@ module feng3d
             this.cube.z = -250;
             this.scene.addChild(this.cube);
             this.torus = new GameObject();
-            var model = this.plane.getOrCreateComponentByClass(Model);
+            var model = this.torus.getOrCreateComponentByClass(Model);
             geometry = model.geometry = new TorusGeometry(150, 60, 40, 20);
             model.material = this.torusMaterial;
             geometry.scaleUV(10, 5);
@@ -122,7 +119,7 @@ module feng3d
 
         private initListeners()
         {
-            input.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);
+            ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);
             input.addEventListener(inputType.MOUSE_DOWN, this.onMouseDown, this);
             input.addEventListener(inputType.MOUSE_UP, this.onMouseUp, this);
         }
@@ -134,7 +131,8 @@ module feng3d
                 this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
                 this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
             }
-            this.light1.rotationZ = getTimer() / 10000;
+            this.light1.rotationX = 30;
+            this.light1.rotationY = getTimer() / 1000;
         }
 
         private onMouseDown(event: Event)

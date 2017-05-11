@@ -51,7 +51,7 @@ module feng3d
             pointLight1.color = new Color(1, 1, 0, 1);
             light1.addComponent(pointLight1);
             light1.y = 300;
-            scene.addChild(light1);
+            // scene.addChild(light1);
         }
 
         private light1: GameObject;

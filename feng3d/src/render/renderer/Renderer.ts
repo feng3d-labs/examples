@@ -101,7 +101,7 @@ module feng3d
     /**
      * 激活常量
      */
-    function activeUniforms(gl: GL, uniformInfos: WebGLActiveInfo[], uniforms: { [name: string]: number | number[] | Matrix3D | Vector3D | TextureInfo | Vector3D[] | Matrix3D[]; })
+    function activeUniforms(gl: GL, uniformInfos: WebGLActiveInfo[], uniforms: { [name: string]: number | Point | number[] | Matrix3D | Vector3D | TextureInfo | Vector3D[] | Matrix3D[]; })
     {
         for (var o = 0; o < uniformInfos.length; o++)
         {
@@ -172,6 +172,9 @@ module feng3d
                 break;
             case GL.FLOAT:
                 gl.uniform1f(location, data);
+                break;
+            case GL.FLOAT_VEC2:
+                gl.uniform2f(location, data.x, data.y);
                 break;
             case GL.FLOAT_VEC3:
                 gl.uniform3f(location, data.x, data.y, data.z);

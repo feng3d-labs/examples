@@ -29,7 +29,7 @@ module feng3d
 
             renderData.uniforms[RenderDataID.s_blendTexture] = this.blendTexture;
             renderData.uniforms[RenderDataID.s_splatMergeTexture] = this.splatMergeTexture;
-            renderData.uniforms[RenderDataID.s_splatMergeTexture] = this.splatMergeTexture.width;
+            renderData.uniforms[RenderDataID.u_splatMergeTextureSize] = this.splatMergeTexture.size;
             renderData.uniforms[RenderDataID.u_splatRepeats] = this.splatRepeats;
 
             super.updateRenderData(renderContext, renderData);

@@ -89,6 +89,10 @@ module feng3d
          * 地形块重复次数
          */
         public static u_splatRepeats = "u_splatRepeats";
+        /**
+         * 地形混合贴图尺寸
+         */
+        public static u_splatMergeTextureSize = "u_splatMergeTextureSize";
         /******************************************************/
         //                  点光源
         /******************************************************/

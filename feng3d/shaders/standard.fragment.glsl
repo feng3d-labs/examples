@@ -46,7 +46,7 @@ uniform vec4 u_ambient;
 #endif
 
 #ifdef HAS_TERRAIN_METHOD
-    #include<terrain.fragment>
+    #include<modules/terrain.fragment>
 #endif
 
 #include<modules/pointLightShading.fragment>

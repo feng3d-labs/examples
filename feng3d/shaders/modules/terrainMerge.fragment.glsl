@@ -1,3 +1,6 @@
+#extension GL_EXT_shader_texture_lod : enable
+#extension GL_OES_standard_derivatives : enable
+
 uniform sampler2D s_splatMergeTexture;
 uniform sampler2D s_blendTexture;
 uniform vec4 u_splatRepeats;
@@ -10,6 +13,10 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod){
     lodvec.z = 1.0 - lodvec.y;
     
     t_uv = t_uv * lodvec.xy + lodvec.zw;
+
+    vec2 imageSize =    vec2(2048.0,1024.0);
+    t_uv = floor(t_uv * imageSize) / imageSize;
+    
     vec4 tColor = texture2D(s_splatMergeTexture,t_uv);
     return tColor;
 }
@@ -20,7 +27,15 @@ vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv){
     // float lod = (distance-50.0)/50.0;
     float lod = distance/50.0;
     lod = clamp(lod,0.0,7.0);
-    // vec2 t = dFdx(t_uv);
+
+    //参考 http://blog.csdn.net/cgwbr/article/details/6620318
+    
+    float ty = dFdy(t_uv.x);
+    float tx = dFdx(t_uv.x);
+    float tw = fwidth(t_uv.x);
+
+    // gl_FragColor = texture2DGradEXT(s_splatMergeTexture, mod(t_uv, vec2(0.1, 0.5)), 
+    //                               dFdx(t_uv), dFdy(t_uv));
  
     vec4 tColor = mix(terrainTexture2DLod(s_splatMergeTexture,t_uv,floor(lod)),terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod)),fract(lod));
     // vec4 tColor = terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod));

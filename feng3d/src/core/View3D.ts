@@ -63,10 +63,12 @@ module feng3d
             this._canvas = canvas;
 
             this._gl = getWebGLContext(canvas, false);
+            var ext = this._gl.getExtension('OES_standard_derivatives');
+            var ext1 = this._gl.getExtension('EXT_shader_texture_lod');
 
             this.initGL();
 
-            this._viewRect = new Rectangle(this._canvas.clientLeft,this._canvas.clientTop,this._canvas.clientWidth,this._canvas.clientHeight);
+            this._viewRect = new Rectangle(this._canvas.clientLeft, this._canvas.clientTop, this._canvas.clientWidth, this._canvas.clientHeight);
             this.scene = scene || new Scene3D();
             this.camera = camera || new CameraObject3D();
 

@@ -37,5 +37,6 @@ var files = {
         "Basic_View",
         "Basic_SkyBox",
         "Basic_Shading",
+        "Basic_Particles",
     ]
 };

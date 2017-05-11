@@ -21,6 +21,10 @@ attribute float a_particle_birthTime;
     attribute vec3 a_particle_velocity;
 #endif
 
+#ifdef D_a_particle_lifetime
+    attribute float a_particle_lifetime;
+#endif
+
 #ifdef D_a_particle_color
     attribute vec4 a_particle_color;
     varying vec4 v_particle_color;
@@ -38,6 +42,10 @@ void main(void) {
 
     float pTime = u_particleTime - a_particle_birthTime;
     if(pTime > 0.0){
+
+        #ifdef D_a_particle_lifetime
+            pTime = mod(pTime,a_particle_lifetime);
+        #endif
 
         vec3 pPosition = vec3(0.0,0.0,0.0);
         vec3 pVelocity = vec3(0.0,0.0,0.0);

@@ -17702,7 +17702,7 @@ var feng3d;
         "shaders/mouse.fragment.glsl": "\r\n\r\nprecision highp float;\r\n\r\nuniform int u_objectID;\r\n\r\nvoid main(){\r\n\r\n    //支持 255*255*255*255 个索引\r\n    const float invColor = 1.0/255.0;\r\n    float temp = float(u_objectID);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.x = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.y = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.z = fract(temp);\r\n    temp = floor(temp) * invColor;\r\n    gl_FragColor.w = fract(temp);\r\n}",
         "shaders/mouse.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(){\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}",
         "shaders/particle.fragment.glsl": "\r\nprecision mediump float;\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nvarying vec4 v_particle_color;\r\n\r\n\r\n\r\nvoid main(void) {\r\n\r\n    gl_FragColor = v_particle_color;\r\n}\r\n",
-        "shaders/particle.vertex.glsl": "\r\nprecision mediump float;\r\n\r\n//根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nattribute float a_particle_birthTime;\r\n\r\n#ifdef D_a_particle_position\r\n    attribute vec3 a_particle_position;\r\n#endif\r\n\r\n#ifdef D_a_particle_velocity\r\n    attribute vec3 a_particle_velocity;\r\n#endif\r\n\r\n#ifdef D_a_particle_color\r\n    attribute vec4 a_particle_color;\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nuniform float u_particleTime;\r\n\r\n#ifdef D_u_particle_acceleration\r\n    uniform vec3 u_particle_acceleration;\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec3 position = a_position;\r\n\r\n    float pTime = u_particleTime - a_particle_birthTime;\r\n    if(pTime > 0.0){\r\n\r\n        vec3 pPosition = vec3(0.0,0.0,0.0);\r\n        vec3 pVelocity = vec3(0.0,0.0,0.0);\r\n\r\n        #ifdef D_a_particle_position\r\n            pPosition = pPosition + a_particle_position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_velocity\r\n            pVelocity = pVelocity + a_particle_velocity;\r\n        #endif\r\n\r\n        #ifdef D_u_particle_acceleration\r\n            pVelocity = pVelocity + u_particle_acceleration * pTime;\r\n        #endif\r\n        \r\n        #ifdef D_a_particle_color\r\n            v_particle_color = a_particle_color;\r\n        #endif\r\n\r\n        pPosition = pPosition + pVelocity * pTime;\r\n        position = position + pPosition;\r\n    }\r\n    \r\n    vec4 globalPosition = u_modelMatrix * vec4(position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    gl_PointSize = 1.0;\r\n}",
+        "shaders/particle.vertex.glsl": "\r\nprecision mediump float;\r\n\r\n//根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)\r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nattribute float a_particle_birthTime;\r\n\r\n#ifdef D_a_particle_position\r\n    attribute vec3 a_particle_position;\r\n#endif\r\n\r\n#ifdef D_a_particle_velocity\r\n    attribute vec3 a_particle_velocity;\r\n#endif\r\n\r\n#ifdef D_a_particle_lifetime\r\n    attribute float a_particle_lifetime;\r\n#endif\r\n\r\n#ifdef D_a_particle_color\r\n    attribute vec4 a_particle_color;\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nuniform float u_particleTime;\r\n\r\n#ifdef D_u_particle_acceleration\r\n    uniform vec3 u_particle_acceleration;\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec3 position = a_position;\r\n\r\n    float pTime = u_particleTime - a_particle_birthTime;\r\n    if(pTime > 0.0){\r\n\r\n        #ifdef D_a_particle_lifetime\r\n            pTime = mod(pTime,a_particle_lifetime);\r\n        #endif\r\n\r\n        vec3 pPosition = vec3(0.0,0.0,0.0);\r\n        vec3 pVelocity = vec3(0.0,0.0,0.0);\r\n\r\n        #ifdef D_a_particle_position\r\n            pPosition = pPosition + a_particle_position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_velocity\r\n            pVelocity = pVelocity + a_particle_velocity;\r\n        #endif\r\n\r\n        #ifdef D_u_particle_acceleration\r\n            pVelocity = pVelocity + u_particle_acceleration * pTime;\r\n        #endif\r\n        \r\n        #ifdef D_a_particle_color\r\n            v_particle_color = a_particle_color;\r\n        #endif\r\n\r\n        pPosition = pPosition + pVelocity * pTime;\r\n        position = position + pPosition;\r\n    }\r\n    \r\n    vec4 globalPosition = u_modelMatrix * vec4(position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    gl_PointSize = 1.0;\r\n}",
         "shaders/point.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = vec4(1.0,1.0,1.0,1.0);\r\n}\r\n",
         "shaders/point.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform float u_PointSize;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    gl_PointSize = u_PointSize;\r\n}",
         "shaders/postEffect/fxaa.fragment.glsl": "\r\n\r\n#define FXAA_REDUCE_Mvarying   (1.0/128.0)\r\n#define FXAA_REDUCE_MUL   (1.0/8.0)\r\n#define FXAA_SPAN_MAX     8.0\r\n\r\nvarying vec2 vUV;\r\nuniform sampler2D textureSampler;\r\nuniform vec2 texelSize;\r\n\r\n\r\n\r\nvoid main(){\r\n\tvec2 localTexelSize = texelSize;\r\n\tvec4 rgbNW = texture2D(textureSampler, (vUV + vec2(-1.0, -1.0) * localTexelSize));\r\n\tvec4 rgbNE = texture2D(textureSampler, (vUV + vec2(1.0, -1.0) * localTexelSize));\r\n\tvec4 rgbSW = texture2D(textureSampler, (vUV + vec2(-1.0, 1.0) * localTexelSize));\r\n\tvec4 rgbSE = texture2D(textureSampler, (vUV + vec2(1.0, 1.0) * localTexelSize));\r\n\tvec4 rgbM = texture2D(textureSampler, vUV);\r\n\tvec4 luma = vec4(0.299, 0.587, 0.114, 1.0);\r\n\tfloat lumaNW = dot(rgbNW, luma);\r\n\tfloat lumaNE = dot(rgbNE, luma);\r\n\tfloat lumaSW = dot(rgbSW, luma);\r\n\tfloat lumaSE = dot(rgbSE, luma);\r\n\tfloat lumaM = dot(rgbM, luma);\r\n\tfloat lumaMvarying = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\r\n\tfloat lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\r\n\r\n\tvec2 dir = vec2(-((lumaNW + lumaNE) - (lumaSW + lumaSE)), ((lumaNW + lumaSW) - (lumaNE + lumaSE)));\r\n\r\n\tfloat dirReduce = max(\r\n\t\t(lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL),\r\n\t\tFXAA_REDUCE_MIN);\r\n\r\n\tfloat rcpDirMvarying = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\r\n\tdir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),\r\n\t\tmax(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),\r\n\t\tdir * rcpDirMin)) * localTexelSize;\r\n\r\n\tvec4 rgbA = 0.5 * (\r\n\t\ttexture2D(textureSampler, vUV + dir * (1.0 / 3.0 - 0.5)) +\r\n\t\ttexture2D(textureSampler, vUV + dir * (2.0 / 3.0 - 0.5)));\r\n\r\n\tvec4 rgbB = rgbA * 0.5 + 0.25 * (\r\n\t\ttexture2D(textureSampler, vUV + dir *  -0.5) +\r\n\t\ttexture2D(textureSampler, vUV + dir * 0.5));\r\n\tfloat lumaB = dot(rgbB, luma);\r\n\tif ((lumaB < lumaMin) || (lumaB > lumaMax)) {\r\n\t\tgl_FragColor = rgbA;\r\n\t}\r\n\telse {\r\n\t\tgl_FragColor = rgbB;\r\n\t}\r\n}",
@@ -18787,6 +18787,70 @@ var feng3d;
         return Basic_Shading;
     }());
     feng3d.Basic_Shading = Basic_Shading;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Basic_Particles = (function () {
+        function Basic_Particles() {
+            this._move = false;
+            this._lastPanAngle = NaN;
+            this._lastTiltAngle = NaN;
+            this._lastMouseX = NaN;
+            this._lastMouseY = NaN;
+            var canvas = document.getElementById("glcanvas");
+            var view3D = this._view = new feng3d.View3D(canvas);
+            this._cameraController = new feng3d.HoverController(this._view.camera, null, 45, 20, 1000);
+            // this._particleAnimationSet = new ParticleAnimationSet(true, true);
+            // this._particleAnimationSet["addAnimation"](new ParticleBillboardNode());
+            // this._particleAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
+            // this._particleAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
+            this._particleMesh = new feng3d.GameObject("particle");
+            this._particleMesh.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.PointGeometry();
+            // this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PlaneGeometry(10, 10, 1, 1, false);
+            var material = this._particleMesh.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ParticleMaterial();
+            // material.renderMode = RenderMode.TRIANGLES;
+            // var material: TextureMaterial = <any>new TextureMaterial(Cast.bitmapTexture(this.ParticleImg));
+            // material.blendMode = egret.BlendMode.ADD;
+            var particleAnimator = this._particleMesh.getOrCreateComponentByClass(feng3d.ParticleAnimator);
+            particleAnimator.cycle = 10;
+            particleAnimator.numParticles = 20000;
+            //通过函数来创建粒子初始状态
+            particleAnimator.generateFunctions.push({
+                generate: function (particle) {
+                    particle.birthTime = Math.random() * 5 - 5;
+                    particle.lifetime = 5;
+                    var degree1 = Math.random() * Math.PI;
+                    var degree2 = Math.random() * Math.PI * 2;
+                    var r = Math.random() * 50 + 400;
+                    particle.velocity = new feng3d.Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+                    particle.color = new feng3d.Color(1, 0, 0, 1).mix(new feng3d.Color(0, 1, 0, 1), particle.index / particle.total);
+                }, priority: 0
+            });
+            // this._particleAnimator.start();
+            this._view.scene.addChild(this._particleMesh);
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
+        }
+        Basic_Particles.prototype.onEnterFrame = function (event) {
+            if (this._move) {
+                this._cameraController["panAngle"] = 0.3 * (this._view.mousePos.x - this._lastMouseX) + this._lastPanAngle;
+                this._cameraController["tiltAngle"] = 0.3 * (this._view.mousePos.y - this._lastMouseY) + this._lastTiltAngle;
+            }
+        };
+        Basic_Particles.prototype.onMouseDown = function (event) {
+            this._lastPanAngle = this._cameraController["panAngle"];
+            this._lastTiltAngle = this._cameraController["tiltAngle"];
+            this._lastMouseX = this._view.mousePos.x;
+            this._lastMouseY = this._view.mousePos.y;
+            this._move = true;
+        };
+        Basic_Particles.prototype.onMouseUp = function (event) {
+            this._move = false;
+        };
+        return Basic_Particles;
+    }());
+    feng3d.Basic_Particles = Basic_Particles;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

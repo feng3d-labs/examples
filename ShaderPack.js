@@ -4,8 +4,8 @@ const debuglog = util.debuglog('foo');
 
 var root = "feng3d/";
 
-fs.watch("./shaders", (event, filename) => {
-    // try {
+// fs.watch("./shaders", (event, filename) => {
+//     try 
 var savePath = root + "src/autofiles/shaders.ts";
 var filesContent = readFiles(getFilePaths(root + "shaders"));
 var contentStr = JSON.stringify(filesContent, null, '\t').replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1');

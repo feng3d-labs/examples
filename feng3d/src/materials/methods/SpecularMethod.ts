@@ -39,7 +39,7 @@ module feng3d
         /**
          * 高光系数
          */
-        public glossiness = 5;
+        public glossiness = 50;
 
         /**
          * 构建

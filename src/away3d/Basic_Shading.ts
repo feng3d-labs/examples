@@ -132,7 +132,7 @@ module feng3d
                 this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
             }
             this.light1.rotationX = 30;
-            this.light1.rotationY = getTimer() / 1000;
+            this.light1.rotationY++;
         }
 
         private onMouseDown(event: Event)

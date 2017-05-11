@@ -13402,7 +13402,7 @@ var feng3d;
             /**
              * 高光系数
              */
-            this.glossiness = 5;
+            this.glossiness = 50;
             this.specularTexture = new feng3d.Texture2D(specularUrl);
         }
         Object.defineProperty(SpecularMethod.prototype, "specularTexture", {
@@ -18772,7 +18772,7 @@ var feng3d;
                 this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
             }
             this.light1.rotationX = 30;
-            this.light1.rotationY = feng3d.getTimer() / 1000;
+            this.light1.rotationY++;
         };
         Basic_Shading.prototype.onMouseDown = function (event) {
             this.lastPanAngle = this.cameraController.panAngle;

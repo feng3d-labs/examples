@@ -144,7 +144,6 @@
         "src/materials/TextureMaterial.ts",
         "src/materials/SkyBoxMaterial.ts",
         "src/materials/StandardMaterial.ts",
-        "src/materials/ParticleMaterial.ts",
         //
         "src/materials/methods/DiffuseMethod.ts",
         "src/materials/methods/NormalMethod.ts",

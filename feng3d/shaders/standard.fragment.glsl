@@ -57,6 +57,10 @@ uniform vec4 u_ambient;
     #include<modules/envmap.fragment>
 #endif
 
+#ifdef HAS_PARTICLE_ANIMATOR
+    #include<modules/particle.fragment>
+#endif
+
 void main(void) {
 
     vec4 finalColor = vec4(1.0,1.0,1.0,1.0);
@@ -113,8 +117,12 @@ void main(void) {
         finalColor = envmapMethod(finalColor);
     #endif
 
+    #ifdef HAS_PARTICLE_ANIMATOR
+        finalColor = particleAnimation(finalColor);
+    #endif
+
     #ifdef HAS_FOG_METHOD
-        finalColor.xyz = fogMethod(finalColor.xyz);
+        finalColor = fogMethod(finalColor);
     #endif
 
     gl_FragColor = finalColor;

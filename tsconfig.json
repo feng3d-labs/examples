@@ -119,7 +119,6 @@
 		"feng3d/src/materials/TextureMaterial.ts",
 		"feng3d/src/materials/SkyBoxMaterial.ts",
 		"feng3d/src/materials/StandardMaterial.ts",
-		"feng3d/src/materials/ParticleMaterial.ts",
 		"feng3d/src/materials/methods/DiffuseMethod.ts",
 		"feng3d/src/materials/methods/NormalMethod.ts",
 		"feng3d/src/materials/methods/SpecularMethod.ts",

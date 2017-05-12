@@ -1,15 +1,4 @@
-
-precision mediump float;
-
 //根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)
-
-//此处将填充宏定义
-#define macros
-
-attribute vec3 a_position;
-
-uniform mat4 u_modelMatrix;
-uniform mat4 u_viewProjection;
 
 attribute float a_particle_birthTime;
 
@@ -36,9 +25,7 @@ uniform float u_particleTime;
     uniform vec3 u_particle_acceleration;
 #endif
 
-void main(void) {
-
-    vec3 position = a_position;
+vec3 particleAnimation(vec3 position) {
 
     float pTime = u_particleTime - a_particle_birthTime;
     if(pTime > 0.0){
@@ -70,7 +57,5 @@ void main(void) {
         position = position + pPosition;
     }
     
-    vec4 globalPosition = u_modelMatrix * vec4(position, 1.0);
-    gl_Position = u_viewProjection * globalPosition;
-    gl_PointSize = 1.0;
+    return position;
 }

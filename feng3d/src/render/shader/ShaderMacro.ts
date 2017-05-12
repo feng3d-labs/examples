@@ -76,6 +76,10 @@ module feng3d
          */
         public HAS_SKELETON_ANIMATION: boolean;
         /**
+         * 是否有粒子动画
+         */
+        public HAS_PARTICLE_ANIMATOR: boolean;
+        /**
          * 是否为点渲染模式
          */
         public IS_POINTS_MODE: boolean;

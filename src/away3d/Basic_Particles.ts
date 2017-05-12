@@ -25,9 +25,8 @@ module feng3d
 
             this._particleMesh = new GameObject("particle");
             // this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PointGeometry();
-            this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PlaneGeometry(100, 100, 1, 1, false);
-            // var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new StandardMaterial();
-            var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new ParticleMaterial();
+            this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PlaneGeometry(10, 10, 1, 1, false);
+            var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new StandardMaterial();
             // material.renderMode = RenderMode.TRIANGLES;
             // var material: TextureMaterial = <any>new TextureMaterial(Cast.bitmapTexture(this.ParticleImg));
             // material.blendMode = egret.BlendMode.ADD;

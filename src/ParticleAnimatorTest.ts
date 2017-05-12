@@ -26,7 +26,8 @@ module feng3d
 
             var particle = new GameObject("particle");
             particle.getOrCreateComponentByClass(Model).geometry = new PointGeometry();
-            particle.getOrCreateComponentByClass(Model).material = new ParticleMaterial();
+            var material = particle.getOrCreateComponentByClass(Model).material = new StandardMaterial();
+            material.renderMode = RenderMode.POINTS;
             particle.y = -100;
             scene.addChild(particle);
 

@@ -28,12 +28,20 @@ varying vec3 v_normal;
     uniform float u_PointSize;
 #endif
 
+#ifdef HAS_PARTICLE_ANIMATOR
+    #include<modules/particle.vertex>
+#endif
+
 void main(void) {
 
     vec4 position = vec4(a_position,1.0);
 
     #ifdef HAS_SKELETON_ANIMATION
         position = skeletonAnimation(position);
+    #endif
+    
+    #ifdef HAS_PARTICLE_ANIMATOR
+        position.xyz = particleAnimation(position.xyz);
     #endif
 
     //获取全局坐标

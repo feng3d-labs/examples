@@ -112,6 +112,12 @@ module feng3d
                 renderData.attributes[attributeName] = this._attributes[attributeName];
             }
 
+            var components = this.getComponentsByType(ParticleComponent);
+            components.forEach(element =>
+            {
+                element.setRenderState(this.particleGlobal, this.parentComponent, renderContext);
+            });
+
             this.update(this.particleGlobal, renderData);
             super.updateRenderData(renderContext, renderData);
         }

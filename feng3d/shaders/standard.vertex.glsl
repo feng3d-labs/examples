@@ -41,7 +41,7 @@ void main(void) {
     #endif
     
     #ifdef HAS_PARTICLE_ANIMATOR
-        position.xyz = particleAnimation(position.xyz);
+        position = particleAnimation(position);
     #endif
 
     //获取全局坐标

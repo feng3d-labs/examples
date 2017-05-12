@@ -26,10 +26,9 @@ module feng3d
             this._particleMesh = new GameObject("particle");
             // this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PointGeometry();
             this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PlaneGeometry(10, 10, 1, 1, false);
-            var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new StandardMaterial();
-            // material.renderMode = RenderMode.TRIANGLES;
-            // var material: TextureMaterial = <any>new TextureMaterial(Cast.bitmapTexture(this.ParticleImg));
-            // material.blendMode = egret.BlendMode.ADD;
+            var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new StandardMaterial("resources/blue.png");
+            material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+            material.enableBlend = true;
 
             var particleAnimator = new ParticleAnimator();
             particleAnimator.cycle = 10;
@@ -44,9 +43,9 @@ module feng3d
                     var degree2: number = Math.random() * Math.PI * 2;
                     var r: number = Math.random() * 50 + 400;
                     particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
-                    particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
                 }, priority: 0
             });
+            particleAnimator.addComponent(new ParticleBillboard());
             this._particleMesh.addComponent(particleAnimator);
             // this._particleAnimator.start();
             this._view.scene.addChild(this._particleMesh);

@@ -45,6 +45,7 @@
         "src/net/LoaderDataFormat.ts",
         //基础工具
         "src/mathlib/MathConsts.ts",
+        "src/mathlib/Orientation3D.ts",
         "src/mathlib/Point.ts",
         "src/mathlib/Rectangle.ts",
         "src/mathlib/Vector3D.ts",
@@ -181,6 +182,7 @@
         "src/animators/particle/ParticlePosition.ts",
         "src/animators/particle/ParticleVelocity.ts",
         "src/animators/particle/ParticleColor.ts",
+        "src/animators/particle/ParticleBillboard.ts",
         //
         "src/animators/events/AnimationStateEvent.ts",
         "src/animators/events/AnimatorEvent.ts",

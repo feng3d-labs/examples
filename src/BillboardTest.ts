@@ -25,6 +25,7 @@ module feng3d
            var gameObject =  GameObjectFactory.createPlane();
             gameObject.y = 150;
             gameObject.isBillboard = true;
+            gameObject.holdSize = 1;
             cube.addChild(gameObject);
 
             //材质

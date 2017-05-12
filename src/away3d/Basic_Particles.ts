@@ -24,14 +24,15 @@ module feng3d
             // this._particleAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
 
             this._particleMesh = new GameObject("particle");
-            this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PointGeometry();
-            // this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PlaneGeometry(10, 10, 1, 1, false);
+            // this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PointGeometry();
+            this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PlaneGeometry(100, 100, 1, 1, false);
+            // var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new StandardMaterial();
             var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new ParticleMaterial();
             // material.renderMode = RenderMode.TRIANGLES;
             // var material: TextureMaterial = <any>new TextureMaterial(Cast.bitmapTexture(this.ParticleImg));
             // material.blendMode = egret.BlendMode.ADD;
 
-            var particleAnimator = this._particleMesh.getOrCreateComponentByClass(ParticleAnimator);
+            var particleAnimator = new ParticleAnimator();
             particleAnimator.cycle = 10;
             particleAnimator.numParticles = 20000;
             //通过函数来创建粒子初始状态
@@ -47,6 +48,7 @@ module feng3d
                     particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
                 }, priority: 0
             });
+            this._particleMesh.addComponent(particleAnimator);
             // this._particleAnimator.start();
             this._view.scene.addChild(this._particleMesh);
 

@@ -129,12 +129,11 @@ module feng3d
 
         indexBuffer.active(gl);
 
-        // var renderMode = RenderMode.getRenderModeValue(shaderParams.renderMode);
         var renderMode = shaderParams.renderMode;
         if (instanceCount > 1)
         {
             var _ext = gl.getExtension('ANGLE_instanced_arrays');
-            _ext.drawArraysInstancedANGLE(renderMode, 0, indexBuffer.count, instanceCount)
+            _ext.drawElementsInstancedANGLE(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
         }
         else
         {

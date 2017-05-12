@@ -43,10 +43,6 @@ uniform vec4 u_ambient;
     uniform sampler2D s_ambient;
 #endif
 
-#ifdef IS_POINTS_MODE
-    uniform float u_PointSize;
-#endif
-
 #ifdef HAS_TERRAIN_METHOD
     #include<modules/terrain.fragment>
 #endif
@@ -122,8 +118,4 @@ void main(void) {
     #endif
 
     gl_FragColor = finalColor;
-
-    #ifdef IS_POINTS_MODE
-        gl_PointSize = u_PointSize;
-    #endif
 }

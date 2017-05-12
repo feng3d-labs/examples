@@ -28,6 +28,8 @@
         "src/events/EventDispatcher.ts",
         //
         "src/sys/SystemTicker.ts",
+        "src/utils/Timer.ts",
+        "src/utils/events/TimerEvent.ts",
         //
         "src/base/Input.ts",
         //快捷键模块

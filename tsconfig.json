@@ -23,6 +23,8 @@
 		"feng3d/src/events/IEventDispatcher.ts",
 		"feng3d/src/events/EventDispatcher.ts",
 		"feng3d/src/sys/SystemTicker.ts",
+		"feng3d/src/utils/Timer.ts",
+		"feng3d/src/utils/events/TimerEvent.ts",
 		"feng3d/src/base/Input.ts",
 		"feng3d/src/shortcut/handle/KeyCapture.ts",
 		"feng3d/src/shortcut/handle/KeyState.ts",
@@ -201,5 +203,6 @@
 		"src/away3d/Basic_SkyBox.ts",
 		"src/away3d/Basic_Shading.ts",
 		"src/away3d/Basic_Particles.ts",
+		"src/away3d/Basic_Fire.ts",
 		"src/away3d/Basic_View.ts"]
 }

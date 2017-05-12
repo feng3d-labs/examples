@@ -1439,6 +1439,368 @@ var feng3d;
     }(feng3d.EventDispatcher));
     feng3d.SystemTicker = SystemTicker;
 })(feng3d || (feng3d = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var feng3d;
+(function (feng3d) {
+    /**
+     * The Timer class is the interface to timers, which let you run code on a specified time sequence. Use the start()
+     * method to start a timer. Add an event listener for the timer event to set up code to be run on the timer interval.<br/>
+     * You can create Timer objects to run once or repeat at specified intervals to execute code on a schedule. Depending
+     * on the framerate or the runtime environment (available memory and other factors), the runtime may dispatchEvent events at
+     * slightly offset intervals.
+     * @see egret.TimerEvent
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/Timer.ts
+     * @language en_US
+     */
+    /**
+     * Timer 类是计时器的接口，它使您能按指定的时间序列运行代码。
+     * 使用 start() 方法来启动计时器。为 timer 事件添加事件侦听器，以便将代码设置为按计时器间隔运行。
+     * 可以创建 Timer 对象以运行一次或按指定间隔重复运行，从而按计划执行代码。
+     * 根据 Egret 的帧速率或运行时环境（可用内存和其他因素），运行时调度事件的间隔可能稍有不同。
+     * @see egret.TimerEvent
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/Timer.ts
+     * @language zh_CN
+     */
+    var Timer = (function (_super) {
+        __extends(Timer, _super);
+        /**
+         * Constructs a new Timer object with the specified delay and repeatCount states.
+         * @param delay The delay between timer events, in milliseconds. A delay lower than 20 milliseconds is not recommended.
+         * Timer frequency is limited to 60 frames per second, meaning a delay lower than 16.6 milliseconds causes runtime problems.
+         * @param repeatCount Specifies the number of repetitions. If zero, the timer repeats indefinitely.If nonzero,
+         * the timer runs the specified number of times and then stops.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 使用指定的 delay 和 repeatCount 状态构造新的 Timer 对象。
+         * @param delay 计时器事件间的延迟（以毫秒为单位）。建议 delay 不要低于 20 毫秒。计时器频率不得超过 60 帧/秒，这意味着低于 16.6 毫秒的延迟可导致出现运行时问题。
+         * @param repeatCount 指定重复次数。如果为零，则计时器将持续不断重复运行。如果不为 0，则将运行计时器，运行次数为指定的次数，然后停止。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        function Timer(delay, repeatCount) {
+            if (repeatCount === void 0) { repeatCount = 0; }
+            _super.call(this);
+            /**
+             * @private
+             */
+            this._delay = 0;
+            /**
+             * @private
+             */
+            this._currentCount = 0;
+            /**
+             * @private
+             */
+            this._running = false;
+            /**
+             * @private
+             */
+            this.updateInterval = 1000;
+            /**
+             * @private
+             */
+            this.lastCount = 1000;
+            /**
+             * @private
+             */
+            this.lastTimeStamp = 0;
+            this.delay = delay;
+            this.repeatCount = +repeatCount | 0;
+        }
+        Object.defineProperty(Timer.prototype, "delay", {
+            /**
+             * The delay between timer events, in milliseconds. A delay lower than 20 milliseconds is not recommended.<br/>
+             * Note: Timer frequency is limited to 60 frames per second, meaning a delay lower than 16.6 milliseconds causes runtime problems.
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 计时器事件间的延迟（以毫秒为单位）。如果在计时器正在运行时设置延迟间隔，则计时器将按相同的 repeatCount 迭代重新启动。<br/>
+             * 注意：建议 delay 不要低于 20 毫秒。计时器频率不得超过 60 帧/秒，这意味着低于 16.6 毫秒的延迟可导致出现运行时问题。
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this._delay;
+            },
+            set: function (value) {
+                //value = +value||0;
+                if (value < 1) {
+                    value = 1;
+                }
+                if (this._delay == value) {
+                    return;
+                }
+                this._delay = value;
+                this.lastCount = this.updateInterval = Math.round(60 * value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Timer.prototype, "currentCount", {
+            /**
+             * The total number of times the timer has fired since it started at zero. If the timer has been reset, only the fires since the reset are counted.
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 计时器从 0 开始后触发的总次数。如果已重置了计时器，则只会计入重置后的触发次数。
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this._currentCount;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Timer.prototype, "running", {
+            /**
+             * The timer's current state; true if the timer is running, otherwise false.
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 计时器的当前状态；如果计时器正在运行，则为 true，否则为 false。
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this._running;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Stops the timer, if it is running, and sets the currentCount property back to 0, like the reset button of a stopwatch.
+         * Then, when start() is called, the timer instance runs for the specified number of repetitions, as set by the repeatCount value.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 如果计时器正在运行，则停止计时器，并将 currentCount 属性设回为 0，这类似于秒表的重置按钮。然后，在调用 start() 后，将运行计时器实例，运行次数为指定的重复次数（由 repeatCount 值设置）。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        Timer.prototype.reset = function () {
+            this.stop();
+            this._currentCount = 0;
+        };
+        /**
+         * Starts the timer, if it is not already running.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 如果计时器尚未运行，则启动计时器。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        Timer.prototype.start = function () {
+            if (this._running)
+                return;
+            this.lastCount = this.updateInterval;
+            this.lastTimeStamp = feng3d.getTimer();
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.$update, this);
+            this._running = true;
+        };
+        /**
+         * Stops the timer. When start() is called after stop(), the timer instance runs for the remaining number of
+         * repetitions, as set by the repeatCount property.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 停止计时器。如果在调用 stop() 后调用 start()，则将继续运行计时器实例，运行次数为剩余的 重复次数（由 repeatCount 属性设置）。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        Timer.prototype.stop = function () {
+            if (!this._running)
+                return;
+            feng3d.ticker.removeEventListener(feng3d.Event.ENTER_FRAME, this.$update, this);
+            this._running = false;
+        };
+        /**
+         * @private
+         * Ticker以60FPS频率刷新此方法
+         */
+        Timer.prototype.$update = function () {
+            var timeStamp = feng3d.getTimer();
+            var deltaTime = timeStamp - this.lastTimeStamp;
+            if (deltaTime >= this._delay) {
+                this.lastCount = this.updateInterval;
+            }
+            else {
+                this.lastCount -= 1000;
+                if (this.lastCount > 0) {
+                    return false;
+                }
+                this.lastCount += this.updateInterval;
+            }
+            this.lastTimeStamp = timeStamp;
+            this._currentCount++;
+            var complete = (this.repeatCount > 0 && this._currentCount >= this.repeatCount);
+            this.dispatchEvent(new feng3d.TimerEvent(feng3d.TimerEvent.TIMER));
+            if (complete) {
+                this.stop();
+                this.dispatchEvent(new feng3d.TimerEvent(feng3d.TimerEvent.TIMER_COMPLETE));
+            }
+            return false;
+        };
+        return Timer;
+    }(feng3d.EventDispatcher));
+    feng3d.Timer = Timer;
+})(feng3d || (feng3d = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var feng3d;
+(function (feng3d) {
+    /**
+     * A Timer object dispatches a TimerEvent objects whenever the Timer object reaches the interval specified by the Timer.delay property.
+     * @see egret.Timer
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/events/TimerEvent.ts
+     * @language en_US
+     */
+    /**
+     * 每当 Timer 对象达到由 Timer.delay 属性指定的间隔时，Timer 对象即会调度 TimerEvent 对象。
+     * @see egret.Timer
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/events/TimerEvent.ts
+     * @language zh_CN
+     */
+    var TimerEvent = (function (_super) {
+        __extends(TimerEvent, _super);
+        /**
+         * Creates an Event object with specific information relevant to timer events.
+         * @param type The type of the event. Event listeners can access this information through the inherited type property.
+         * @param bubbles Determines whether the Event object bubbles. Event listeners can access this information through
+         * the inherited bubbles property.
+         * @param cancelable Determines whether the Event object can be canceled. Event listeners can access this information
+         * through the inherited cancelable property.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 创建一个 Event 对象，其中包含有关 timer 事件的特定信息。
+         * @param type 事件的类型。事件侦听器可以通过继承的 type 属性访问此信息。
+         * @param bubbles 确定 Event 对象是否冒泡。事件侦听器可以通过继承的 bubbles 属性访问此信息。
+         * @param cancelable 确定是否可以取消 Event 对象。事件侦听器可以通过继承的 cancelable 属性访问此信息。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        function TimerEvent(type, data, bubbles) {
+            if (data === void 0) { data = null; }
+            _super.call(this, type, data, bubbles);
+        }
+        /**
+         * Dispatched whenever a Timer object reaches an interval specified according to the Timer.delay property.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 每当 Timer 对象达到根据 Timer.delay 属性指定的间隔时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TimerEvent.TIMER = "timer";
+        /**
+         * Dispatched whenever it has completed the number of requests set by Timer.repeatCount.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 每当它完成 Timer.repeatCount 设置的请求数后调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TimerEvent.TIMER_COMPLETE = "timerComplete";
+        return TimerEvent;
+    }(feng3d.Event));
+    feng3d.TimerEvent = TimerEvent;
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -19049,6 +19411,204 @@ var feng3d;
         return Basic_Particles;
     }());
     feng3d.Basic_Particles = Basic_Particles;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Basic_Fire = (function () {
+        function Basic_Fire() {
+            this.fireObjects = new Array();
+            this.move = false;
+            this.lastPanAngle = NaN;
+            this.lastTiltAngle = NaN;
+            this.lastMouseX = NaN;
+            this.lastMouseY = NaN;
+            _super.call(this);
+            this.init();
+        }
+        Basic_Fire.prototype.init = function () {
+            this.initEngine();
+            this.initLights();
+            this.initMaterials();
+            this.initParticles();
+            this.initObjects();
+            this.initListeners();
+        };
+        Basic_Fire.prototype.initEngine = function () {
+            var _self__ = this;
+            this.stage.scaleMode = egret.StageScaleMode.NO_SCALE;
+            this.stage["align"] = flash.StageAlign.TOP_LEFT;
+            this.scene = new feng3d.Scene3D();
+            this.camera = new Camera3D();
+            this.view = new feng3d.View3D();
+            this.view["antiAlias"] = 4;
+            this.view["scene"] = this.scene;
+            this.view["camera"] = this.camera;
+            this.cameraController = new feng3d.HoverController(this.camera);
+            this.cameraController["distance"] = 1000;
+            this.cameraController["minTiltAngle"] = 0;
+            this.cameraController["maxTiltAngle"] = 90;
+            this.cameraController["panAngle"] = 45;
+            this.cameraController["tiltAngle"] = 20;
+            this.view["addSourceURL"]("srcview/index.html");
+            _self__.addChild(this.view);
+            this.Signature = (new this.SignatureSwf());
+            this.SignatureBitmap = new flash.Bitmap(new flash.BitmapData(this.Signature.width, this.Signature.height, true, 0));
+            this.stage["quality"] = flash.StageQuality.HIGH;
+            this.SignatureBitmap.bitmapData.draw2(this.Signature);
+            this.stage["quality"] = flash.StageQuality.LOW;
+            _self__.addChild(this.SignatureBitmap);
+            _self__.addChild(new AwayStats(this.view));
+        };
+        Basic_Fire.prototype.initLights = function () {
+            this.directionalLight = new feng3d.DirectionalLight(0, -1, 0);
+            this.directionalLight["castsShadows"] = false;
+            this.directionalLight["color"] = 0xeedddd;
+            this.directionalLight["diffuse"] = .5;
+            this.directionalLight["ambient"] = .5;
+            this.directionalLight["specular"] = 0;
+            this.directionalLight["ambientColor"] = 0x808090;
+            this.view["scene"].addChild(this.directionalLight);
+            this.lightPicker = new StaticLightPicker([this.directionalLight]);
+        };
+        Basic_Fire.prototype.initMaterials = function () {
+            this.planeMaterial = new TextureMultiPassMaterial(Cast.bitmapTexture(Basic_Fire.FloorDiffuse));
+            this.planeMaterial["specularMap"] = Cast.bitmapTexture(Basic_Fire.FloorSpecular);
+            this.planeMaterial["normalMap"] = Cast.bitmapTexture(Basic_Fire.FloorNormals);
+            this.planeMaterial["lightPicker"] = this.lightPicker;
+            this.planeMaterial["repeat"] = true;
+            this.planeMaterial["mipmap"] = false;
+            this.planeMaterial["specular"] = 10;
+            this.particleMaterial = new feng3d.TextureMaterial(Cast.bitmapTexture(Basic_Fire.FireTexture));
+            this.particleMaterial["blendMode"] = egret.BlendMode.ADD;
+        };
+        Basic_Fire.prototype.initParticles = function () {
+            this.fireAnimationSet = new ParticleAnimationSet(true, true);
+            this.fireAnimationSet["addAnimation"](new ParticleBillboardNode());
+            this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
+            this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new feng3d.Vector3D(0, 80, 0)));
+            this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
+            this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
+            this.fireAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
+            var particle = new feng3d.PlaneGeometry(10, 10, 1, 1, false);
+            var geometrySet = new Array();
+            for (var i = flash.checkInt(0); i < 500; i++)
+                geometrySet.push(particle);
+            this.particleGeometry = ParticleGeometryHelper.generateGeometry(geometrySet);
+        };
+        Basic_Fire.prototype.initObjects = function () {
+            this.plane = new Mesh(new feng3d.PlaneGeometry(1000, 1000), this.planeMaterial);
+            this.plane["geometry"].scaleUV(2, 2);
+            this.plane["y"] = -20;
+            this.scene["addChild"](this.plane);
+            for (var i = flash.checkInt(0); i < Basic_Fire.NUM_FIRES; i++) {
+                var particleMesh = new Mesh(this.particleGeometry, this.particleMaterial);
+                var animator = new feng3d.ParticleAnimator(this.fireAnimationSet);
+                particleMesh["animator"] = animator;
+                var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
+                particleMesh["x"] = Math.sin(degree) * 400;
+                particleMesh["z"] = Math.cos(degree) * 400;
+                particleMesh["y"] = 5;
+                this.fireObjects.push(new FireVO(particleMesh, animator));
+                this.view["scene"].addChild(particleMesh);
+            }
+            this.timer = new egret.Timer(1000, this.fireObjects.length);
+            this.timer.addEventListener(egret.TimerEvent.TIMER, flash.bind(this.onTimer, this), null);
+            this.timer.start();
+        };
+        Basic_Fire.prototype.initListeners = function () {
+            var _self__ = this;
+            _self__.addEventListener(egret.Event.ENTER_FRAME, flash.bind(this.onEnterFrame, this), null);
+            this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, flash.bind(this.onMouseDown, this), null);
+            this.stage.addEventListener(egret.TouchEvent.TOUCH_END, flash.bind(this.onMouseUp, this), null);
+            this.stage.addEventListener(egret.Event.RESIZE, flash.bind(this.onResize, this), null);
+            this.onResize();
+        };
+        Basic_Fire.prototype.initParticleFunc = function (prop) {
+            prop["startTime"] = Math.random() * 5;
+            prop["duration"] = Math.random() * 4 + 0.1;
+            var degree1 = Math.random() * Math.PI * 2;
+            var degree2 = Math.random() * Math.PI * 2;
+            var r = 15;
+            prop[ParticleVelocityNode.VELOCITY_VECTOR3D] = new feng3d.Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+        };
+        Basic_Fire.prototype.getAllLights = function () {
+            var lights = new Array();
+            lights.push(this.directionalLight);
+            for (var fireVO_key_a in this.fireObjects) {
+                var fireVO = this.fireObjects[fireVO_key_a];
+                if (fireVO.light)
+                    lights.push(fireVO.light);
+            }
+            return lights;
+        };
+        Basic_Fire.prototype.onTimer = function (e) {
+            var fireObject = this.fireObjects[this.timer.currentCount - 1];
+            fireObject.animator["start"]();
+            var light = new feng3d.PointLight();
+            light["color"] = 0xFF3301;
+            light["diffuse"] = 0;
+            light["specular"] = 0;
+            light["position"] = fireObject.mesh["position"];
+            fireObject.light = light;
+            this.lightPicker["lights"] = this.getAllLights();
+        };
+        Basic_Fire.prototype.onEnterFrame = function (event) {
+            if (this.move) {
+                this.cameraController["panAngle"] = 0.3 * (this.stage["mouseX"] - this.lastMouseX) + this.lastPanAngle;
+                this.cameraController["tiltAngle"] = 0.3 * (this.stage["mouseY"] - this.lastMouseY) + this.lastTiltAngle;
+            }
+            var fireVO;
+            var fireVO_key_a;
+            for (fireVO_key_a in this.fireObjects) {
+                fireVO = this.fireObjects[fireVO_key_a];
+                var light = fireVO.light;
+                if (!light)
+                    continue;
+                if (fireVO.strength < 1)
+                    fireVO.strength += 0.1;
+                light["fallOff"] = 380 + Math.random() * 20;
+                light["radius"] = 200 + Math.random() * 30;
+                light["diffuse"] = light["specular"] = fireVO.strength + Math.random() * .2;
+            }
+            this.view["render"]();
+        };
+        Basic_Fire.prototype.onMouseDown = function (event) {
+            this.lastPanAngle = this.cameraController["panAngle"];
+            this.lastTiltAngle = this.cameraController["tiltAngle"];
+            this.lastMouseX = this.stage["mouseX"];
+            this.lastMouseY = this.stage["mouseY"];
+            this.move = true;
+            this.stage.addEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
+        };
+        Basic_Fire.prototype.onMouseUp = function (event) {
+            this.move = false;
+            this.stage.removeEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
+        };
+        Basic_Fire.prototype.onStageMouseLeave = function (event) {
+            this.move = false;
+            this.stage.removeEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
+        };
+        Basic_Fire.prototype.onResize = function (event) {
+            if (event === void 0) { event = null; }
+            this.view["width"] = this.stage.stageWidth;
+            this.view["height"] = this.stage.stageHeight;
+            this.SignatureBitmap.y = this.stage.stageHeight - this.Signature.height;
+        };
+        return Basic_Fire;
+    }());
+    feng3d.Basic_Fire = Basic_Fire;
+    var FireVO = (function (_super) {
+        __extends(FireVO, _super);
+        function FireVO(mesh, animator) {
+            _super.call(this);
+            this.strength = 0;
+            this.mesh = mesh;
+            this.animator = animator;
+        }
+        return FireVO;
+    }(egret.HashObject));
+    Basic_Fire.NUM_FIRES = 10;
+    flash.extendsClass("Basic_Fire", "egret.Sprite");
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

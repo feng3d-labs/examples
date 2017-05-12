@@ -21,6 +21,16 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod){
     return tColor;
 }
 
+//参考 http://blog.csdn.net/cgwbr/article/details/6620318
+//计算MipMap层函数：
+float mipmapLevel(vec2 uv, vec2 textureSize)
+{
+    vec2 dx = dFdx(uv * textureSize.x);
+    vec2 dy = dFdy(uv * textureSize.y);
+    float d = max(dot(dx, dx), dot(dy, dy));  
+    return 0.5 * log2(d);
+}
+
 vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv){
 
     float distance = length(u_cameraMatrix[3].xyz - v_globalPosition.xyz);
@@ -28,11 +38,8 @@ vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv){
     float lod = distance/50.0;
     lod = clamp(lod,0.0,7.0);
 
-    //参考 http://blog.csdn.net/cgwbr/article/details/6620318
     
-    float ty = dFdy(t_uv.x);
-    float tx = dFdx(t_uv.x);
-    float tw = fwidth(t_uv.x);
+    lod = mipmapLevel(t_uv,vec2(2048.0,1024.0));
 
     // gl_FragColor = texture2DGradEXT(s_splatMergeTexture, mod(t_uv, vec2(0.1, 0.5)), 
     //                               dFdx(t_uv), dFdy(t_uv));

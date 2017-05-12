@@ -91,17 +91,17 @@ module feng3d
             this.splatTexture3 = new Texture2D(splatUrls[2] || "");
 
             this.splatTexture1.generateMipmap = true;
-            this.splatTexture1.minFilter = GL.NEAREST_MIPMAP_LINEAR;
+            this.splatTexture1.minFilter = GL.LINEAR_MIPMAP_LINEAR;
             this.splatTexture1.wrapS = GL.REPEAT;
             this.splatTexture1.wrapT = GL.REPEAT;
 
             this.splatTexture2.generateMipmap = true;
-            this.splatTexture2.minFilter = GL.NEAREST_MIPMAP_LINEAR;
+            this.splatTexture2.minFilter = GL.LINEAR_MIPMAP_LINEAR;
             this.splatTexture2.wrapS = GL.REPEAT;
             this.splatTexture2.wrapT = GL.REPEAT;
 
             this.splatTexture3.generateMipmap = true;
-            this.splatTexture3.minFilter = GL.NEAREST_MIPMAP_LINEAR;
+            this.splatTexture3.minFilter = GL.LINEAR_MIPMAP_LINEAR;
             this.splatTexture3.wrapS = GL.REPEAT;
             this.splatTexture3.wrapT = GL.REPEAT;
 

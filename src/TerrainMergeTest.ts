@@ -50,7 +50,7 @@ module feng3d
             terrainMethod.splatMergeTexture.magFilter = GL.NEAREST;
             terrainMethod.splatMergeTexture.wrapS = GL.REPEAT;
             terrainMethod.splatMergeTexture.wrapT = GL.REPEAT;
-            terrainMethod.splatRepeats = new Vector3D(1, 50, 150, 100);
+            terrainMethod.splatRepeats = new Vector3D(50, 150, 100);
             material.terrainMethod = terrainMethod;
 
             terrain.getOrCreateComponentByClass(Model).material = material;

@@ -43,40 +43,23 @@ vec4 terrainMethod(vec4 diffuseColor,vec2 v_uv) {
     
     vec4 blend = texture2D(s_blendTexture,v_uv);
 
-    float lod = 0.0;
+    vec4 offset[3];
+    offset[0] = vec4(0.5,0.5,0.0,0.0);
+    offset[1] = vec4(0.5,0.5,0.5,0.0);
+    offset[2] = vec4(0.5,0.5,0.0,0.5);
+    vec2 tileSize = vec2(512.0,512.0);
 
-    float offset = 0.0;
-    float width = 0.5;
-
-    vec2 t_uv = v_uv.xy * u_splatRepeats.y;
-    lod = mipmapLevel(t_uv,vec2(512.0,512.0));
-    lod = clamp(lod,0.0,7.0);
-    t_uv.x = fract(t_uv.x);
-    t_uv.y = fract(t_uv.y);
-    t_uv.x = t_uv.x * width + offset;
-    t_uv.y = t_uv.y * width + offset;
-    vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
-    diffuseColor = (tColor - diffuseColor) * blend.x + diffuseColor;
-
-    t_uv = v_uv.xy * u_splatRepeats.z;
-    lod = mipmapLevel(t_uv,vec2(512.0,512.0));
-    lod = clamp(lod,0.0,7.0);
-    t_uv.x = fract(t_uv.x);
-    t_uv.y = fract(t_uv.y);
-    t_uv.x = t_uv.x * width + offset + 0.5;
-    t_uv.y = t_uv.y * width + offset;
-    tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
-    diffuseColor = (tColor - diffuseColor) * blend.y + diffuseColor;
-
-    t_uv = v_uv.xy * u_splatRepeats.w;
-    lod = mipmapLevel(t_uv,vec2(512.0,512.0));
-    lod = clamp(lod,0.0,7.0);
-    t_uv.x = fract(t_uv.x);
-    t_uv.y = fract(t_uv.y);
-    t_uv.x = t_uv.x * width + offset;
-    t_uv.y = t_uv.y * width + offset + 0.5;
-    tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
-    diffuseColor = (tColor - diffuseColor) * blend.z + diffuseColor;
+    for(int i = 0; i < 3; i++)
+    {
+        vec2 t_uv = v_uv.xy * u_splatRepeats[i];
+        float lod = mipmapLevel(t_uv,tileSize);
+        lod = clamp(lod,0.0,7.0);
+        t_uv.x = fract(t_uv.x);
+        t_uv.y = fract(t_uv.y);
+        t_uv = t_uv * offset[i].xy + offset[i].zw;
+        vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
+        diffuseColor = (tColor - diffuseColor) * blend[i] + diffuseColor;
+    }
 
     // diffuseColor.xyz = vec3(1.0,0.0,0.0);
     // diffuseColor.xyz = vec3(floor(lod)/7.0,0.0,0.0);

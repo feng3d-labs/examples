@@ -31,23 +31,11 @@ float mipmapLevel(vec2 uv, vec2 textureSize)
     return 0.5 * log2(d);
 }
 
-vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv){
-
-    float distance = length(u_cameraMatrix[3].xyz - v_globalPosition.xyz);
-    // float lod = (distance-50.0)/50.0;
-    float lod = distance/50.0;
-    lod = clamp(lod,0.0,7.0);
-
-    
-    lod = mipmapLevel(t_uv,vec2(2048.0,1024.0));
-
-    // gl_FragColor = texture2DGradEXT(s_splatMergeTexture, mod(t_uv, vec2(0.1, 0.5)), 
-    //                               dFdx(t_uv), dFdy(t_uv));
+vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv,float lod){
  
     vec4 tColor = mix(terrainTexture2DLod(s_splatMergeTexture,t_uv,floor(lod)),terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod)),fract(lod));
     // vec4 tColor = terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod));
     
-    // vec4 tColor = vec4(floor(lod)/7.0,0.0,0.0,0.0);
     return tColor;
 }
 
@@ -55,36 +43,42 @@ vec4 terrainMethod(vec4 diffuseColor,vec2 v_uv) {
     
     vec4 blend = texture2D(s_blendTexture,v_uv);
 
-    // float offset = 1.0/512.0;
-    // float offset = 0.000000001;
-    // float offset = 1.0 / 1024.0;
-    // float width = 0.5 - offset * 2.0;
+    float lod = 0.0;
+
     float offset = 0.0;
     float width = 0.5;
 
     vec2 t_uv = v_uv.xy * u_splatRepeats.y;
+    lod = mipmapLevel(t_uv,vec2(512.0,512.0));
+    lod = clamp(lod,0.0,7.0);
     t_uv.x = fract(t_uv.x);
     t_uv.y = fract(t_uv.y);
     t_uv.x = t_uv.x * width + offset;
     t_uv.y = t_uv.y * width + offset;
-    vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv);
+    vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
     diffuseColor = (tColor - diffuseColor) * blend.x + diffuseColor;
 
     t_uv = v_uv.xy * u_splatRepeats.z;
+    lod = mipmapLevel(t_uv,vec2(512.0,512.0));
+    lod = clamp(lod,0.0,7.0);
     t_uv.x = fract(t_uv.x);
     t_uv.y = fract(t_uv.y);
     t_uv.x = t_uv.x * width + offset + 0.5;
     t_uv.y = t_uv.y * width + offset;
-    tColor = terrainTexture2D(s_splatMergeTexture,t_uv);
+    tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
     diffuseColor = (tColor - diffuseColor) * blend.y + diffuseColor;
 
     t_uv = v_uv.xy * u_splatRepeats.w;
+    lod = mipmapLevel(t_uv,vec2(512.0,512.0));
+    lod = clamp(lod,0.0,7.0);
     t_uv.x = fract(t_uv.x);
     t_uv.y = fract(t_uv.y);
     t_uv.x = t_uv.x * width + offset;
     t_uv.y = t_uv.y * width + offset + 0.5;
-    tColor = terrainTexture2D(s_splatMergeTexture,t_uv);
+    tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
     diffuseColor = (tColor - diffuseColor) * blend.z + diffuseColor;
 
+    // diffuseColor.xyz = vec3(1.0,0.0,0.0);
+    // diffuseColor.xyz = vec3(floor(lod)/7.0,0.0,0.0);
     return diffuseColor;
 }

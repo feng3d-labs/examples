@@ -94,7 +94,7 @@ void main(void) {
     finalColor = diffuseColor;
 
     //渲染灯光
-    // #if NUM_LIGHT > 0
+    #if NUM_LIGHT > 0
 
         //获取高光值
         float glossiness = u_glossiness;
@@ -107,7 +107,7 @@ void main(void) {
         #endif
         
         finalColor.xyz = pointLightShading(normal, diffuseColor.xyz, specularColor, ambientColor, glossiness);
-    // #endif
+    #endif
 
     #ifdef HAS_ENV_METHOD
         finalColor = envmapMethod(finalColor);

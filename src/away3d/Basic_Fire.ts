@@ -2,15 +2,17 @@ module feng3d
 {
     export class Basic_Fire
     {
-        public static NUM_FIRES: number;
+        public static NUM_FIRES: number = 10;
         private scene: Scene3D;
         private camera: GameObject;
         private view: View3D;
         private cameraController: HoverController;
-        private planeMaterial: TextureMultiPassMaterial;
-        private particleMaterial: TextureMaterial;
+        private planeMaterial: StandardMaterial;
+        private particleMaterial: StandardMaterial;
         private directionalLight: DirectionalLight;
-        private timer: egret.Timer;
+        private fireAnimationSet: ParticleAnimator;
+        private particleGeometry: Geometry;
+        private timer: Timer;
         private plane: GameObject;
         private fireObjects: Array<FireVO> = new Array<FireVO>();
         private move: boolean = false;
@@ -21,7 +23,6 @@ module feng3d
 
         public constructor()
         {
-            super();
             this.init();
         }
 
@@ -37,72 +38,63 @@ module feng3d
 
         private initEngine()
         {
-            var _self__: any = this;
-            this.stage.scaleMode = egret.StageScaleMode.NO_SCALE;
-            this.stage["align"] = flash.StageAlign.TOP_LEFT;
-            this.scene = new Scene3D();
-            this.camera = new Camera3D();
-            this.view = new View3D();
-            this.view["antiAlias"] = 4;
-            this.view["scene"] = this.scene;
-            this.view["camera"] = this.camera;
+            var canvas = document.getElementById("glcanvas");
+            var view3D = this.view = new View3D(canvas);
+
+            this.camera = view3D.camera;
+            this.scene = view3D.scene;
             this.cameraController = new HoverController(this.camera);
-            this.cameraController["distance"] = 1000;
-            this.cameraController["minTiltAngle"] = 0;
-            this.cameraController["maxTiltAngle"] = 90;
-            this.cameraController["panAngle"] = 45;
-            this.cameraController["tiltAngle"] = 20;
-            this.view["addSourceURL"]("srcview/index.html");
-            _self__.addChild(this.view);
-            this.Signature = (<egret.Sprite>(new this.SignatureSwf()));
-            this.SignatureBitmap = new flash.Bitmap(new flash.BitmapData(this.Signature.width, this.Signature.height, true, 0));
-            this.stage["quality"] = flash.StageQuality.HIGH;
-            this.SignatureBitmap.bitmapData.draw2(this.Signature);
-            this.stage["quality"] = flash.StageQuality.LOW;
-            _self__.addChild(this.SignatureBitmap);
-            _self__.addChild(new AwayStats(this.view));
+            this.cameraController.distance = 1000;
+            this.cameraController.minTiltAngle = 0;
+            this.cameraController.maxTiltAngle = 90;
+            this.cameraController.panAngle = 45;
+            this.cameraController.tiltAngle = 20;
         }
 
         private initLights()
         {
             this.directionalLight = new DirectionalLight(0, -1, 0);
-            this.directionalLight["castsShadows"] = false;
-            this.directionalLight["color"] = 0xeedddd;
-            this.directionalLight["diffuse"] = .5;
-            this.directionalLight["ambient"] = .5;
-            this.directionalLight["specular"] = 0;
-            this.directionalLight["ambientColor"] = 0x808090;
-            this.view["scene"].addChild(this.directionalLight);
-            this.lightPicker = new StaticLightPicker([this.directionalLight]);
+            this.directionalLight.castsShadows = false;
+            this.directionalLight.color.fromUnit(0xeedddd);
+            this.directionalLight.intensity = .5;
+            var gameObject = new GameObject();
+            gameObject.addComponent(this.directionalLight);
+            this.scene.addChild(gameObject);
         }
 
         private initMaterials()
         {
-            this.planeMaterial = new TextureMultiPassMaterial(Cast.bitmapTexture(Basic_Fire.FloorDiffuse));
-            this.planeMaterial["specularMap"] = Cast.bitmapTexture(Basic_Fire.FloorSpecular);
-            this.planeMaterial["normalMap"] = Cast.bitmapTexture(Basic_Fire.FloorNormals);
-            this.planeMaterial["lightPicker"] = this.lightPicker;
-            this.planeMaterial["repeat"] = true;
-            this.planeMaterial["mipmap"] = false;
+            this.planeMaterial = new StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
             this.planeMaterial["specular"] = 10;
-            this.particleMaterial = new TextureMaterial(Cast.bitmapTexture(Basic_Fire.FireTexture));
-            this.particleMaterial["blendMode"] = egret.BlendMode.ADD;
+            this.particleMaterial = new StandardMaterial("resources/blue.png");
+            this.particleMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+            this.particleMaterial.enableBlend = true;
         }
 
         private initParticles()
         {
-            this.fireAnimationSet = new ParticleAnimationSet(true, true);
-            this.fireAnimationSet["addAnimation"](new ParticleBillboardNode());
+            this.fireAnimationSet = new ParticleAnimator();
+            this.fireAnimationSet.addComponent(new ParticleBillboard());
             this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
             this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
             this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
-            this.fireAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
-            var particle: Geometry = <any>new PlaneGeometry(10, 10, 1, 1, false);
-            var geometrySet: Array<Geometry> = new Array<Geometry>();
-            for (var i: number = flash.checkInt(0); i < 500; i++)
-                geometrySet.push(particle);
-            this.particleGeometry = ParticleGeometryHelper.generateGeometry(geometrySet);
+            //通过函数来创建粒子初始状态
+            this.fireAnimationSet.numParticles = 500;
+            this.fireAnimationSet.generateFunctions.push({
+                generate: (particle) =>
+                {
+                    particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
+
+                    particle.birthTime = Math.random() * 5;
+                    particle.lifetime = Math.random() * 4 + 0.1;
+                    var degree1: number = Math.random() * Math.PI * 2;
+                    var degree2: number = Math.random() * Math.PI * 2;
+                    var r: number = <any>15;
+                    particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+                }, priority: 0
+            });
+            this.particleGeometry = new PlaneGeometry(10, 10, 1, 1, false);
         }
 
         private initObjects()
@@ -111,41 +103,30 @@ module feng3d
             this.plane["geometry"].scaleUV(2, 2);
             this.plane["y"] = -20;
             this.scene["addChild"](this.plane);
-            for (var i: number = flash.checkInt(0); i < Basic_Fire.NUM_FIRES; i++)
+            for (var i: number = 0; i < Basic_Fire.NUM_FIRES; i++)
             {
-                var particleMesh: Mesh = <any>new Mesh(this.particleGeometry, this.particleMaterial);
-                var animator: ParticleAnimator = <any>new ParticleAnimator(this.fireAnimationSet);
-                particleMesh["animator"] = animator;
+                var particleMesh = new GameObject();
+                var model = particleMesh.getOrCreateComponentByClass(Model);
+                model.geometry = this.particleGeometry;
+                model.material = this.particleMaterial;
+                particleMesh.addComponent(this.fireAnimationSet);
                 var degree: number = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
-                particleMesh["x"] = Math.sin(degree) * 400;
-                particleMesh["z"] = Math.cos(degree) * 400;
-                particleMesh["y"] = 5;
-                this.fireObjects.push(new FireVO(particleMesh, animator));
+                particleMesh.x = Math.sin(degree) * 400;
+                particleMesh.z = Math.cos(degree) * 400;
+                particleMesh.y = 5;
+                this.fireObjects.push(new FireVO(particleMesh));
                 this.view["scene"].addChild(particleMesh);
             }
-            this.timer = new egret.Timer(1000, this.fireObjects.length);
-            this.timer.addEventListener(egret.TimerEvent.TIMER, flash.bind(this.onTimer, this), null);
+            this.timer = new Timer(1000, this.fireObjects.length);
+            this.timer.addEventListener(TimerEvent.TIMER, this.onTimer, this);
             this.timer.start();
         }
 
         private initListeners()
         {
-            var _self__: any = this;
-            _self__.addEventListener(egret.Event.ENTER_FRAME, flash.bind(this.onEnterFrame, this), null);
-            this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, flash.bind(this.onMouseDown, this), null);
-            this.stage.addEventListener(egret.TouchEvent.TOUCH_END, flash.bind(this.onMouseUp, this), null);
-            this.stage.addEventListener(egret.Event.RESIZE, flash.bind(this.onResize, this), null);
-            this.onResize();
-        }
-
-        private initParticleFunc(prop: ParticleProperties)
-        {
-            prop["startTime"] = Math.random() * 5;
-            prop["duration"] = Math.random() * 4 + 0.1;
-            var degree1: number = Math.random() * Math.PI * 2;
-            var degree2: number = Math.random() * Math.PI * 2;
-            var r: number = <any>15;
-            prop[ParticleVelocityNode.VELOCITY_VECTOR3D] = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+            ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);
+            input.addEventListener(inputType.MOUSE_DOWN, this.onMouseDown, this);
+            input.addEventListener(inputType.MOUSE_UP, this.onMouseUp, this);
         }
 
         private getAllLights(): Array<any>
@@ -161,12 +142,12 @@ module feng3d
             return lights;
         }
 
-        private onTimer(e: egret.TimerEvent)
+        private onTimer(e: TimerEvent)
         {
             var fireObject: FireVO = this.fireObjects[this.timer.currentCount - 1];
             fireObject.animator["start"]();
             var light: PointLight = <any>new PointLight();
-            light["color"] = 0xFF3301;
+            light.color.fromUnit(0xFF3301);
             light["diffuse"] = 0;
             light["specular"] = 0;
             light["position"] = fireObject.mesh["position"];
@@ -174,12 +155,12 @@ module feng3d
             this.lightPicker["lights"] = this.getAllLights();
         }
 
-        private onEnterFrame(event: egret.Event)
+        private onEnterFrame(event: Event)
         {
             if (this.move)
             {
-                this.cameraController["panAngle"] = 0.3 * (this.stage["mouseX"] - this.lastMouseX) + this.lastPanAngle;
-                this.cameraController["tiltAngle"] = 0.3 * (this.stage["mouseY"] - this.lastMouseY) + this.lastTiltAngle;
+                this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
+                this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
             }
             var fireVO: FireVO;
             var fireVO_key_a;
@@ -198,54 +179,33 @@ module feng3d
             this.view["render"]();
         }
 
-        private onMouseDown(event: flash.MouseEvent)
+        private onMouseDown(event: Event)
         {
-            this.lastPanAngle = this.cameraController["panAngle"];
-            this.lastTiltAngle = this.cameraController["tiltAngle"];
-            this.lastMouseX = this.stage["mouseX"];
-            this.lastMouseY = this.stage["mouseY"];
+            this.lastPanAngle = this.cameraController.panAngle;
+            this.lastTiltAngle = this.cameraController.tiltAngle;
+            this.lastMouseX = this.view.mousePos.x;
+            this.lastMouseY = this.view.mousePos.y;
             this.move = true;
-            this.stage.addEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
         }
 
-        private onMouseUp(event: flash.MouseEvent)
+        private onMouseUp(event: Event)
         {
             this.move = false;
-            this.stage.removeEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
         }
-
-        private onStageMouseLeave(event: egret.Event)
-        {
-            this.move = false;
-            this.stage.removeEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
-        }
-
-        private onResize(event: egret.Event = null)
-        {
-            this.view["width"] = this.stage.stageWidth;
-            this.view["height"] = this.stage.stageHeight;
-            this.SignatureBitmap.y = this.stage.stageHeight - this.Signature.height;
-        }
-
     }
 
-    class FireVO extends egret.HashObject
+    class FireVO
     {
-        public mesh: Mesh;
+        public mesh: GameObject;
         public animator: ParticleAnimator;
         public light: PointLight;
         public strength: number = 0;
 
-        public constructor(mesh: Mesh, animator: ParticleAnimator)
+        public constructor(mesh: GameObject, animator: ParticleAnimator = null)
         {
-            super();
             this.mesh = mesh;
             this.animator = animator;
         }
 
     }
-
-    Basic_Fire.NUM_FIRES = 10;
-    flash.extendsClass("Basic_Fire", "egret.Sprite")
-
 }

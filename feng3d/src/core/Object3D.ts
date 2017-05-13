@@ -323,23 +323,23 @@ module feng3d
             this.invalidatePivot();
         }
 
-        public getPosition(position: Vector3D = null): Vector3D
+        public get position(): Vector3D
         {
-            position = position || new Vector3D();
-            position.setTo(this._x, this._y, this._z);
-            return position;
+            this._position.setTo(this._x, this._y, this._z);
+            return this._position;
         }
 
-        public setPosition(x = 0, y = 0, z = 0)
+        public set position(value)
         {
-            if (this._x != x || this._y != y || this._z != z)
+            if (this._x != value.x || this._y != value.y || this._z != value.z)
             {
-                this._x = x;
-                this._y = y;
-                this._z = z;
+                this._x = value.x;
+                this._y = value.y;
+                this._z = value.z;
                 this.invalidatePosition();
             }
         }
+        private _position = new Vector3D();
 
         public getRotation(rotation: Vector3D = null): Vector3D
         {

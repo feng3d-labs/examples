@@ -12,7 +12,7 @@ vec4 offset[3];
 vec2 tileSize = vec2(512.0,512.0);
 float maxLod = 7.0;
 
-vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 offset){
+vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 offset){
 
     //计算不同lod像素缩放以及起始坐标
     vec4 lodvec = vec4(0.5,1.0,0.0,0.0);
@@ -24,10 +24,10 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 
     vec2 lodSize = imageSize * lodvec.xy;
     vec2 lodPixelOffset = 1.0 / lodSize;
 
-    vec2 mixFactor = mod(t_uv, lodPixelOffset);
+    vec2 mixFactor = mod(uv, lodPixelOffset);
 
     //lod块中像素索引
-    t_uv = fract(t_uv + lodPixelOffset * vec2(0.0, 0.0));
+    vec2 t_uv = fract(uv + lodPixelOffset * vec2(0.0, 0.0));
     t_uv = t_uv * offset.xy + offset.zw;
     t_uv = t_uv * lodvec.xy;
     //取整像素
@@ -36,7 +36,7 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 
     t_uv = t_uv + lodvec.zw;
     vec4 tColor00 = texture2D(s_splatMergeTexture,t_uv);
 
-    t_uv = fract(t_uv + lodPixelOffset * vec2(1.0, 0.0));
+    t_uv = fract(uv + lodPixelOffset * vec2(1.0, 0.0));
     t_uv = t_uv * offset.xy + offset.zw;
     t_uv = t_uv * lodvec.xy;
     //取整像素
@@ -45,9 +45,32 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 
     t_uv = t_uv + lodvec.zw;
     vec4 tColor10 = texture2D(s_splatMergeTexture,t_uv);
 
-    vec4 tColor = mix(tColor00,tColor10,mixFactor.x);
+    t_uv = fract(uv + lodPixelOffset * vec2(0.0, 1.0));
+    t_uv = t_uv * offset.xy + offset.zw;
+    t_uv = t_uv * lodvec.xy;
+    //取整像素
+    t_uv = floor(t_uv * imageSize) / imageSize;
+    //添加lod起始坐标
+    t_uv = t_uv + lodvec.zw;
+    vec4 tColor01 = texture2D(s_splatMergeTexture,t_uv);
+
+    t_uv = fract(uv + lodPixelOffset * vec2(1.0, 1.0));
+    t_uv = t_uv * offset.xy + offset.zw;
+    t_uv = t_uv * lodvec.xy;
+    //取整像素
+    t_uv = floor(t_uv * imageSize) / imageSize;
+    //添加lod起始坐标
+    t_uv = t_uv + lodvec.zw;
+    vec4 tColor11 = texture2D(s_splatMergeTexture,t_uv);
+
+    vec4 tColor0 = mix(tColor00,tColor10,mixFactor.x);
+    vec4 tColor1 = mix(tColor01,tColor11,mixFactor.x);
+    vec4 tColor = mix(tColor0,tColor1,mixFactor.y);
 
     return tColor;
+
+    // return vec4(mixFactor.x,mixFactor.y,0.0,1.0);
+    // return vec4(mixFactor.x + 0.5,mixFactor.y + 0.5,0.0,1.0);
 }
 
 //参考 http://blog.csdn.net/cgwbr/article/details/6620318

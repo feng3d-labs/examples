@@ -80,7 +80,7 @@ module feng3d
             for (var i = 0; i < directionalLights.length; i++)
             {
                 var directionalLight = directionalLights[i];
-                directionalLightDirections.push(directionalLight.direction);
+                directionalLightDirections.push(directionalLight.sceneDirection);
                 directionalLightColors.push(directionalLight.color);
                 directionalLightIntensitys.push(directionalLight.intensity);
             }

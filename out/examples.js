@@ -2495,6 +2495,9 @@ var feng3d;
             get: function () {
                 return this._parentComponent;
             },
+            set: function (value) {
+                this._parentComponent = value;
+            },
             enumerable: true,
             configurable: true
         });
@@ -2736,7 +2739,7 @@ var feng3d;
         Component.prototype._onAddedComponent = function (event) {
             var data = event.data;
             if (data.child == this) {
-                this._parentComponent = data.container;
+                this.parentComponent = data.container;
                 this.onBeAddedComponent(event);
             }
         };
@@ -2747,7 +2750,7 @@ var feng3d;
             var data = event.data;
             if (event.data.child == this) {
                 this.onBeRemovedComponent(event);
-                this._parentComponent = null;
+                this.parentComponent = null;
             }
         };
         return Component;
@@ -7005,7 +7008,7 @@ var feng3d;
             var directionalLightIntensitys = [];
             for (var i = 0; i < directionalLights.length; i++) {
                 var directionalLight = directionalLights[i];
-                directionalLightDirections.push(directionalLight.direction);
+                directionalLightDirections.push(directionalLight.sceneDirection);
                 directionalLightColors.push(directionalLight.color);
                 directionalLightIntensitys.push(directionalLight.intensity);
             }
@@ -14190,6 +14193,10 @@ var feng3d;
              * 光照强度
              */
             this.intensity = 1;
+            /**
+             * 是否生成阴影（未实现）
+             */
+            this.castsShadows = false;
             this._shadowMap = new feng3d.Texture2D();
         }
         Object.defineProperty(Light.prototype, "shadowMap", {
@@ -14214,20 +14221,66 @@ var feng3d;
         /**
          * 构建
          */
-        function DirectionalLight() {
+        function DirectionalLight(xDir, yDir, zDir) {
+            if (xDir === void 0) { xDir = 0; }
+            if (yDir === void 0) { yDir = -1; }
+            if (zDir === void 0) { zDir = 1; }
             _super.call(this);
             this.lightType = feng3d.LightType.Directional;
+            this.direction = new feng3d.Vector3D(xDir, yDir, zDir);
+            this._sceneDirection = new feng3d.Vector3D(xDir, yDir, zDir);
+            this._sceneDirection.normalize();
         }
+        Object.defineProperty(DirectionalLight.prototype, "sceneDirection", {
+            get: function () {
+                return this._sceneDirection;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(DirectionalLight.prototype, "direction", {
             /**
              * 光照方向
              */
             get: function () {
-                return this.parentComponent.sceneTransform.forward;
+                return this._direction;
+            },
+            set: function (value) {
+                this._direction = value;
+                if (this._parentComponent) {
+                    var tmpLookAt = this._parentComponent.getPosition();
+                    tmpLookAt.incrementBy(this._direction);
+                    this._parentComponent.lookAt(tmpLookAt);
+                    this._parentComponent.sceneTransform.copyColumnTo(2, this._sceneDirection);
+                    this._sceneDirection.normalize();
+                }
             },
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(DirectionalLight.prototype, "parentComponent", {
+            get: function () {
+                return this._parentComponent;
+            },
+            set: function (value) {
+                if (this._parentComponent) {
+                    this._parentComponent.removeEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
+                }
+                this._parentComponent = value;
+                if (this._parentComponent) {
+                    this._parentComponent.addEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
+                    var tmpLookAt = this._parentComponent.getPosition();
+                    tmpLookAt.incrementBy(this._direction);
+                    this._parentComponent.lookAt(tmpLookAt);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        DirectionalLight.prototype.onScenetransformChanged = function () {
+            this._parentComponent.sceneTransform.copyColumnTo(2, this._sceneDirection);
+            this._sceneDirection.normalize();
+        };
         return DirectionalLight;
     }(feng3d.Light));
     feng3d.DirectionalLight = DirectionalLight;
@@ -19411,204 +19464,6 @@ var feng3d;
         return Basic_Particles;
     }());
     feng3d.Basic_Particles = Basic_Particles;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Basic_Fire = (function () {
-        function Basic_Fire() {
-            this.fireObjects = new Array();
-            this.move = false;
-            this.lastPanAngle = NaN;
-            this.lastTiltAngle = NaN;
-            this.lastMouseX = NaN;
-            this.lastMouseY = NaN;
-            _super.call(this);
-            this.init();
-        }
-        Basic_Fire.prototype.init = function () {
-            this.initEngine();
-            this.initLights();
-            this.initMaterials();
-            this.initParticles();
-            this.initObjects();
-            this.initListeners();
-        };
-        Basic_Fire.prototype.initEngine = function () {
-            var _self__ = this;
-            this.stage.scaleMode = egret.StageScaleMode.NO_SCALE;
-            this.stage["align"] = flash.StageAlign.TOP_LEFT;
-            this.scene = new feng3d.Scene3D();
-            this.camera = new Camera3D();
-            this.view = new feng3d.View3D();
-            this.view["antiAlias"] = 4;
-            this.view["scene"] = this.scene;
-            this.view["camera"] = this.camera;
-            this.cameraController = new feng3d.HoverController(this.camera);
-            this.cameraController["distance"] = 1000;
-            this.cameraController["minTiltAngle"] = 0;
-            this.cameraController["maxTiltAngle"] = 90;
-            this.cameraController["panAngle"] = 45;
-            this.cameraController["tiltAngle"] = 20;
-            this.view["addSourceURL"]("srcview/index.html");
-            _self__.addChild(this.view);
-            this.Signature = (new this.SignatureSwf());
-            this.SignatureBitmap = new flash.Bitmap(new flash.BitmapData(this.Signature.width, this.Signature.height, true, 0));
-            this.stage["quality"] = flash.StageQuality.HIGH;
-            this.SignatureBitmap.bitmapData.draw2(this.Signature);
-            this.stage["quality"] = flash.StageQuality.LOW;
-            _self__.addChild(this.SignatureBitmap);
-            _self__.addChild(new AwayStats(this.view));
-        };
-        Basic_Fire.prototype.initLights = function () {
-            this.directionalLight = new feng3d.DirectionalLight(0, -1, 0);
-            this.directionalLight["castsShadows"] = false;
-            this.directionalLight["color"] = 0xeedddd;
-            this.directionalLight["diffuse"] = .5;
-            this.directionalLight["ambient"] = .5;
-            this.directionalLight["specular"] = 0;
-            this.directionalLight["ambientColor"] = 0x808090;
-            this.view["scene"].addChild(this.directionalLight);
-            this.lightPicker = new StaticLightPicker([this.directionalLight]);
-        };
-        Basic_Fire.prototype.initMaterials = function () {
-            this.planeMaterial = new TextureMultiPassMaterial(Cast.bitmapTexture(Basic_Fire.FloorDiffuse));
-            this.planeMaterial["specularMap"] = Cast.bitmapTexture(Basic_Fire.FloorSpecular);
-            this.planeMaterial["normalMap"] = Cast.bitmapTexture(Basic_Fire.FloorNormals);
-            this.planeMaterial["lightPicker"] = this.lightPicker;
-            this.planeMaterial["repeat"] = true;
-            this.planeMaterial["mipmap"] = false;
-            this.planeMaterial["specular"] = 10;
-            this.particleMaterial = new feng3d.TextureMaterial(Cast.bitmapTexture(Basic_Fire.FireTexture));
-            this.particleMaterial["blendMode"] = egret.BlendMode.ADD;
-        };
-        Basic_Fire.prototype.initParticles = function () {
-            this.fireAnimationSet = new ParticleAnimationSet(true, true);
-            this.fireAnimationSet["addAnimation"](new ParticleBillboardNode());
-            this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
-            this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new feng3d.Vector3D(0, 80, 0)));
-            this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
-            this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
-            this.fireAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
-            var particle = new feng3d.PlaneGeometry(10, 10, 1, 1, false);
-            var geometrySet = new Array();
-            for (var i = flash.checkInt(0); i < 500; i++)
-                geometrySet.push(particle);
-            this.particleGeometry = ParticleGeometryHelper.generateGeometry(geometrySet);
-        };
-        Basic_Fire.prototype.initObjects = function () {
-            this.plane = new Mesh(new feng3d.PlaneGeometry(1000, 1000), this.planeMaterial);
-            this.plane["geometry"].scaleUV(2, 2);
-            this.plane["y"] = -20;
-            this.scene["addChild"](this.plane);
-            for (var i = flash.checkInt(0); i < Basic_Fire.NUM_FIRES; i++) {
-                var particleMesh = new Mesh(this.particleGeometry, this.particleMaterial);
-                var animator = new feng3d.ParticleAnimator(this.fireAnimationSet);
-                particleMesh["animator"] = animator;
-                var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
-                particleMesh["x"] = Math.sin(degree) * 400;
-                particleMesh["z"] = Math.cos(degree) * 400;
-                particleMesh["y"] = 5;
-                this.fireObjects.push(new FireVO(particleMesh, animator));
-                this.view["scene"].addChild(particleMesh);
-            }
-            this.timer = new egret.Timer(1000, this.fireObjects.length);
-            this.timer.addEventListener(egret.TimerEvent.TIMER, flash.bind(this.onTimer, this), null);
-            this.timer.start();
-        };
-        Basic_Fire.prototype.initListeners = function () {
-            var _self__ = this;
-            _self__.addEventListener(egret.Event.ENTER_FRAME, flash.bind(this.onEnterFrame, this), null);
-            this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, flash.bind(this.onMouseDown, this), null);
-            this.stage.addEventListener(egret.TouchEvent.TOUCH_END, flash.bind(this.onMouseUp, this), null);
-            this.stage.addEventListener(egret.Event.RESIZE, flash.bind(this.onResize, this), null);
-            this.onResize();
-        };
-        Basic_Fire.prototype.initParticleFunc = function (prop) {
-            prop["startTime"] = Math.random() * 5;
-            prop["duration"] = Math.random() * 4 + 0.1;
-            var degree1 = Math.random() * Math.PI * 2;
-            var degree2 = Math.random() * Math.PI * 2;
-            var r = 15;
-            prop[ParticleVelocityNode.VELOCITY_VECTOR3D] = new feng3d.Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
-        };
-        Basic_Fire.prototype.getAllLights = function () {
-            var lights = new Array();
-            lights.push(this.directionalLight);
-            for (var fireVO_key_a in this.fireObjects) {
-                var fireVO = this.fireObjects[fireVO_key_a];
-                if (fireVO.light)
-                    lights.push(fireVO.light);
-            }
-            return lights;
-        };
-        Basic_Fire.prototype.onTimer = function (e) {
-            var fireObject = this.fireObjects[this.timer.currentCount - 1];
-            fireObject.animator["start"]();
-            var light = new feng3d.PointLight();
-            light["color"] = 0xFF3301;
-            light["diffuse"] = 0;
-            light["specular"] = 0;
-            light["position"] = fireObject.mesh["position"];
-            fireObject.light = light;
-            this.lightPicker["lights"] = this.getAllLights();
-        };
-        Basic_Fire.prototype.onEnterFrame = function (event) {
-            if (this.move) {
-                this.cameraController["panAngle"] = 0.3 * (this.stage["mouseX"] - this.lastMouseX) + this.lastPanAngle;
-                this.cameraController["tiltAngle"] = 0.3 * (this.stage["mouseY"] - this.lastMouseY) + this.lastTiltAngle;
-            }
-            var fireVO;
-            var fireVO_key_a;
-            for (fireVO_key_a in this.fireObjects) {
-                fireVO = this.fireObjects[fireVO_key_a];
-                var light = fireVO.light;
-                if (!light)
-                    continue;
-                if (fireVO.strength < 1)
-                    fireVO.strength += 0.1;
-                light["fallOff"] = 380 + Math.random() * 20;
-                light["radius"] = 200 + Math.random() * 30;
-                light["diffuse"] = light["specular"] = fireVO.strength + Math.random() * .2;
-            }
-            this.view["render"]();
-        };
-        Basic_Fire.prototype.onMouseDown = function (event) {
-            this.lastPanAngle = this.cameraController["panAngle"];
-            this.lastTiltAngle = this.cameraController["tiltAngle"];
-            this.lastMouseX = this.stage["mouseX"];
-            this.lastMouseY = this.stage["mouseY"];
-            this.move = true;
-            this.stage.addEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
-        };
-        Basic_Fire.prototype.onMouseUp = function (event) {
-            this.move = false;
-            this.stage.removeEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
-        };
-        Basic_Fire.prototype.onStageMouseLeave = function (event) {
-            this.move = false;
-            this.stage.removeEventListener(flash.Event.MOUSE_LEAVE, flash.bind(this.onStageMouseLeave, this), null);
-        };
-        Basic_Fire.prototype.onResize = function (event) {
-            if (event === void 0) { event = null; }
-            this.view["width"] = this.stage.stageWidth;
-            this.view["height"] = this.stage.stageHeight;
-            this.SignatureBitmap.y = this.stage.stageHeight - this.Signature.height;
-        };
-        return Basic_Fire;
-    }());
-    feng3d.Basic_Fire = Basic_Fire;
-    var FireVO = (function (_super) {
-        __extends(FireVO, _super);
-        function FireVO(mesh, animator) {
-            _super.call(this);
-            this.strength = 0;
-            this.mesh = mesh;
-            this.animator = animator;
-        }
-        return FireVO;
-    }(egret.HashObject));
-    Basic_Fire.NUM_FIRES = 10;
-    flash.extendsClass("Basic_Fire", "egret.Sprite");
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

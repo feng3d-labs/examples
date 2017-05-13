@@ -12,7 +12,9 @@ vec4 offset[3];
 vec2 tileSize = vec2(512.0,512.0);
 float maxLod = 7.0;
 
-vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod){
+vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 offset){
+
+        // t_uv = t_uv * offset[i].xy + offset[i].zw;
 
     //计算不同lod像素缩放以及起始坐标
     vec4 lodvec = vec4(0.5,1.0,0.0,0.0);
@@ -22,12 +24,11 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 t_uv,float lod){
 
     //lod块尺寸
     vec2 lodSize = lodvec.xy * imageSize;
+    vec4 lodOffset = lodSize.xyxy * offset;
     //lod块中像素索引
     t_uv = t_uv * lodSize;
     //取整像素
-    // t_uv = floor(t_uv) / imageSize;
-    t_uv = (t_uv + 2.0) / imageSize;
-    // t_uv = mod(ceil(t_uv),lodSize) / imageSize;
+    t_uv = (mod(floor(t_uv + vec2(1.0,0.0)),lodOffset.xy) + lodOffset.zw) / imageSize;
     //添加lod起始坐标
     t_uv = t_uv + lodvec.zw;
     
@@ -45,12 +46,12 @@ float mipmapLevel(vec2 uv, vec2 textureSize)
     return 0.5 * log2(d);
 }
 
-vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv,float lod){
+vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 offset){
  
     #ifdef LOD_LINEAR
-        vec4 tColor = mix(terrainTexture2DLod(s_splatMergeTexture,t_uv,floor(lod)),terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod)),fract(lod));
+        vec4 tColor = mix(terrainTexture2DLod(s_splatMergeTexture,t_uv,floor(lod),offset),terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod),offset),fract(lod));
     #else
-        vec4 tColor = terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod));
+        vec4 tColor = terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod),offset);
     #endif
 
     return tColor;
@@ -69,8 +70,7 @@ vec4 terrainMethod(vec4 diffuseColor,vec2 v_uv) {
         float lod = mipmapLevel(t_uv,tileSize);
         lod = clamp(lod,0.0,maxLod);
         t_uv = fract(t_uv);
-        t_uv = t_uv * offset[i].xy + offset[i].zw;
-        vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod);
+        vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod,offset[i]);
         diffuseColor = (tColor - diffuseColor) * blend[i] + diffuseColor;
     }
 

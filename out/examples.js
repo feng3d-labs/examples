@@ -7658,6 +7658,7 @@ var feng3d;
             this._pos = new feng3d.Vector3D();
             this._rot = new feng3d.Vector3D();
             this._sca = new feng3d.Vector3D();
+            this._position = new feng3d.Vector3D();
             tempAxeX = tempAxeX || new feng3d.Vector3D();
             tempAxeY = tempAxeY || new feng3d.Vector3D();
             tempAxeZ = tempAxeZ || new feng3d.Vector3D();
@@ -7951,6 +7952,22 @@ var feng3d;
                 this.invalidatePosition();
             }
         };
+        Object.defineProperty(Object3D.prototype, "position", {
+            get: function () {
+                this._position.setTo(this._x, this._y, this._z);
+                return this._position;
+            },
+            set: function (value) {
+                if (this._x != value.x || this._y != value.y || this._z != value.z) {
+                    this._x = value.x;
+                    this._y = value.y;
+                    this._z = value.z;
+                    this.invalidatePosition();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object3D.prototype.getRotation = function (rotation) {
             if (rotation === void 0) { rotation = null; }
             rotation = rotation || new feng3d.Vector3D();
@@ -19464,6 +19481,171 @@ var feng3d;
         return Basic_Particles;
     }());
     feng3d.Basic_Particles = Basic_Particles;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Basic_Fire = (function () {
+        function Basic_Fire() {
+            this.fireObjects = new Array();
+            this.move = false;
+            this.lastPanAngle = NaN;
+            this.lastTiltAngle = NaN;
+            this.lastMouseX = NaN;
+            this.lastMouseY = NaN;
+            this.init();
+        }
+        Basic_Fire.prototype.init = function () {
+            this.initEngine();
+            this.initLights();
+            this.initMaterials();
+            this.initParticles();
+            this.initObjects();
+            this.initListeners();
+        };
+        Basic_Fire.prototype.initEngine = function () {
+            var canvas = document.getElementById("glcanvas");
+            var view3D = this.view = new feng3d.View3D(canvas);
+            this.camera = view3D.camera;
+            this.scene = view3D.scene;
+            this.cameraController = new feng3d.HoverController(this.camera);
+            this.cameraController.distance = 1000;
+            this.cameraController.minTiltAngle = 0;
+            this.cameraController.maxTiltAngle = 90;
+            this.cameraController.panAngle = 45;
+            this.cameraController.tiltAngle = 20;
+        };
+        Basic_Fire.prototype.initLights = function () {
+            this.directionalLight = new feng3d.DirectionalLight(0, -1, 0);
+            this.directionalLight.castsShadows = false;
+            this.directionalLight.color.fromUnit(0xeedddd);
+            this.directionalLight.intensity = .5;
+            var gameObject = new feng3d.GameObject();
+            gameObject.addComponent(this.directionalLight);
+            this.scene.addChild(gameObject);
+        };
+        Basic_Fire.prototype.initMaterials = function () {
+            this.planeMaterial = new feng3d.StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
+            this.planeMaterial["specular"] = 10;
+            this.particleMaterial = new feng3d.StandardMaterial("resources/blue.png");
+            this.particleMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+            this.particleMaterial.enableBlend = true;
+        };
+        Basic_Fire.prototype.initParticles = function () {
+            this.fireAnimationSet = new feng3d.ParticleAnimator();
+            this.fireAnimationSet.addComponent(new feng3d.ParticleBillboard());
+            // this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
+            // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
+            // this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
+            // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
+            //通过函数来创建粒子初始状态
+            this.fireAnimationSet.numParticles = 500;
+            this.fireAnimationSet.generateFunctions.push({
+                generate: function (particle) {
+                    particle.color = new feng3d.Color(1, 0, 0, 1).mix(new feng3d.Color(0, 1, 0, 1), particle.index / particle.total);
+                    particle.birthTime = Math.random() * 5;
+                    particle.lifetime = Math.random() * 4 + 0.1;
+                    var degree1 = Math.random() * Math.PI * 2;
+                    var degree2 = Math.random() * Math.PI * 2;
+                    var r = 15;
+                    particle.velocity = new feng3d.Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+                }, priority: 0
+            });
+            this.particleGeometry = new feng3d.PlaneGeometry(10, 10, 1, 1, false);
+        };
+        Basic_Fire.prototype.initObjects = function () {
+            this.plane = new feng3d.GameObject();
+            var model = this.plane.getOrCreateComponentByClass(feng3d.Model);
+            model.geometry = new feng3d.PlaneGeometry(1000, 1000);
+            model.geometry.scaleUV(2, 2);
+            model.material = this.planeMaterial;
+            this.plane.y = -20;
+            this.scene.addChild(this.plane);
+            for (var i = 0; i < Basic_Fire.NUM_FIRES; i++) {
+                var particleMesh = new feng3d.GameObject();
+                var model = particleMesh.getOrCreateComponentByClass(feng3d.Model);
+                model.geometry = this.particleGeometry;
+                model.material = this.particleMaterial;
+                particleMesh.addComponent(this.fireAnimationSet);
+                var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
+                particleMesh.x = Math.sin(degree) * 400;
+                particleMesh.z = Math.cos(degree) * 400;
+                particleMesh.y = 5;
+                this.fireObjects.push(new FireVO(particleMesh));
+                this.view.scene.addChild(particleMesh);
+            }
+            this.timer = new feng3d.Timer(1000, this.fireObjects.length);
+            this.timer.addEventListener(feng3d.TimerEvent.TIMER, this.onTimer, this);
+            this.timer.start();
+        };
+        Basic_Fire.prototype.initListeners = function () {
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
+            feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
+        };
+        Basic_Fire.prototype.getAllLights = function () {
+            var lights = new Array();
+            lights.push(this.directionalLight);
+            for (var fireVO_key_a in this.fireObjects) {
+                var fireVO = this.fireObjects[fireVO_key_a];
+                if (fireVO.light)
+                    lights.push(fireVO.light);
+            }
+            return lights;
+        };
+        Basic_Fire.prototype.onTimer = function (e) {
+            var fireObject = this.fireObjects[this.timer.currentCount - 1];
+            fireObject.animator["start"]();
+            var light = new feng3d.PointLight();
+            light.color.fromUnit(0xFF3301);
+            light.intensity = 0;
+            var lightObject = new feng3d.GameObject();
+            lightObject.addComponent(light);
+            lightObject.position = fireObject.mesh.position;
+            fireObject.light = light;
+        };
+        Basic_Fire.prototype.onEnterFrame = function (event) {
+            if (this.move) {
+                this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
+                this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
+            }
+            var fireVO;
+            var fireVO_key_a;
+            for (fireVO_key_a in this.fireObjects) {
+                fireVO = this.fireObjects[fireVO_key_a];
+                var light = fireVO.light;
+                if (!light)
+                    continue;
+                if (fireVO.strength < 1)
+                    fireVO.strength += 0.1;
+                light["fallOff"] = 380 + Math.random() * 20;
+                light["radius"] = 200 + Math.random() * 30;
+                light["diffuse"] = light["specular"] = fireVO.strength + Math.random() * .2;
+            }
+            this.view["render"]();
+        };
+        Basic_Fire.prototype.onMouseDown = function (event) {
+            this.lastPanAngle = this.cameraController.panAngle;
+            this.lastTiltAngle = this.cameraController.tiltAngle;
+            this.lastMouseX = this.view.mousePos.x;
+            this.lastMouseY = this.view.mousePos.y;
+            this.move = true;
+        };
+        Basic_Fire.prototype.onMouseUp = function (event) {
+            this.move = false;
+        };
+        Basic_Fire.NUM_FIRES = 10;
+        return Basic_Fire;
+    }());
+    feng3d.Basic_Fire = Basic_Fire;
+    var FireVO = (function () {
+        function FireVO(mesh, animator) {
+            if (animator === void 0) { animator = null; }
+            this.strength = 0;
+            this.mesh = mesh;
+            this.animator = animator;
+        }
+        return FireVO;
+    }());
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

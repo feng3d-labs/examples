@@ -22,15 +22,9 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     lodvec.y = lodvec.x * 2.0;
     lodvec.z = 1.0 - lodvec.y;
 
-    //lod块尺寸
+    vec2 t_uv = uv;
+    
     vec2 lodSize = imageSize * lodvec.xy;
-    vec2 lodPixelOffset = 1.0 / lodSize;
-
-    vec2 mixFactor = mod(uv, lodPixelOffset);
-
-    //lod块中像素索引
-    vec2 t_uv = fract(uv + lodPixelOffset * vec2(0.0, 0.0));
-
     lodSize = lodSize * 0.5;
     //------------------------------------------------------------------------------------------------------
     // t_uv = local坐标系 0-1
@@ -40,24 +34,20 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     vec2 pixelUV = 1.00/lodSize; // 0.1
     vec2 halfPixelUV = pixelUV*0.5; // 0.05
     // 采样像素偏移，距离该像素中心点的偏移UV
-    vec2 sampleDev = t_uv - (vec2(floor(t_uv.x/pixelUV.x),floor(t_uv.y/pixelUV.y))*pixelUV + halfPixelUV);
+    vec2 sampleDev = mod(t_uv,pixelUV) - halfPixelUV;
     // 0.37 - (0.37/0.1)*0.1 + 0.05 = 0.02
-    float xDev = sign(sampleDev.x);
-    float yDev = sign(sampleDev.y);
+    vec2 lodPixelOffset = sign(sampleDev) / lodSize;
 
     // 取得四个点
-    vec2 t_uv2 = vec2(t_uv.x + xDev/lodSize.x,t_uv.y + yDev/lodSize.y); // X+Y
+    vec2 t_uv2 = t_uv + lodPixelOffset;// X+Y
     t_uv2 = fract(t_uv2);
-    vec2 t_uv3 = vec2(t_uv.x + xDev/lodSize.x,t_uv.y ); // X
+    vec2 t_uv3 = vec2(t_uv.x + lodPixelOffset.x,t_uv.y ); // X
     t_uv3 = fract(t_uv3);
-    vec2 t_uv4 = vec2(t_uv.x,t_uv.y + yDev/lodSize.y); // Y
+    vec2 t_uv4 = vec2(t_uv.x,t_uv.y + lodPixelOffset.y); // Y
     t_uv4 = fract(t_uv4);
-  
 
     // 获取比例
-    float xPer = abs(sampleDev.x)/pixelUV.x;
-    float yPer = abs(sampleDev.y)/pixelUV.y;
-
+    vec2 xyPer = abs(sampleDev)/pixelUV;
 
     // 获取像素的全局坐标
     t_uv = t_uv * offset.xy + offset.zw;
@@ -91,9 +81,9 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     vec4 tColor4 = texture2D(s_splatMergeTexture,t_uv4); // Y
 
     // 二次线性计算 先X后Y
-    vec4 linearColorX = mix(tColor,tColor3,xPer);
-    vec4 linearColorY = mix(tColor4,tColor2,xPer);
-    vec4 linearColorFinal = mix(linearColorX,linearColorY,yPer);
+    vec4 linearColorX = mix(tColor,tColor3,xyPer.x);
+    vec4 linearColorY = mix(tColor4,tColor2,xyPer.x);
+    vec4 linearColorFinal = mix(linearColorX,linearColorY,xyPer.y);
 
     //linearColorFinal.z = linearColorFinal.z + xPer;
     return linearColorFinal;

@@ -1,4 +1,4 @@
-//代码实现lod以及线性插值
+//代码实现lod以及线性插值 feng
 #extension GL_EXT_shader_texture_lod : enable
 #extension GL_OES_standard_derivatives : enable
 
@@ -11,8 +11,7 @@ uniform vec4 u_splatRepeats;
 vec2 imageSize =    vec2(2048.0,1024.0);
 vec4 offset[3];
 vec2 tileSize = vec2(512.0,512.0);
-// float maxLod = 7.0;
-float maxLod = 5.0;
+float maxLod = 7.0;
 
 vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 offset){
 
@@ -22,78 +21,58 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     lodvec.y = lodvec.x * 2.0;
     lodvec.z = 1.0 - lodvec.y;
 
-    vec2 t_uv = uv;
-    
+    //lod块尺寸
     vec2 lodSize = imageSize * lodvec.xy;
-    lodSize = lodSize * 0.5;
-    //------------------------------------------------------------------------------------------------------
-    // t_uv = local坐标系 0-1
-    // 根据与中心点的比例获取四个点
-    //------------------------------------------------------------------------------------------------------
-    // 获取与该像素中心点的偏移差
-    vec2 pixelUV = 1.00/lodSize; // 0.1
-    vec2 halfPixelUV = pixelUV*0.5; // 0.05
-    // 采样像素偏移，距离该像素中心点的偏移UV
-    vec2 sampleDev = mod(t_uv,pixelUV) - halfPixelUV;
-    // 0.37 - (0.37/0.1)*0.1 + 0.05 = 0.02
-    vec2 lodPixelOffset = sign(sampleDev) / lodSize;
+    vec2 lodPixelOffset = 1.0 / lodSize * 2.0;
 
-    // 取得四个点
-    vec2 t_uv2 = t_uv + lodPixelOffset;// X+Y
-    t_uv2 = fract(t_uv2);
-    vec2 t_uv3 = vec2(t_uv.x + lodPixelOffset.x,t_uv.y ); // X
-    t_uv3 = fract(t_uv3);
-    vec2 t_uv4 = vec2(t_uv.x,t_uv.y + lodPixelOffset.y); // Y
-    t_uv4 = fract(t_uv4);
+    vec2 mixFactor = mod(uv, lodPixelOffset) / lodPixelOffset;
 
-    // 获取比例
-    vec2 xyPer = abs(sampleDev)/pixelUV;
-
-    // 获取像素的全局坐标
+    //lod块中像素索引
+    vec2 t_uv = fract(uv + lodPixelOffset * vec2(0.0, 0.0));
     t_uv = t_uv * offset.xy + offset.zw;
     t_uv = t_uv * lodvec.xy;
+    //取整像素
     t_uv = floor(t_uv * imageSize) / imageSize;
     //添加lod起始坐标
     t_uv = t_uv + lodvec.zw;
+    vec4 tColor00 = texture2D(s_splatMergeTexture,t_uv);
 
-    t_uv2 = t_uv2 * offset.xy + offset.zw;
-    t_uv2 = t_uv2 * lodvec.xy;
-    t_uv2 = floor(t_uv2 * imageSize) / imageSize;
-     //添加lod起始坐标
-    t_uv2 = t_uv2 + lodvec.zw;
+    t_uv = fract(uv + lodPixelOffset * vec2(1.0, 0.0));
+    t_uv = t_uv * offset.xy + offset.zw;
+    t_uv = t_uv * lodvec.xy;
+    //取整像素
+    t_uv = floor(t_uv * imageSize) / imageSize;
+    //添加lod起始坐标
+    t_uv = t_uv + lodvec.zw;
+    vec4 tColor10 = texture2D(s_splatMergeTexture,t_uv);
 
-    t_uv3 = t_uv3 * offset.xy + offset.zw;
-    t_uv3 = t_uv3 * lodvec.xy;
-    t_uv3 = floor(t_uv3 * imageSize) / imageSize;
-      //添加lod起始坐标
-    t_uv3 = t_uv3 + lodvec.zw;
+    t_uv = fract(uv + lodPixelOffset * vec2(0.0, 1.0));
+    t_uv = t_uv * offset.xy + offset.zw;
+    t_uv = t_uv * lodvec.xy;
+    //取整像素
+    t_uv = floor(t_uv * imageSize) / imageSize;
+    //添加lod起始坐标
+    t_uv = t_uv + lodvec.zw;
+    vec4 tColor01 = texture2D(s_splatMergeTexture,t_uv);
 
-    t_uv4 = t_uv4 * offset.xy + offset.zw;
-    t_uv4 = t_uv4 * lodvec.xy;
-    t_uv4 = floor(t_uv4 * imageSize) / imageSize;
-      //添加lod起始坐标
-    t_uv4 = t_uv4 + lodvec.zw;
+    t_uv = fract(uv + lodPixelOffset * vec2(1.0, 1.0));
+    t_uv = t_uv * offset.xy + offset.zw;
+    t_uv = t_uv * lodvec.xy;
+    //取整像素
+    t_uv = floor(t_uv * imageSize) / imageSize;
+    //添加lod起始坐标
+    t_uv = t_uv + lodvec.zw;
+    vec4 tColor11 = texture2D(s_splatMergeTexture,t_uv);
 
-    // 获取颜色
-    vec4 tColor = texture2D(s_splatMergeTexture,t_uv);
-    vec4 tColor2 = texture2D(s_splatMergeTexture,t_uv2);  // X+Y
-    vec4 tColor3 = texture2D(s_splatMergeTexture,t_uv3); // X
-    vec4 tColor4 = texture2D(s_splatMergeTexture,t_uv4); // Y
+    vec4 tColor0 = mix(tColor00,tColor10,mixFactor.x);
+    vec4 tColor1 = mix(tColor01,tColor11,mixFactor.x);
+    vec4 tColor = mix(tColor0,tColor1,mixFactor.y);
 
-    // 二次线性计算 先X后Y
-    vec4 linearColorX = mix(tColor,tColor3,xyPer.x);
-    vec4 linearColorY = mix(tColor4,tColor2,xyPer.x);
-    vec4 linearColorFinal = mix(linearColorX,linearColorY,xyPer.y);
-
-    //linearColorFinal.z = linearColorFinal.z + xPer;
-    return linearColorFinal;
-    //return tColor;
-    // return linearX;
+    return tColor;
 
     // return vec4(mixFactor.x,mixFactor.y,0.0,1.0);
     // return vec4(mixFactor.x + 0.5,mixFactor.y + 0.5,0.0,1.0);
 }
-
 
 //参考 http://blog.csdn.net/cgwbr/article/details/6620318
 //计算MipMap层函数：
@@ -110,7 +89,7 @@ vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 off
     #ifdef LOD_LINEAR
         vec4 tColor = mix(terrainTexture2DLod(s_splatMergeTexture,t_uv,floor(lod),offset),terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod),offset),fract(lod));
     #else
-        vec4 tColor = terrainTexture2DLod(s_splatMergeTexture,t_uv,floor(lod),offset);
+        vec4 tColor = terrainTexture2DLod(s_splatMergeTexture,t_uv,ceil(lod),offset);
     #endif
 
     return tColor;
@@ -128,7 +107,6 @@ vec4 terrainMethod(vec4 diffuseColor,vec2 v_uv) {
         vec2 t_uv = v_uv.xy * u_splatRepeats[i];
         float lod = mipmapLevel(t_uv,tileSize);
         lod = clamp(lod,0.0,maxLod);
-        // lod = 5.0;
         t_uv = fract(t_uv);
         vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod,offset[i]);
         diffuseColor = (tColor - diffuseColor) * blend[i] + diffuseColor;

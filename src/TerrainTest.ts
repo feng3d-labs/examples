@@ -38,7 +38,7 @@ module feng3d
             var terrain = new GameObject("terrain");
             terrain.getOrCreateComponentByClass(Model).geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
-            var terrainMethod = new TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new Vector3D(1, 50, 150, 100));
+            var terrainMethod = new TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new Vector3D(1, 50, 50, 50));
             material.addMethod(terrainMethod);
 
             terrain.getOrCreateComponentByClass(Model).material = material;

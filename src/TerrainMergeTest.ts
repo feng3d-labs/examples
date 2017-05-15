@@ -38,8 +38,8 @@ module feng3d
             terrain.getOrCreateComponentByClass(Model).geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new StandardMaterial(root + 'terrain_diffuse.jpg',root + "terrain_normals.jpg");
 
-            var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3D(50, 50, 50));
-            // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test1.jpg',new Vector3D(50, 150, 100));
+            // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3D(50, 50, 50));
+            var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test1.jpg',new Vector3D(50, 50, 50));
             material.terrainMethod = terrainMethod;
 
             terrain.getOrCreateComponentByClass(Model).material = material;

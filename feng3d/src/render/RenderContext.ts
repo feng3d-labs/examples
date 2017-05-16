@@ -97,6 +97,8 @@ module feng3d
             }
 
             renderAtomic.uniforms[RenderDataID.u_sceneAmbientColor] = this.scene3d.ambientColor;
+
+            renderAtomic.uniforms[RenderDataID.u_scaleByDepth] = this.view3D.getScaleByDepth(1);
         }
     }
 }

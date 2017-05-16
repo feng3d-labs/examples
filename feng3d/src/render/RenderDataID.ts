@@ -233,5 +233,9 @@ module feng3d
 		 * 反射率
 		 */
         public static u_reflectivity = "u_reflectivity";
+        /**
+         * 单位深度映射到屏幕像素值
+         */
+        public static u_scaleByDepth = "u_scaleByDepth";
     }
 }

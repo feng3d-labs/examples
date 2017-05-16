@@ -12,6 +12,7 @@ uniform vec2 u_imageSize;
 uniform vec4 u_tileOffset[3];
 uniform vec2 u_tileSize;
 uniform float u_maxLod;
+uniform float u_scaleByDepth;
 
 vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 offset){
 
@@ -25,6 +26,7 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     vec2 lodSize = u_imageSize * lodvec.xy;
     vec2 lodPixelOffset = 1.0 / lodSize * 2.0;
 
+    // uv = uv - 1.0 / lodPixelOffset;
     vec2 mixFactor = mod(uv, lodPixelOffset) / lodPixelOffset;
 
     //lod块中像素索引
@@ -76,12 +78,25 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
 
 //参考 http://blog.csdn.net/cgwbr/article/details/6620318
 //计算MipMap层函数：
-float mipmapLevel(vec2 uv, vec2 textureSize)
+float mipmapLevel(vec2 uv)
 {
-    vec2 dx = dFdx(uv * textureSize.x);
-    vec2 dy = dFdy(uv * textureSize.y);
-    float d = max(dot(dx, dx), dot(dy, dy));  
+    vec2 dx = dFdx(uv);
+    vec2 dy = dFdy(uv);
+    float d = max(dot(dx, dx), dot(dy, dy));
     return 0.5 * log2(d);
+}
+
+//根据距离以及法线计算MipMap层函数：
+float mipmapLevel1(vec2 uv)
+{
+    //视线方向
+    vec3 viewDir = u_cameraMatrix[3].xyz - v_globalPosition.xyz;
+    float fogDistance = length(viewDir);
+    viewDir = normalize(viewDir);
+    float dd = clamp(dot(viewDir, v_normal),0.05,1.0);
+    float value = u_scaleByDepth * fogDistance * 0.001;
+    value = value / dd;
+    return log2(value);
 }
 
 vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 offset){
@@ -97,18 +112,21 @@ vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 off
 
 vec4 terrainMethod(vec4 diffuseColor,vec2 v_uv) {
     
+    float lod = 0.0;
     vec4 blend = texture2D(s_blendTexture,v_uv);
     for(int i = 0; i < 3; i++)
     {
-        vec2 t_uv = v_uv.xy * u_splatRepeats[i];
-        float lod = mipmapLevel(t_uv,u_tileSize);
+        vec2 t_uv = v_uv * u_splatRepeats[i];
+        // lod = mipmapLevel(v_uv) + log2(u_tileSize.x * u_splatRepeats[i]);
+        lod = mipmapLevel1(v_uv) + log2(u_tileSize.x * u_splatRepeats[i]);
         lod = clamp(lod,0.0,u_maxLod);
-        t_uv = fract(t_uv);
+        // return vec4(lod / u_maxLod,0.0,0.0,1.0);
         vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod,u_tileOffset[i]);
         diffuseColor = (tColor - diffuseColor) * blend[i] + diffuseColor;
     }
 
     // diffuseColor.xyz = vec3(1.0,0.0,0.0);
-    // diffuseColor.xyz = vec3(floor(lod)/7.0,0.0,0.0);
+    // diffuseColor.xyz = vec3(lod/u_maxLod,0.0,0.0);
+    // diffuseColor.xyz = vec3(floor(lod)/u_maxLod,0.0,0.0);
     return diffuseColor;
 }

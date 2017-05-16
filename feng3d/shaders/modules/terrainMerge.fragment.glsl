@@ -10,14 +10,17 @@ uniform vec4 u_splatRepeats;
 
 uniform vec2 u_imageSize;
 uniform vec4 u_tileOffset[3];
+uniform vec4 u_lod0vec;
 uniform vec2 u_tileSize;
 uniform float u_maxLod;
 uniform float u_scaleByDepth;
+uniform float u_uvPositionScale;
+
 
 vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 offset){
 
     //计算不同lod像素缩放以及起始坐标
-    vec4 lodvec = vec4(0.5,1.0,0.0,0.0);
+    vec4 lodvec = u_lod0vec;
     lodvec.x = lodvec.x * pow(0.5,lod);
     lodvec.y = lodvec.x * 2.0;
     lodvec.z = 1.0 - lodvec.y;
@@ -92,10 +95,11 @@ float mipmapLevel1(vec2 uv)
     //视线方向
     vec3 viewDir = u_cameraMatrix[3].xyz - v_globalPosition.xyz;
     float fogDistance = length(viewDir);
+    float value = u_scaleByDepth * fogDistance * u_uvPositionScale;//uv变化率与距离成正比，0.001为顶点位置与uv的变化比率
     viewDir = normalize(viewDir);
-    float dd = clamp(dot(viewDir, v_normal),0.05,1.0);
-    float value = u_scaleByDepth * fogDistance * 0.001;
+    float dd = clamp(dot(viewDir, v_normal),0.05,1.0);//取法线与视线余弦值的倒数，余弦值越大（朝向摄像机时uv变化程度越低）lod越小
     value = value / dd;
+    value = value * 0.5;//还没搞懂0.5的来历
     return log2(value);
 }
 
@@ -120,7 +124,6 @@ vec4 terrainMethod(vec4 diffuseColor,vec2 v_uv) {
         // lod = mipmapLevel(v_uv) + log2(u_tileSize.x * u_splatRepeats[i]);
         lod = mipmapLevel1(v_uv) + log2(u_tileSize.x * u_splatRepeats[i]);
         lod = clamp(lod,0.0,u_maxLod);
-        // return vec4(lod / u_maxLod,0.0,0.0,1.0);
         vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod,u_tileOffset[i]);
         diffuseColor = (tColor - diffuseColor) * blend[i] + diffuseColor;
     }

@@ -110,9 +110,13 @@ module feng3d
          */
         public static u_maxLod = "u_maxLod";
         /**
-         * lod缩放偏移向量数组
+         * uv与坐标比
          */
-        public static u_lodvec = "u_lodvec";
+        public static u_uvPositionScale = "u_uvPositionScale";
+        /**
+         * lod0时在贴图中的uv缩放偏移向量
+         */
+        public static u_lod0vec = "u_lod0vec";
         /******************************************************/
         //                  点光源
         /******************************************************/

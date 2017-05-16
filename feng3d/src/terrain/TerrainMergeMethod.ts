@@ -92,23 +92,13 @@ module feng3d
             renderData.uniforms[RenderDataID.u_imageSize] = new Point(2048.0, 1024.0);
             renderData.uniforms[RenderDataID.u_tileSize] = new Point(512.0, 512.0);
             renderData.uniforms[RenderDataID.u_maxLod] = 7;
+            renderData.uniforms[RenderDataID.u_uvPositionScale] = 0.001;
             renderData.uniforms[RenderDataID.u_tileOffset] = [
                 new Vector3D(0.5, 0.5, 0.0, 0.0),
                 new Vector3D(0.5, 0.5, 0.5, 0.0),
                 new Vector3D(0.5, 0.5, 0.0, 0.5),
             ];
-            renderData.uniforms[RenderDataID.u_lodvec] = [
-                new Vector3D(0.5, 1, 0, 0),
-                new Vector3D(0.25, 0.5, 0.5, 0),
-                new Vector3D(0.125, 0.25, 0.75, 0),
-                new Vector3D(0.0625, 0.125, 0.875, 0),
-                new Vector3D(0.03125, 0.0625, 0.9375, 0),
-                new Vector3D(0.015625, 0.03125, 0.96875, 0),
-                new Vector3D(0.0078125, 0.015625, 0.984375, 0),
-                new Vector3D(0.00390625, 0.0078125, 0.9921875, 0),
-                new Vector3D(0.001953125, 0.00390625, 0.99609375, 0),
-                new Vector3D(0.0009765625, 0.001953125, 0.998046875, 0),
-            ];
+            renderData.uniforms[RenderDataID.u_lod0vec] = new Vector3D(0.5, 1, 0, 0);
 
 
             super.updateRenderData(renderContext, renderData);

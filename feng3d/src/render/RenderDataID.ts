@@ -93,6 +93,26 @@ module feng3d
          * 地形混合贴图尺寸
          */
         public static u_splatMergeTextureSize = "u_splatMergeTextureSize";
+        /**
+         * 图片尺寸
+         */
+        public static u_imageSize = "u_imageSize";
+        /**
+         * 地形块尺寸
+         */
+        public static u_tileSize = "u_tileSize";
+        /**
+         * 地形块偏移
+         */
+        public static u_tileOffset = "u_tileOffset";
+        /**
+         * 最大lod
+         */
+        public static u_maxLod = "u_maxLod";
+        /**
+         * lod缩放偏移向量数组
+         */
+        public static u_lodvec = "u_lodvec";
         /******************************************************/
         //                  点光源
         /******************************************************/

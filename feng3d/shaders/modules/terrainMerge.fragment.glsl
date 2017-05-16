@@ -8,10 +8,10 @@ uniform sampler2D s_splatMergeTexture;
 uniform sampler2D s_blendTexture;
 uniform vec4 u_splatRepeats;
 
-vec2 imageSize =    vec2(2048.0,1024.0);
-vec4 offset[3];
-vec2 tileSize = vec2(512.0,512.0);
-float maxLod = 7.0;
+uniform vec2 u_imageSize;
+uniform vec4 u_tileOffset[3];
+uniform vec2 u_tileSize;
+uniform float u_maxLod;
 
 vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 offset){
 
@@ -22,7 +22,7 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     lodvec.z = 1.0 - lodvec.y;
 
     //lod块尺寸
-    vec2 lodSize = imageSize * lodvec.xy;
+    vec2 lodSize = u_imageSize * lodvec.xy;
     vec2 lodPixelOffset = 1.0 / lodSize * 2.0;
 
     vec2 mixFactor = mod(uv, lodPixelOffset) / lodPixelOffset;
@@ -32,7 +32,7 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     t_uv = t_uv * offset.xy + offset.zw;
     t_uv = t_uv * lodvec.xy;
     //取整像素
-    t_uv = floor(t_uv * imageSize) / imageSize;
+    t_uv = floor(t_uv * u_imageSize) / u_imageSize;
     //添加lod起始坐标
     t_uv = t_uv + lodvec.zw;
     vec4 tColor00 = texture2D(s_splatMergeTexture,t_uv);
@@ -41,7 +41,7 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     t_uv = t_uv * offset.xy + offset.zw;
     t_uv = t_uv * lodvec.xy;
     //取整像素
-    t_uv = floor(t_uv * imageSize) / imageSize;
+    t_uv = floor(t_uv * u_imageSize) / u_imageSize;
     //添加lod起始坐标
     t_uv = t_uv + lodvec.zw;
     vec4 tColor10 = texture2D(s_splatMergeTexture,t_uv);
@@ -50,7 +50,7 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     t_uv = t_uv * offset.xy + offset.zw;
     t_uv = t_uv * lodvec.xy;
     //取整像素
-    t_uv = floor(t_uv * imageSize) / imageSize;
+    t_uv = floor(t_uv * u_imageSize) / u_imageSize;
     //添加lod起始坐标
     t_uv = t_uv + lodvec.zw;
     vec4 tColor01 = texture2D(s_splatMergeTexture,t_uv);
@@ -59,7 +59,7 @@ vec4 terrainTexture2DLod(sampler2D s_splatMergeTexture,vec2 uv,float lod,vec4 of
     t_uv = t_uv * offset.xy + offset.zw;
     t_uv = t_uv * lodvec.xy;
     //取整像素
-    t_uv = floor(t_uv * imageSize) / imageSize;
+    t_uv = floor(t_uv * u_imageSize) / u_imageSize;
     //添加lod起始坐标
     t_uv = t_uv + lodvec.zw;
     vec4 tColor11 = texture2D(s_splatMergeTexture,t_uv);
@@ -97,18 +97,14 @@ vec4 terrainTexture2D(sampler2D s_splatMergeTexture,vec2 t_uv,float lod,vec4 off
 
 vec4 terrainMethod(vec4 diffuseColor,vec2 v_uv) {
     
-    offset[0] = vec4(0.5,0.5,0.0,0.0);
-    offset[1] = vec4(0.5,0.5,0.5,0.0);
-    offset[2] = vec4(0.5,0.5,0.0,0.5);
-    
     vec4 blend = texture2D(s_blendTexture,v_uv);
     for(int i = 0; i < 3; i++)
     {
         vec2 t_uv = v_uv.xy * u_splatRepeats[i];
-        float lod = mipmapLevel(t_uv,tileSize);
-        lod = clamp(lod,0.0,maxLod);
+        float lod = mipmapLevel(t_uv,u_tileSize);
+        lod = clamp(lod,0.0,u_maxLod);
         t_uv = fract(t_uv);
-        vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod,offset[i]);
+        vec4 tColor = terrainTexture2D(s_splatMergeTexture,t_uv,lod,u_tileOffset[i]);
         diffuseColor = (tColor - diffuseColor) * blend[i] + diffuseColor;
     }
 

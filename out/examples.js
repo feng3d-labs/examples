@@ -6298,7 +6298,7 @@ var feng3d;
              */
             this.attributes = {};
             /**
-             * 常量数据（包含纹理）列表
+             * Uniform渲染数据
              */
             this.uniforms = {};
             /**
@@ -6764,217 +6764,6 @@ var feng3d;
          * 顶点索引
          */
         RenderDataID.index = "index";
-        /**
-         * 模型矩阵
-         */
-        RenderDataID.u_modelMatrix = "u_modelMatrix";
-        /**
-         * 世界投影矩阵
-         */
-        RenderDataID.u_viewProjection = "u_viewProjection";
-        RenderDataID.u_diffuseInput = "u_diffuseInput";
-        /**
-         * 透明阈值，用于透明检测
-         */
-        RenderDataID.u_alphaThreshold = "u_alphaThreshold";
-        /**
-         * 漫反射贴图
-         */
-        RenderDataID.s_texture = "s_texture";
-        /**
-         * 漫反射贴图
-         */
-        RenderDataID.s_diffuse = "s_diffuse";
-        /**
-         * 环境贴图
-         */
-        RenderDataID.s_ambient = "s_ambient";
-        /**
-         * 法线贴图
-         */
-        RenderDataID.s_normal = "s_normal";
-        /**
-         * 镜面反射光泽图
-         */
-        RenderDataID.s_specular = "s_specular";
-        /**
-         * 天空盒纹理
-         */
-        RenderDataID.s_skyboxTexture = "s_skyboxTexture";
-        /**
-         * 摄像机矩阵
-         */
-        RenderDataID.u_cameraMatrix = "u_cameraMatrix";
-        /**
-         * 天空盒尺寸
-         */
-        RenderDataID.u_skyBoxSize = "u_skyBoxSize";
-        /**
-         * 地形混合贴图
-         */
-        RenderDataID.s_blendTexture = "s_blendTexture";
-        /**
-         * 地形块贴图1
-         */
-        RenderDataID.s_splatTexture1 = "s_splatTexture1";
-        /**
-         * 地形块贴图2
-         */
-        RenderDataID.s_splatTexture2 = "s_splatTexture2";
-        /**
-         * 地形块贴图3
-         */
-        RenderDataID.s_splatTexture3 = "s_splatTexture3";
-        /**
-         * 地形块混合贴图
-         */
-        RenderDataID.s_splatMergeTexture = "s_splatMergeTexture";
-        /**
-         * 地形块重复次数
-         */
-        RenderDataID.u_splatRepeats = "u_splatRepeats";
-        /**
-         * 地形混合贴图尺寸
-         */
-        RenderDataID.u_splatMergeTextureSize = "u_splatMergeTextureSize";
-        /**
-         * 图片尺寸
-         */
-        RenderDataID.u_imageSize = "u_imageSize";
-        /**
-         * 地形块尺寸
-         */
-        RenderDataID.u_tileSize = "u_tileSize";
-        /**
-         * 地形块偏移
-         */
-        RenderDataID.u_tileOffset = "u_tileOffset";
-        /**
-         * 最大lod
-         */
-        RenderDataID.u_maxLod = "u_maxLod";
-        /**
-         * uv与坐标比
-         */
-        RenderDataID.u_uvPositionScale = "u_uvPositionScale";
-        /**
-         * lod0时在贴图中的uv缩放偏移向量
-         */
-        RenderDataID.u_lod0vec = "u_lod0vec";
-        /******************************************************/
-        //                  点光源
-        /******************************************************/
-        /**
-         * 点光源位置数组
-         */
-        RenderDataID.u_pointLightPositions = "u_pointLightPositions";
-        /**
-         * 点光源颜色数组
-         */
-        RenderDataID.u_pointLightColors = "u_pointLightColors";
-        /**
-         * 点光源光照强度数组
-         */
-        RenderDataID.u_pointLightIntensitys = "u_pointLightIntensitys";
-        /**
-         * 点光源光照范围数组
-         */
-        RenderDataID.u_pointLightRanges = "u_pointLightRanges";
-        /******************************************************/
-        //                  方向光源
-        /******************************************************/
-        /**
-         * 方向光源方向数组
-         */
-        RenderDataID.u_directionalLightDirections = "u_directionalLightDirections";
-        /**
-         * 方向光源颜色数组
-         */
-        RenderDataID.u_directionalLightColors = "u_directionalLightColors";
-        /**
-         * 方向光源光照强度数组
-         */
-        RenderDataID.u_directionalLightIntensitys = "u_directionalLightIntensitys";
-        /**
-         * 场景环境光
-         */
-        RenderDataID.u_sceneAmbientColor = "u_sceneAmbientColor";
-        /**
-         * 基本颜色
-         */
-        RenderDataID.u_diffuse = "u_diffuse";
-        /**
-         * 镜面反射颜色
-         */
-        RenderDataID.u_specular = "u_specular";
-        /**
-         * 环境颜色
-         */
-        RenderDataID.u_ambient = "u_ambient";
-        /**
-         * 高光系数
-         */
-        RenderDataID.u_glossiness = "u_glossiness";
-        /**
-         * 反射率
-         */
-        RenderDataID.u_reflectance = "u_reflectance";
-        /**
-         * 粗糙度
-         */
-        RenderDataID.u_roughness = "u_roughness";
-        /**
-         * 金属度
-         */
-        RenderDataID.u_metalic = "u_metalic";
-        /**
-         * 粒子时间
-         */
-        RenderDataID.u_particleTime = "u_particleTime";
-        /**
-         * 点大小
-         */
-        RenderDataID.u_PointSize = "u_PointSize";
-        /**
-         * 骨骼全局矩阵
-         */
-        RenderDataID.u_skeletonGlobalMatriices = "u_skeletonGlobalMatriices";
-        /**
-         * 3D对象编号
-         */
-        RenderDataID.u_objectID = "u_objectID";
-        /**
-         * 雾颜色
-         */
-        RenderDataID.u_fogColor = "u_fogColor";
-        /**
-         * 雾最近距离
-         */
-        RenderDataID.u_fogMinDistance = "u_fogMinDistance";
-        /**
-         * 雾最远距离
-         */
-        RenderDataID.u_fogMaxDistance = "u_fogMaxDistance";
-        /**
-         * 雾浓度
-         */
-        RenderDataID.u_fogDensity = "u_fogDensity";
-        /**
-         * 雾模式
-         */
-        RenderDataID.u_fogMode = "u_fogMode";
-        /**
-         * 环境反射纹理
-         */
-        RenderDataID.s_envMap = "s_envMap";
-        /**
-         * 反射率
-         */
-        RenderDataID.u_reflectivity = "u_reflectivity";
-        /**
-         * 单位深度映射到屏幕像素值
-         */
-        RenderDataID.u_scaleByDepth = "u_scaleByDepth";
         return RenderDataID;
     }());
     feng3d.RenderDataID = RenderDataID;
@@ -7026,10 +6815,10 @@ var feng3d;
                 renderAtomic.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED = 1;
                 renderAtomic.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
-                renderAtomic.uniforms[feng3d.RenderDataID.u_pointLightPositions] = pointLightPositions;
-                renderAtomic.uniforms[feng3d.RenderDataID.u_pointLightColors] = pointLightColors;
-                renderAtomic.uniforms[feng3d.RenderDataID.u_pointLightIntensitys] = pointLightIntensitys;
-                renderAtomic.uniforms[feng3d.RenderDataID.u_pointLightRanges] = pointLightRanges;
+                renderAtomic.uniforms.u_pointLightPositions = pointLightPositions;
+                renderAtomic.uniforms.u_pointLightColors = pointLightColors;
+                renderAtomic.uniforms.u_pointLightIntensitys = pointLightIntensitys;
+                renderAtomic.uniforms.u_pointLightRanges = pointLightRanges;
             }
             var directionalLightDirections = [];
             var directionalLightColors = [];
@@ -7046,12 +6835,12 @@ var feng3d;
                 renderAtomic.shaderMacro.addMacros.V_NORMAL_NEED = 1;
                 renderAtomic.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
-                renderAtomic.uniforms[feng3d.RenderDataID.u_directionalLightDirections] = directionalLightDirections;
-                renderAtomic.uniforms[feng3d.RenderDataID.u_directionalLightColors] = directionalLightColors;
-                renderAtomic.uniforms[feng3d.RenderDataID.u_directionalLightIntensitys] = directionalLightIntensitys;
+                renderAtomic.uniforms.u_directionalLightDirections = directionalLightDirections;
+                renderAtomic.uniforms.u_directionalLightColors = directionalLightColors;
+                renderAtomic.uniforms.u_directionalLightIntensitys = directionalLightIntensitys;
             }
-            renderAtomic.uniforms[feng3d.RenderDataID.u_sceneAmbientColor] = this.scene3d.ambientColor;
-            renderAtomic.uniforms[feng3d.RenderDataID.u_scaleByDepth] = this.view3D.getScaleByDepth(1);
+            renderAtomic.uniforms.u_sceneAmbientColor = this.scene3d.ambientColor;
+            renderAtomic.uniforms.u_scaleByDepth = this.view3D.getScaleByDepth(1);
         };
         return RenderContext;
     }());
@@ -7560,7 +7349,7 @@ var feng3d;
             if (meshRenderer.parentComponent.mouseEnabled) {
                 var object = meshRenderer.parentComponent;
                 this.objects.push(object);
-                object.renderData.uniforms[feng3d.RenderDataID.u_objectID] = this.objects.length - 1;
+                object.renderData.uniforms.u_objectID = this.objects.length - 1;
                 _super.prototype.drawRenderables.call(this, renderContext, meshRenderer);
             }
         };
@@ -9020,7 +8809,7 @@ var feng3d;
          */
         GameObject.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.uniforms[feng3d.RenderDataID.u_modelMatrix] = this.sceneTransform;
+            renderData.uniforms.u_modelMatrix = this.sceneTransform;
         };
         /**
          * @inheritDoc
@@ -10980,11 +10769,11 @@ var feng3d;
          */
         Camera.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.uniforms[feng3d.RenderDataID.u_viewProjection] = this.viewProjection;
+            renderData.uniforms.u_viewProjection = this.viewProjection;
             var globalMatrix3d = this.parentComponent ? this.parentComponent.sceneTransform : new feng3d.Matrix3D();
-            renderData.uniforms[feng3d.RenderDataID.u_cameraMatrix] = globalMatrix3d;
+            renderData.uniforms.u_cameraMatrix = globalMatrix3d;
             //
-            renderData.uniforms[feng3d.RenderDataID.u_skyBoxSize] = this._lens.far / Math.sqrt(3);
+            renderData.uniforms.u_skyBoxSize = this._lens.far / Math.sqrt(3);
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         Object.defineProperty(Camera.prototype, "frustumPlanes", {
@@ -13419,11 +13208,11 @@ var feng3d;
             }
             if (this.renderMode == feng3d.RenderMode.POINTS) {
                 renderData.shaderMacro.boolMacros.IS_POINTS_MODE = true;
-                renderData.uniforms[feng3d.RenderDataID.u_PointSize] = this.pointSize;
+                renderData.uniforms.u_PointSize = this.pointSize;
             }
             else {
                 renderData.shaderMacro.boolMacros.IS_POINTS_MODE = false;
-                delete renderData.uniforms[feng3d.RenderDataID.u_PointSize];
+                delete renderData.uniforms.u_PointSize;
             }
             for (var i = 0; i < this._methods.length; i++) {
                 this._methods[i].updateRenderData(renderContext, renderData);
@@ -13456,7 +13245,7 @@ var feng3d;
          * 更新渲染数据
          */
         PointMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms[feng3d.RenderDataID.u_PointSize] = this.pointSize;
+            renderData.uniforms.u_PointSize = this.pointSize;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return PointMaterial;
@@ -13491,7 +13280,7 @@ var feng3d;
          * 更新渲染数据
          */
         ColorMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms[feng3d.RenderDataID.u_diffuseInput] = new feng3d.Vector3D(this.color.r, this.color.g, this.color.b, this.color.a);
+            renderData.uniforms.u_diffuseInput = new feng3d.Vector3D(this.color.r, this.color.g, this.color.b, this.color.a);
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return ColorMaterial;
@@ -13562,7 +13351,7 @@ var feng3d;
          * 更新渲染数据
          */
         TextureMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms[feng3d.RenderDataID.s_texture] = this.texture;
+            renderData.uniforms.s_texture = this.texture;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return TextureMaterial;
@@ -13591,7 +13380,7 @@ var feng3d;
          */
         SkyBoxMaterial.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.uniforms[feng3d.RenderDataID.s_skyboxTexture] = this.texture;
+            renderData.uniforms.s_skyboxTexture = this.texture;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return SkyBoxMaterial;
@@ -13734,9 +13523,9 @@ var feng3d;
          * 更新渲染数据
          */
         StandardMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            // renderData.uniforms[RenderDataID.u_reflectance] = this.reflectance;
-            // renderData.uniforms[RenderDataID.u_roughness] = this.roughness;
-            // renderData.uniforms[RenderDataID.u_metalic] = this.metalic;
+            // renderData.uniforms.u_reflectance = this.reflectance;
+            // renderData.uniforms.u_roughness = this.roughness;
+            // renderData.uniforms.u_metalic = this.metalic;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13813,16 +13602,16 @@ var feng3d;
          * 更新渲染数据
          */
         DiffuseMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms[feng3d.RenderDataID.u_diffuse] = this.color;
+            renderData.uniforms.u_diffuse = this.color;
             if (this.difuseTexture.checkRenderData()) {
-                renderData.uniforms[feng3d.RenderDataID.s_diffuse] = this.difuseTexture;
+                renderData.uniforms.s_diffuse = this.difuseTexture;
                 renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
             }
             else {
-                renderData.uniforms[feng3d.RenderDataID.s_diffuse] = null;
+                delete renderData.uniforms.s_diffuse;
                 renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
             }
-            renderData.uniforms[feng3d.RenderDataID.u_alphaThreshold] = this.alphaThreshold;
+            renderData.uniforms.u_alphaThreshold = this.alphaThreshold;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13875,11 +13664,11 @@ var feng3d;
          */
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
             if (this.normalTexture.checkRenderData()) {
-                renderData.uniforms[feng3d.RenderDataID.s_normal] = this.normalTexture;
+                renderData.uniforms.s_normal = this.normalTexture;
                 renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
             }
             else {
-                renderData.uniforms[feng3d.RenderDataID.s_normal] = null;
+                delete renderData.uniforms.s_normal;
                 renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
             }
             //
@@ -13949,15 +13738,15 @@ var feng3d;
          */
         SpecularMethod.prototype.updateRenderData = function (renderContext, renderData) {
             if (this.specularTexture.checkRenderData()) {
-                renderData.uniforms[feng3d.RenderDataID.s_specular] = this.specularTexture;
+                renderData.uniforms.s_specular = this.specularTexture;
                 renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
             }
             else {
-                renderData.uniforms[feng3d.RenderDataID.s_specular] = null;
+                delete renderData.uniforms.s_specular;
                 renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
             }
-            renderData.uniforms[feng3d.RenderDataID.u_specular] = this.specularColor;
-            renderData.uniforms[feng3d.RenderDataID.u_glossiness] = this.glossiness;
+            renderData.uniforms.u_specular = this.specularColor;
+            renderData.uniforms.u_glossiness = this.glossiness;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14019,13 +13808,13 @@ var feng3d;
          * 更新渲染数据
          */
         AmbientMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms[feng3d.RenderDataID.u_ambient] = this._color;
+            renderData.uniforms.u_ambient = this._color;
             if (this.ambientTexture.checkRenderData()) {
-                renderData.uniforms[feng3d.RenderDataID.s_ambient] = this._ambientTexture;
+                renderData.uniforms.s_ambient = this._ambientTexture;
                 renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
             }
             else {
-                renderData.uniforms[feng3d.RenderDataID.s_ambient] = null;
+                delete renderData.uniforms.s_ambient;
                 renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
             }
             //
@@ -14133,11 +13922,11 @@ var feng3d;
          */
         FogMethod.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
-            renderData.uniforms[feng3d.RenderDataID.u_fogColor] = this._fogColor;
-            renderData.uniforms[feng3d.RenderDataID.u_fogMinDistance] = this._minDistance;
-            renderData.uniforms[feng3d.RenderDataID.u_fogMaxDistance] = this._maxDistance;
-            renderData.uniforms[feng3d.RenderDataID.u_fogDensity] = this._density;
-            renderData.uniforms[feng3d.RenderDataID.u_fogMode] = this._mode;
+            renderData.uniforms.u_fogColor = this._fogColor;
+            renderData.uniforms.u_fogMinDistance = this._minDistance;
+            renderData.uniforms.u_fogMaxDistance = this._maxDistance;
+            renderData.uniforms.u_fogDensity = this._density;
+            renderData.uniforms.u_fogMode = this._mode;
             //
             renderData.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
             //
@@ -14208,8 +13997,8 @@ var feng3d;
          */
         EnvMapMethod.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
-            renderData.uniforms[feng3d.RenderDataID.s_envMap] = this._cubeTexture;
-            renderData.uniforms[feng3d.RenderDataID.u_reflectivity] = this._reflectivity;
+            renderData.uniforms.s_envMap = this._cubeTexture;
+            renderData.uniforms.u_reflectivity = this._reflectivity;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -15514,11 +15303,11 @@ var feng3d;
          */
         TerrainMethod.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
-            renderData.uniforms[feng3d.RenderDataID.s_blendTexture] = this.blendTexture;
-            renderData.uniforms[feng3d.RenderDataID.s_splatTexture1] = this.splatTexture1;
-            renderData.uniforms[feng3d.RenderDataID.s_splatTexture2] = this.splatTexture2;
-            renderData.uniforms[feng3d.RenderDataID.s_splatTexture3] = this.splatTexture3;
-            renderData.uniforms[feng3d.RenderDataID.u_splatRepeats] = this.splatRepeats;
+            renderData.uniforms.s_blendTexture = this.blendTexture;
+            renderData.uniforms.s_splatTexture1 = this.splatTexture1;
+            renderData.uniforms.s_splatTexture2 = this.splatTexture2;
+            renderData.uniforms.s_splatTexture3 = this.splatTexture3;
+            renderData.uniforms.u_splatRepeats = this.splatRepeats;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return TerrainMethod;
@@ -15602,21 +15391,21 @@ var feng3d;
         TerrainMergeMethod.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
             renderData.shaderMacro.boolMacros.USE_TERRAIN_MERGE = true;
-            renderData.uniforms[feng3d.RenderDataID.s_blendTexture] = this.blendTexture;
-            renderData.uniforms[feng3d.RenderDataID.s_splatMergeTexture] = this.splatMergeTexture;
-            renderData.uniforms[feng3d.RenderDataID.u_splatMergeTextureSize] = this.splatMergeTexture.size;
-            renderData.uniforms[feng3d.RenderDataID.u_splatRepeats] = this.splatRepeats;
+            renderData.uniforms.s_blendTexture = this.blendTexture;
+            renderData.uniforms.s_splatMergeTexture = this.splatMergeTexture;
+            renderData.uniforms.u_splatMergeTextureSize = this.splatMergeTexture.size;
+            renderData.uniforms.u_splatRepeats = this.splatRepeats;
             //
-            renderData.uniforms[feng3d.RenderDataID.u_imageSize] = new feng3d.Point(2048.0, 1024.0);
-            renderData.uniforms[feng3d.RenderDataID.u_tileSize] = new feng3d.Point(512.0, 512.0);
-            renderData.uniforms[feng3d.RenderDataID.u_maxLod] = 7;
-            renderData.uniforms[feng3d.RenderDataID.u_uvPositionScale] = 0.001;
-            renderData.uniforms[feng3d.RenderDataID.u_tileOffset] = [
+            renderData.uniforms.u_imageSize = new feng3d.Point(2048.0, 1024.0);
+            renderData.uniforms.u_tileSize = new feng3d.Point(512.0, 512.0);
+            renderData.uniforms.u_maxLod = 7;
+            renderData.uniforms.u_uvPositionScale = 0.001;
+            renderData.uniforms.u_tileOffset = [
                 new feng3d.Vector3D(0.5, 0.5, 0.0, 0.0),
                 new feng3d.Vector3D(0.5, 0.5, 0.5, 0.0),
                 new feng3d.Vector3D(0.5, 0.5, 0.0, 0.5),
             ];
-            renderData.uniforms[feng3d.RenderDataID.u_lod0vec] = new feng3d.Vector3D(0.5, 1, 0, 0);
+            renderData.uniforms.u_lod0vec = new feng3d.Vector3D(0.5, 1, 0, 0);
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return TerrainMergeMethod;
@@ -15923,7 +15712,7 @@ var feng3d;
                 this._isDirty = false;
             }
             this.time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.uniforms[feng3d.RenderDataID.u_particleTime] = this.time;
+            renderData.uniforms.u_particleTime = this.time;
             renderData.instanceCount = this.numParticles;
             for (var attributeName in this._attributes) {
                 renderData.attributes[attributeName] = this._attributes[attributeName];
@@ -16700,7 +16489,7 @@ var feng3d;
         SkeletonAnimator.prototype.updateRenderData = function (renderContext, renderData) {
             if (this._activeSkeletonState) {
                 renderData.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
-                renderData.uniforms[feng3d.RenderDataID.u_skeletonGlobalMatriices] = this.globalMatrices;
+                renderData.uniforms.u_skeletonGlobalMatriices = this.globalMatrices;
                 renderData.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
                 _super.prototype.updateRenderData.call(this, renderContext, renderData);
             }
@@ -18388,7 +18177,7 @@ var feng3d;
         "shaders/color.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform vec4 u_diffuseInput;\r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = u_diffuseInput;\r\n}\r\n",
         "shaders/color.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}",
         "shaders/modules/envmap.fragment.glsl": "uniform samplerCube s_envMap;\r\nuniform float u_reflectivity;\r\n\r\nvec4 envmapMethod(vec4 finalColor)\r\n{\r\n    vec3 cameraToVertex = normalize( v_globalPosition - u_cameraMatrix[3].xyz );\r\n    vec3 reflectVec = reflect( cameraToVertex, v_normal );\r\n    vec4 envColor = textureCube( s_envMap, reflectVec );\r\n    finalColor.xyz *= envColor.xyz * u_reflectivity;\r\n    return finalColor;\r\n}",
-        "shaders/modules/fog.fragment.glsl": "#define FOGMODE_NONE    0.\r\n#define FOGMODE_EXP     1.\r\n#define FOGMODE_EXP2    2.\r\n#define FOGMODE_LINEAR  3.\r\n#define E 2.71828\r\n\r\nuniform float u_fogMode;\r\nuniform float u_fogMinDistance;\r\nuniform float u_fogMaxDistance;\r\nuniform float u_fogDensity;\r\nuniform vec3 u_fogColor;\r\n\r\nfloat CalcFogFactor(float fogDistance)\r\n{\r\n\tfloat fogCoeff = 1.0;\r\n\tif (FOGMODE_LINEAR == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = (u_fogMaxDistance - fogDistance) / (u_fogMaxDistance - u_fogMinDistance);\r\n\t}\r\n\telse if (FOGMODE_EXP == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = 1.0 / pow(E, fogDistance * u_fogDensity);\r\n\t}\r\n\telse if (FOGMODE_EXP2 == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = 1.0 / pow(E, fogDistance * fogDistance * u_fogDensity * u_fogDensity);\r\n\t}\r\n\r\n\treturn clamp(fogCoeff, 0.0, 1.0);\r\n}\r\n\r\nvec3 fogMethod(vec3 color)\r\n{\r\n    vec3 fogDistance = u_cameraMatrix[3].xyz - v_globalPosition.xyz;\r\n\tfloat fog = CalcFogFactor(length(fogDistance));\r\n\tcolor.rgb = fog * color.rgb + (1.0 - fog) * u_fogColor;\r\n    return color;\r\n}",
+        "shaders/modules/fog.fragment.glsl": "#define FOGMODE_NONE    0.\r\n#define FOGMODE_EXP     1.\r\n#define FOGMODE_EXP2    2.\r\n#define FOGMODE_LINEAR  3.\r\n#define E 2.71828\r\n\r\nuniform float u_fogMode;\r\nuniform float u_fogMinDistance;\r\nuniform float u_fogMaxDistance;\r\nuniform float u_fogDensity;\r\nuniform vec3 u_fogColor;\r\n\r\nfloat CalcFogFactor(float fogDistance)\r\n{\r\n\tfloat fogCoeff = 1.0;\r\n\tif (FOGMODE_LINEAR == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = (u_fogMaxDistance - fogDistance) / (u_fogMaxDistance - u_fogMinDistance);\r\n\t}\r\n\telse if (FOGMODE_EXP == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = 1.0 / pow(E, fogDistance * u_fogDensity);\r\n\t}\r\n\telse if (FOGMODE_EXP2 == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = 1.0 / pow(E, fogDistance * fogDistance * u_fogDensity * u_fogDensity);\r\n\t}\r\n\r\n\treturn clamp(fogCoeff, 0.0, 1.0);\r\n}\r\n\r\nvec4 fogMethod(vec4 color)\r\n{\r\n    vec3 fogDistance = u_cameraMatrix[3].xyz - v_globalPosition.xyz;\r\n\tfloat fog = CalcFogFactor(length(fogDistance));\r\n\tcolor.rgb = fog * color.rgb + (1.0 - fog) * u_fogColor;\r\n    return color;\r\n}",
         "shaders/modules/particle.fragment.glsl": "#ifdef D_a_particle_color\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nvec4 particleAnimation(vec4 color) {\r\n\r\n    #ifdef D_a_particle_color\r\n        color = color * v_particle_color;\r\n    #endif\r\n    return color;\r\n}",
         "shaders/modules/particle.vertex.glsl": "//根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)\r\n\r\nattribute float a_particle_birthTime;\r\n\r\n#ifdef D_a_particle_position\r\n    attribute vec3 a_particle_position;\r\n#endif\r\n\r\n#ifdef D_a_particle_velocity\r\n    attribute vec3 a_particle_velocity;\r\n#endif\r\n\r\n#ifdef D_a_particle_lifetime\r\n    attribute float a_particle_lifetime;\r\n#endif\r\n\r\n#ifdef D_a_particle_color\r\n    attribute vec4 a_particle_color;\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nuniform float u_particleTime;\r\n\r\n#ifdef D_u_particle_acceleration\r\n    uniform vec3 u_particle_acceleration;\r\n#endif\r\n\r\n#ifdef D_u_particle_billboardMatrix\r\n    uniform mat4 u_particle_billboardMatrix;\r\n#endif\r\n\r\nvec4 particleAnimation(vec4 position) {\r\n\r\n    float pTime = u_particleTime - a_particle_birthTime;\r\n    if(pTime > 0.0){\r\n\r\n        #ifdef D_a_particle_lifetime\r\n            pTime = mod(pTime,a_particle_lifetime);\r\n        #endif\r\n\r\n        vec3 pVelocity = vec3(0.0,0.0,0.0);\r\n\r\n        #ifdef D_u_particle_billboardMatrix\r\n            position = u_particle_billboardMatrix * position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_position\r\n            position.xyz = position.xyz + a_particle_position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_velocity\r\n            pVelocity = pVelocity + a_particle_velocity;\r\n        #endif\r\n\r\n        #ifdef D_u_particle_acceleration\r\n            pVelocity = pVelocity + u_particle_acceleration * pTime;\r\n        #endif\r\n        \r\n        #ifdef D_a_particle_color\r\n            v_particle_color = a_particle_color;\r\n        #endif\r\n\r\n        position.xyz = position.xyz + pVelocity * pTime;\r\n    }\r\n    \r\n    return position;\r\n}",
         "shaders/modules/pointLightShading.declare.glsl.bak": "//参考资料\r\n//http://blog.csdn.net/leonwei/article/details/44539217\r\n//https://github.com/mcleary/pbr/blob/master/shaders/phong_pbr_frag.glsl\r\n\r\n#if NUM_POINTLIGHT > 0\r\n    //点光源位置列表\r\n    uniform vec3 u_pointLightPositions[NUM_POINTLIGHT];\r\n    //点光源漫反射颜色\r\n    uniform vec3 u_pointLightColors[NUM_POINTLIGHT];\r\n    //点光源镜面反射颜色\r\n    uniform float u_pointLightIntensitys[NUM_POINTLIGHT];\r\n    //反射率\r\n    uniform float u_reflectance;\r\n    //粗糙度\r\n    uniform float u_roughness;\r\n    //金属度\r\n    uniform float u_metalic;\r\n\r\n    vec3 fresnelSchlick(float VdotH,vec3 reflectance){\r\n\r\n        return reflectance + (1.0 - reflectance) * pow(clamp(1.0 - VdotH, 0.0, 1.0), 5.0);\r\n        // return reflectance;\r\n    }\r\n\r\n    float normalDistributionGGX(float NdotH,float alphaG){\r\n\r\n        float alphaG2 = alphaG * alphaG;\r\n        float d = NdotH * NdotH * (alphaG2 - 1.0) + 1.0; \r\n        return alphaG2 / (3.1415926 * d * d);\r\n    }\r\n\r\n    float smithVisibility(float dot,float alphaG){\r\n\r\n        float tanSquared = (1.0 - dot * dot) / (dot * dot);\r\n        return 2.0 / (1.0 + sqrt(1.0 + alphaG * alphaG * tanSquared));\r\n    }\r\n\r\n    vec3 calculateLight(vec3 normal,vec3 viewDir,vec3 lightDir,vec3 lightColor,float lightIntensity,vec3 baseColor,vec3 reflectance,float roughness){\r\n\r\n        //BRDF = D(h) * F(1, h) * V(l, v, h) / (4 * dot(n, l) * dot(n, v));\r\n\r\n        vec3 halfVec = normalize(lightDir + viewDir);\r\n        float NdotL = clamp(dot(normal,lightDir),0.0,1.0);\r\n        float NdotH = clamp(dot(normal,halfVec),0.0,1.0);\r\n        float NdotV = max(abs(dot(normal,viewDir)),0.000001);\r\n        float VdotH = clamp(dot(viewDir, halfVec),0.0,1.0);\r\n        \r\n        float alphaG = max(roughness * roughness,0.0005);\r\n\r\n        //F(v,h)\r\n        vec3 F = fresnelSchlick(VdotH, reflectance);\r\n\r\n        //D(h)\r\n        float D = normalDistributionGGX(NdotH,alphaG);\r\n\r\n        //V(l,h)\r\n        float V = smithVisibility(NdotL,alphaG) * smithVisibility(NdotV,alphaG) / (4.0 * NdotL * NdotV);\r\n\r\n        vec3 specular = max(0.0, D * V) * 3.1415926 * F;\r\n        \r\n        return (baseColor + specular) * NdotL * lightColor * lightIntensity;\r\n    }\r\n\r\n    //渲染点光源\r\n    vec3 pointLightShading(vec3 normal,vec3 baseColor){\r\n\r\n        float reflectance = u_reflectance;\r\n        float roughness = u_roughness;\r\n        float metalic = u_metalic;\r\n\r\n        reflectance = mix(0.0,0.5,reflectance);\r\n        vec3 realBaseColor = (1.0 - metalic) * baseColor;\r\n        vec3 realReflectance = mix(vec3(reflectance),baseColor,metalic);\r\n\r\n        vec3 totalLightColor = vec3(0.0,0.0,0.0);\r\n        for(int i = 0;i<NUM_POINTLIGHT;i++){\r\n            //光照方向\r\n            vec3 lightDir = normalize(u_pointLightPositions[i] - v_globalPosition);\r\n            //视线方向\r\n            vec3 viewDir = normalize(u_cameraMatrix[3].xyz - v_globalPosition);\r\n            //灯光颜色\r\n            vec3 lightColor = u_pointLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_pointLightIntensitys[i];\r\n\r\n            totalLightColor = totalLightColor + calculateLight(normal,viewDir,lightDir,lightColor,lightIntensity,realBaseColor,realReflectance,roughness);\r\n        }\r\n        \r\n        return totalLightColor;\r\n    }\r\n#endif",

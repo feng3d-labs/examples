@@ -63,6 +63,12 @@ module feng3d
             var buffer = this.getBuffer(gl);
             gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
             gl.vertexAttribPointer(location, this.stride, GL.FLOAT, false, 0, 0);
+
+            if (this.divisor > 0)
+            {
+                var _ext = gl.getExtension('ANGLE_instanced_arrays');
+                _ext.vertexAttribDivisorANGLE(location, this.divisor);
+            }
         }
 
         /**

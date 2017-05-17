@@ -77,7 +77,6 @@
         "src/render/utils/RenderBufferPool.ts",
         "src/render/utils/RenderDataUtil.ts",
         "src/render/GLAttribute.ts",
-        "src/render/RenderDataID.ts",
         "src/render/RenderContext.ts",
         "src/render/shader/ShaderMacro.ts",
         "src/render/shader/ShaderLib.ts",

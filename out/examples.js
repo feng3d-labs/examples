@@ -6219,6 +6219,76 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
+     * Uniform渲染数据
+     */
+    var UniformRenderData = (function () {
+        function UniformRenderData() {
+        }
+        /**
+         * 激活常量
+         */
+        UniformRenderData.prototype.activeUniforms = function (gl, uniformInfos) {
+            _samplerIndex = 0;
+            for (var o = 0; o < uniformInfos.length; o++) {
+                var activeInfo = uniformInfos[o];
+                if (activeInfo.uniformBaseName) {
+                    //处理数组
+                    var baseName = activeInfo.uniformBaseName;
+                    for (var j = 0; j < activeInfo.size; j++) {
+                        this.setContext3DUniform(gl, { name: baseName + ("[" + j + "]"), type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j] }, this[baseName][j]);
+                    }
+                }
+                else {
+                    this.setContext3DUniform(gl, activeInfo, this[activeInfo.name]);
+                }
+            }
+        };
+        /**
+         * 设置环境Uniform数据
+         */
+        UniformRenderData.prototype.setContext3DUniform = function (gl, activeInfo, data) {
+            var location = activeInfo.uniformLocation;
+            switch (activeInfo.type) {
+                case feng3d.GL.INT:
+                    gl.uniform1i(location, data);
+                    break;
+                case feng3d.GL.FLOAT_MAT4:
+                    gl.uniformMatrix4fv(location, false, data.rawData);
+                    break;
+                case feng3d.GL.FLOAT:
+                    gl.uniform1f(location, data);
+                    break;
+                case feng3d.GL.FLOAT_VEC2:
+                    gl.uniform2f(location, data.x, data.y);
+                    break;
+                case feng3d.GL.FLOAT_VEC3:
+                    gl.uniform3f(location, data.x, data.y, data.z);
+                    break;
+                case feng3d.GL.FLOAT_VEC4:
+                    gl.uniform4f(location, data.x, data.y, data.z, data.w);
+                    break;
+                case feng3d.GL.SAMPLER_2D:
+                case feng3d.GL.SAMPLER_CUBE:
+                    var textureInfo = data;
+                    //激活纹理编号
+                    gl.activeTexture(feng3d.GL["TEXTURE" + _samplerIndex]);
+                    textureInfo.active(gl);
+                    //设置纹理所在采样编号
+                    gl.uniform1i(location, _samplerIndex);
+                    _samplerIndex++;
+                    break;
+                default:
+                    throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + activeInfo.name + " " + data;
+            }
+        };
+        return UniformRenderData;
+    }());
+    feng3d.UniformRenderData = UniformRenderData;
+    var _samplerIndex = 0;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
      * 渲染数据拥有者
      * @author feng 2016-6-7
      */
@@ -6300,7 +6370,7 @@ var feng3d;
             /**
              * Uniform渲染数据
              */
-            this.uniforms = {};
+            this.uniforms = new feng3d.UniformRenderData();
             /**
              * 渲染参数
              */
@@ -6528,6 +6598,10 @@ var feng3d;
             var buffer = this.getBuffer(gl);
             gl.bindBuffer(feng3d.GL.ARRAY_BUFFER, buffer);
             gl.vertexAttribPointer(location, this.stride, feng3d.GL.FLOAT, false, 0, 0);
+            if (this.divisor > 0) {
+                var _ext = gl.getExtension('ANGLE_instanced_arrays');
+                _ext.vertexAttribDivisorANGLE(location, this.divisor);
+            }
         };
         /**
          * 获取缓冲
@@ -6750,23 +6824,6 @@ var feng3d;
         return GLAttribute;
     }());
     feng3d.GLAttribute = GLAttribute;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 渲染数据编号
-     * @author feng 2016-06-20
-     */
-    var RenderDataID = (function () {
-        function RenderDataID() {
-        }
-        /**
-         * 顶点索引
-         */
-        RenderDataID.index = "index";
-        return RenderDataID;
-    }());
-    feng3d.RenderDataID = RenderDataID;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -7138,10 +7195,9 @@ var feng3d;
             var shaderProgram = this.activeShaderProgram(gl, renderAtomic.vertexCode, renderAtomic.fragmentCode, renderAtomic.shaderMacro);
             if (!shaderProgram)
                 return;
-            _samplerIndex = 0;
             //
             activeAttributes(gl, shaderProgram.attributes, renderAtomic.attributes);
-            activeUniforms(gl, shaderProgram.uniforms, renderAtomic.uniforms);
+            renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
             dodraw(gl, renderAtomic.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
         };
         /**
@@ -7162,32 +7218,14 @@ var feng3d;
         return Renderer;
     }());
     feng3d.Renderer = Renderer;
-    var _samplerIndex = 0;
     /**
      * 激活属性
      */
     function activeAttributes(gl, attributeInfos, attributes) {
         for (var i = 0; i < attributeInfos.length; i++) {
             var activeInfo = attributeInfos[i];
-            setContext3DAttribute(gl, activeInfo, attributes[activeInfo.name]);
-        }
-    }
-    /**
-     * 激活常量
-     */
-    function activeUniforms(gl, uniformInfos, uniforms) {
-        for (var o = 0; o < uniformInfos.length; o++) {
-            var activeInfo = uniformInfos[o];
-            if (activeInfo.uniformBaseName) {
-                //处理数组
-                var baseName = activeInfo.uniformBaseName;
-                for (var j = 0; j < activeInfo.size; j++) {
-                    setContext3DUniform(gl, { name: baseName + ("[" + j + "]"), type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j] }, uniforms[baseName][j]);
-                }
-            }
-            else {
-                setContext3DUniform(gl, activeInfo, uniforms[activeInfo.name]);
-            }
+            var buffer = attributes[activeInfo.name];
+            buffer.active(gl, activeInfo.location);
         }
     }
     /**
@@ -7203,54 +7241,6 @@ var feng3d;
         }
         else {
             gl.drawElements(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
-        }
-    }
-    /**
-     * 设置环境属性数据
-     */
-    function setContext3DAttribute(gl, activeInfo, buffer) {
-        buffer.active(gl, activeInfo.location);
-        if (buffer.divisor > 0) {
-            var _ext = gl.getExtension('ANGLE_instanced_arrays');
-            _ext.vertexAttribDivisorANGLE(activeInfo.location, buffer.divisor);
-        }
-    }
-    /**
-     * 设置环境Uniform数据
-     */
-    function setContext3DUniform(gl, activeInfo, data) {
-        var location = activeInfo.uniformLocation;
-        switch (activeInfo.type) {
-            case feng3d.GL.INT:
-                gl.uniform1i(location, data);
-                break;
-            case feng3d.GL.FLOAT_MAT4:
-                gl.uniformMatrix4fv(location, false, data.rawData);
-                break;
-            case feng3d.GL.FLOAT:
-                gl.uniform1f(location, data);
-                break;
-            case feng3d.GL.FLOAT_VEC2:
-                gl.uniform2f(location, data.x, data.y);
-                break;
-            case feng3d.GL.FLOAT_VEC3:
-                gl.uniform3f(location, data.x, data.y, data.z);
-                break;
-            case feng3d.GL.FLOAT_VEC4:
-                gl.uniform4f(location, data.x, data.y, data.z, data.w);
-                break;
-            case feng3d.GL.SAMPLER_2D:
-            case feng3d.GL.SAMPLER_CUBE:
-                var textureInfo = data;
-                //激活纹理编号
-                gl.activeTexture(feng3d.GL["TEXTURE" + _samplerIndex]);
-                textureInfo.active(gl);
-                //设置纹理所在采样编号
-                gl.uniform1i(location, _samplerIndex);
-                _samplerIndex++;
-                break;
-            default:
-                throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + activeInfo.name + " " + data;
         }
     }
 })(feng3d || (feng3d = {}));

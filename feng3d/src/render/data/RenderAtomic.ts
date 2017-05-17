@@ -30,7 +30,7 @@ module feng3d
         /**
          * Uniform渲染数据
          */
-        public uniforms: UniformRenderData = <any>{};
+        public uniforms: UniformRenderData = new UniformRenderData();
 
         /**
          * 渲染参数

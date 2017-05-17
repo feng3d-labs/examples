@@ -3,7 +3,7 @@ module feng3d
     /**
      * Uniform渲染数据
      */
-    export interface UniformRenderData
+    export class UniformRenderData
     {
         /**
          * 模型矩阵
@@ -229,5 +229,71 @@ module feng3d
          * 单位深度映射到屏幕像素值
          */
         u_scaleByDepth: number;
+
+        /**
+         * 激活常量
+         */
+        public activeUniforms(gl: GL, uniformInfos: WebGLActiveInfo[])
+        {
+            _samplerIndex = 0;
+            for (var o = 0; o < uniformInfos.length; o++)
+            {
+                var activeInfo = uniformInfos[o];
+                if (activeInfo.uniformBaseName)
+                {
+                    //处理数组
+                    var baseName = activeInfo.uniformBaseName;
+                    for (var j = 0; j < activeInfo.size; j++)
+                    {
+                        this.setContext3DUniform(gl, { name: baseName + `[${j}]`, type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j] }, this[baseName][j]);
+                    }
+                } else
+                {
+                    this.setContext3DUniform(gl, activeInfo, this[activeInfo.name]);
+                }
+            }
+        }
+
+        /**
+         * 设置环境Uniform数据
+         */
+        private setContext3DUniform(gl: GL, activeInfo: { name: string; uniformLocation: WebGLUniformLocation, type: number; }, data)
+        {
+            var location = activeInfo.uniformLocation;
+            switch (activeInfo.type)
+            {
+                case GL.INT:
+                    gl.uniform1i(location, data);
+                    break;
+                case GL.FLOAT_MAT4:
+                    gl.uniformMatrix4fv(location, false, data.rawData);
+                    break;
+                case GL.FLOAT:
+                    gl.uniform1f(location, data);
+                    break;
+                case GL.FLOAT_VEC2:
+                    gl.uniform2f(location, data.x, data.y);
+                    break;
+                case GL.FLOAT_VEC3:
+                    gl.uniform3f(location, data.x, data.y, data.z);
+                    break;
+                case GL.FLOAT_VEC4:
+                    gl.uniform4f(location, data.x, data.y, data.z, data.w);
+                    break;
+                case GL.SAMPLER_2D:
+                case GL.SAMPLER_CUBE:
+                    var textureInfo = <TextureInfo>data;
+                    //激活纹理编号
+                    gl.activeTexture(GL["TEXTURE" + _samplerIndex]);
+                    textureInfo.active(gl);
+                    //设置纹理所在采样编号
+                    gl.uniform1i(location, _samplerIndex);
+                    _samplerIndex++;
+                    break;
+                default:
+                    throw `无法识别的uniform类型 ${activeInfo.name} ${data}`;
+            }
+        }
     }
+    var _samplerIndex = 0;
 }

@@ -59,7 +59,7 @@ module feng3d
             if (!shaderProgram)
                 return;
             //
-            activeAttributes(gl, shaderProgram.attributes, renderAtomic.attributes);
+            renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
             dodraw(gl, renderAtomic.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
         }
@@ -80,19 +80,6 @@ module feng3d
             var shaderProgram = context3DPool.getWebGLProgram(gl, vertexCode, fragmentCode);
             gl.useProgram(shaderProgram);
             return shaderProgram;
-        }
-    }
-
-    /**
-     * 激活属性
-     */
-    function activeAttributes(gl: GL, attributeInfos: WebGLActiveInfo[], attributes: { [name: string]: AttributeRenderData })
-    {
-        for (var i = 0; i < attributeInfos.length; i++)
-        {
-            var activeInfo = attributeInfos[i];
-            var buffer = attributes[activeInfo.name];
-            buffer.active(gl, activeInfo.location);
         }
     }
 

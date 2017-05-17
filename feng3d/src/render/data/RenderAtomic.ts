@@ -25,7 +25,7 @@ module feng3d
         /**
          * 属性数据列表
          */
-        public attributes: { [name: string]: AttributeRenderData } = {};
+        public attributes: AttributeRenderDataStuct = new AttributeRenderDataStuct();
 
         /**
          * Uniform渲染数据

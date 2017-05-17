@@ -62,6 +62,7 @@
         "src/render/webgl/WebGLUtils.ts",
         "src/render/webgl/WebGLDebugUtils.ts",
         "src/render/webgl/webgl.ts",
+        "src/render/webgl/GL.ts",
         //渲染
         "src/render/consts/RenderMode.ts",
         "src/render/consts/BlendFactor.ts",

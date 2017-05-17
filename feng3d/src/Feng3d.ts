@@ -5,9 +5,6 @@ module feng3d
      * @author feng 2015-03-20
      */
     export var revision: string = "0.0.0";
-    //webgl 1
-    export type GL = WebGLRenderingContext;
-    export var GL = WebGLRenderingContext;
     /**
      * 是否开启调试(主要用于断言)
      */

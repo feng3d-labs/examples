@@ -51,6 +51,7 @@
 		"feng3d/src/render/webgl/WebGLUtils.ts",
 		"feng3d/src/render/webgl/WebGLDebugUtils.ts",
 		"feng3d/src/render/webgl/webgl.ts",
+		"feng3d/src/render/webgl/GL.ts",
 		"feng3d/src/render/consts/RenderMode.ts",
 		"feng3d/src/render/consts/BlendFactor.ts",
 		"feng3d/src/render/consts/BlendEquation.ts",

@@ -6141,6 +6141,12 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    //webgl 1
+    // export type GL = WebGLRenderingContext;
+    feng3d.GL = WebGLRenderingContext;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * 渲染模式
      * @author feng 2016-09-28
@@ -18246,7 +18252,6 @@ var feng3d;
      * @author feng 2015-03-20
      */
     feng3d.revision = "0.0.0";
-    feng3d.GL = WebGLRenderingContext;
     /**
      * 是否开启调试(主要用于断言)
      */

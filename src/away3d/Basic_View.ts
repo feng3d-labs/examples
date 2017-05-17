@@ -9,7 +9,7 @@ module feng3d
         public constructor()
         {
             var canvas = document.getElementById("glcanvas");
-            this._view = new View3D(canvas);
+            this._view = new View3D(canvas, null, null, false);
             var scene = this._view.scene;
 
             this._view.camera.z = -600;
@@ -28,6 +28,7 @@ module feng3d
         private _onEnterFrame(e: Event)
         {
             this._plane.rotationY += 1;
+            this._view.render();
         }
     }
 }

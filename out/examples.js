@@ -9063,9 +9063,10 @@ var feng3d;
          * @param scene     3D场景
          * @param camera    摄像机
          */
-        function View3D(canvas, scene, camera) {
+        function View3D(canvas, scene, camera, autoRender) {
             if (scene === void 0) { scene = null; }
             if (camera === void 0) { camera = null; }
+            if (autoRender === void 0) { autoRender = true; }
             /**
              * 鼠标在3D视图中的位置
              */
@@ -9081,13 +9082,30 @@ var feng3d;
             this._viewRect = new feng3d.Rectangle(this._canvas.clientLeft, this._canvas.clientTop, this._canvas.clientWidth, this._canvas.clientHeight);
             this.scene = scene || new feng3d.Scene3D();
             this.camera = camera || new feng3d.CameraObject3D();
+            this.autoRender = autoRender;
             this.defaultRenderer = new feng3d.ForwardRenderer();
             this.mouse3DManager = new feng3d.Mouse3DManager();
             this.shadowRenderer = new feng3d.ShadowRenderer();
             this._renderContext = new feng3d.RenderContext();
             feng3d.input.addEventListener(feng3d.inputType.MOUSE_MOVE, this.onMouseEvent, this);
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.drawScene, this);
         }
+        Object.defineProperty(View3D.prototype, "autoRender", {
+            /**
+             * 是否自动渲染
+             */
+            get: function () {
+                return this._autoRender;
+            },
+            set: function (value) {
+                if (this._autoRender)
+                    feng3d.ticker.removeEventListener(feng3d.Event.ENTER_FRAME, this.render, this);
+                this._autoRender = value;
+                if (this._autoRender)
+                    feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.render, this);
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 初始化GL
          */
@@ -9121,7 +9139,7 @@ var feng3d;
         /**
          * 绘制场景
          */
-        View3D.prototype.drawScene = function (event) {
+        View3D.prototype.render = function () {
             this._canvas.width = this._canvas.clientWidth;
             this._canvas.height = this._canvas.clientHeight;
             this._renderContext.camera = this._camera.camera;
@@ -19636,7 +19654,7 @@ var feng3d;
         };
         Basic_Fire.prototype.onTimer = function (e) {
             var fireObject = this.fireObjects[this.timer.currentCount - 1];
-            fireObject.animator["start"]();
+            // fireObject.animator["start"]();
             var light = new feng3d.PointLight();
             light.color.fromUnit(0xFF3301);
             light.intensity = 0;
@@ -19663,7 +19681,7 @@ var feng3d;
                 light["radius"] = 200 + Math.random() * 30;
                 light["diffuse"] = light["specular"] = fireVO.strength + Math.random() * .2;
             }
-            this.view["render"]();
+            // this.view["render"]();
         };
         Basic_Fire.prototype.onMouseDown = function (event) {
             this.lastPanAngle = this.cameraController.panAngle;
@@ -19694,7 +19712,7 @@ var feng3d;
     var Basic_View = (function () {
         function Basic_View() {
             var canvas = document.getElementById("glcanvas");
-            this._view = new feng3d.View3D(canvas);
+            this._view = new feng3d.View3D(canvas, null, null, false);
             var scene = this._view.scene;
             this._view.camera.z = -600;
             this._view.camera.y = 500;
@@ -19708,6 +19726,7 @@ var feng3d;
         }
         Basic_View.prototype._onEnterFrame = function (e) {
             this._plane.rotationY += 1;
+            this._view.render();
         };
         return Basic_View;
     }());

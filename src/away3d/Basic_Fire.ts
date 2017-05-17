@@ -148,7 +148,7 @@ module feng3d
         private onTimer(e: TimerEvent)
         {
             var fireObject: FireVO = this.fireObjects[this.timer.currentCount - 1];
-            fireObject.animator["start"]();
+            // fireObject.animator["start"]();
             var light: PointLight = <any>new PointLight();
             light.color.fromUnit(0xFF3301);
             light.intensity = 0;
@@ -179,7 +179,7 @@ module feng3d
                 light["radius"] = 200 + Math.random() * 30;
                 light["diffuse"] = light["specular"] = fireVO.strength + Math.random() * .2;
             }
-            this.view["render"]();
+            // this.view["render"]();
         }
 
         private onMouseDown(event: Event)

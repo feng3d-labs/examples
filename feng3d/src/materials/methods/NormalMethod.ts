@@ -49,11 +49,11 @@ module feng3d
             if (this.normalTexture.checkRenderData())
             {
                 renderData.uniforms.s_normal = this.normalTexture;
-                renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
             } else
             {
                 delete renderData.uniforms.s_normal;
-                renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
             }
 
             //

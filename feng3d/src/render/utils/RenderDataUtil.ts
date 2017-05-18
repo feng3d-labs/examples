@@ -13,8 +13,8 @@ module feng3d
          */
         public static active(renderAtomic: RenderAtomic, renderData: RenderAtomic)
         {
-            renderData.vertexCode && (renderAtomic.vertexCode = renderData.vertexCode);
-            renderData.fragmentCode && (renderAtomic.fragmentCode = renderData.fragmentCode);
+            renderData.shader.vertexCode && (renderAtomic.shader.vertexCode = renderData.shader.vertexCode);
+            renderData.shader.fragmentCode && (renderAtomic.shader.fragmentCode = renderData.shader.fragmentCode);
             renderData.indexBuffer && (renderAtomic.indexBuffer = renderData.indexBuffer);
             renderData.instanceCount && (renderAtomic.instanceCount = renderData.instanceCount);
 
@@ -26,22 +26,22 @@ module feng3d
             {
                 renderAtomic.uniforms[uniformName] = renderData.uniforms[uniformName];
             }
-            for (var shaderParamName in renderData.shaderParams)
+            for (var shaderParamName in renderData.shader.shaderParams)
             {
-                renderAtomic.shaderParams[shaderParamName] = renderData.shaderParams[shaderParamName];
+                renderAtomic.shader.shaderParams[shaderParamName] = renderData.shader.shaderParams[shaderParamName];
             }
             //ShaderMacro
-            for (var boolMacroName in renderData.shaderMacro.boolMacros)
+            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros)
             {
-                renderAtomic.shaderMacro.boolMacros[boolMacroName] = renderAtomic.shaderMacro.boolMacros[boolMacroName] || renderData.shaderMacro.boolMacros[boolMacroName];
+                renderAtomic.shader.shaderMacro.boolMacros[boolMacroName] = renderAtomic.shader.shaderMacro.boolMacros[boolMacroName] || renderData.shader.shaderMacro.boolMacros[boolMacroName];
             }
-            for (var valueMacroName in renderData.shaderMacro.valueMacros)
+            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros)
             {
-                renderAtomic.shaderMacro.valueMacros[valueMacroName] = renderData.shaderMacro.valueMacros[valueMacroName];
+                renderAtomic.shader.shaderMacro.valueMacros[valueMacroName] = renderData.shader.shaderMacro.valueMacros[valueMacroName];
             }
-            for (var addMacroName in renderData.shaderMacro.addMacros)
+            for (var addMacroName in renderData.shader.shaderMacro.addMacros)
             {
-                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] + renderData.shaderMacro.addMacros[addMacroName];
+                renderAtomic.shader.shaderMacro.addMacros[addMacroName] = renderAtomic.shader.shaderMacro.addMacros[addMacroName] + renderData.shader.shaderMacro.addMacros[addMacroName];
             }
         }
 
@@ -52,8 +52,8 @@ module feng3d
          */
         public static deactivate(renderAtomic: RenderAtomic, renderData: RenderAtomic)
         {
-            renderData.vertexCode && (renderAtomic.vertexCode = null);
-            renderData.fragmentCode && (renderAtomic.fragmentCode = null);
+            renderData.shader.vertexCode && (renderAtomic.shader.vertexCode = null);
+            renderData.shader.fragmentCode && (renderAtomic.shader.fragmentCode = null);
             renderData.indexBuffer && (renderAtomic.indexBuffer = null);
             renderData.instanceCount && (delete renderAtomic.instanceCount);
 
@@ -65,22 +65,22 @@ module feng3d
             {
                 delete renderAtomic.uniforms[uniformName];
             }
-            for (var shaderParamName in renderData.shaderParams)
+            for (var shaderParamName in renderData.shader.shaderParams)
             {
-                delete renderAtomic.shaderParams[shaderParamName];
+                delete renderAtomic.shader.shaderParams[shaderParamName];
             }
             //ShaderMacro
-            for (var boolMacroName in renderData.shaderMacro.boolMacros)
+            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros)
             {
-                delete renderAtomic.shaderMacro.boolMacros[boolMacroName];
+                delete renderAtomic.shader.shaderMacro.boolMacros[boolMacroName];
             }
-            for (var valueMacroName in renderData.shaderMacro.valueMacros)
+            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros)
             {
-                delete renderAtomic.shaderMacro.valueMacros[valueMacroName];
+                delete renderAtomic.shader.shaderMacro.valueMacros[valueMacroName];
             }
-            for (var addMacroName in renderData.shaderMacro.addMacros)
+            for (var addMacroName in renderData.shader.shaderMacro.addMacros)
             {
-                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] - renderData.shaderMacro.addMacros[addMacroName];
+                renderAtomic.shader.shaderMacro.addMacros[addMacroName] = renderAtomic.shader.shaderMacro.addMacros[addMacroName] - renderData.shader.shaderMacro.addMacros[addMacroName];
             }
         }
     }

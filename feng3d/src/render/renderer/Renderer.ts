@@ -53,33 +53,16 @@ module feng3d
         /**
          * 绘制3D对象
          */
-        protected drawObject3D(gl: GL, renderAtomic: RenderAtomic)
+        protected drawObject3D(gl: GL, renderAtomic: RenderAtomic, shader: ShaderRenderData = null)
         {
-            var shaderProgram = this.activeShaderProgram(gl, renderAtomic.vertexCode, renderAtomic.fragmentCode, renderAtomic.shaderMacro);
+            shader = shader || renderAtomic.shader;
+            var shaderProgram = shader.activeShaderProgram(gl);
             if (!shaderProgram)
                 return;
             //
             renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
-            dodraw(gl, renderAtomic.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
-        }
-
-        /**
-         * 激活渲染程序
-         */
-        protected activeShaderProgram(gl: GL, vertexCode: string, fragmentCode: string, shaderMacro: ShaderMacro)
-        {
-            if (!vertexCode || !fragmentCode)
-                return null;
-
-            //应用宏
-            var shaderMacroStr = ShaderLib.getMacroCode(shaderMacro);
-            vertexCode = vertexCode.replace(/#define\s+macros/, shaderMacroStr);
-            fragmentCode = fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
-            //渲染程序
-            var shaderProgram = context3DPool.getWebGLProgram(gl, vertexCode, fragmentCode);
-            gl.useProgram(shaderProgram);
-            return shaderProgram;
+            dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
         }
     }
 

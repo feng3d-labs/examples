@@ -87,14 +87,14 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
             renderData.uniforms.u_fogColor = this._fogColor;
             renderData.uniforms.u_fogMinDistance = this._minDistance;
             renderData.uniforms.u_fogMaxDistance = this._maxDistance;
             renderData.uniforms.u_fogDensity = this._density;
             renderData.uniforms.u_fogMode = this._mode;
             //
-            renderData.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
+            renderData.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
             //
             super.updateRenderData(renderContext, renderData);
         }

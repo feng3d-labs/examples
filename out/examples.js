@@ -6294,6 +6294,40 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var ShaderRenderData = (function () {
+        function ShaderRenderData() {
+            /**
+             * 渲染参数
+             */
+            this.shaderParams = {};
+            /**
+             * 着色器宏定义
+             */
+            this.shaderMacro = new feng3d.ShaderMacro();
+        }
+        /**
+         * 激活渲染程序
+         */
+        ShaderRenderData.prototype.activeShaderProgram = function (gl) {
+            if (!this.vertexCode || !this.fragmentCode)
+                return null;
+            var vertexCode = this.vertexCode;
+            var fragmentCode = this.fragmentCode;
+            //应用宏
+            var shaderMacroStr = feng3d.ShaderLib.getMacroCode(this.shaderMacro);
+            vertexCode = vertexCode.replace(/#define\s+macros/, shaderMacroStr);
+            fragmentCode = fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
+            //渲染程序
+            var shaderProgram = feng3d.context3DPool.getWebGLProgram(gl, vertexCode, fragmentCode);
+            gl.useProgram(shaderProgram);
+            return shaderProgram;
+        };
+        return ShaderRenderData;
+    }());
+    feng3d.ShaderRenderData = ShaderRenderData;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * 渲染数据拥有者
      * @author feng 2016-6-7
@@ -6370,6 +6404,10 @@ var feng3d;
     var RenderAtomic = (function () {
         function RenderAtomic() {
             /**
+             * 渲染程序
+             */
+            this.shader = new feng3d.ShaderRenderData();
+            /**
              * 属性数据列表
              */
             this.attributes = new feng3d.AttributeRenderDataStuct();
@@ -6377,14 +6415,6 @@ var feng3d;
              * Uniform渲染数据
              */
             this.uniforms = new feng3d.UniformRenderData();
-            /**
-             * 渲染参数
-             */
-            this.shaderParams = {};
-            /**
-             * 着色器宏定义
-             */
-            this.shaderMacro = new feng3d.ShaderMacro();
         }
         return RenderAtomic;
     }());
@@ -6778,8 +6808,8 @@ var feng3d;
          * @param renderData    包含渲染数据的对象
          */
         RenderDataUtil.active = function (renderAtomic, renderData) {
-            renderData.vertexCode && (renderAtomic.vertexCode = renderData.vertexCode);
-            renderData.fragmentCode && (renderAtomic.fragmentCode = renderData.fragmentCode);
+            renderData.shader.vertexCode && (renderAtomic.shader.vertexCode = renderData.shader.vertexCode);
+            renderData.shader.fragmentCode && (renderAtomic.shader.fragmentCode = renderData.shader.fragmentCode);
             renderData.indexBuffer && (renderAtomic.indexBuffer = renderData.indexBuffer);
             renderData.instanceCount && (renderAtomic.instanceCount = renderData.instanceCount);
             for (var attributeName in renderData.attributes) {
@@ -6788,18 +6818,18 @@ var feng3d;
             for (var uniformName in renderData.uniforms) {
                 renderAtomic.uniforms[uniformName] = renderData.uniforms[uniformName];
             }
-            for (var shaderParamName in renderData.shaderParams) {
-                renderAtomic.shaderParams[shaderParamName] = renderData.shaderParams[shaderParamName];
+            for (var shaderParamName in renderData.shader.shaderParams) {
+                renderAtomic.shader.shaderParams[shaderParamName] = renderData.shader.shaderParams[shaderParamName];
             }
             //ShaderMacro
-            for (var boolMacroName in renderData.shaderMacro.boolMacros) {
-                renderAtomic.shaderMacro.boolMacros[boolMacroName] = renderAtomic.shaderMacro.boolMacros[boolMacroName] || renderData.shaderMacro.boolMacros[boolMacroName];
+            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros) {
+                renderAtomic.shader.shaderMacro.boolMacros[boolMacroName] = renderAtomic.shader.shaderMacro.boolMacros[boolMacroName] || renderData.shader.shaderMacro.boolMacros[boolMacroName];
             }
-            for (var valueMacroName in renderData.shaderMacro.valueMacros) {
-                renderAtomic.shaderMacro.valueMacros[valueMacroName] = renderData.shaderMacro.valueMacros[valueMacroName];
+            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros) {
+                renderAtomic.shader.shaderMacro.valueMacros[valueMacroName] = renderData.shader.shaderMacro.valueMacros[valueMacroName];
             }
-            for (var addMacroName in renderData.shaderMacro.addMacros) {
-                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] + renderData.shaderMacro.addMacros[addMacroName];
+            for (var addMacroName in renderData.shader.shaderMacro.addMacros) {
+                renderAtomic.shader.shaderMacro.addMacros[addMacroName] = renderAtomic.shader.shaderMacro.addMacros[addMacroName] + renderData.shader.shaderMacro.addMacros[addMacroName];
             }
         };
         /**
@@ -6808,8 +6838,8 @@ var feng3d;
          * @param renderData    包含渲染数据的对象
          */
         RenderDataUtil.deactivate = function (renderAtomic, renderData) {
-            renderData.vertexCode && (renderAtomic.vertexCode = null);
-            renderData.fragmentCode && (renderAtomic.fragmentCode = null);
+            renderData.shader.vertexCode && (renderAtomic.shader.vertexCode = null);
+            renderData.shader.fragmentCode && (renderAtomic.shader.fragmentCode = null);
             renderData.indexBuffer && (renderAtomic.indexBuffer = null);
             renderData.instanceCount && (delete renderAtomic.instanceCount);
             for (var attributeName in renderData.attributes) {
@@ -6818,18 +6848,18 @@ var feng3d;
             for (var uniformName in renderData.uniforms) {
                 delete renderAtomic.uniforms[uniformName];
             }
-            for (var shaderParamName in renderData.shaderParams) {
-                delete renderAtomic.shaderParams[shaderParamName];
+            for (var shaderParamName in renderData.shader.shaderParams) {
+                delete renderAtomic.shader.shaderParams[shaderParamName];
             }
             //ShaderMacro
-            for (var boolMacroName in renderData.shaderMacro.boolMacros) {
-                delete renderAtomic.shaderMacro.boolMacros[boolMacroName];
+            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros) {
+                delete renderAtomic.shader.shaderMacro.boolMacros[boolMacroName];
             }
-            for (var valueMacroName in renderData.shaderMacro.valueMacros) {
-                delete renderAtomic.shaderMacro.valueMacros[valueMacroName];
+            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros) {
+                delete renderAtomic.shader.shaderMacro.valueMacros[valueMacroName];
             }
-            for (var addMacroName in renderData.shaderMacro.addMacros) {
-                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] - renderData.shaderMacro.addMacros[addMacroName];
+            for (var addMacroName in renderData.shader.shaderMacro.addMacros) {
+                renderAtomic.shader.shaderMacro.addMacros[addMacroName] = renderAtomic.shader.shaderMacro.addMacros[addMacroName] - renderData.shader.shaderMacro.addMacros[addMacroName];
             }
         };
         return RenderDataUtil;
@@ -6910,7 +6940,7 @@ var feng3d;
                 if (light instanceof feng3d.DirectionalLight)
                     directionalLights.push(light);
             }
-            renderAtomic.shaderMacro.valueMacros.NUM_LIGHT = lights.length;
+            renderAtomic.shader.shaderMacro.valueMacros.NUM_LIGHT = lights.length;
             //收集点光源数据
             var pointLightPositions = [];
             var pointLightColors = [];
@@ -6924,12 +6954,12 @@ var feng3d;
                 pointLightRanges.push(pointLight.range);
             }
             //设置点光源数据
-            renderAtomic.shaderMacro.valueMacros.NUM_POINTLIGHT = pointLights.length;
+            renderAtomic.shader.shaderMacro.valueMacros.NUM_POINTLIGHT = pointLights.length;
             if (pointLights.length > 0) {
-                renderAtomic.shaderMacro.addMacros.A_NORMAL_NEED = 1;
-                renderAtomic.shaderMacro.addMacros.V_NORMAL_NEED = 1;
-                renderAtomic.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED = 1;
-                renderAtomic.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
+                renderAtomic.shader.shaderMacro.addMacros.A_NORMAL_NEED = 1;
+                renderAtomic.shader.shaderMacro.addMacros.V_NORMAL_NEED = 1;
+                renderAtomic.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED = 1;
+                renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
                 renderAtomic.uniforms.u_pointLightPositions = pointLightPositions;
                 renderAtomic.uniforms.u_pointLightColors = pointLightColors;
@@ -6945,11 +6975,11 @@ var feng3d;
                 directionalLightColors.push(directionalLight.color);
                 directionalLightIntensitys.push(directionalLight.intensity);
             }
-            renderAtomic.shaderMacro.valueMacros.NUM_DIRECTIONALLIGHT = directionalLights.length;
+            renderAtomic.shader.shaderMacro.valueMacros.NUM_DIRECTIONALLIGHT = directionalLights.length;
             if (directionalLights.length > 0) {
-                renderAtomic.shaderMacro.addMacros.A_NORMAL_NEED = 1;
-                renderAtomic.shaderMacro.addMacros.V_NORMAL_NEED = 1;
-                renderAtomic.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
+                renderAtomic.shader.shaderMacro.addMacros.A_NORMAL_NEED = 1;
+                renderAtomic.shader.shaderMacro.addMacros.V_NORMAL_NEED = 1;
+                renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
                 renderAtomic.uniforms.u_directionalLightDirections = directionalLightDirections;
                 renderAtomic.uniforms.u_directionalLightColors = directionalLightColors;
@@ -7250,29 +7280,16 @@ var feng3d;
         /**
          * 绘制3D对象
          */
-        Renderer.prototype.drawObject3D = function (gl, renderAtomic) {
-            var shaderProgram = this.activeShaderProgram(gl, renderAtomic.vertexCode, renderAtomic.fragmentCode, renderAtomic.shaderMacro);
+        Renderer.prototype.drawObject3D = function (gl, renderAtomic, shader) {
+            if (shader === void 0) { shader = null; }
+            shader = shader || renderAtomic.shader;
+            var shaderProgram = shader.activeShaderProgram(gl);
             if (!shaderProgram)
                 return;
             //
             renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
-            dodraw(gl, renderAtomic.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
-        };
-        /**
-         * 激活渲染程序
-         */
-        Renderer.prototype.activeShaderProgram = function (gl, vertexCode, fragmentCode, shaderMacro) {
-            if (!vertexCode || !fragmentCode)
-                return null;
-            //应用宏
-            var shaderMacroStr = feng3d.ShaderLib.getMacroCode(shaderMacro);
-            vertexCode = vertexCode.replace(/#define\s+macros/, shaderMacroStr);
-            fragmentCode = fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
-            //渲染程序
-            var shaderProgram = feng3d.context3DPool.getWebGLProgram(gl, vertexCode, fragmentCode);
-            gl.useProgram(shaderProgram);
-            return shaderProgram;
+            dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
         };
         return Renderer;
     }());
@@ -7393,12 +7410,16 @@ var feng3d;
             }
         };
         /**
-         * 激活渲染程序
+         * 绘制3D对象
          */
-        MouseRenderer.prototype.activeShaderProgram = function (gl, vertexCode, fragmentCode, shaderMacro) {
+        MouseRenderer.prototype.drawObject3D = function (gl, renderAtomic, shader) {
+            if (shader === void 0) { shader = null; }
             var vertexCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".vertex");
             var fragmentCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".fragment");
-            return _super.prototype.activeShaderProgram.call(this, gl, vertexCode, fragmentCode, shaderMacro);
+            var shader = new feng3d.ShaderRenderData();
+            shader.vertexCode = vertexCode;
+            shader.fragmentCode = fragmentCode;
+            _super.prototype.drawObject3D.call(this, gl, renderAtomic, shader);
         };
         return MouseRenderer;
     }(feng3d.Renderer));
@@ -13235,22 +13256,22 @@ var feng3d;
          */
         Material.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.shaderParams.renderMode = this.renderMode;
+            renderData.shader.shaderParams.renderMode = this.renderMode;
             //
             if (this.shaderName) {
-                renderData.vertexCode = feng3d.ShaderLib.getShaderCode(this.shaderName + ".vertex");
-                renderData.fragmentCode = feng3d.ShaderLib.getShaderCode(this.shaderName + ".fragment");
+                renderData.shader.vertexCode = feng3d.ShaderLib.getShaderCode(this.shaderName + ".vertex");
+                renderData.shader.fragmentCode = feng3d.ShaderLib.getShaderCode(this.shaderName + ".fragment");
             }
             else {
-                renderData.vertexCode = null;
-                renderData.fragmentCode = null;
+                renderData.shader.vertexCode = null;
+                renderData.shader.fragmentCode = null;
             }
             if (this.renderMode == feng3d.RenderMode.POINTS) {
-                renderData.shaderMacro.boolMacros.IS_POINTS_MODE = true;
+                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = true;
                 renderData.uniforms.u_PointSize = this.pointSize;
             }
             else {
-                renderData.shaderMacro.boolMacros.IS_POINTS_MODE = false;
+                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = false;
                 delete renderData.uniforms.u_PointSize;
             }
             for (var i = 0; i < this._methods.length; i++) {
@@ -13644,11 +13665,11 @@ var feng3d;
             renderData.uniforms.u_diffuse = this.color;
             if (this.difuseTexture.checkRenderData()) {
                 renderData.uniforms.s_diffuse = this.difuseTexture;
-                renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
             }
             else {
                 delete renderData.uniforms.s_diffuse;
-                renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
             }
             renderData.uniforms.u_alphaThreshold = this.alphaThreshold;
             //
@@ -13704,11 +13725,11 @@ var feng3d;
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
             if (this.normalTexture.checkRenderData()) {
                 renderData.uniforms.s_normal = this.normalTexture;
-                renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
             }
             else {
                 delete renderData.uniforms.s_normal;
-                renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
             }
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
@@ -13778,11 +13799,11 @@ var feng3d;
         SpecularMethod.prototype.updateRenderData = function (renderContext, renderData) {
             if (this.specularTexture.checkRenderData()) {
                 renderData.uniforms.s_specular = this.specularTexture;
-                renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
             }
             else {
                 delete renderData.uniforms.s_specular;
-                renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
             }
             renderData.uniforms.u_specular = this.specularColor;
             renderData.uniforms.u_glossiness = this.glossiness;
@@ -13850,11 +13871,11 @@ var feng3d;
             renderData.uniforms.u_ambient = this._color;
             if (this.ambientTexture.checkRenderData()) {
                 renderData.uniforms.s_ambient = this._ambientTexture;
-                renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
             }
             else {
                 delete renderData.uniforms.s_ambient;
-                renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
             }
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
@@ -13960,14 +13981,14 @@ var feng3d;
          * 更新渲染数据
          */
         FogMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
             renderData.uniforms.u_fogColor = this._fogColor;
             renderData.uniforms.u_fogMinDistance = this._minDistance;
             renderData.uniforms.u_fogMaxDistance = this._maxDistance;
             renderData.uniforms.u_fogDensity = this._density;
             renderData.uniforms.u_fogMode = this._mode;
             //
-            renderData.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
+            renderData.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14035,7 +14056,7 @@ var feng3d;
          * 更新渲染数据
          */
         EnvMapMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
             renderData.uniforms.s_envMap = this._cubeTexture;
             renderData.uniforms.u_reflectivity = this._reflectivity;
             //
@@ -15341,7 +15362,7 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
             renderData.uniforms.s_blendTexture = this.blendTexture;
             renderData.uniforms.s_splatTexture1 = this.splatTexture1;
             renderData.uniforms.s_splatTexture2 = this.splatTexture2;
@@ -15428,8 +15449,8 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMergeMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
-            renderData.shaderMacro.boolMacros.USE_TERRAIN_MERGE = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.USE_TERRAIN_MERGE = true;
             renderData.uniforms.s_blendTexture = this.blendTexture;
             renderData.uniforms.s_splatMergeTexture = this.splatMergeTexture;
             renderData.uniforms.u_splatMergeTextureSize = this.splatMergeTexture.size;
@@ -15744,7 +15765,7 @@ var feng3d;
          */
         ParticleAnimator.prototype.updateRenderData = function (renderContext, renderData) {
             var _this = this;
-            renderData.shaderMacro.boolMacros.HAS_PARTICLE_ANIMATOR = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_PARTICLE_ANIMATOR = true;
             if (this._isDirty) {
                 this.startTime = feng3d.getTimer();
                 this.generateParticles();
@@ -15778,7 +15799,7 @@ var feng3d;
                 renderData.uniforms["u_particle_" + uniform] = particleGlobal[uniform];
             }
             //更新宏定义
-            var boolMacros = renderData.shaderMacro.boolMacros;
+            var boolMacros = renderData.shader.shaderMacro.boolMacros;
             for (var attribute in renderData.attributes) {
                 boolMacros["D_" + attribute] = true;
             }
@@ -16527,13 +16548,13 @@ var feng3d;
          */
         SkeletonAnimator.prototype.updateRenderData = function (renderContext, renderData) {
             if (this._activeSkeletonState) {
-                renderData.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
+                renderData.shader.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
                 renderData.uniforms.u_skeletonGlobalMatriices = this.globalMatrices;
-                renderData.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
                 _super.prototype.updateRenderData.call(this, renderContext, renderData);
             }
             else {
-                renderData.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = false;
             }
         };
         /**

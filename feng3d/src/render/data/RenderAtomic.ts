@@ -13,34 +13,19 @@ module feng3d
         public indexBuffer: IndexRenderData;
 
         /**
-         * 顶点渲染程序代码
+         * 渲染程序
          */
-        public vertexCode: string;
-
-        /**
-         * 片段渲染程序代码
-         */
-        public fragmentCode: string;
+        public shader = new ShaderRenderData();
 
         /**
          * 属性数据列表
          */
-        public attributes: AttributeRenderDataStuct = new AttributeRenderDataStuct();
+        public attributes = new AttributeRenderDataStuct();
 
         /**
          * Uniform渲染数据
          */
-        public uniforms: UniformRenderData = new UniformRenderData();
-
-        /**
-         * 渲染参数
-         */
-        public shaderParams: ShaderParams = <any>{};
-
-        /**
-         * 着色器宏定义
-         */
-        public shaderMacro = new ShaderMacro();
+        public uniforms = new UniformRenderData();
 
         /**
          * 渲染实例数量

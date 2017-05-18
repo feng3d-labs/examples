@@ -72,11 +72,11 @@ module feng3d
             if (this.difuseTexture.checkRenderData())
             {
                 renderData.uniforms.s_diffuse = this.difuseTexture;
-                renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
             } else
             {
                 delete renderData.uniforms.s_diffuse;
-                renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
             }
             renderData.uniforms.u_alphaThreshold = this.alphaThreshold;
 

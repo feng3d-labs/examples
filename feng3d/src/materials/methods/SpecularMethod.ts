@@ -60,11 +60,11 @@ module feng3d
             if (this.specularTexture.checkRenderData())
             {
                 renderData.uniforms.s_specular = this.specularTexture;
-                renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
             } else
             {
                 delete renderData.uniforms.s_specular;
-                renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
             }
             renderData.uniforms.u_specular = this.specularColor;
             renderData.uniforms.u_glossiness = this.glossiness;

@@ -127,24 +127,24 @@ module feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.shaderParams.renderMode = this.renderMode;
+            renderData.shader.shaderParams.renderMode = this.renderMode;
             //
             if (this.shaderName)
             {
-                renderData.vertexCode = ShaderLib.getShaderCode(this.shaderName + ".vertex");
-                renderData.fragmentCode = ShaderLib.getShaderCode(this.shaderName + ".fragment");
+                renderData.shader.vertexCode = ShaderLib.getShaderCode(this.shaderName + ".vertex");
+                renderData.shader.fragmentCode = ShaderLib.getShaderCode(this.shaderName + ".fragment");
             } else
             {
-                renderData.vertexCode = null;
-                renderData.fragmentCode = null;
+                renderData.shader.vertexCode = null;
+                renderData.shader.fragmentCode = null;
             }
             if (this.renderMode == RenderMode.POINTS)
             {
-                renderData.shaderMacro.boolMacros.IS_POINTS_MODE = true;
+                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = true;
                 renderData.uniforms.u_PointSize = this.pointSize;
             } else
             {
-                renderData.shaderMacro.boolMacros.IS_POINTS_MODE = false;
+                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = false;
                 delete renderData.uniforms.u_PointSize;
             }
 

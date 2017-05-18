@@ -58,11 +58,11 @@ module feng3d
             if (this.ambientTexture.checkRenderData())
             {
                 renderData.uniforms.s_ambient = this._ambientTexture;
-                renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
             } else
             {
                 delete renderData.uniforms.s_ambient;
-                renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
             }
             //
             super.updateRenderData(renderContext, renderData);

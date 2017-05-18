@@ -123,7 +123,7 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
 
             renderData.uniforms.s_blendTexture = this.blendTexture;
             renderData.uniforms.s_splatTexture1 = this.splatTexture1;

@@ -54,13 +54,16 @@ module feng3d
         }
 
         /**
-         * 激活渲染程序
+         * 绘制3D对象
          */
-        protected activeShaderProgram(gl: GL, vertexCode: string, fragmentCode: string, shaderMacro: ShaderMacro)
+        protected drawObject3D(gl: GL, renderAtomic: RenderAtomic, shader: ShaderRenderData = null)
         {
             var vertexCode = ShaderLib.getShaderCode(this._shaderName + ".vertex");
             var fragmentCode = ShaderLib.getShaderCode(this._shaderName + ".fragment");
-            return super.activeShaderProgram(gl, vertexCode, fragmentCode, shaderMacro);
+            var shader = new ShaderRenderData();
+            shader.vertexCode = vertexCode;
+            shader.fragmentCode = fragmentCode;
+            super.drawObject3D(gl, renderAtomic, shader);
         }
     }
 }

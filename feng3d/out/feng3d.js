@@ -6199,14 +6199,14 @@ var feng3d;
                 renderAtomic.shaderParams[shaderParamName] = renderData.shaderParams[shaderParamName];
             }
             //ShaderMacro
-            for (var boolMacroName in renderData.shaderMacro.boolMacros) {
-                renderAtomic.shaderMacro.boolMacros[boolMacroName] = renderAtomic.shaderMacro.boolMacros[boolMacroName] || renderData.shaderMacro.boolMacros[boolMacroName];
+            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros) {
+                renderAtomic.shaderMacro.boolMacros[boolMacroName] = renderAtomic.shaderMacro.boolMacros[boolMacroName] || renderData.shader.shaderMacro.boolMacros[boolMacroName];
             }
-            for (var valueMacroName in renderData.shaderMacro.valueMacros) {
-                renderAtomic.shaderMacro.valueMacros[valueMacroName] = renderData.shaderMacro.valueMacros[valueMacroName];
+            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros) {
+                renderAtomic.shaderMacro.valueMacros[valueMacroName] = renderData.shader.shaderMacro.valueMacros[valueMacroName];
             }
-            for (var addMacroName in renderData.shaderMacro.addMacros) {
-                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] + renderData.shaderMacro.addMacros[addMacroName];
+            for (var addMacroName in renderData.shader.shaderMacro.addMacros) {
+                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] + renderData.shader.shaderMacro.addMacros[addMacroName];
             }
         };
         /**
@@ -6229,14 +6229,14 @@ var feng3d;
                 delete renderAtomic.shaderParams[shaderParamName];
             }
             //ShaderMacro
-            for (var boolMacroName in renderData.shaderMacro.boolMacros) {
+            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros) {
                 delete renderAtomic.shaderMacro.boolMacros[boolMacroName];
             }
-            for (var valueMacroName in renderData.shaderMacro.valueMacros) {
+            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros) {
                 delete renderAtomic.shaderMacro.valueMacros[valueMacroName];
             }
-            for (var addMacroName in renderData.shaderMacro.addMacros) {
-                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] - renderData.shaderMacro.addMacros[addMacroName];
+            for (var addMacroName in renderData.shader.shaderMacro.addMacros) {
+                renderAtomic.shaderMacro.addMacros[addMacroName] = renderAtomic.shaderMacro.addMacros[addMacroName] - renderData.shader.shaderMacro.addMacros[addMacroName];
             }
         };
         return RenderDataUtil;
@@ -12956,11 +12956,11 @@ var feng3d;
             renderData.uniforms[feng3d.RenderDataID.u_diffuse] = this.color;
             if (this.difuseTexture.checkRenderData()) {
                 renderData.uniforms[feng3d.RenderDataID.s_diffuse] = this.difuseTexture;
-                renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
             }
             else {
                 renderData.uniforms[feng3d.RenderDataID.s_diffuse] = null;
-                renderData.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
             }
             renderData.uniforms[feng3d.RenderDataID.u_alphaThreshold] = this.alphaThreshold;
             //
@@ -12995,11 +12995,11 @@ var feng3d;
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
             if (this.normalTexture.checkRenderData()) {
                 renderData.uniforms[feng3d.RenderDataID.s_normal] = this.normalTexture;
-                renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
             }
             else {
                 renderData.uniforms[feng3d.RenderDataID.s_normal] = null;
-                renderData.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
             }
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
@@ -13041,11 +13041,11 @@ var feng3d;
         SpecularMethod.prototype.updateRenderData = function (renderContext, renderData) {
             if (this.specularTexture.checkRenderData()) {
                 renderData.uniforms[feng3d.RenderDataID.s_specular] = this.specularTexture;
-                renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
             }
             else {
                 renderData.uniforms[feng3d.RenderDataID.s_specular] = null;
-                renderData.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
             }
             renderData.uniforms[feng3d.RenderDataID.u_specular] = this.specularColor;
             renderData.uniforms[feng3d.RenderDataID.u_glossiness] = this.glossiness;
@@ -13087,11 +13087,11 @@ var feng3d;
             renderData.uniforms[feng3d.RenderDataID.u_ambient] = this.color;
             if (this.ambientTexture.checkRenderData()) {
                 renderData.uniforms[feng3d.RenderDataID.s_ambient] = this.ambientTexture;
-                renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
             }
             else {
                 renderData.uniforms[feng3d.RenderDataID.s_ambient] = null;
-                renderData.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
             }
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
@@ -14313,7 +14313,7 @@ var feng3d;
                 renderData.uniforms["u_particle_" + uniform] = particleGlobal[uniform];
             }
             //更新宏定义
-            var boolMacros = renderData.shaderMacro.boolMacros = {};
+            var boolMacros = renderData.shader.shaderMacro.boolMacros = {};
             for (var attribute in renderData.attributes) {
                 boolMacros["D_" + attribute] = true;
             }
@@ -14997,13 +14997,13 @@ var feng3d;
          */
         SkeletonAnimator.prototype.updateRenderData = function (renderContext, renderData) {
             if (this._activeSkeletonState) {
-                renderData.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
+                renderData.shader.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
                 renderData.uniforms[feng3d.RenderDataID.u_skeletonGlobalMatriices] = this.globalMatrices;
-                renderData.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
                 _super.prototype.updateRenderData.call(this, renderContext, renderData);
             }
             else {
-                renderData.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = false;
             }
         };
         /**

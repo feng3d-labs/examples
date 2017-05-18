@@ -69,13 +69,13 @@ module feng3d
         {
             if (this._activeSkeletonState)
             {
-                renderData.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
+                renderData.shader.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
                 renderData.uniforms.u_skeletonGlobalMatriices = this.globalMatrices;
-                renderData.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
+                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
                 super.updateRenderData(renderContext, renderData);
             } else
             {
-                renderData.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = false;
+                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = false;
             }
         }
 

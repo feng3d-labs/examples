@@ -53,7 +53,7 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
             renderData.uniforms.s_envMap = this._cubeTexture;
             renderData.uniforms.u_reflectivity = this._reflectivity;
 

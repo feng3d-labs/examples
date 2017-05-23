@@ -22,7 +22,7 @@ module feng3d
         {
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
-            angle = angle * MathConsts.DEGREES_TO_RADIANS;
+            angle = angle * Math.DEG2RAD;
             this.cameraObj.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
 
             this.controller.update();

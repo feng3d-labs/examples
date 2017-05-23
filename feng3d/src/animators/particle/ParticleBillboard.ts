@@ -37,7 +37,7 @@ module feng3d
                 this._matrix.copyColumnFrom(1, this._billboardAxis);
                 this._matrix.copyColumnFrom(2, look);
                 this._matrix.copyColumnFrom(3, pos);
-                this._matrix.appendRotation(-comps[1].w * MathConsts.RADIANS_TO_DEGREES, comps[1]);
+                this._matrix.appendRotation(-comps[1].w * Math.RAD2DEG, comps[1]);
             }
             else
             {
@@ -50,7 +50,7 @@ module feng3d
 
                 //recreate the matrix with just the rotation data
                 this._matrix.identity();
-                this._matrix.appendRotation(-comps[1].w * MathConsts.RADIANS_TO_DEGREES, comps[1]);
+                this._matrix.appendRotation(-comps[1].w * Math.RAD2DEG, comps[1]);
             }
             particleGlobal.billboardMatrix = this._matrix;
         }

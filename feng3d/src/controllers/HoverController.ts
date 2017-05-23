@@ -243,9 +243,9 @@ module feng3d
                 this._pos["y"] = this._origin["y"];
                 this._pos["z"] = this._origin["z"];
             }
-            this._targetObject.x = this._pos["x"] + this._distance * Math.sin(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
-            this._targetObject.z = this._pos["z"] + this._distance * Math.cos(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
-            this._targetObject.y = this._pos["y"] + this._distance * Math.sin(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS) * this._yFactor;
+            this._targetObject.x = this._pos["x"] + this._distance * Math.sin(this._currentPanAngle * Math.DEG2RAD) * Math.cos(this._currentTiltAngle * Math.DEG2RAD);
+            this._targetObject.z = this._pos["z"] + this._distance * Math.cos(this._currentPanAngle * Math.DEG2RAD) * Math.cos(this._currentTiltAngle * Math.DEG2RAD);
+            this._targetObject.y = this._pos["y"] + this._distance * Math.sin(this._currentTiltAngle * Math.DEG2RAD) * this._yFactor;
             super.update();
         }
 

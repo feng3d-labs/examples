@@ -172,40 +172,40 @@ module feng3d
 
         public get rotationX(): number
         {
-            return this._rotationX * MathConsts.RADIANS_TO_DEGREES;
+            return this._rotationX * Math.RAD2DEG;
         }
 
         public set rotationX(val: number)
         {
             if (this.rotationX == val)
                 return;
-            this._rotationX = val * MathConsts.DEGREES_TO_RADIANS;
+            this._rotationX = val * Math.DEG2RAD;
             this.invalidateRotation();
         }
 
         public get rotationY(): number
         {
-            return this._rotationY * MathConsts.RADIANS_TO_DEGREES;
+            return this._rotationY * Math.RAD2DEG;
         }
 
         public set rotationY(val: number)
         {
             if (this.rotationY == val)
                 return;
-            this._rotationY = val * MathConsts.DEGREES_TO_RADIANS;
+            this._rotationY = val * Math.DEG2RAD;
             this.invalidateRotation();
         }
 
         public get rotationZ(): number
         {
-            return this._rotationZ * MathConsts.RADIANS_TO_DEGREES;
+            return this._rotationZ * Math.RAD2DEG;
         }
 
         public set rotationZ(val: number)
         {
             if (this.rotationZ == val)
                 return;
-            this._rotationZ = val * MathConsts.DEGREES_TO_RADIANS;
+            this._rotationZ = val * Math.DEG2RAD;
             this.invalidateRotation();
         }
 
@@ -250,17 +250,17 @@ module feng3d
 
         public get eulers(): Vector3D
         {
-            this._eulers.x = this._rotationX * MathConsts.RADIANS_TO_DEGREES;
-            this._eulers.y = this._rotationY * MathConsts.RADIANS_TO_DEGREES;
-            this._eulers.z = this._rotationZ * MathConsts.RADIANS_TO_DEGREES;
+            this._eulers.x = this._rotationX * Math.RAD2DEG;
+            this._eulers.y = this._rotationY * Math.RAD2DEG;
+            this._eulers.z = this._rotationZ * Math.RAD2DEG;
             return this._eulers;
         }
 
         public set eulers(value: Vector3D)
         {
-            this._rotationX = value.x * MathConsts.DEGREES_TO_RADIANS;
-            this._rotationY = value.y * MathConsts.DEGREES_TO_RADIANS;
-            this._rotationZ = value.z * MathConsts.DEGREES_TO_RADIANS;
+            this._rotationX = value.x * Math.DEG2RAD;
+            this._rotationY = value.y * Math.DEG2RAD;
+            this._rotationZ = value.z * Math.DEG2RAD;
             this.invalidateRotation();
         }
 
@@ -363,15 +363,15 @@ module feng3d
         {
             rotation = rotation || new Vector3D();
             rotation.setTo(this._rotationX, this._rotationY, this._rotationZ);
-            rotation.scaleBy(MathConsts.RADIANS_TO_DEGREES);
+            rotation.scaleBy(Math.RAD2DEG);
             return rotation;
         }
 
         public setRotation(x = 0, y = 0, z = 0)
         {
-            x = x * MathConsts.DEGREES_TO_RADIANS;
-            y = y * MathConsts.DEGREES_TO_RADIANS;
-            z = z * MathConsts.DEGREES_TO_RADIANS;
+            x = x * Math.DEG2RAD;
+            y = y * Math.DEG2RAD;
+            z = z * Math.DEG2RAD;
             if (this._x != x || this._y != y || this._z != z)
             {
                 this._x = x;
@@ -556,9 +556,9 @@ module feng3d
 
         public rotateTo(ax: number, ay: number, az: number)
         {
-            this._rotationX = ax * MathConsts.DEGREES_TO_RADIANS;
-            this._rotationY = ay * MathConsts.DEGREES_TO_RADIANS;
-            this._rotationZ = az * MathConsts.DEGREES_TO_RADIANS;
+            this._rotationX = ax * Math.DEG2RAD;
+            this._rotationY = ay * Math.DEG2RAD;
+            this._rotationZ = az * Math.DEG2RAD;
             this.invalidateRotation();
         }
 

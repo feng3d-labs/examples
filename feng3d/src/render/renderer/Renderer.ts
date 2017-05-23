@@ -77,8 +77,7 @@ module feng3d
         var renderMode = shaderParams.renderMode;
         if (instanceCount > 1)
         {
-            var _ext = gl.getExtension('ANGLE_instanced_arrays');
-            _ext.drawElementsInstancedANGLE(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
+            gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
         }
         else
         {

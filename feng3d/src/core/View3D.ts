@@ -79,9 +79,8 @@ module feng3d
             debuger && assert(canvas instanceof HTMLCanvasElement, `canvas参数必须为 HTMLCanvasElement 类型！`);
             this._canvas = canvas;
 
-            this._gl = getWebGLContext(canvas, false);
-            var ext = this._gl.getExtension('OES_standard_derivatives');
-            var ext1 = this._gl.getExtension('EXT_shader_texture_lod');
+            var glProxy = new GLProxy(canvas);
+            this._gl = glProxy.gl;
 
             this.initGL();
 

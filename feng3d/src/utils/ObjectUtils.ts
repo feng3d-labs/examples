@@ -7,6 +7,8 @@ module feng3d
      */
     export class ObjectUtils
     {
+        
+        
         /**
          * 深克隆
          * @param source        源数据

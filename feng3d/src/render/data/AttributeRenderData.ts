@@ -166,8 +166,7 @@ module feng3d
 
             if (this.divisor > 0)
             {
-                var _ext = gl.getExtension('ANGLE_instanced_arrays');
-                _ext.vertexAttribDivisorANGLE(location, this.divisor);
+                gl.vertexAttribDivisor(location, this.divisor);
             }
         }
 

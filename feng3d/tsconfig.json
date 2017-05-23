@@ -8,6 +8,7 @@
         "outFile": "out/feng3d.js"
     },
     "files": [ //注：如果有继承关系的，父类必须排在子类前面
+        "typings/webgl2.d.ts",
         "typings/webglExt.d.ts",
         //基础工具
         "src/debug/assert.ts",
@@ -60,9 +61,9 @@
         "src/net/LoaderDataFormat.ts",
         //
         "src/render/webgl/WebGLUtils.ts",
-        "src/render/webgl/WebGLDebugUtils.ts",
         "src/render/webgl/webgl.ts",
         "src/render/webgl/GL.ts",
+        "src/render/webgl/GLProxy.ts",
         //渲染
         "src/render/consts/RenderMode.ts",
         "src/render/consts/BlendFactor.ts",

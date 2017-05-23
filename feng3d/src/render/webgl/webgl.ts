@@ -1,22 +1,6 @@
 module feng3d
 {
     /**
-     * 在iphone中WebGLRenderingContext中静态变量值值未定义，因此此处初始化来支持iphone
-     * @param gl WebGL对象
-     */
-    function supportIphone(gl: GL)
-    {
-        for (var key in gl)
-        {
-            var element = gl[key];
-            if (typeof element == "number")
-            {
-                GL[key] = element;
-            }
-        }
-    }
-
-    /**
      * Create the linked program object
      * @param gl GL context
      * @param vshader a vertex shader program (string)
@@ -140,69 +124,5 @@ module feng3d
         }
 
         return shader;
-    }
-
-    /** 
-     * Initialize and get the rendering for WebGL
-     * @param canvas <cavnas> element
-     * @param opt_debug flag to initialize the context for debugging
-     * @return the rendering context for WebGL
-     */
-    export function getWebGLContext(canvas: HTMLCanvasElement, opt_debug = null)
-    {
-        // Get the rendering context for WebGL
-        var gl: GL = WebGLUtils.setupWebGL(canvas);
-        if (!gl) return null;
-
-        // if opt_debug is explicitly false, create the context for debugging
-        if (arguments.length < 2 || opt_debug)
-        {
-            gl = WebGLDebugUtils.makeDebugContext(gl);
-        }
-        //获取3D环境唯一标识符
-        gl.uuid = Math.generateUUID();
-        supportIphone(gl);
-        initWebGLExtension(gl);
-
-        return gl;
-    }
-
-    /**
-     * 初始化WebGL扩展
-     * @param gl WebGL
-     */
-    function initWebGLExtension(gl: GL)
-    {
-        var anisotropicExt: EXTTextureFilterAnisotropic;
-        gl.ext = {
-            getAnisotropicExt: function ()
-            {
-                if (anisotropicExt !== undefined) return anisotropicExt;
-                anisotropicExt =
-                    (
-                        gl.getExtension('EXT_texture_filter_anisotropic') ||
-                        gl.getExtension('MOZ_EXT_texture_filter_anisotropic') ||
-                        gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic')
-                    );
-                initAnisotropicExt(gl, anisotropicExt);
-                return anisotropicExt;
-            }
-        };
-    }
-
-    /**
-     * 初始化纹理各向异性过滤扩展
-     * @param gl WebGL
-     * @param anisotropicExt 纹理各向异性过滤扩展
-     */
-    function initAnisotropicExt(gl: GL, anisotropicExt: EXTTextureFilterAnisotropic)
-    {
-        var maxAnisotropy: number;
-        anisotropicExt.getMaxAnisotropy = () =>
-        {
-            if (maxAnisotropy !== undefined) return maxAnisotropy;
-            maxAnisotropy = gl.getParameter(anisotropicExt.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-            return maxAnisotropy;
-        }
     }
 }

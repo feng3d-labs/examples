@@ -13,7 +13,20 @@ interface WebGLRenderingContext
         getAnisotropicExt: () => EXTTextureFilterAnisotropic;
     };
 }
-
+interface WebGLTexture
+{
+    /**
+     * 唯一标识符
+     */
+    uuid: string;
+}
+interface WebGLBuffer
+{
+    /**
+     * 唯一标识符
+     */
+    uuid: string;
+}
 /**
  * WebGL渲染程序
  */

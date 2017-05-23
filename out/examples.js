@@ -276,53 +276,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var UIDUtils = (function () {
-        function UIDUtils() {
-        }
-        /**
-         * 获取对象UID
-         * @author feng 2016-05-08
-         */
-        UIDUtils.getUID = function (object) {
-            if (feng3d.ClassUtils.isBaseType(object)) {
-                return object;
-            }
-            //uid属性名称
-            var uidKey = "__uid__";
-            if (object.hasOwnProperty(uidKey)) {
-                return object[uidKey];
-            }
-            var uid = createUID(object);
-            Object.defineProperty(object, uidKey, {
-                value: uid,
-                enumerable: false,
-                writable: false
-            });
-            return uid;
-            /**
-             * 创建对象的UID
-             * @param object 对象
-             */
-            function createUID(object) {
-                var prototype = object.prototype ? object.prototype : Object.getPrototypeOf(object);
-                var className = object.constructor.name;
-                var autoID = ~~object.constructor.autoID;
-                object.constructor.autoID = autoID + 1;
-                var time = Date.now(); //时间戳
-                var uid = [
-                    className,
-                    feng3d.StringUtils.getString(autoID, 8, "0", false),
-                    time,
-                ].join("-");
-                return uid;
-            }
-        };
-        return UIDUtils;
-    }());
-    feng3d.UIDUtils = UIDUtils;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
     var VersionUtils = (function () {
         function VersionUtils() {
         }
@@ -881,21 +834,21 @@ var feng3d;
          * 删除
          */
         Map.prototype.delete = function (k) {
-            delete this.keyMap[feng3d.UIDUtils.getUID(k)];
-            delete this.valueMap[feng3d.UIDUtils.getUID(k)];
+            delete this.keyMap[k.uuid];
+            delete this.valueMap[k.uuid];
         };
         /**
          * 添加映射
          */
         Map.prototype.push = function (k, v) {
-            this.keyMap[feng3d.UIDUtils.getUID(k)] = k;
-            this.valueMap[feng3d.UIDUtils.getUID(k)] = v;
+            this.keyMap[k.uuid] = k;
+            this.valueMap[k.uuid] = v;
         };
         /**
          * 通过key获取value
          */
         Map.prototype.get = function (k) {
-            return this.valueMap[feng3d.UIDUtils.getUID(k)];
+            return this.valueMap[k.uuid];
         };
         /**
          * 获取键列表
@@ -6165,6 +6118,8 @@ var feng3d;
         if (arguments.length < 2 || opt_debug) {
             gl = feng3d.WebGLDebugUtils.makeDebugContext(gl);
         }
+        //获取3D环境唯一标识符
+        gl.uuid = Math.generateUUID();
         supportIphone(gl);
         initWebGLExtension(gl);
         return gl;
@@ -6764,6 +6719,7 @@ var feng3d;
             var buffer = this._indexBufferMap.get(gl);
             if (!buffer) {
                 buffer = gl.createBuffer();
+                buffer.uuid = Math.generateUUID();
                 gl.bindBuffer(feng3d.GL.ARRAY_BUFFER, buffer);
                 gl.bufferData(feng3d.GL.ARRAY_BUFFER, this.data, feng3d.GL.STATIC_DRAW);
                 this._indexBufferMap.push(gl, buffer);
@@ -6813,9 +6769,7 @@ var feng3d;
          * @param gl     3D环境
          */
         RenderBufferPool.prototype.getContext3DBufferPool = function (gl) {
-            //获取3D环境唯一标识符
-            var context3DUID = feng3d.UIDUtils.getUID(gl);
-            return this.context3DBufferPools[context3DUID] = this.context3DBufferPools[context3DUID] || new Context3DBufferPool(gl);
+            return this.context3DBufferPools[gl.uuid] = this.context3DBufferPools[gl.uuid] || new Context3DBufferPool(gl);
         };
         /**
          * 获取渲染程序
@@ -13067,6 +13021,7 @@ var feng3d;
             var texture = this._textureMap.get(gl);
             if (!texture) {
                 texture = gl.createTexture(); // Create a texture object
+                texture.uuid = Math.generateUUID();
                 //设置图片y轴方向
                 gl.pixelStorei(feng3d.GL.UNPACK_FLIP_Y_WEBGL, this.flipY ? 1 : 0);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premulAlpha ? 1 : 0);

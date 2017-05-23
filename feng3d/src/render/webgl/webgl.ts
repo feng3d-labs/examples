@@ -151,7 +151,7 @@ module feng3d
     export function getWebGLContext(canvas: HTMLCanvasElement, opt_debug = null)
     {
         // Get the rendering context for WebGL
-        var gl = WebGLUtils.setupWebGL(canvas);
+        var gl: GL = WebGLUtils.setupWebGL(canvas);
         if (!gl) return null;
 
         // if opt_debug is explicitly false, create the context for debugging
@@ -159,7 +159,8 @@ module feng3d
         {
             gl = WebGLDebugUtils.makeDebugContext(gl);
         }
-
+        //获取3D环境唯一标识符
+        gl.uuid = Math.generateUUID();
         supportIphone(gl);
         initWebGLExtension(gl);
 

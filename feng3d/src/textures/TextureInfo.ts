@@ -197,6 +197,7 @@ module feng3d
             if (!texture)
             {
                 texture = gl.createTexture();   // Create a texture object
+                texture.uuid = Math.generateUUID();
                 //设置图片y轴方向
                 gl.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, this.flipY ? 1 : 0);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premulAlpha ? 1 : 0);

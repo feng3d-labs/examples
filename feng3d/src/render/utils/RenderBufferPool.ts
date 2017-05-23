@@ -13,9 +13,7 @@ module feng3d
          */
         private getContext3DBufferPool(gl: GL)
         {
-            //获取3D环境唯一标识符
-            var context3DUID = UIDUtils.getUID(gl);
-            return this.context3DBufferPools[context3DUID] = this.context3DBufferPools[context3DUID] || new Context3DBufferPool(gl);
+            return this.context3DBufferPools[gl.uuid] = this.context3DBufferPools[gl.uuid] || new Context3DBufferPool(gl);
         }
 
         /**

@@ -180,6 +180,7 @@ module feng3d
             if (!buffer)
             {
                 buffer = gl.createBuffer();
+                buffer.uuid = Math.generateUUID();
                 gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
                 gl.bufferData(GL.ARRAY_BUFFER, this.data, GL.STATIC_DRAW);
                 this._indexBufferMap.push(gl, buffer);

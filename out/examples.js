@@ -5230,7 +5230,7 @@ var feng3d;
             this.supportIphone(gl);
             this.cacheGLQuery(gl);
             this.extensionWebGL(gl);
-            new feng3d.WebGLProgramExtension(gl);
+            new feng3d.GLProgramExtension(gl);
         }
         /**
          * 在iphone中WebGLRenderingContext中静态变量值值未定义，因此此处初始化来支持iphone
@@ -5293,8 +5293,8 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var WebGLProgramExtension = (function () {
-        function WebGLProgramExtension(gl) {
+    var GLProgramExtension = (function () {
+        function GLProgramExtension(gl) {
             var oldCreateProgram = gl.createProgram;
             gl.createProgram = function () {
                 if (arguments.length == 2) {
@@ -5309,9 +5309,9 @@ var feng3d;
                 return webGLProgram;
             };
         }
-        return WebGLProgramExtension;
+        return GLProgramExtension;
     }());
-    feng3d.WebGLProgramExtension = WebGLProgramExtension;
+    feng3d.GLProgramExtension = GLProgramExtension;
     /**
      * Create the linked program object
      * @param gl GL context
@@ -6062,66 +6062,6 @@ var feng3d;
         return AttributeRenderData;
     }());
     feng3d.AttributeRenderData = AttributeRenderData;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 对象池
-     * @author feng 2016-04-26
-     */
-    var RenderBufferPool = (function () {
-        function RenderBufferPool() {
-            /**
-             * 3D环境缓冲池
-             */
-            this.context3DBufferPools = {};
-        }
-        /**
-         * @param gl     3D环境
-         */
-        RenderBufferPool.prototype.getContext3DBufferPool = function (gl) {
-            return this.context3DBufferPools[gl.uuid] = this.context3DBufferPools[gl.uuid] || new Context3DBufferPool(gl);
-        };
-        /**
-         * 获取渲染程序
-         * @param gl     3D环境
-         * @param vertexCode    顶点着色器代码
-         * @param fragmentCode  片段着色器代码
-         * @return  渲染程序
-         */
-        RenderBufferPool.prototype.getWebGLProgram = function (gl, vertexCode, fragmentCode) {
-            return this.getContext3DBufferPool(gl).getWebGLProgram(vertexCode, fragmentCode);
-        };
-        return RenderBufferPool;
-    }());
-    feng3d.RenderBufferPool = RenderBufferPool;
-    /**
-     * 3D环境缓冲池
-     */
-    var Context3DBufferPool = (function () {
-        /**
-         * 构建3D环境缓冲池
-         * @param gl         3D环境
-         */
-        function Context3DBufferPool(gl) {
-            /** 渲染程序对象池 */
-            this._webGLProgramPool = {};
-            this.gl = gl;
-        }
-        /**
-         * 获取渲染程序
-         * @param vertexCode    顶点着色器代码
-         * @param fragmentCode  片段着色器代码
-         * @return  渲染程序
-         */
-        Context3DBufferPool.prototype.getWebGLProgram = function (vertexCode, fragmentCode) {
-            //获取3D环境唯一标识符
-            var shaderCode = [vertexCode, fragmentCode].join("\n--- shaderCode ---\n");
-            //获取3D环境中的渲染程序对象池
-            return this._webGLProgramPool[shaderCode] = this._webGLProgramPool[shaderCode] || this.gl.createProgram(vertexCode, fragmentCode);
-        };
-        return Context3DBufferPool;
-    }());
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -17625,7 +17565,6 @@ var feng3d;
             feng3d.defaultMaterial = new feng3d.StandardMaterial();
             feng3d.defaultGeometry = new feng3d.CubeGeometry();
             feng3d.ticker = new feng3d.SystemTicker();
-            feng3d.context3DPool = new feng3d.RenderBufferPool();
         }
     }
     feng3d.initEngine = initEngine;

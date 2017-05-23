@@ -1,6 +1,6 @@
 module feng3d
 {
-    export class WebGLProgramExtension
+    export class GLProgramExtension
     {
         constructor(gl: GL)
         {

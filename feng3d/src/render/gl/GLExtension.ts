@@ -10,7 +10,7 @@ module feng3d
             this.supportIphone(gl);
             this.cacheGLQuery(gl);
             this.extensionWebGL(gl);
-            new WebGLProgramExtension(gl);
+            new GLProgramExtension(gl);
         }
 
         /**

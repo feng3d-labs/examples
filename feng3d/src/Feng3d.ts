@@ -38,10 +38,6 @@ module feng3d
      * 着色器库，由shader.ts初始化
      */
     export var shaderFileMap: { [filePath: string]: string };
-    /**
-     * 3D环境对象池
-     */
-    export var context3DPool: RenderBufferPool;
 
     /**
      * 初始化引擎
@@ -68,7 +64,6 @@ module feng3d
             defaultMaterial = new StandardMaterial();
             defaultGeometry = new CubeGeometry();
             ticker = new SystemTicker();
-            context3DPool = new RenderBufferPool();
         }
     }
     var isInit = false;

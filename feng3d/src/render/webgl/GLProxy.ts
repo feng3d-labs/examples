@@ -14,6 +14,7 @@ module feng3d
             Object.defineProperty(gl, "proxy", { value: this });
             Object.defineProperty(gl, "uuid", { value: Math.generateUUID() });
             Object.defineProperty(gl, "webgl2", { value: !!gl.drawArraysInstanced });
+            gl.programs = {};
             //
             new GLExtension(gl);
         }

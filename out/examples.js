@@ -5187,6 +5187,7 @@ var feng3d;
             Object.defineProperty(gl, "proxy", { value: this });
             Object.defineProperty(gl, "uuid", { value: Math.generateUUID() });
             Object.defineProperty(gl, "webgl2", { value: !!gl.drawArraysInstanced });
+            gl.programs = {};
             //
             new feng3d.GLExtension(gl);
         }
@@ -5299,7 +5300,13 @@ var feng3d;
                 if (arguments.length == 2) {
                     return createProgram(gl, arguments[0], arguments[1]);
                 }
-                return oldCreateProgram.apply(gl, arguments);
+                var webGLProgram = oldCreateProgram.apply(gl, arguments);
+                webGLProgram.destroy = function () {
+                    gl.deleteProgram(webGLProgram);
+                    gl.deleteShader(webGLProgram.fragmentShader);
+                    gl.deleteShader(webGLProgram.vertexShader);
+                };
+                return webGLProgram;
             };
         }
         return WebGLProgramExtension;
@@ -5340,6 +5347,8 @@ var feng3d;
             return null;
         }
         program.gl = gl;
+        program.vertexShader = vertexShader;
+        program.fragmentShader = fragmentShader;
         initProgram(program);
         return program;
     }
@@ -5560,31 +5569,90 @@ var feng3d;
 (function (feng3d) {
     var ShaderRenderData = (function () {
         function ShaderRenderData() {
+            //
+            this._invalid = true;
             /**
              * 渲染参数
              */
             this.shaderParams = {};
-            /**
-             * 着色器宏定义
-             */
+            Object.defineProperty(this, "uuid", { value: Math.generateUUID() });
+            Object.defineProperty(this, "version", { value: 0, writable: true });
             this.shaderMacro = new feng3d.ShaderMacro();
         }
+        Object.defineProperty(ShaderRenderData.prototype, "vertexCode", {
+            /**
+             * 顶点渲染程序代码
+             */
+            get: function () {
+                return this._vertexCode;
+            },
+            set: function (value) {
+                if (this._vertexCode == value)
+                    return;
+                this._vertexCode = value;
+                this.invalidate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShaderRenderData.prototype, "fragmentCode", {
+            /**
+             * 片段渲染程序代码
+             */
+            get: function () {
+                return this._fragmentCode;
+            },
+            set: function (value) {
+                if (this._fragmentCode == value)
+                    return;
+                this._fragmentCode = value;
+                this.invalidate();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 激活渲染程序
          */
         ShaderRenderData.prototype.activeShaderProgram = function (gl) {
             if (!this.vertexCode || !this.fragmentCode)
                 return null;
-            var vertexCode = this.vertexCode;
-            var fragmentCode = this.fragmentCode;
-            //应用宏
-            var shaderMacroStr = feng3d.ShaderLib.getMacroCode(this.shaderMacro);
-            vertexCode = vertexCode.replace(/#define\s+macros/, shaderMacroStr);
-            fragmentCode = fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
+            // if (this._invalid)
+            // {
+            this.update();
+            // }
             //渲染程序
-            var shaderProgram = feng3d.context3DPool.getWebGLProgram(gl, vertexCode, fragmentCode);
+            var shaderProgram = gl.programs[this.uuid];
+            if (shaderProgram) {
+                if (shaderProgram.vertexCode != this._resultVertexCode || shaderProgram.fragmentCode != this._resultFragmentCode) 
+                // if (shaderProgram.version != this.version)
+                {
+                    shaderProgram.destroy();
+                    shaderProgram = null;
+                    delete gl.programs[this.uuid];
+                }
+            }
+            if (!shaderProgram) {
+                shaderProgram = gl.programs[this.uuid] = gl.createProgram(this._resultVertexCode, this._resultFragmentCode);
+                shaderProgram.version = this.version;
+                shaderProgram.vertexCode = this._resultVertexCode;
+                shaderProgram.fragmentCode = this._resultFragmentCode;
+            }
             gl.useProgram(shaderProgram);
             return shaderProgram;
+        };
+        ShaderRenderData.prototype.update = function () {
+            //应用宏
+            var shaderMacroStr = feng3d.ShaderLib.getMacroCode(this.shaderMacro);
+            this._resultVertexCode = this.vertexCode.replace(/#define\s+macros/, shaderMacroStr);
+            this._resultFragmentCode = this.fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
+            this.version++;
+        };
+        ShaderRenderData.prototype.invalidate = function () {
+            this._invalid = true;
+        };
+        ShaderRenderData.prototype.onMacroChange = function () {
+            this.invalidate();
         };
         return ShaderRenderData;
     }());

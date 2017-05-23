@@ -78,7 +78,6 @@
         "src/render/data/RenderAtomic.ts",
         "src/render/data/IndexRenderData.ts",
         "src/render/data/AttributeRenderData.ts",
-        "src/render/utils/RenderBufferPool.ts",
         "src/render/utils/RenderDataUtil.ts",
         "src/render/GLAttribute.ts",
         "src/render/RenderContext.ts",

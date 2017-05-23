@@ -18,9 +18,23 @@ interface WebGLBuffer
 interface WebGLProgram
 {
     /**
+     * 版本号
+     */
+    version: number;
+    vertexCode: string;
+    fragmentCode: string;
+    /**
      * WebGL渲染上下文
      */
     gl: WebGLRenderingContext;
+    /**
+     * 顶点shader
+     */
+    vertexShader: WebGLShader;
+    /**
+     * 片段shader
+     */
+    fragmentShader: WebGLShader;
     /**
      * 属性信息列表
      */
@@ -29,6 +43,10 @@ interface WebGLProgram
      * uniform信息列表
      */
     uniforms: WebGLActiveInfo[];
+    /**
+     * 销毁
+     */
+    destroy();
 }
 
 /**
@@ -59,7 +77,9 @@ interface WebGLRenderingContext
      * @param fshader a fragment shader program (string)
      * @return created program object, or null if the creation has failed
      */
-    createProgram(vshader: string, fshader: string);
+    createProgram(vshader: string, fshader: string): WebGLProgram;
+
+    programs: { [uuid: string]: WebGLProgram };
 
     /**
      * 获取纹理各向异性过滤扩展

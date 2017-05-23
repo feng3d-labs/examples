@@ -60,10 +60,11 @@
         "src/net/LoaderEvent.ts",
         "src/net/LoaderDataFormat.ts",
         //
-        "src/render/webgl/WebGLUtils.ts",
         "src/render/webgl/webgl.ts",
         "src/render/webgl/GL.ts",
         "src/render/webgl/GLProxy.ts",
+        "src/render/webgl/GLExtension.ts",
+        "src/render/webgl/WebGLProgramExtension.ts",
         //渲染
         "src/render/consts/RenderMode.ts",
         "src/render/consts/BlendFactor.ts",

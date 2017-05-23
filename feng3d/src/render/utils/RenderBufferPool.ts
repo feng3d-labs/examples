@@ -65,7 +65,7 @@ module feng3d
             //获取3D环境唯一标识符
             var shaderCode = [vertexCode, fragmentCode].join("\n--- shaderCode ---\n");
             //获取3D环境中的渲染程序对象池
-            return this._webGLProgramPool[shaderCode] = this._webGLProgramPool[shaderCode] || createProgram(this.gl, vertexCode, fragmentCode);
+            return this._webGLProgramPool[shaderCode] = this._webGLProgramPool[shaderCode] || this.gl.createProgram(vertexCode, fragmentCode);
         }
 
         /** 渲染程序对象池 */

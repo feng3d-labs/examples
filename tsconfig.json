@@ -7,6 +7,7 @@
 		"outFile": "out/examples.js"
 	},
 	"files": [
+		"feng3d/typings/webgl2.d.ts",
 		"feng3d/typings/webglExt.d.ts",
 		"feng3d/src/debug/assert.ts",
 		"feng3d/src/utils/ClassUtils.ts",
@@ -48,10 +49,11 @@
 		"feng3d/src/net/Loader.ts",
 		"feng3d/src/net/LoaderEvent.ts",
 		"feng3d/src/net/LoaderDataFormat.ts",
-		"feng3d/src/render/webgl/WebGLUtils.ts",
 		"feng3d/src/render/webgl/webgl.ts",
 		"feng3d/src/render/webgl/GL.ts",
 		"feng3d/src/render/webgl/GLProxy.ts",
+		"feng3d/src/render/webgl/GLExtension.ts",
+		"feng3d/src/render/webgl/WebGLProgramExtension.ts",
 		"feng3d/src/render/consts/RenderMode.ts",
 		"feng3d/src/render/consts/BlendFactor.ts",
 		"feng3d/src/render/consts/BlendEquation.ts",

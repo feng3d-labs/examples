@@ -5170,199 +5170,141 @@ var feng3d;
     }());
     feng3d.LoaderDataFormat = LoaderDataFormat;
 })(feng3d || (feng3d = {}));
-/*
- * Copyright 2010, Google Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 var feng3d;
 (function (feng3d) {
-    /**
-     * @fileoverview This file contains functions every webgl program will need
-     * a version of one way or another.
-     *
-     * Instead of setting up a context manually it is recommended to
-     * use. This will check for success or failure. On failure it
-     * will attempt to present an approriate message to the user.
-     *
-     *       gl = WebGLUtils.setupWebGL(canvas);
-     *
-     * For animated WebGL apps use of setTimeout or setInterval are
-     * discouraged. It is recommended you structure your rendering
-     * loop like this.
-     *
-     *       function render() {
-     *         window.requestAnimationFrame(render, canvas);
-     *
-     *         // do rendering
-     *         ...
-     *       }
-     *       render();
-     *
-     * This will call your rendering function up to the refresh rate
-     * of your display but will stop rendering if your app is not
-     * visible.
-     */
-    feng3d.WebGLUtils = function () {
-        /**
-         * Creates the HTLM for a failure message
-         * @param {string} canvasContainerId id of container of th
-         *        canvas.
-         * @return {string} The html.
-         */
-        var makeFailHTML = function (msg) {
-            return '' +
-                '<div style="margin: auto; width:500px;z-index:10000;margin-top:20em;text-align:center;">' + msg + '</div>';
-            //   return '' +
-            //     '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' +
-            //     '<td align="center">' +
-            //     '<div style="display: table-cell; vertical-align: middle;">' +
-            //     '<div style="">' + msg + '</div>' +
-            //     '</div>' +
-            //     '</td></tr></table>';
-        };
-        /**
-         * Mesasge for getting a webgl browser
-         * @type {string}
-         */
-        var GET_A_WEBGL_BROWSER = '' +
-            'This page requires a browser that supports WebGL.<br/>' +
-            '<a href="http://get.webgl.org">Click here to upgrade your browser.</a>';
-        /**
-         * Mesasge for need better hardware
-         * @type {string}
-         */
-        var OTHER_PROBLEM = '' +
-            "It doesn't appear your computer can support WebGL.<br/>" +
-            '<a href="http://get.webgl.org">Click here for more information.</a>';
-        /**
-         * Creates a webgl context. If creation fails it will
-         * change the contents of the container of the <canvas>
-         * tag to an error message with the correct links for WebGL.
-         * @param {Element} canvas. The canvas element to create a
-         *     context from.
-         * @param {WebGLContextCreationAttirbutes} opt_attribs Any
-         *     creation attributes you want to pass in.
-         * @param {function:(msg)} opt_onError An function to call
-         *     if there is an error during creation.
-         * @return {WebGLRenderingContext} The created context.
-         */
-        var setupWebGL = function (canvas, opt_attribs, opt_onError) {
-            if (opt_attribs === void 0) { opt_attribs = null; }
-            if (opt_onError === void 0) { opt_onError = null; }
-            function handleCreationError(msg) {
-                var container = document.getElementsByTagName("body")[0];
-                //var container = canvas.parentNode;
-                if (container) {
-                    var str = window["WebGLRenderingContext"] ?
-                        OTHER_PROBLEM :
-                        GET_A_WEBGL_BROWSER;
-                    if (msg) {
-                        str += "<br/><br/>Status: " + msg;
-                    }
-                    container.innerHTML = makeFailHTML(str);
-                }
-            }
-            ;
-            opt_onError = opt_onError || handleCreationError;
-            if (canvas.addEventListener) {
-                canvas.addEventListener("webglcontextcreationerror", function (event) {
-                    opt_onError(event.statusMessage);
-                }, false);
-            }
-            var context = create3DContext(canvas, opt_attribs);
-            if (!context) {
-                if (!window["WebGLRenderingContext"]) {
-                    opt_onError("");
-                }
-                else {
-                    opt_onError("");
-                }
-            }
-            return context;
-        };
-        /**
-         * Creates a webgl context.
-         * @param {!Canvas} canvas The canvas tag to get context
-         *     from. If one is not passed in one will be created.
-         * @return {!WebGLContext} The created context.
-         */
-        var create3DContext = function (canvas, opt_attribs) {
-            var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
-            var context = null;
-            for (var ii = 0; ii < names.length; ++ii) {
-                try {
-                    context = canvas.getContext(names[ii], opt_attribs);
-                }
-                catch (e) { }
-                if (context) {
-                    break;
-                }
-            }
-            return context;
-        };
-        return {
-            create3DContext: create3DContext,
-            setupWebGL: setupWebGL
-        };
-    }();
-    /**
-     * Provides requestAnimationFrame in a cross browser
-     * way.
-     */
-    if (!window.requestAnimationFrame) {
-        window.requestAnimationFrame = (function () {
-            return window.requestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                window["mozRequestAnimationFrame"] ||
-                window["oRequestAnimationFrame"] ||
-                window["msRequestAnimationFrame"] ||
-                function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-                    window.setTimeout(callback, 1000 / 60);
-                };
-        })();
-    }
-    /** * ERRATA: 'cancelRequestAnimationFrame' renamed to 'cancelAnimationFrame' to reflect an update to the W3C Animation-Timing Spec.
-     *
-     * Cancels an animation frame request.
-     * Checks for cross-browser support, falls back to clearTimeout.
-     * @param {number}  Animation frame request. */
-    if (!window.cancelAnimationFrame) {
-        window.cancelAnimationFrame = (window["cancelRequestAnimationFrame"] ||
-            window.webkitCancelAnimationFrame || window["webkitCancelRequestAnimationFrame"] ||
-            window["mozCancelAnimationFrame"] || window["mozCancelRequestAnimationFrame"] ||
-            window["msCancelAnimationFrame"] || window["msCancelRequestAnimationFrame"] ||
-            window["oCancelAnimationFrame"] || window["oCancelRequestAnimationFrame"] ||
-            window.clearTimeout);
-    }
+    feng3d.GL = WebGL2RenderingContext || WebGLRenderingContext;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var GLProxy = (function () {
+        function GLProxy(canvas, options) {
+            if (options === void 0) { options = null; }
+            options = options || {};
+            options.preferWebGl2 = false;
+            var gl = this.getWebGLContext(canvas, options);
+            //
+            Object.defineProperty(this, "gl", { value: gl });
+            Object.defineProperty(gl, "proxy", { value: this });
+            Object.defineProperty(gl, "uuid", { value: Math.generateUUID() });
+            Object.defineProperty(gl, "webgl2", { value: !!gl.drawArraysInstanced });
+            //
+            new feng3d.GLExtension(gl);
+        }
+        /**
+         * Initialize and get the rendering for WebGL
+         * @param canvas <cavnas> element
+         * @param opt_debug flag to initialize the context for debugging
+         * @return the rendering context for WebGL
+         */
+        GLProxy.prototype.getWebGLContext = function (canvas, options) {
+            if (options === void 0) { options = null; }
+            var preferWebGl2 = (options && options.preferWebGl2 !== undefined) ? options.preferWebGl2 : true;
+            var names = preferWebGl2 ? ["webgl2", "experimental-webgl2", "webgl", "experimental-webgl"] : ["webgl", "experimental-webgl"];
+            var gl = null;
+            for (var i = 0; i < names.length; ++i) {
+                try {
+                    gl = canvas.getContext(names[i], options);
+                }
+                catch (e) { }
+                if (gl) {
+                    break;
+                }
+            }
+            if (!gl) {
+                throw "无法初始化WEBGL";
+            }
+            return gl;
+        };
+        return GLProxy;
+    }());
+    feng3d.GLProxy = GLProxy;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * GL扩展
+     */
+    var GLExtension = (function () {
+        function GLExtension(gl) {
+            this.supportIphone(gl);
+            this.cacheGLQuery(gl);
+            this.extensionWebGL(gl);
+            new feng3d.WebGLProgramExtension(gl);
+        }
+        /**
+         * 在iphone中WebGLRenderingContext中静态变量值值未定义，因此此处初始化来支持iphone
+         * @param gl WebGL对象
+         */
+        GLExtension.prototype.supportIphone = function (gl) {
+            for (var key in gl) {
+                var element = gl[key];
+                if (typeof element == "number") {
+                    feng3d.GL[key] = element;
+                }
+            }
+        };
+        /**
+         * 扩展GL
+         * @param gl GL实例
+         */
+        GLExtension.prototype.extensionWebGL = function (gl) {
+            //
+            gl.anisotropicExt =
+                gl.getExtension('EXT_texture_filter_anisotropic')
+                    || gl.getExtension('MOZ_EXT_texture_filter_anisotropic')
+                    || gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
+            gl.maxAnisotropy = gl.getParameter(gl.anisotropicExt.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+            if (!gl.webgl2) {
+                var ext = gl.getExtension('OES_standard_derivatives');
+                var ext1 = gl.getExtension('EXT_shader_texture_lod');
+                gl.vertexAttribDivisor = function (index, divisor) {
+                    var _ext = gl.getExtension('ANGLE_instanced_arrays');
+                    _ext.vertexAttribDivisorANGLE(index, divisor);
+                };
+                gl.drawElementsInstanced = function (mode, count, type, offset, instanceCount) {
+                    var _ext = gl.getExtension('ANGLE_instanced_arrays');
+                    _ext.drawElementsInstancedANGLE(mode, count, type, offset, instanceCount);
+                };
+            }
+        };
+        /**
+         * 缓存GL查询
+         * @param gl GL实例
+         */
+        GLExtension.prototype.cacheGLQuery = function (gl) {
+            var extensions = {};
+            var oldGetExtension = gl.getExtension;
+            gl.getExtension = function (name) {
+                extensions[name] = extensions[name] || oldGetExtension.apply(gl, arguments);
+                return extensions[name];
+            };
+            //
+            var oldGetParameter = gl.getParameter;
+            var parameters = {};
+            gl.getParameter = function (pname) {
+                parameters[pname] = parameters[pname] || oldGetParameter.apply(gl, arguments);
+                return parameters[pname];
+            };
+        };
+        return GLExtension;
+    }());
+    feng3d.GLExtension = GLExtension;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var WebGLProgramExtension = (function () {
+        function WebGLProgramExtension(gl) {
+            var oldCreateProgram = gl.createProgram;
+            gl.createProgram = function () {
+                if (arguments.length == 2) {
+                    return createProgram(gl, arguments[0], arguments[1]);
+                }
+                return oldCreateProgram.apply(gl, arguments);
+            };
+        }
+        return WebGLProgramExtension;
+    }());
+    feng3d.WebGLProgramExtension = WebGLProgramExtension;
     /**
      * Create the linked program object
      * @param gl GL context
@@ -5401,7 +5343,6 @@ var feng3d;
         initProgram(program);
         return program;
     }
-    feng3d.createProgram = createProgram;
     /**
      * 初始化渲染程序
      * @param shaderProgram WebGL渲染程序
@@ -5467,119 +5408,6 @@ var feng3d;
         }
         return shader;
     }
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    //webgl 1
-    // export type GL = WebGLRenderingContext;
-    feng3d.GL = WebGL2RenderingContext || WebGLRenderingContext;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var GLProxy = (function () {
-        function GLProxy(canvas, options) {
-            if (options === void 0) { options = null; }
-            var gl = this.getWebGLContext(canvas, options);
-            this.initWebGLExtension(gl);
-            //
-            Object.defineProperty(this, "canvas", { value: canvas });
-            Object.defineProperty(this, "gl", { value: gl });
-            Object.defineProperty(gl, "proxy", { value: this });
-            Object.defineProperty(gl, "uuid", { value: Math.generateUUID() });
-            //
-            this.supportIphone(gl);
-            this.extensionWebGL(gl);
-        }
-        /**
-         * Initialize and get the rendering for WebGL
-         * @param canvas <cavnas> element
-         * @param opt_debug flag to initialize the context for debugging
-         * @return the rendering context for WebGL
-         */
-        GLProxy.prototype.getWebGLContext = function (canvas, options) {
-            if (options === void 0) { options = null; }
-            var preferWebGl2 = (options && options.preferWebGl2 !== undefined) ? options.preferWebGl2 : true;
-            preferWebGl2 = false;
-            var names = preferWebGl2 ? ["webgl2", "experimental-webgl2", "webgl", "experimental-webgl"] : ["webgl", "experimental-webgl"];
-            var gl = null;
-            for (var i = 0; i < names.length; ++i) {
-                try {
-                    gl = canvas.getContext(names[i], options);
-                }
-                catch (e) { }
-                if (gl) {
-                    Object.defineProperty(this, "webgl2", { value: preferWebGl2 && i < 2 });
-                    break;
-                }
-            }
-            if (!gl) {
-                throw "无法初始化WEBGL";
-            }
-            return gl;
-        };
-        /**
-         * 在iphone中WebGLRenderingContext中静态变量值值未定义，因此此处初始化来支持iphone
-         * @param gl WebGL对象
-         */
-        GLProxy.prototype.supportIphone = function (gl) {
-            for (var key in gl) {
-                var element = gl[key];
-                if (typeof element == "number") {
-                    feng3d.GL[key] = element;
-                }
-            }
-        };
-        GLProxy.prototype.extensionWebGL = function (gl) {
-            if (!this.webgl2) {
-                var ext = gl.getExtension('OES_standard_derivatives');
-                var ext1 = gl.getExtension('EXT_shader_texture_lod');
-                gl.vertexAttribDivisor = function (index, divisor) {
-                    var _ext = gl.getExtension('ANGLE_instanced_arrays');
-                    _ext.vertexAttribDivisorANGLE(index, divisor);
-                };
-                gl.drawElementsInstanced = function (mode, count, type, offset, instanceCount) {
-                    var _ext = gl.getExtension('ANGLE_instanced_arrays');
-                    _ext.drawElementsInstancedANGLE(mode, count, type, offset, instanceCount);
-                };
-            }
-        };
-        /**
-         * 初始化WebGL扩展
-         * @param gl WebGL
-         */
-        GLProxy.prototype.initWebGLExtension = function (gl) {
-            //
-            var anisotropicExt;
-            gl.ext = {
-                getAnisotropicExt: function () {
-                    if (anisotropicExt !== undefined)
-                        return anisotropicExt;
-                    anisotropicExt =
-                        (gl.getExtension('EXT_texture_filter_anisotropic') ||
-                            gl.getExtension('MOZ_EXT_texture_filter_anisotropic') ||
-                            gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic'));
-                    this.initAnisotropicExt(gl, anisotropicExt);
-                    return anisotropicExt;
-                }
-            };
-        };
-        /**
-         * 初始化纹理各向异性过滤扩展
-         * @param gl WebGL
-         * @param anisotropicExt 纹理各向异性过滤扩展
-         */
-        GLProxy.prototype.initAnisotropicExt = function (gl, anisotropicExt) {
-            var maxAnisotropy;
-            anisotropicExt.getMaxAnisotropy = function () {
-                if (maxAnisotropy !== undefined)
-                    return maxAnisotropy;
-                maxAnisotropy = gl.getParameter(anisotropicExt.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-                return maxAnisotropy;
-            };
-        };
-        return GLProxy;
-    }());
-    feng3d.GLProxy = GLProxy;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -6222,7 +6050,7 @@ var feng3d;
             //获取3D环境唯一标识符
             var shaderCode = [vertexCode, fragmentCode].join("\n--- shaderCode ---\n");
             //获取3D环境中的渲染程序对象池
-            return this._webGLProgramPool[shaderCode] = this._webGLProgramPool[shaderCode] || feng3d.createProgram(this.gl, vertexCode, fragmentCode);
+            return this._webGLProgramPool[shaderCode] = this._webGLProgramPool[shaderCode] || this.gl.createProgram(vertexCode, fragmentCode);
         };
         return Context3DBufferPool;
     }());
@@ -12415,15 +12243,13 @@ var feng3d;
             gl.texParameteri(this._textureType, feng3d.GL.TEXTURE_WRAP_S, this.wrapS);
             gl.texParameteri(this._textureType, feng3d.GL.TEXTURE_WRAP_T, this.wrapT);
             //
-            var anisotropicExt = gl.ext.getAnisotropicExt();
-            if (anisotropicExt) {
-                if (this.anisotropy) {
-                    var max = anisotropicExt.getMaxAnisotropy();
-                    gl.texParameterf(gl.TEXTURE_2D, anisotropicExt.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(this.anisotropy, max));
+            if (this.anisotropy) {
+                if (gl.anisotropicExt) {
+                    gl.texParameterf(gl.TEXTURE_2D, gl.anisotropicExt.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(this.anisotropy, gl.maxAnisotropy));
                 }
-            }
-            else {
-                feng3d.debuger && alert("浏览器不支持各向异性过滤（anisotropy）特性！");
+                else {
+                    feng3d.debuger && alert("浏览器不支持各向异性过滤（anisotropy）特性！");
+                }
             }
         };
         /**
@@ -18433,7 +18259,7 @@ var feng3d;
             // textureMaterial.diffuseMethod.difuseTexture.url = 'resources/nonpowerof2.png';
             textureMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
-            // textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
+            textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
             textureMaterial.enableBlend = true;
             textureMaterial.diffuseMethod.color.a = 0.2;
         };

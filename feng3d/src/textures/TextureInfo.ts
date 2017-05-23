@@ -173,17 +173,15 @@ module feng3d
             gl.texParameteri(this._textureType, GL.TEXTURE_WRAP_S, this.wrapS);
             gl.texParameteri(this._textureType, GL.TEXTURE_WRAP_T, this.wrapT);
             //
-            var anisotropicExt = gl.ext.getAnisotropicExt();
-            if (anisotropicExt)
+            if (this.anisotropy)
             {
-                if (this.anisotropy)
+                if (gl.anisotropicExt)
                 {
-                    var max = anisotropicExt.getMaxAnisotropy();
-                    gl.texParameterf(gl.TEXTURE_2D, anisotropicExt.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(this.anisotropy, max));
+                    gl.texParameterf(gl.TEXTURE_2D, gl.anisotropicExt.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(this.anisotropy, gl.maxAnisotropy));
+                } else
+                {
+                    debuger && alert("浏览器不支持各向异性过滤（anisotropy）特性！");
                 }
-            } else
-            {
-                debuger && alert("浏览器不支持各向异性过滤（anisotropy）特性！");
             }
         }
 

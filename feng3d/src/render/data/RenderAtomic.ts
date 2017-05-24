@@ -71,6 +71,10 @@ module feng3d
          * 渲染拥有者失效，需要重新收集渲染数据拥有者
          */
         public static INVALIDATE_RENDERHOLDER = "invalidateRenderHolder";
+        /**
+         * shader失效，需要重新收集shader数据
+         */
+        public static INVALIDATE_SHADER = "invalidateShader";
 
         private _invalidateRenderDataHolderList: RenderDataHolder[] = [];
         public renderHolderInvalid = true;

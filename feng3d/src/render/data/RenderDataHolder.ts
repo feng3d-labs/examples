@@ -45,6 +45,14 @@ module feng3d
 
         }
 
+		/**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+
+        }
+
         /**
 		 * 添加组件到指定位置
 		 * @param component		被添加的组件
@@ -70,6 +78,11 @@ module feng3d
         protected invalidateRenderData()
         {
             this.dispatchEvent(new Event(Object3DRenderAtomic.INVALIDATE));
+        }
+
+        protected invalidateShader()
+        {
+            this.dispatchEvent(new Event(Object3DRenderAtomic.INVALIDATE_SHADER));
         }
 
         protected invalidateRenderHolder()

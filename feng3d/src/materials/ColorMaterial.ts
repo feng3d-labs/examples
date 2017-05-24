@@ -7,7 +7,6 @@ module feng3d
      */
     export class ColorMaterial extends Material
     {
-
         /** 
          * 颜色 
          */
@@ -26,10 +25,6 @@ module feng3d
             this.color = color || new Color();
 
             Watcher.watch(this, ["color"], this.invalidateRenderData, this);
-            Watcher.watch(this, ["color", "r"], this.invalidateRenderData, this);
-            Watcher.watch(this, ["color", "g"], this.invalidateRenderData, this);
-            Watcher.watch(this, ["color", "b"], this.invalidateRenderData, this);
-            Watcher.watch(this, ["color", "a"], this.invalidateRenderData, this);
         }
 
         /**
@@ -37,7 +32,7 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.u_diffuseInput = new Vector3D(this.color.r, this.color.g, this.color.b, this.color.a);
+            renderData.uniforms.u_diffuseInput = this.color;
             super.updateRenderData(renderContext, renderData);
         }
     }

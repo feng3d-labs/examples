@@ -5185,6 +5185,10 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    feng3d.GL = WebGL2RenderingContext || WebGLRenderingContext;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     var GLProxy = (function () {
         function GLProxy(canvas, options) {
             if (options === void 0) { options = null; }
@@ -5249,7 +5253,7 @@ var feng3d;
             for (var key in gl) {
                 var element = gl[key];
                 if (typeof element == "number") {
-                    GL[key] = element;
+                    feng3d.GL[key] = element;
                 }
             }
         };
@@ -5440,13 +5444,13 @@ var feng3d;
     }());
     feng3d.RenderMode = RenderMode;
     (feng3d.initFunctions || (feng3d.initFunctions = [])).push(function () {
-        RenderMode.POINTS = GL.POINTS;
-        RenderMode.LINE_LOOP = GL.LINE_LOOP;
-        RenderMode.LINE_STRIP = GL.LINE_STRIP;
-        RenderMode.LINES = GL.LINES;
-        RenderMode.TRIANGLES = GL.TRIANGLES;
-        RenderMode.TRIANGLE_STRIP = GL.TRIANGLE_STRIP;
-        RenderMode.TRIANGLE_FAN = GL.TRIANGLE_FAN;
+        RenderMode.POINTS = feng3d.GL.POINTS;
+        RenderMode.LINE_LOOP = feng3d.GL.LINE_LOOP;
+        RenderMode.LINE_STRIP = feng3d.GL.LINE_STRIP;
+        RenderMode.LINES = feng3d.GL.LINES;
+        RenderMode.TRIANGLES = feng3d.GL.TRIANGLES;
+        RenderMode.TRIANGLE_STRIP = feng3d.GL.TRIANGLE_STRIP;
+        RenderMode.TRIANGLE_FAN = feng3d.GL.TRIANGLE_FAN;
     });
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -5461,17 +5465,17 @@ var feng3d;
     }());
     feng3d.BlendFactor = BlendFactor;
     (feng3d.initFunctions || (feng3d.initFunctions = [])).push(function () {
-        BlendFactor.ZERO = GL.ZERO;
-        BlendFactor.ONE = GL.ONE;
-        BlendFactor.SRC_COLOR = GL.SRC_COLOR;
-        BlendFactor.ONE_MINUS_SRC_COLOR = GL.ONE_MINUS_SRC_COLOR;
-        BlendFactor.DST_COLOR = GL.DST_COLOR;
-        BlendFactor.ONE_MINUS_DST_COLOR = GL.ONE_MINUS_DST_COLOR;
-        BlendFactor.SRC_ALPHA = GL.SRC_ALPHA;
-        BlendFactor.ONE_MINUS_SRC_ALPHA = GL.ONE_MINUS_SRC_ALPHA;
-        BlendFactor.DST_ALPHA = GL.DST_ALPHA;
-        BlendFactor.ONE_MINUS_DST_ALPHA = GL.ONE_MINUS_DST_ALPHA;
-        BlendFactor.SRC_ALPHA_SATURATE = GL.SRC_ALPHA_SATURATE;
+        BlendFactor.ZERO = feng3d.GL.ZERO;
+        BlendFactor.ONE = feng3d.GL.ONE;
+        BlendFactor.SRC_COLOR = feng3d.GL.SRC_COLOR;
+        BlendFactor.ONE_MINUS_SRC_COLOR = feng3d.GL.ONE_MINUS_SRC_COLOR;
+        BlendFactor.DST_COLOR = feng3d.GL.DST_COLOR;
+        BlendFactor.ONE_MINUS_DST_COLOR = feng3d.GL.ONE_MINUS_DST_COLOR;
+        BlendFactor.SRC_ALPHA = feng3d.GL.SRC_ALPHA;
+        BlendFactor.ONE_MINUS_SRC_ALPHA = feng3d.GL.ONE_MINUS_SRC_ALPHA;
+        BlendFactor.DST_ALPHA = feng3d.GL.DST_ALPHA;
+        BlendFactor.ONE_MINUS_DST_ALPHA = feng3d.GL.ONE_MINUS_DST_ALPHA;
+        BlendFactor.SRC_ALPHA_SATURATE = feng3d.GL.SRC_ALPHA_SATURATE;
     });
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -5486,9 +5490,9 @@ var feng3d;
     }());
     feng3d.BlendEquation = BlendEquation;
     (feng3d.initFunctions || (feng3d.initFunctions = [])).push(function () {
-        BlendEquation.FUNC_ADD = GL.FUNC_ADD;
-        BlendEquation.FUNC_SUBTRACT = GL.FUNC_SUBTRACT;
-        BlendEquation.FUNC_REVERSE_SUBTRACT = GL.FUNC_REVERSE_SUBTRACT;
+        BlendEquation.FUNC_ADD = feng3d.GL.FUNC_ADD;
+        BlendEquation.FUNC_SUBTRACT = feng3d.GL.FUNC_SUBTRACT;
+        BlendEquation.FUNC_REVERSE_SUBTRACT = feng3d.GL.FUNC_REVERSE_SUBTRACT;
     });
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -5500,8 +5504,8 @@ var feng3d;
     }());
     feng3d.TextureType = TextureType;
     (feng3d.initFunctions || (feng3d.initFunctions = [])).push(function () {
-        TextureType.TEXTURE_2D = GL.TEXTURE_2D;
-        TextureType.TEXTURE_CUBE_MAP = GL.TEXTURE_CUBE_MAP;
+        TextureType.TEXTURE_2D = feng3d.GL.TEXTURE_2D;
+        TextureType.TEXTURE_CUBE_MAP = feng3d.GL.TEXTURE_CUBE_MAP;
     });
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -5537,29 +5541,29 @@ var feng3d;
         UniformRenderData.prototype.setContext3DUniform = function (gl, activeInfo, data) {
             var location = activeInfo.uniformLocation;
             switch (activeInfo.type) {
-                case GL.INT:
+                case feng3d.GL.INT:
                     gl.uniform1i(location, data);
                     break;
-                case GL.FLOAT_MAT4:
+                case feng3d.GL.FLOAT_MAT4:
                     gl.uniformMatrix4fv(location, false, data.rawData);
                     break;
-                case GL.FLOAT:
+                case feng3d.GL.FLOAT:
                     gl.uniform1f(location, data);
                     break;
-                case GL.FLOAT_VEC2:
+                case feng3d.GL.FLOAT_VEC2:
                     gl.uniform2f(location, data.x, data.y);
                     break;
-                case GL.FLOAT_VEC3:
+                case feng3d.GL.FLOAT_VEC3:
                     gl.uniform3f(location, data.x, data.y, data.z);
                     break;
-                case GL.FLOAT_VEC4:
+                case feng3d.GL.FLOAT_VEC4:
                     gl.uniform4f(location, data.x, data.y, data.z, data.w);
                     break;
-                case GL.SAMPLER_2D:
-                case GL.SAMPLER_CUBE:
+                case feng3d.GL.SAMPLER_2D:
+                case feng3d.GL.SAMPLER_CUBE:
                     var textureInfo = data;
                     //激活纹理编号
-                    gl.activeTexture(GL["TEXTURE" + _samplerIndex]);
+                    gl.activeTexture(feng3d.GL["TEXTURE" + _samplerIndex]);
                     textureInfo.active(gl);
                     //设置纹理所在采样编号
                     gl.uniform1i(location, _samplerIndex);
@@ -5573,6 +5577,151 @@ var feng3d;
     }());
     feng3d.UniformRenderData = UniformRenderData;
     var _samplerIndex = 0;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var ShaderRenderData = (function () {
+        function ShaderRenderData() {
+            //
+            this._invalid = true;
+            /**
+             * 渲染参数
+             */
+            this.shaderParams = {};
+            Object.defineProperty(this, "uuid", { value: Math.generateUUID() });
+            Object.defineProperty(this, "version", { value: 0, writable: true });
+            this.shaderMacro = new feng3d.ShaderMacro();
+        }
+        Object.defineProperty(ShaderRenderData.prototype, "vertexCode", {
+            /**
+             * 顶点渲染程序代码
+             */
+            get: function () {
+                return this._vertexCode;
+            },
+            set: function (value) {
+                if (this._vertexCode == value)
+                    return;
+                this._vertexCode = value;
+                this.invalidate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShaderRenderData.prototype, "fragmentCode", {
+            /**
+             * 片段渲染程序代码
+             */
+            get: function () {
+                return this._fragmentCode;
+            },
+            set: function (value) {
+                if (this._fragmentCode == value)
+                    return;
+                this._fragmentCode = value;
+                this.invalidate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 激活渲染程序
+         */
+        ShaderRenderData.prototype.activeShaderProgram = function (gl) {
+            if (!this.vertexCode || !this.fragmentCode)
+                return null;
+            // if (this._invalid)
+            // {
+            this.update();
+            // }
+            //渲染程序
+            var shaderProgram = gl.programs[this.uuid];
+            if (shaderProgram) {
+                if (shaderProgram.vertexCode != this._resultVertexCode || shaderProgram.fragmentCode != this._resultFragmentCode) 
+                // if (shaderProgram.version != this.version)
+                {
+                    shaderProgram.destroy();
+                    shaderProgram = null;
+                    delete gl.programs[this.uuid];
+                }
+            }
+            if (!shaderProgram) {
+                shaderProgram = gl.programs[this.uuid] = gl.createProgram(this._resultVertexCode, this._resultFragmentCode);
+                shaderProgram.version = this.version;
+                shaderProgram.vertexCode = this._resultVertexCode;
+                shaderProgram.fragmentCode = this._resultFragmentCode;
+            }
+            gl.useProgram(shaderProgram);
+            return shaderProgram;
+        };
+        ShaderRenderData.prototype.update = function () {
+            //应用宏
+            var shaderMacroStr = feng3d.ShaderLib.getMacroCode(this.shaderMacro);
+            this._resultVertexCode = this.vertexCode.replace(/#define\s+macros/, shaderMacroStr);
+            this._resultFragmentCode = this.fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
+            this.version++;
+        };
+        ShaderRenderData.prototype.invalidate = function () {
+            this._invalid = true;
+        };
+        return ShaderRenderData;
+    }());
+    feng3d.ShaderRenderData = ShaderRenderData;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var ShaderCode = (function (_super) {
+        __extends(ShaderCode, _super);
+        function ShaderCode(vertexCode, fragmentCode) {
+            var _this = _super.call(this) || this;
+            _this._invalid = true;
+            _this.vertexCode = vertexCode;
+            _this.fragmentCode = fragmentCode;
+            return _this;
+        }
+        ShaderCode.createCodeByName = function (shaderName) {
+            var shaderCode = new ShaderCode(feng3d.ShaderLib.getShaderCode(shaderName + ".vertex"), feng3d.ShaderLib.getShaderCode(shaderName + ".fragment"));
+            return shaderCode;
+        };
+        Object.defineProperty(ShaderCode.prototype, "vertexCode", {
+            /**
+             * 顶点渲染程序代码
+             */
+            get: function () {
+                return this._vertexCode;
+            },
+            set: function (value) {
+                if (this._vertexCode == value)
+                    return;
+                this._vertexCode = value;
+                this.invalidate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShaderCode.prototype, "fragmentCode", {
+            /**
+             * 片段渲染程序代码
+             */
+            get: function () {
+                return this._fragmentCode;
+            },
+            set: function (value) {
+                if (this._fragmentCode == value)
+                    return;
+                this._fragmentCode = value;
+                this.invalidate();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ShaderCode.prototype.invalidate = function () {
+            this._invalid = true;
+            this.dispatchEvent(new feng3d.Event(feng3d.Event.CHANGE));
+        };
+        return ShaderCode;
+    }(feng3d.EventDispatcher));
+    feng3d.ShaderCode = ShaderCode;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -5655,7 +5804,7 @@ var feng3d;
             /**
              * 渲染程序
              */
-            this.shader = new ShaderRenderData();
+            this.shader = new feng3d.ShaderRenderData();
             /**
              * 属性数据列表
              */
@@ -5765,7 +5914,7 @@ var feng3d;
             /**
              * 数据类型，gl.UNSIGNED_BYTE、gl.UNSIGNED_SHORT
              */
-            this.type = GL.UNSIGNED_SHORT;
+            this.type = feng3d.GL.UNSIGNED_SHORT;
             /**
              * 索引偏移
              */
@@ -5797,7 +5946,7 @@ var feng3d;
                 this._invalid = false;
             }
             var buffer = this.getBuffer(gl);
-            gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
+            gl.bindBuffer(feng3d.GL.ELEMENT_ARRAY_BUFFER, buffer);
         };
         /**
          * 获取缓冲
@@ -5806,8 +5955,8 @@ var feng3d;
             var buffer = this._indexBufferMap.get(gl);
             if (!buffer) {
                 buffer = gl.createBuffer();
-                gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
-                gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, this.indices, GL.STATIC_DRAW);
+                gl.bindBuffer(feng3d.GL.ELEMENT_ARRAY_BUFFER, buffer);
+                gl.bufferData(feng3d.GL.ELEMENT_ARRAY_BUFFER, this.indices, feng3d.GL.STATIC_DRAW);
                 this._indexBufferMap.push(gl, buffer);
             }
             return buffer;
@@ -5878,7 +6027,7 @@ var feng3d;
                 When using a WebGL 2 context, the following values are available additionally:
                    - gl.HALF_FLOAT: 16-bit floating point number
              */
-            this.type = GL.FLOAT;
+            this.type = feng3d.GL.FLOAT;
             /**
              * A GLboolean specifying whether integer data values should be normalized when being casted to a float.
                   -  If true, signed integers are normalized to [-1, 1].
@@ -5958,7 +6107,7 @@ var feng3d;
             }
             gl.enableVertexAttribArray(location);
             var buffer = this.getBuffer(gl);
-            gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
+            gl.bindBuffer(feng3d.GL.ARRAY_BUFFER, buffer);
             gl.vertexAttribPointer(location, this.size, this.type, this.normalized, this.stride, this.offset);
             if (this.divisor > 0) {
                 gl.vertexAttribDivisor(location, this.divisor);
@@ -5972,8 +6121,8 @@ var feng3d;
             if (!buffer) {
                 buffer = gl.createBuffer();
                 buffer.uuid = Math.generateUUID();
-                gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-                gl.bufferData(GL.ARRAY_BUFFER, this.data, GL.STATIC_DRAW);
+                gl.bindBuffer(feng3d.GL.ARRAY_BUFFER, buffer);
+                gl.bufferData(feng3d.GL.ARRAY_BUFFER, this.data, feng3d.GL.STATIC_DRAW);
                 this._indexBufferMap.push(gl, buffer);
             }
             return buffer;
@@ -6425,10 +6574,10 @@ var feng3d;
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         };
         FrameBufferObject.prototype.active = function (gl) {
-            gl.bindFramebuffer(GL.FRAMEBUFFER, this.framebuffer);
+            gl.bindFramebuffer(feng3d.GL.FRAMEBUFFER, this.framebuffer);
         };
         FrameBufferObject.prototype.deactive = function (gl) {
-            gl.bindFramebuffer(GL.FRAMEBUFFER, null);
+            gl.bindFramebuffer(feng3d.GL.FRAMEBUFFER, null);
         };
         FrameBufferObject.prototype.clear = function (gl) {
             if (this.framebuffer)
@@ -6473,13 +6622,13 @@ var feng3d;
                 var material = meshRenderer.material;
                 if (material.enableBlend) {
                     //
-                    gl.enable(GL.BLEND);
+                    gl.enable(feng3d.GL.BLEND);
                     gl.blendEquation(material.blendEquation);
                     gl.depthMask(false);
                     gl.blendFunc(material.sfactor, material.dfactor);
                 }
                 else {
-                    gl.disable(GL.BLEND);
+                    gl.disable(feng3d.GL.BLEND);
                     gl.depthMask(true);
                 }
                 this.drawObject3D(gl, object3D.renderData); //
@@ -6541,9 +6690,9 @@ var feng3d;
             var scene3D = renderContext.scene3d;
             // 默认渲染
             gl.clearColor(scene3D.background.r, scene3D.background.g, scene3D.background.b, scene3D.background.a);
-            gl.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+            gl.clear(feng3d.GL.COLOR_BUFFER_BIT | feng3d.GL.DEPTH_BUFFER_BIT);
             gl.viewport(0, 0, this.viewRect.width, this.viewRect.height);
-            gl.enable(GL.DEPTH_TEST);
+            gl.enable(feng3d.GL.DEPTH_TEST);
             // gl.cullFace()
             _super.prototype.draw.call(this, renderContext);
         };
@@ -6601,14 +6750,14 @@ var feng3d;
             this.objects.length = 1;
             var gl = renderContext.gl;
             //启动裁剪，只绘制一个像素
-            gl.enable(GL.SCISSOR_TEST);
+            gl.enable(feng3d.GL.SCISSOR_TEST);
             gl.scissor(0, 0, 1, 1);
             _super.prototype.draw.call(this, renderContext);
-            gl.disable(GL.SCISSOR_TEST);
+            gl.disable(feng3d.GL.SCISSOR_TEST);
             //读取鼠标拾取索引
             // this.frameBufferObject.readBuffer(gl, "objectID");
             var data = new Uint8Array(4);
-            gl.readPixels(0, 0, 1, 1, GL.RGBA, GL.UNSIGNED_BYTE, data);
+            gl.readPixels(0, 0, 1, 1, feng3d.GL.RGBA, feng3d.GL.UNSIGNED_BYTE, data);
             var id = data[0] + data[1] * 255 + data[2] * 255 * 255 + data[3] * 255 * 255 * 255 - data[3]; //最后（- data[3]）表示很奇怪，不过data[3]一般情况下为0
             // console.log(`选中索引3D对象${id}`, data.toString());
             this.selectedObject3D = this.objects[id];
@@ -6628,7 +6777,7 @@ var feng3d;
             if (shader === void 0) { shader = null; }
             var vertexCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".vertex");
             var fragmentCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".fragment");
-            var shader = new ShaderRenderData();
+            var shader = new feng3d.ShaderRenderData();
             shader.vertexCode = vertexCode;
             shader.fragmentCode = fragmentCode;
             _super.prototype.drawObject3D.call(this, gl, renderAtomic, shader);
@@ -8176,8 +8325,8 @@ var feng3d;
         View3D.prototype.initGL = function () {
             this._gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
             this._gl.clearDepth(1.0); // Clear everything
-            this._gl.enable(GL.DEPTH_TEST); // Enable depth testing
-            this._gl.depthFunc(GL.LEQUAL); // Near things obscure far things
+            this._gl.enable(feng3d.GL.DEPTH_TEST); // Enable depth testing
+            this._gl.depthFunc(feng3d.GL.LEQUAL); // Near things obscure far things
         };
         Object.defineProperty(View3D.prototype, "scene", {
             /** 3d场景 */
@@ -12043,21 +12192,21 @@ var feng3d;
             _this._width = 100;
             _this._height = 100;
             _this._size = new feng3d.Point(100, 100);
-            _this._format = GL.RGB;
-            _this._type = GL.UNSIGNED_BYTE;
+            _this._format = feng3d.GL.RGB;
+            _this._type = feng3d.GL.UNSIGNED_BYTE;
             _this._generateMipmap = false;
             _this._flipY = false;
             _this._premulAlpha = false;
-            _this.minFilter = GL.LINEAR;
-            _this.magFilter = GL.LINEAR;
+            _this.minFilter = feng3d.GL.LINEAR;
+            _this.magFilter = feng3d.GL.LINEAR;
             /**
              * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
              */
-            _this.wrapS = GL.REPEAT;
+            _this.wrapS = feng3d.GL.REPEAT;
             /**
              * 表示y轴的纹理回环方式。 magFilter和minFilter表示过滤的方式，这是OpenGL的基本概念，我将在下面讲一下，目前你不用担心它的使用。当您不设置的时候，它会取默认值，所以，我们这里暂时不理睬他。
              */
-            _this.wrapT = GL.REPEAT;
+            _this.wrapT = feng3d.GL.REPEAT;
             /**
              * 各向异性过滤。使用各向异性过滤能够使纹理的效果更好，但是会消耗更多的内存、CPU、GPU时间。默认为0。
              */
@@ -12213,10 +12362,10 @@ var feng3d;
             //绑定纹理
             gl.bindTexture(this._textureType, texture);
             //设置纹理参数
-            gl.texParameteri(this._textureType, GL.TEXTURE_MIN_FILTER, this.minFilter);
-            gl.texParameteri(this._textureType, GL.TEXTURE_MAG_FILTER, this.magFilter);
-            gl.texParameteri(this._textureType, GL.TEXTURE_WRAP_S, this.wrapS);
-            gl.texParameteri(this._textureType, GL.TEXTURE_WRAP_T, this.wrapT);
+            gl.texParameteri(this._textureType, feng3d.GL.TEXTURE_MIN_FILTER, this.minFilter);
+            gl.texParameteri(this._textureType, feng3d.GL.TEXTURE_MAG_FILTER, this.magFilter);
+            gl.texParameteri(this._textureType, feng3d.GL.TEXTURE_WRAP_S, this.wrapS);
+            gl.texParameteri(this._textureType, feng3d.GL.TEXTURE_WRAP_T, this.wrapT);
             //
             if (this.anisotropy) {
                 if (gl.anisotropicExt) {
@@ -12237,15 +12386,15 @@ var feng3d;
                 texture = gl.createTexture(); // Create a texture object
                 texture.uuid = Math.generateUUID();
                 //设置图片y轴方向
-                gl.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, this.flipY ? 1 : 0);
+                gl.pixelStorei(feng3d.GL.UNPACK_FLIP_Y_WEBGL, this.flipY ? 1 : 0);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premulAlpha ? 1 : 0);
                 //绑定纹理
                 gl.bindTexture(this._textureType, texture);
-                if (this._textureType == GL.TEXTURE_2D) {
+                if (this._textureType == feng3d.GL.TEXTURE_2D) {
                     //设置纹理图片
                     this.initTexture2D(gl);
                 }
-                else if (this._textureType == GL.TEXTURE_CUBE_MAP) {
+                else if (this._textureType == feng3d.GL.TEXTURE_CUBE_MAP) {
                     this.initTextureCube(gl);
                 }
                 if (this._generateMipmap) {
@@ -12266,8 +12415,8 @@ var feng3d;
          */
         TextureInfo.prototype.initTextureCube = function (gl) {
             var faces = [
-                GL.TEXTURE_CUBE_MAP_POSITIVE_X, GL.TEXTURE_CUBE_MAP_POSITIVE_Y, GL.TEXTURE_CUBE_MAP_POSITIVE_Z,
-                GL.TEXTURE_CUBE_MAP_NEGATIVE_X, GL.TEXTURE_CUBE_MAP_NEGATIVE_Y, GL.TEXTURE_CUBE_MAP_NEGATIVE_Z
+                feng3d.GL.TEXTURE_CUBE_MAP_POSITIVE_X, feng3d.GL.TEXTURE_CUBE_MAP_POSITIVE_Y, feng3d.GL.TEXTURE_CUBE_MAP_POSITIVE_Z,
+                feng3d.GL.TEXTURE_CUBE_MAP_NEGATIVE_X, feng3d.GL.TEXTURE_CUBE_MAP_NEGATIVE_Y, feng3d.GL.TEXTURE_CUBE_MAP_NEGATIVE_Z
             ];
             for (var i = 0; i < faces.length; i++) {
                 gl.texImage2D(faces[i], 0, this._format, this._format, this._type, this._pixels[i]);
@@ -12534,7 +12683,7 @@ var feng3d;
         function PointMaterial() {
             var _this = _super.call(this) || this;
             _this.pointSize = 1;
-            _this.shaderCode = ShaderCode.createCodeByName("point");
+            _this.shaderCode = feng3d.ShaderCode.createCodeByName("point");
             _this.renderMode = feng3d.RenderMode.POINTS;
             feng3d.Watcher.watch(_this, ["pointSize"], _this.invalidateRenderData, _this);
             return _this;
@@ -12566,7 +12715,7 @@ var feng3d;
         function ColorMaterial(color) {
             if (color === void 0) { color = null; }
             var _this = _super.call(this) || this;
-            _this.shaderCode = ShaderCode.createCodeByName("color");
+            _this.shaderCode = feng3d.ShaderCode.createCodeByName("color");
             _this.color = color || new feng3d.Color();
             feng3d.Watcher.watch(_this, ["color"], _this.invalidateRenderData, _this);
             feng3d.Watcher.watch(_this, ["color", "r"], _this.invalidateRenderData, _this);
@@ -12600,7 +12749,7 @@ var feng3d;
          */
         function SegmentMaterial() {
             var _this = _super.call(this) || this;
-            _this.shaderCode = ShaderCode.createCodeByName("segment");
+            _this.shaderCode = feng3d.ShaderCode.createCodeByName("segment");
             _this.renderMode = feng3d.RenderMode.LINES;
             return _this;
         }
@@ -12644,7 +12793,7 @@ var feng3d;
         __extends(TextureMaterial, _super);
         function TextureMaterial() {
             var _this = _super.call(this) || this;
-            _this.shaderCode = ShaderCode.createCodeByName("texture");
+            _this.shaderCode = feng3d.ShaderCode.createCodeByName("texture");
             feng3d.Watcher.watch(_this, ["texture"], _this.invalidateRenderData, _this);
             return _this;
         }
@@ -12670,7 +12819,7 @@ var feng3d;
         function SkyBoxMaterial(images) {
             if (images === void 0) { images = null; }
             var _this = _super.call(this) || this;
-            _this.shaderCode = ShaderCode.createCodeByName("skybox");
+            _this.shaderCode = feng3d.ShaderCode.createCodeByName("skybox");
             if (images) {
                 _this.texture = new feng3d.TextureCube(images);
             }
@@ -12706,7 +12855,7 @@ var feng3d;
             if (specularUrl === void 0) { specularUrl = ""; }
             if (ambientUrl === void 0) { ambientUrl = ""; }
             var _this = _super.call(this) || this;
-            _this.shaderCode = ShaderCode.createCodeByName("standard");
+            _this.shaderCode = feng3d.ShaderCode.createCodeByName("standard");
             _this.diffuseMethod = new feng3d.DiffuseMethod(diffuseUrl);
             _this.normalMethod = new feng3d.NormalMethod(normalUrl);
             _this.specularMethod = new feng3d.SpecularMethod(specularUrl);
@@ -14524,17 +14673,17 @@ var feng3d;
             _this.splatTexture2 = new feng3d.Texture2D(splatUrls[1] || "");
             _this.splatTexture3 = new feng3d.Texture2D(splatUrls[2] || "");
             _this.splatTexture1.generateMipmap = true;
-            _this.splatTexture1.minFilter = GL.LINEAR_MIPMAP_LINEAR;
-            _this.splatTexture1.wrapS = GL.REPEAT;
-            _this.splatTexture1.wrapT = GL.REPEAT;
+            _this.splatTexture1.minFilter = feng3d.GL.LINEAR_MIPMAP_LINEAR;
+            _this.splatTexture1.wrapS = feng3d.GL.REPEAT;
+            _this.splatTexture1.wrapT = feng3d.GL.REPEAT;
             _this.splatTexture2.generateMipmap = true;
-            _this.splatTexture2.minFilter = GL.LINEAR_MIPMAP_LINEAR;
-            _this.splatTexture2.wrapS = GL.REPEAT;
-            _this.splatTexture2.wrapT = GL.REPEAT;
+            _this.splatTexture2.minFilter = feng3d.GL.LINEAR_MIPMAP_LINEAR;
+            _this.splatTexture2.wrapS = feng3d.GL.REPEAT;
+            _this.splatTexture2.wrapT = feng3d.GL.REPEAT;
             _this.splatTexture3.generateMipmap = true;
-            _this.splatTexture3.minFilter = GL.LINEAR_MIPMAP_LINEAR;
-            _this.splatTexture3.wrapS = GL.REPEAT;
-            _this.splatTexture3.wrapT = GL.REPEAT;
+            _this.splatTexture3.minFilter = feng3d.GL.LINEAR_MIPMAP_LINEAR;
+            _this.splatTexture3.wrapS = feng3d.GL.REPEAT;
+            _this.splatTexture3.wrapT = feng3d.GL.REPEAT;
             _this.splatRepeats = splatRepeats;
             return _this;
         }
@@ -14649,10 +14798,10 @@ var feng3d;
             var _this = _super.call(this) || this;
             _this.blendTexture = new feng3d.Texture2D(blendUrl);
             _this.splatMergeTexture = new feng3d.Texture2D(splatMergeUrl || "");
-            _this.splatMergeTexture.minFilter = GL.NEAREST;
-            _this.splatMergeTexture.magFilter = GL.NEAREST;
-            _this.splatMergeTexture.wrapS = GL.REPEAT;
-            _this.splatMergeTexture.wrapT = GL.REPEAT;
+            _this.splatMergeTexture.minFilter = feng3d.GL.NEAREST;
+            _this.splatMergeTexture.magFilter = feng3d.GL.NEAREST;
+            _this.splatMergeTexture.wrapS = feng3d.GL.REPEAT;
+            _this.splatMergeTexture.wrapT = feng3d.GL.REPEAT;
             _this.splatRepeats = splatRepeats;
             return _this;
         }
@@ -17398,7 +17547,7 @@ var feng3d;
             var offsetY = -(this.viewRect.height - (this.mouseY - this.viewRect.y)); //y轴与window中坐标反向，所以需要 h = (maxHeight - h)
             gl.clearColor(0, 0, 0, 0);
             gl.clearDepth(1);
-            gl.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+            gl.clear(feng3d.GL.COLOR_BUFFER_BIT | feng3d.GL.DEPTH_BUFFER_BIT);
             gl.viewport(offsetX, offsetY, this.viewRect.width, this.viewRect.height);
             this.mouseRenderer.draw(renderContext);
             var object3D = this.mouseRenderer.selectedObject3D;
@@ -18006,12 +18155,12 @@ var feng3d;
             material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
             material.normalMethod.normalTexture.url = 'resources/head_normals.jpg';
             material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
-            material.diffuseMethod.difuseTexture.wrapS = GL.MIRRORED_REPEAT;
-            material.diffuseMethod.difuseTexture.wrapT = GL.MIRRORED_REPEAT;
-            material.normalMethod.normalTexture.wrapS = GL.MIRRORED_REPEAT;
-            material.normalMethod.normalTexture.wrapT = GL.MIRRORED_REPEAT;
-            material.specularMethod.specularTexture.wrapS = GL.MIRRORED_REPEAT;
-            material.specularMethod.specularTexture.wrapT = GL.MIRRORED_REPEAT;
+            material.diffuseMethod.difuseTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
+            material.diffuseMethod.difuseTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
+            material.normalMethod.normalTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
+            material.normalMethod.normalTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
+            material.specularMethod.specularTexture.wrapS = feng3d.GL.MIRRORED_REPEAT;
+            material.specularMethod.specularTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
             //初始化立方体
             var plane = new feng3d.GameObject();
             plane.y = -100;

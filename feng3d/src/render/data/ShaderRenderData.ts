@@ -107,10 +107,5 @@ module feng3d
         {
             this._invalid = true;
         }
-
-        private onMacroChange()
-        {
-            this.invalidate();
-        }
     }
 }

@@ -123,7 +123,7 @@ module feng3d
         constructor(diffuseUrl = "", normalUrl = "",specularUrl = "",ambientUrl = "")
         {
             super();
-            this.shaderName = "standard";
+            this.shaderCode = ShaderCode.createCodeByName("standard");
 
             this.diffuseMethod = new DiffuseMethod(diffuseUrl);
             this.normalMethod = new NormalMethod(normalUrl);

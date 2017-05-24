@@ -16,7 +16,7 @@ module feng3d
         constructor()
         {
             super();
-            this.shaderName = "texture";
+            this.shaderCode = ShaderCode.createCodeByName("texture");
             Watcher.watch(this, ["texture"], this.invalidateRenderData, this);
         }
 

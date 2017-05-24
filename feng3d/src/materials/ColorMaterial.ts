@@ -21,7 +21,8 @@ module feng3d
         constructor(color: Color = null)
         {
             super();
-            this.shaderName = "color";
+            this.shaderCode = ShaderCode.createCodeByName("color");
+            
             this.color = color || new Color();
 
             Watcher.watch(this, ["color"], this.invalidateRenderData, this);

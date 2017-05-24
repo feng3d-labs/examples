@@ -16,9 +16,9 @@ module feng3d
         public renderMode = RenderMode.TRIANGLES;
 
         /**
-         * 着色器名称
+         * 渲染代码
          */
-        protected shaderName: string;
+        protected shaderCode:ShaderCode;
 
         /**
          * 是否渲染双面
@@ -79,7 +79,6 @@ module feng3d
             this._single = true;
             this._type = Material;
 
-            Watcher.watch(this, ["shaderName"], this.invalidateRenderData, this);
             Watcher.watch(this, ["renderMode"], this.invalidateRenderData, this);
         }
 
@@ -126,13 +125,14 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
+            renderData.shaderCode = this.shaderCode;
             //
             renderData.shader.shaderParams.renderMode = this.renderMode;
             //
-            if (this.shaderName)
+            if (this.shaderCode)
             {
-                renderData.shader.vertexCode = ShaderLib.getShaderCode(this.shaderName + ".vertex");
-                renderData.shader.fragmentCode = ShaderLib.getShaderCode(this.shaderName + ".fragment");
+                renderData.shader.vertexCode = this.shaderCode.vertexCode;
+                renderData.shader.fragmentCode = this.shaderCode.fragmentCode;
             } else
             {
                 renderData.shader.vertexCode = null;

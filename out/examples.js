@@ -5651,9 +5651,6 @@ var feng3d;
         ShaderRenderData.prototype.invalidate = function () {
             this._invalid = true;
         };
-        ShaderRenderData.prototype.onMacroChange = function () {
-            this.invalidate();
-        };
         return ShaderRenderData;
     }());
     feng3d.ShaderRenderData = ShaderRenderData;
@@ -5747,7 +5744,30 @@ var feng3d;
              * Uniform渲染数据
              */
             this.uniforms = new feng3d.UniformRenderData();
+            this._shaderInvalid = true;
         }
+        Object.defineProperty(RenderAtomic.prototype, "shaderCode", {
+            /**
+             * 渲染代码
+             */
+            get: function () {
+                return this._shaderCode;
+            },
+            set: function (value) {
+                if (this._shaderCode == value)
+                    return;
+                if (this._shaderCode)
+                    this._shaderCode.removeEventListener(feng3d.Event.CHANGE, this.onShaderChange, this);
+                this._shaderCode = value;
+                if (this._shaderCode)
+                    this._shaderCode.addEventListener(feng3d.Event.CHANGE, this.onShaderChange, this);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        RenderAtomic.prototype.onShaderChange = function () {
+            this._shaderInvalid = true;
+        };
         return RenderAtomic;
     }());
     feng3d.RenderAtomic = RenderAtomic;
@@ -12456,7 +12476,6 @@ var feng3d;
             this._methods = [];
             this._single = true;
             this._type = Material;
-            feng3d.Watcher.watch(this, ["shaderName"], this.invalidateRenderData, this);
             feng3d.Watcher.watch(this, ["renderMode"], this.invalidateRenderData, this);
         }
         Object.defineProperty(Material.prototype, "enableBlend", {
@@ -12522,12 +12541,13 @@ var feng3d;
          * 更新渲染数据
          */
         Material.prototype.updateRenderData = function (renderContext, renderData) {
+            renderData.shaderCode = this.shaderCode;
             //
             renderData.shader.shaderParams.renderMode = this.renderMode;
             //
-            if (this.shaderName) {
-                renderData.shader.vertexCode = feng3d.ShaderLib.getShaderCode(this.shaderName + ".vertex");
-                renderData.shader.fragmentCode = feng3d.ShaderLib.getShaderCode(this.shaderName + ".fragment");
+            if (this.shaderCode) {
+                renderData.shader.vertexCode = this.shaderCode.vertexCode;
+                renderData.shader.fragmentCode = this.shaderCode.fragmentCode;
             }
             else {
                 renderData.shader.vertexCode = null;
@@ -12564,7 +12584,7 @@ var feng3d;
         function PointMaterial() {
             _super.call(this);
             this.pointSize = 1;
-            this.shaderName = "point";
+            this.shaderCode = ShaderCode.createCodeByName("point");
             this.renderMode = feng3d.RenderMode.POINTS;
             feng3d.Watcher.watch(this, ["pointSize"], this.invalidateRenderData, this);
         }
@@ -12595,7 +12615,7 @@ var feng3d;
         function ColorMaterial(color) {
             if (color === void 0) { color = null; }
             _super.call(this);
-            this.shaderName = "color";
+            this.shaderCode = ShaderCode.createCodeByName("color");
             this.color = color || new feng3d.Color();
             feng3d.Watcher.watch(this, ["color"], this.invalidateRenderData, this);
             feng3d.Watcher.watch(this, ["color", "r"], this.invalidateRenderData, this);
@@ -12628,7 +12648,7 @@ var feng3d;
          */
         function SegmentMaterial() {
             _super.call(this);
-            this.shaderName = "segment";
+            this.shaderCode = ShaderCode.createCodeByName("segment");
             this.renderMode = feng3d.RenderMode.LINES;
         }
         return SegmentMaterial;
@@ -12671,7 +12691,7 @@ var feng3d;
         __extends(TextureMaterial, _super);
         function TextureMaterial() {
             _super.call(this);
-            this.shaderName = "texture";
+            this.shaderCode = ShaderCode.createCodeByName("texture");
             feng3d.Watcher.watch(this, ["texture"], this.invalidateRenderData, this);
         }
         /**
@@ -12696,7 +12716,7 @@ var feng3d;
         function SkyBoxMaterial(images) {
             if (images === void 0) { images = null; }
             _super.call(this);
-            this.shaderName = "skybox";
+            this.shaderCode = ShaderCode.createCodeByName("skybox");
             if (images) {
                 this.texture = new feng3d.TextureCube(images);
             }
@@ -12731,7 +12751,7 @@ var feng3d;
             if (specularUrl === void 0) { specularUrl = ""; }
             if (ambientUrl === void 0) { ambientUrl = ""; }
             _super.call(this);
-            this.shaderName = "standard";
+            this.shaderCode = ShaderCode.createCodeByName("standard");
             this.diffuseMethod = new feng3d.DiffuseMethod(diffuseUrl);
             this.normalMethod = new feng3d.NormalMethod(normalUrl);
             this.specularMethod = new feng3d.SpecularMethod(specularUrl);

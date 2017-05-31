@@ -28,37 +28,11 @@ module feng3d
         public uniforms = new UniformRenderData();
 
         /**
-         * 渲染代码
-         */
-        public get shaderCode ()
-        {
-            return this._shaderCode;
-        }
-        public set shaderCode(value)
-        {
-            if(this._shaderCode == value)
-                return;
-            if(this._shaderCode)
-            this._shaderCode.removeEventListener(Event.CHANGE,this.onShaderChange,this);
-            this._shaderCode = value;
-            if(this._shaderCode)
-            this._shaderCode.addEventListener(Event.CHANGE,this.onShaderChange,this);
-        }
-
-        private _shaderCode : ShaderCode;
-
-        /**
          * 渲染实例数量
          */
         public instanceCount: number;
 
         constructor(){}
-
-        private _shaderInvalid = true;
-        private onShaderChange()
-        {
-            this._shaderInvalid = true;
-        }
     }
 
     export class Object3DRenderAtomic extends RenderAtomic

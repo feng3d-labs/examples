@@ -15,7 +15,7 @@ module feng3d
         constructor()
         {
             super();
-            this.shaderCode = ShaderCode.createCodeByName("point");
+            this.setShader("point");
             this.renderMode = RenderMode.POINTS;
             Watcher.watch(this, ["pointSize"], this.invalidateRenderData, this);
         }

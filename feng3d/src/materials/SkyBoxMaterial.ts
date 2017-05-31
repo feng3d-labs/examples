@@ -12,7 +12,7 @@ module feng3d
         constructor(images: string[] = null)
         {
             super();
-            this.shaderCode = ShaderCode.createCodeByName("skybox");
+            this.setShader("skybox");
             if (images)
             {
                 this.texture = new TextureCube(images);

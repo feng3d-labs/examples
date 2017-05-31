@@ -16,9 +16,36 @@ module feng3d
         public renderMode = RenderMode.TRIANGLES;
 
         /**
-         * 渲染代码
+         * 顶点渲染程序代码
          */
-        protected shaderCode:ShaderCode;
+        public get vertexCode()
+        {
+            return this._vertexCode;
+        }
+        public set vertexCode(value)
+        {
+            if (this._vertexCode == value)
+                return;
+            this._vertexCode = value;
+            this.invalidateRenderData();
+        }
+        private _vertexCode: string;
+
+        /**
+         * 片段渲染程序代码
+         */
+        public get fragmentCode()
+        {
+            return this._fragmentCode;
+        }
+        public set fragmentCode(value)
+        {
+            if (this._fragmentCode == value)
+                return;
+            this._fragmentCode = value;
+            this.invalidateRenderData();
+        }
+        private _fragmentCode: string;
 
         /**
          * 是否渲染双面
@@ -83,6 +110,16 @@ module feng3d
         }
 
         /**
+         * 设置渲染程序
+         * @param shaderName 渲染程序名称
+         */
+        public setShader(shaderName:string)
+        {
+            this.vertexCode = ShaderLib.getShaderCode(shaderName + ".vertex");
+            this.fragmentCode = ShaderLib.getShaderCode(shaderName + ".fragment")
+        }
+
+        /**
          * 添加方法
          */
         public addMethod(method: RenderDataHolder)
@@ -125,19 +162,11 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shaderCode = this.shaderCode;
             //
             renderData.shader.shaderParams.renderMode = this.renderMode;
             //
-            if (this.shaderCode)
-            {
-                renderData.shader.vertexCode = this.shaderCode.vertexCode;
-                renderData.shader.fragmentCode = this.shaderCode.fragmentCode;
-            } else
-            {
-                renderData.shader.vertexCode = null;
-                renderData.shader.fragmentCode = null;
-            }
+            renderData.shader.vertexCode = this.vertexCode;
+            renderData.shader.fragmentCode = this.fragmentCode;
             if (this.renderMode == RenderMode.POINTS)
             {
                 renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = true;

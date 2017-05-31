@@ -20,7 +20,7 @@ module feng3d
         constructor(color: Color = null)
         {
             super();
-            this.shaderCode = ShaderCode.createCodeByName("color");
+            this.setShader("color");
             
             this.color = color || new Color();
 

@@ -14,7 +14,7 @@ module feng3d
         constructor()
         {
             super();
-            this.shaderCode = ShaderCode.createCodeByName("segment");
+            this.setShader("segment");
             this.renderMode = RenderMode.LINES;
         }
     }

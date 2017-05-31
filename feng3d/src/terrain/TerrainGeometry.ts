@@ -59,7 +59,7 @@ module feng3d
 
         public get segmentsW()
         {
-            return this.segmentsW;
+            return this._segmentsW;
         }
         public set segmentsW(value)
         {

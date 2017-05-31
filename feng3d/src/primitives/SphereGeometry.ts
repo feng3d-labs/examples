@@ -47,13 +47,13 @@ module feng3d
 
         public get yUp()
         {
-            return this.yUp;
+            return this._yUp;
         }
         public set yUp(value)
         {
-            if(this.yUp == value)
+            if(this._yUp == value)
                 return;
-            this.yUp = value;
+            this._yUp = value;
             this.invalidateGeometry();
         }
         private _yUp = true;

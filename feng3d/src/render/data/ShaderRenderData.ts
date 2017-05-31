@@ -103,7 +103,7 @@ module feng3d
             this.version++;
         }
 
-        private invalidate()
+        public invalidate()
         {
             this._invalid = true;
         }

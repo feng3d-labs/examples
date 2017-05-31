@@ -50,7 +50,7 @@ module feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-
+            
         }
 
         /**

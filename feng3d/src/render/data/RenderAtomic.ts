@@ -33,6 +33,11 @@ module feng3d
         public instanceCount: number;
 
         constructor(){}
+
+        public invalidateShader()
+        {
+            this.shader.invalidate();
+        }
     }
 
     export class Object3DRenderAtomic extends RenderAtomic
@@ -51,15 +56,22 @@ module feng3d
         public static INVALIDATE_SHADER = "invalidateShader";
 
         private _invalidateRenderDataHolderList: RenderDataHolder[] = [];
+        private _invalidateShaderList: RenderDataHolder[] = [];
         public renderHolderInvalid = true;
 
-        private invalidate(event: Event)
+        private onInvalidate(event: Event)
         {
             var renderDataHolder = <RenderDataHolder>event.target;
             this.addInvalidateHolders(renderDataHolder);
         }
 
-        private invalidateRenderHolder()
+        private onInvalidateShader(event: Event)
+        {
+            var renderDataHolder = <RenderDataHolder>event.target;
+            this.addInvalidateShader(renderDataHolder);
+        }
+
+        private onInvalidateRenderHolder()
         {
             this.renderHolderInvalid = true;
         }
@@ -69,6 +81,14 @@ module feng3d
             if (this._invalidateRenderDataHolderList.indexOf(renderDataHolder) == -1)
             {
                 this._invalidateRenderDataHolderList.push(renderDataHolder)
+            }
+        }
+
+        private addInvalidateShader(renderDataHolder: RenderDataHolder)
+        {
+            if (this._invalidateShaderList.indexOf(renderDataHolder) == -1)
+            {
+                this._invalidateShaderList.push(renderDataHolder)
             }
         }
 
@@ -83,30 +103,49 @@ module feng3d
                 this.updateEverytimeList.push(renderDataHolder);
             }
             this.addInvalidateHolders(renderDataHolder);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.invalidate, this)
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.invalidateRenderHolder, this)
+            this.addInvalidateShader(renderDataHolder);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this)
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this)
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.onInvalidateRenderHolder, this)
         }
 
         public update(renderContext: RenderContext)
         {
             renderContext.updateRenderData(this);
-            this.updateEverytimeList.forEach(element =>
+            if(this.updateEverytimeList.length > 0)
             {
-                element.updateRenderData(renderContext, this);
-            });
-            this._invalidateRenderDataHolderList.forEach(element =>
+                this.updateEverytimeList.forEach(element =>
+                {
+                    element.updateRenderData(renderContext, this);
+                });
+            }
+            if(this._invalidateRenderDataHolderList.length > 0)
             {
-                element.updateRenderData(renderContext, this);
-            });
-            this._invalidateRenderDataHolderList.length = 0;
+                this._invalidateRenderDataHolderList.forEach(element =>
+                {
+                    element.updateRenderData(renderContext, this);
+                });
+                this._invalidateRenderDataHolderList.length = 0;
+            }
+            //
+            if(this._invalidateShaderList.length > 0)
+            {
+                this._invalidateShaderList.forEach(element =>
+                {
+                    element.updateRenderShader(renderContext, this);
+                });
+                this.invalidateShader();
+                this._invalidateShaderList.length = 0;
+            }
         }
 
         public clear()
         {
             this.renderDataHolders.forEach(element =>
             {
-                element.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.invalidate, this)
-                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.invalidateRenderHolder, this)
+                element.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this)
+                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this)
+                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.onInvalidateRenderHolder, this)
             });
 
             this.renderDataHolders.length = 0;

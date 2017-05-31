@@ -20,7 +20,7 @@ module feng3d
         public set renderMode(value)
         {
             this._renderMode = value;
-            this.invalidateRenderData();
+            this.invalidateShader();
         }
         private _renderMode = RenderMode.TRIANGLES;
 
@@ -36,7 +36,7 @@ module feng3d
             if (this._vertexCode == value)
                 return;
             this._vertexCode = value;
-            this.invalidateRenderData();
+            this.invalidateShader();
         }
         private _vertexCode: string;
 
@@ -52,7 +52,7 @@ module feng3d
             if (this._fragmentCode == value)
                 return;
             this._fragmentCode = value;
-            this.invalidateRenderData();
+            this.invalidateShader();
         }
         private _fragmentCode: string;
 
@@ -171,24 +171,24 @@ module feng3d
         {
             //
             renderData.shader.shaderParams.renderMode = this.renderMode;
-            //
-            renderData.shader.vertexCode = this.vertexCode;
-            renderData.shader.fragmentCode = this.fragmentCode;
-            if (this.renderMode == RenderMode.POINTS)
-            {
-                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = true;
-                renderData.uniforms.u_PointSize = this.pointSize;
-            } else
-            {
-                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = false;
-                delete renderData.uniforms.u_PointSize;
-            }
+            renderData.uniforms.u_PointSize = this.pointSize;
 
             for (var i = 0; i < this._methods.length; i++)
             {
                 this._methods[i].updateRenderData(renderContext, renderData);
             }
             super.updateRenderData(renderContext, renderData);
+        }
+
+        /**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            //
+            renderData.shader.vertexCode = this.vertexCode;
+            renderData.shader.fragmentCode = this.fragmentCode;
+            renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = this.renderMode == RenderMode.POINTS;
         }
     }
 }

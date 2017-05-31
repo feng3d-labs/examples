@@ -61,7 +61,7 @@ module feng3d
 
         public get yUp()
         {
-            return this.yUp;
+            return this._yUp;
         }
         public set yUp(value)
         {

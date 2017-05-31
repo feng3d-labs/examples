@@ -64,7 +64,6 @@
 		"feng3d/src/render/data/RenderAtomic.ts",
 		"feng3d/src/render/data/IndexRenderData.ts",
 		"feng3d/src/render/data/AttributeRenderData.ts",
-		"feng3d/src/render/utils/RenderDataUtil.ts",
 		"feng3d/src/render/GLAttribute.ts",
 		"feng3d/src/render/RenderContext.ts",
 		"feng3d/src/render/shader/ShaderMacro.ts",

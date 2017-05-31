@@ -5753,6 +5753,9 @@ var feng3d;
              */
             this.uniforms = new feng3d.UniformRenderData();
         }
+        RenderAtomic.prototype.invalidateShader = function () {
+            this.shader.invalidate();
+        };
         return RenderAtomic;
     }());
     feng3d.RenderAtomic = RenderAtomic;
@@ -5761,20 +5764,30 @@ var feng3d;
         function Object3DRenderAtomic() {
             _super.apply(this, arguments);
             this._invalidateRenderDataHolderList = [];
+            this._invalidateShaderList = [];
             this.renderHolderInvalid = true;
             this.renderDataHolders = [];
             this.updateEverytimeList = [];
         }
-        Object3DRenderAtomic.prototype.invalidate = function (event) {
+        Object3DRenderAtomic.prototype.onInvalidate = function (event) {
             var renderDataHolder = event.target;
             this.addInvalidateHolders(renderDataHolder);
         };
-        Object3DRenderAtomic.prototype.invalidateRenderHolder = function () {
+        Object3DRenderAtomic.prototype.onInvalidateShader = function (event) {
+            var renderDataHolder = event.target;
+            this.addInvalidateShader(renderDataHolder);
+        };
+        Object3DRenderAtomic.prototype.onInvalidateRenderHolder = function () {
             this.renderHolderInvalid = true;
         };
         Object3DRenderAtomic.prototype.addInvalidateHolders = function (renderDataHolder) {
             if (this._invalidateRenderDataHolderList.indexOf(renderDataHolder) == -1) {
                 this._invalidateRenderDataHolderList.push(renderDataHolder);
+            }
+        };
+        Object3DRenderAtomic.prototype.addInvalidateShader = function (renderDataHolder) {
+            if (this._invalidateShaderList.indexOf(renderDataHolder) == -1) {
+                this._invalidateShaderList.push(renderDataHolder);
             }
         };
         Object3DRenderAtomic.prototype.addRenderDataHolder = function (renderDataHolder) {
@@ -5783,25 +5796,40 @@ var feng3d;
                 this.updateEverytimeList.push(renderDataHolder);
             }
             this.addInvalidateHolders(renderDataHolder);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.invalidate, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.invalidateRenderHolder, this);
+            this.addInvalidateShader(renderDataHolder);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.onInvalidateRenderHolder, this);
         };
         Object3DRenderAtomic.prototype.update = function (renderContext) {
             var _this = this;
             renderContext.updateRenderData(this);
-            this.updateEverytimeList.forEach(function (element) {
-                element.updateRenderData(renderContext, _this);
-            });
-            this._invalidateRenderDataHolderList.forEach(function (element) {
-                element.updateRenderData(renderContext, _this);
-            });
-            this._invalidateRenderDataHolderList.length = 0;
+            if (this.updateEverytimeList.length > 0) {
+                this.updateEverytimeList.forEach(function (element) {
+                    element.updateRenderData(renderContext, _this);
+                });
+            }
+            if (this._invalidateRenderDataHolderList.length > 0) {
+                this._invalidateRenderDataHolderList.forEach(function (element) {
+                    element.updateRenderData(renderContext, _this);
+                });
+                this._invalidateRenderDataHolderList.length = 0;
+            }
+            //
+            if (this._invalidateShaderList.length > 0) {
+                this._invalidateShaderList.forEach(function (element) {
+                    element.updateRenderShader(renderContext, _this);
+                });
+                this.invalidateShader();
+                this._invalidateShaderList.length = 0;
+            }
         };
         Object3DRenderAtomic.prototype.clear = function () {
             var _this = this;
             this.renderDataHolders.forEach(function (element) {
-                element.removeEventListener(Object3DRenderAtomic.INVALIDATE, _this.invalidate, _this);
-                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, _this.invalidateRenderHolder, _this);
+                element.removeEventListener(Object3DRenderAtomic.INVALIDATE, _this.onInvalidate, _this);
+                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, _this.onInvalidateShader, _this);
+                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, _this.onInvalidateRenderHolder, _this);
             });
             this.renderDataHolders.length = 0;
             this.updateEverytimeList.length = 0;
@@ -6086,79 +6114,6 @@ var feng3d;
         return AttributeRenderData;
     }());
     feng3d.AttributeRenderData = AttributeRenderData;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 渲染数据工具
-     * @author feng 2016-05-02
-     */
-    var RenderDataUtil = (function () {
-        function RenderDataUtil() {
-        }
-        /**
-         * 激活渲染数据
-         * @param renderAtomic  渲染原子
-         * @param renderData    包含渲染数据的对象
-         */
-        RenderDataUtil.active = function (renderAtomic, renderData) {
-            renderData.shader.vertexCode && (renderAtomic.shader.vertexCode = renderData.shader.vertexCode);
-            renderData.shader.fragmentCode && (renderAtomic.shader.fragmentCode = renderData.shader.fragmentCode);
-            renderData.indexBuffer && (renderAtomic.indexBuffer = renderData.indexBuffer);
-            renderData.instanceCount && (renderAtomic.instanceCount = renderData.instanceCount);
-            for (var attributeName in renderData.attributes) {
-                renderAtomic.attributes[attributeName] = renderData.attributes[attributeName];
-            }
-            for (var uniformName in renderData.uniforms) {
-                renderAtomic.uniforms[uniformName] = renderData.uniforms[uniformName];
-            }
-            for (var shaderParamName in renderData.shader.shaderParams) {
-                renderAtomic.shader.shaderParams[shaderParamName] = renderData.shader.shaderParams[shaderParamName];
-            }
-            //ShaderMacro
-            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros) {
-                renderAtomic.shader.shaderMacro.boolMacros[boolMacroName] = renderAtomic.shader.shaderMacro.boolMacros[boolMacroName] || renderData.shader.shaderMacro.boolMacros[boolMacroName];
-            }
-            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros) {
-                renderAtomic.shader.shaderMacro.valueMacros[valueMacroName] = renderData.shader.shaderMacro.valueMacros[valueMacroName];
-            }
-            for (var addMacroName in renderData.shader.shaderMacro.addMacros) {
-                renderAtomic.shader.shaderMacro.addMacros[addMacroName] = renderAtomic.shader.shaderMacro.addMacros[addMacroName] + renderData.shader.shaderMacro.addMacros[addMacroName];
-            }
-        };
-        /**
-         * 释放渲染数据
-         * @param renderAtomic  渲染原子
-         * @param renderData    包含渲染数据的对象
-         */
-        RenderDataUtil.deactivate = function (renderAtomic, renderData) {
-            renderData.shader.vertexCode && (renderAtomic.shader.vertexCode = null);
-            renderData.shader.fragmentCode && (renderAtomic.shader.fragmentCode = null);
-            renderData.indexBuffer && (renderAtomic.indexBuffer = null);
-            renderData.instanceCount && (delete renderAtomic.instanceCount);
-            for (var attributeName in renderData.attributes) {
-                delete renderAtomic.attributes[attributeName];
-            }
-            for (var uniformName in renderData.uniforms) {
-                delete renderAtomic.uniforms[uniformName];
-            }
-            for (var shaderParamName in renderData.shader.shaderParams) {
-                delete renderAtomic.shader.shaderParams[shaderParamName];
-            }
-            //ShaderMacro
-            for (var boolMacroName in renderData.shader.shaderMacro.boolMacros) {
-                delete renderAtomic.shader.shaderMacro.boolMacros[boolMacroName];
-            }
-            for (var valueMacroName in renderData.shader.shaderMacro.valueMacros) {
-                delete renderAtomic.shader.shaderMacro.valueMacros[valueMacroName];
-            }
-            for (var addMacroName in renderData.shader.shaderMacro.addMacros) {
-                renderAtomic.shader.shaderMacro.addMacros[addMacroName] = renderAtomic.shader.shaderMacro.addMacros[addMacroName] - renderData.shader.shaderMacro.addMacros[addMacroName];
-            }
-        };
-        return RenderDataUtil;
-    }());
-    feng3d.RenderDataUtil = RenderDataUtil;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -10645,17 +10600,82 @@ var feng3d;
             if (segmentsH === void 0) { segmentsH = 1; }
             if (yUp === void 0) { yUp = true; }
             _super.call(this);
+            this._width = 100;
+            this._height = 100;
+            this._segmentsW = 1;
+            this._segmentsH = 1;
+            this._yUp = true;
             this.width = width;
             this.height = height;
             this.segmentsW = segmentsW;
             this.segmentsH = segmentsH;
             this.yUp = yUp;
-            feng3d.Watcher.watch(this, ["width"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["height"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsW"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsH"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["yUp"], this.invalidateGeometry, this);
         }
+        Object.defineProperty(PlaneGeometry.prototype, "width", {
+            get: function () {
+                return this._width;
+            },
+            set: function (value) {
+                if (this._width == value)
+                    return;
+                this._width = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(PlaneGeometry.prototype, "height", {
+            get: function () {
+                return this._height;
+            },
+            set: function (value) {
+                if (this._height == value)
+                    return;
+                this._height = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(PlaneGeometry.prototype, "segmentsW", {
+            get: function () {
+                return this._segmentsW;
+            },
+            set: function (value) {
+                if (this._segmentsW == value)
+                    return;
+                this._segmentsW = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(PlaneGeometry.prototype, "segmentsH", {
+            get: function () {
+                return this._segmentsH;
+            },
+            set: function (value) {
+                if (this._segmentsH == value)
+                    return;
+                this._segmentsH = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(PlaneGeometry.prototype, "yUp", {
+            get: function () {
+                return this._yUp;
+            },
+            set: function (value) {
+                if (this._yUp == value)
+                    return;
+                this._yUp = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 构建几何体数据
          */
@@ -10818,6 +10838,13 @@ var feng3d;
             if (segmentsD === void 0) { segmentsD = 1; }
             if (tile6 === void 0) { tile6 = true; }
             _super.call(this);
+            this._width = 100;
+            this._height = 100;
+            this._depth = 100;
+            this._segmentsW = 1;
+            this._segmentsH = 1;
+            this._segmentsD = 1;
+            this._tile6 = true;
             this.width = width;
             this.height = height;
             this.depth = depth;
@@ -10825,14 +10852,98 @@ var feng3d;
             this.segmentsH = segmentsH;
             this.segmentsD = segmentsD;
             this.tile6 = tile6;
-            feng3d.Watcher.watch(this, ["width"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["height"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["depth"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsW"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsH"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsD"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["tile6"], this.invalidateGeometry, this);
         }
+        Object.defineProperty(CubeGeometry.prototype, "width", {
+            get: function () {
+                return this._width;
+            },
+            set: function (value) {
+                if (this._width == value)
+                    return;
+                this._width = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeGeometry.prototype, "height", {
+            get: function () {
+                return this._height;
+            },
+            set: function (value) {
+                if (this._height == value)
+                    return;
+                this._height = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeGeometry.prototype, "depth", {
+            get: function () {
+                return this._depth;
+            },
+            set: function (value) {
+                if (this._depth == value)
+                    return;
+                this._depth = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeGeometry.prototype, "segmentsW", {
+            get: function () {
+                return this._segmentsW;
+            },
+            set: function (value) {
+                if (this._segmentsW == value)
+                    return;
+                this._segmentsW = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeGeometry.prototype, "segmentsH", {
+            get: function () {
+                return this._segmentsH;
+            },
+            set: function (value) {
+                if (this._segmentsH == value)
+                    return;
+                this._segmentsH = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeGeometry.prototype, "segmentsD", {
+            get: function () {
+                return this._segmentsD;
+            },
+            set: function (value) {
+                if (this._segmentsD == value)
+                    return;
+                this._segmentsD = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeGeometry.prototype, "tile6", {
+            get: function () {
+                return this._tile6;
+            },
+            set: function (value) {
+                if (this._tile6 == value)
+                    return;
+                this._tile6 = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
         CubeGeometry.prototype.buildGeometry = function () {
             var vertexPositionData = this.buildPosition();
             this.setVAData(feng3d.GLAttribute.a_position, vertexPositionData, 3);
@@ -11202,15 +11313,67 @@ var feng3d;
             if (segmentsH === void 0) { segmentsH = 12; }
             if (yUp === void 0) { yUp = true; }
             _super.call(this);
+            this._radius = 50;
+            this._segmentsW = 16;
+            this._segmentsH = 12;
+            this._yUp = true;
             this.radius = radius;
-            this.segmentsW = segmentsW;
-            this.segmentsH = segmentsH;
+            this.segmentsW = this.segmentsW;
+            this.segmentsH = this.segmentsH;
             this.yUp = yUp;
-            feng3d.Watcher.watch(this, ["radius"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsW"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsH"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["yUp"], this.invalidateGeometry, this);
         }
+        Object.defineProperty(SphereGeometry.prototype, "radius", {
+            get: function () {
+                return this._radius;
+            },
+            set: function (value) {
+                if (this._radius == value)
+                    return;
+                this._radius = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SphereGeometry.prototype, "segmentsW", {
+            get: function () {
+                return this._segmentsW;
+            },
+            set: function (value) {
+                if (this._segmentsW == value)
+                    return;
+                this._segmentsW = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SphereGeometry.prototype, "segmentsH", {
+            get: function () {
+                return this._segmentsH;
+            },
+            set: function (value) {
+                if (this._segmentsH == value)
+                    return;
+                this._segmentsH = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SphereGeometry.prototype, "yUp", {
+            get: function () {
+                return this._yUp;
+            },
+            set: function (value) {
+                if (this._yUp == value)
+                    return;
+                this._yUp = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 构建几何体数据
          * @param this.radius 球体半径
@@ -11370,17 +11533,82 @@ var feng3d;
             if (segmentsH === void 0) { segmentsH = 15; }
             if (yUp === void 0) { yUp = true; }
             _super.call(this);
+            this._radius = 50;
+            this._height = 100;
+            this._segmentsW = 16;
+            this._segmentsH = 15;
+            this._yUp = true;
             this.radius = radius;
             this.height = height;
             this.segmentsW = segmentsW;
             this.segmentsH = segmentsH;
             this.yUp = yUp;
-            feng3d.Watcher.watch(this, ["radius"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["height"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsW"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsH"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["yUp"], this.invalidateGeometry, this);
         }
+        Object.defineProperty(CapsuleGeometry.prototype, "radius", {
+            get: function () {
+                return this._radius;
+            },
+            set: function (value) {
+                if (this._radius == value)
+                    return;
+                this._radius = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CapsuleGeometry.prototype, "height", {
+            get: function () {
+                return this._height;
+            },
+            set: function (value) {
+                if (this._height == value)
+                    return;
+                this._height = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CapsuleGeometry.prototype, "segmentsW", {
+            get: function () {
+                return this._segmentsW;
+            },
+            set: function (value) {
+                if (this._segmentsW == value)
+                    return;
+                this._segmentsW = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CapsuleGeometry.prototype, "segmentsH", {
+            get: function () {
+                return this._segmentsH;
+            },
+            set: function (value) {
+                if (this._segmentsH == value)
+                    return;
+                this._segmentsH = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CapsuleGeometry.prototype, "yUp", {
+            get: function () {
+                return this._yUp;
+            },
+            set: function (value) {
+                if (this._yUp == value)
+                    return;
+                this._yUp = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 构建几何体数据
          * @param radius 胶囊体半径
@@ -11540,6 +11768,15 @@ var feng3d;
             if (surfaceClosed === void 0) { surfaceClosed = true; }
             if (yUp === void 0) { yUp = true; }
             _super.call(this);
+            this._topRadius = 50;
+            this._bottomRadius = 50;
+            this._height = 100;
+            this._segmentsW = 16;
+            this._segmentsH = 1;
+            this._topClosed = true;
+            this._bottomClosed = true;
+            this._surfaceClosed = true;
+            this._yUp = true;
             this.topRadius = topRadius;
             this.bottomRadius = bottomRadius;
             this.height = height;
@@ -11549,16 +11786,124 @@ var feng3d;
             this.bottomClosed = bottomClosed;
             this.surfaceClosed = surfaceClosed;
             this.yUp = yUp;
-            feng3d.Watcher.watch(this, ["topRadius"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["bottomRadius"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["height"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsW"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsH"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["topClosed"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["bottomClosed"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["surfaceClosed"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["yUp"], this.invalidateGeometry, this);
         }
+        Object.defineProperty(CylinderGeometry.prototype, "topRadius", {
+            get: function () {
+                return this._topRadius;
+            },
+            set: function (value) {
+                if (this._topRadius == value)
+                    return;
+                this._topRadius = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "bottomRadius", {
+            get: function () {
+                return this._bottomRadius;
+            },
+            set: function (value) {
+                if (this._bottomRadius == value)
+                    return;
+                this._bottomRadius = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "height", {
+            get: function () {
+                return this._height;
+            },
+            set: function (value) {
+                if (this._height == value)
+                    return;
+                this._height = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "segmentsW", {
+            get: function () {
+                return this._segmentsW;
+            },
+            set: function (value) {
+                if (this._segmentsW == value)
+                    return;
+                this._segmentsW = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "segmentsH", {
+            get: function () {
+                return this._segmentsH;
+            },
+            set: function (value) {
+                if (this._segmentsH == value)
+                    return;
+                this._segmentsH = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "topClosed", {
+            get: function () {
+                return this._topClosed;
+            },
+            set: function (value) {
+                if (this._topClosed == value)
+                    return;
+                this._topClosed = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "bottomClosed", {
+            get: function () {
+                return this._bottomClosed;
+            },
+            set: function (value) {
+                if (this._bottomClosed == value)
+                    return;
+                this._bottomClosed = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "surfaceClosed", {
+            get: function () {
+                return this._surfaceClosed;
+            },
+            set: function (value) {
+                if (this._surfaceClosed == value)
+                    return;
+                this._surfaceClosed = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CylinderGeometry.prototype, "yUp", {
+            get: function () {
+                return this._yUp;
+            },
+            set: function (value) {
+                if (this._yUp == value)
+                    return;
+                this._yUp = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 计算几何体顶点数
          */
@@ -11898,20 +12243,89 @@ var feng3d;
             if (segmentsT === void 0) { segmentsT = 8; }
             if (yUp === void 0) { yUp = true; }
             _super.call(this);
-            this.radius = radius;
-            this.tubeRadius = tubeRadius;
-            this.segmentsR = segmentsR;
-            this.segmentsT = segmentsT;
-            this.yUp = yUp;
+            this._radius = 50;
+            this._tubeRadius = 10;
+            this._segmentsR = 16;
+            this._segmentsT = 8;
+            this._yUp = true;
             this._vertexPositionStride = 3;
             this._vertexNormalStride = 3;
             this._vertexTangentStride = 3;
-            feng3d.Watcher.watch(this, ["radius"], this.buildGeometry, this);
-            feng3d.Watcher.watch(this, ["tubeRadius"], this.buildGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsR"], this.buildGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsT"], this.buildGeometry, this);
-            feng3d.Watcher.watch(this, ["yUp"], this.buildGeometry, this);
+            this.radius = radius;
+            this.tubeRadius = tubeRadius;
+            this.segmentR = segmentsR;
+            this.segmentsT = segmentsT;
+            this.yUp = yUp;
         }
+        Object.defineProperty(TorusGeometry.prototype, "radius", {
+            get: function () {
+                return this._radius;
+            },
+            set: function (value) {
+                if (this._radius == value)
+                    return;
+                this._radius = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TorusGeometry.prototype, "tubeRadius", {
+            get: function () {
+                return this._tubeRadius;
+            },
+            set: function (value) {
+                if (this._tubeRadius == value)
+                    return;
+                this._tubeRadius = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TorusGeometry.prototype, "segmentsR", {
+            get: function () {
+                return this._segmentsR;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TorusGeometry.prototype, "segmentR", {
+            set: function (value) {
+                if (this._segmentsR == value)
+                    return;
+                this._segmentsR = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TorusGeometry.prototype, "segmentsT", {
+            get: function () {
+                return this._segmentsT;
+            },
+            set: function (value) {
+                if (this._segmentsT == value)
+                    return;
+                this._segmentsT = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TorusGeometry.prototype, "yUp", {
+            get: function () {
+                return this._yUp;
+            },
+            set: function (value) {
+                if (this._yUp == value)
+                    return;
+                this._yUp = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 添加顶点数据
          */
@@ -12476,7 +12890,7 @@ var feng3d;
             },
             set: function (value) {
                 this._renderMode = value;
-                this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -12492,7 +12906,7 @@ var feng3d;
                 if (this._vertexCode == value)
                     return;
                 this._vertexCode = value;
-                this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -12508,7 +12922,7 @@ var feng3d;
                 if (this._fragmentCode == value)
                     return;
                 this._fragmentCode = value;
-                this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -12586,21 +13000,20 @@ var feng3d;
         Material.prototype.updateRenderData = function (renderContext, renderData) {
             //
             renderData.shader.shaderParams.renderMode = this.renderMode;
-            //
-            renderData.shader.vertexCode = this.vertexCode;
-            renderData.shader.fragmentCode = this.fragmentCode;
-            if (this.renderMode == feng3d.RenderMode.POINTS) {
-                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = true;
-                renderData.uniforms.u_PointSize = this.pointSize;
-            }
-            else {
-                renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = false;
-                delete renderData.uniforms.u_PointSize;
-            }
+            renderData.uniforms.u_PointSize = this.pointSize;
             for (var i = 0; i < this._methods.length; i++) {
                 this._methods[i].updateRenderData(renderContext, renderData);
             }
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        Material.prototype.updateRenderShader = function (renderContext, renderData) {
+            //
+            renderData.shader.vertexCode = this.vertexCode;
+            renderData.shader.fragmentCode = this.fragmentCode;
+            renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = this.renderMode == feng3d.RenderMode.POINTS;
         };
         return Material;
     }(feng3d.RenderDataHolder));
@@ -14445,7 +14858,13 @@ var feng3d;
             if (maxElevation === void 0) { maxElevation = 255; }
             if (minElevation === void 0) { minElevation = 0; }
             _super.call(this);
-            this.heightMapUrl = heightMapUrl;
+            this._width = 1000;
+            this._height = 100;
+            this._depth = 1000;
+            this._segmentsW = 30;
+            this._segmentsH = 30;
+            this._maxElevation = 255;
+            this._minElevation = 0;
             this.width = width;
             this.height = height;
             this.depth = depth;
@@ -14453,19 +14872,115 @@ var feng3d;
             this.segmentsH = segmentsH;
             this.maxElevation = maxElevation;
             this.minElevation = minElevation;
-            feng3d.Watcher.watch(this, ["width"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["height"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["depth"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsW"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["segmentsH"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["maxElevation"], this.invalidateGeometry, this);
-            feng3d.Watcher.watch(this, ["minElevation"], this.invalidateGeometry, this);
             this._heightImage = new Image();
             this._heightImage.crossOrigin = "Anonymous";
             this._heightImage.addEventListener("load", this.onHeightMapLoad.bind(this));
-            this._heightImage.src = heightMapUrl;
+            this.heightMapUrl = heightMapUrl;
             feng3d.Binding.bindProperty(this, ["heightMapUrl"], this._heightImage, "src");
         }
+        Object.defineProperty(TerrainGeometry.prototype, "heightMapUrl", {
+            get: function () {
+                return this._heightImage.src;
+            },
+            set: function (value) {
+                if (this._heightImage.src == value)
+                    return;
+                this._heightImage.src = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainGeometry.prototype, "width", {
+            get: function () {
+                return this._width;
+            },
+            set: function (value) {
+                if (this._width == value)
+                    return;
+                this._width = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainGeometry.prototype, "height", {
+            get: function () {
+                return this._height;
+            },
+            set: function (value) {
+                if (this._height == value)
+                    return;
+                this._height = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainGeometry.prototype, "depth", {
+            get: function () {
+                return this._depth;
+            },
+            set: function (value) {
+                if (this._depth == value)
+                    return;
+                this._depth = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainGeometry.prototype, "segmentsW", {
+            get: function () {
+                return this._segmentsW;
+            },
+            set: function (value) {
+                if (this._segmentsW == value)
+                    return;
+                this._segmentsW = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainGeometry.prototype, "segmentsH", {
+            get: function () {
+                return this._segmentsH;
+            },
+            set: function (value) {
+                if (this._segmentsH == value)
+                    return;
+                this._segmentsH = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainGeometry.prototype, "maxElevation", {
+            get: function () {
+                return this._maxElevation;
+            },
+            set: function (value) {
+                if (this._maxElevation == value)
+                    return;
+                this._maxElevation = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainGeometry.prototype, "minElevation", {
+            get: function () {
+                return this._minElevation;
+            },
+            set: function (value) {
+                if (this._minElevation == value)
+                    return;
+                this._minElevation = value;
+                this.invalidateGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 高度图加载完成
          */

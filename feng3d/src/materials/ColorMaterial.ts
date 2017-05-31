@@ -1,6 +1,5 @@
 module feng3d
 {
-
     /**
      * 颜色材质
      * @author feng 2016-05-02
@@ -10,7 +9,18 @@ module feng3d
         /** 
          * 颜色 
          */
-        public color: Color;
+        public get color()
+        {
+            return this._color;
+        }
+        public set color(value)
+        {
+            if(this._color == value)
+                return;
+            this._color = value;
+            this.invalidateRenderData();
+        }
+        private _color: Color;
 
         /**
          * 构建颜色材质
@@ -21,10 +31,7 @@ module feng3d
         {
             super();
             this.setShader("color");
-            
             this.color = color || new Color();
-
-            Watcher.watch(this, ["color"], this.invalidateRenderData, this);
         }
 
         /**

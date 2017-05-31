@@ -10,7 +10,18 @@ module feng3d
         /**
          * 索引数据
          */
-        public indices: Uint16Array;
+        public get indices()
+        {
+            return this._indices;
+        }
+        public set indices(value)
+        {
+            if(this._indices == value)
+                return;
+            this._indices = value;
+            this.invalidate();
+        }
+        private _indices: Uint16Array;
 
         /**
          * 渲染数量
@@ -37,7 +48,6 @@ module feng3d
 
         constructor()
         {
-            Watcher.watch(this, ["indices"], this.invalidate, this);
         }
 
         /**

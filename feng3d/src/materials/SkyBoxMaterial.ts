@@ -7,7 +7,18 @@ module feng3d
      */
     export class SkyBoxMaterial extends Material
     {
-        public texture: TextureCube;
+        public get texture()
+        {
+            return this._texture;
+        }
+        public set texture(value)
+        {
+            if(this._texture == value)
+                return;
+            this._texture = value;
+            this.invalidateRenderData();
+        }
+        private _texture: TextureCube;
 
         constructor(images: string[] = null)
         {
@@ -17,8 +28,6 @@ module feng3d
             {
                 this.texture = new TextureCube(images);
             }
-
-            Watcher.watch(this, ["skyBoxTextureCube"], this.invalidateRenderData, this);
         }
 
         /**

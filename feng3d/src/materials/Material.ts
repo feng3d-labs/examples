@@ -13,7 +13,16 @@ module feng3d
         /**
         * 渲染模式，默认RenderMode.TRIANGLES
         */
-        public renderMode = RenderMode.TRIANGLES;
+        public get renderMode()
+        {
+            return this._renderMode;
+        }
+        public set renderMode(value)
+        {
+            this._renderMode = value;
+            this.invalidateRenderData();
+        }
+        private _renderMode = RenderMode.TRIANGLES;
 
         /**
          * 顶点渲染程序代码
@@ -105,8 +114,6 @@ module feng3d
             super();
             this._single = true;
             this._type = Material;
-
-            Watcher.watch(this, ["renderMode"], this.invalidateRenderData, this);
         }
 
         /**

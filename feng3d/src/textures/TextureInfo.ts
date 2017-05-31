@@ -119,17 +119,6 @@ module feng3d
         constructor()
         {
             super();
-            Watcher.watch(this, ["textureType"], this.invalidate, this);
-            Watcher.watch(this, ["internalformat"], this.invalidate, this);
-            Watcher.watch(this, ["format"], this.invalidate, this);
-            Watcher.watch(this, ["type"], this.invalidate, this);
-            Watcher.watch(this, ["generateMipmap"], this.invalidate, this);
-            Watcher.watch(this, ["flipY"], this.invalidate, this);
-            Watcher.watch(this, ["premulAlpha"], this.invalidate, this);
-            // Watcher.watch(this, ["minFilter"], this.invalidate, this);
-            // Watcher.watch(this, ["magFilter"], this.invalidate, this);
-            // Watcher.watch(this, ["wrapS"], this.invalidate, this);
-            // Watcher.watch(this, ["wrapT"], this.invalidate, this);
         }
 
         /**

@@ -59,7 +59,6 @@
 		"feng3d/src/render/consts/TextureType.ts",
 		"feng3d/src/render/data/UniformRenderData.ts",
 		"feng3d/src/render/data/ShaderRenderData.ts",
-		"feng3d/src/render/data/ShaderCode.ts",
 		"feng3d/src/render/data/ShaderParams.ts",
 		"feng3d/src/render/data/RenderDataHolder.ts",
 		"feng3d/src/render/data/RenderAtomic.ts",

@@ -5657,60 +5657,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var ShaderCode = (function (_super) {
-        __extends(ShaderCode, _super);
-        function ShaderCode(vertexCode, fragmentCode) {
-            _super.call(this);
-            this._invalid = true;
-            this.vertexCode = vertexCode;
-            this.fragmentCode = fragmentCode;
-        }
-        ShaderCode.createCodeByName = function (shaderName) {
-            var shaderCode = new ShaderCode(feng3d.ShaderLib.getShaderCode(shaderName + ".vertex"), feng3d.ShaderLib.getShaderCode(shaderName + ".fragment"));
-            return shaderCode;
-        };
-        Object.defineProperty(ShaderCode.prototype, "vertexCode", {
-            /**
-             * 顶点渲染程序代码
-             */
-            get: function () {
-                return this._vertexCode;
-            },
-            set: function (value) {
-                if (this._vertexCode == value)
-                    return;
-                this._vertexCode = value;
-                this.invalidate();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ShaderCode.prototype, "fragmentCode", {
-            /**
-             * 片段渲染程序代码
-             */
-            get: function () {
-                return this._fragmentCode;
-            },
-            set: function (value) {
-                if (this._fragmentCode == value)
-                    return;
-                this._fragmentCode = value;
-                this.invalidate();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ShaderCode.prototype.invalidate = function () {
-            this._invalid = true;
-            this.dispatchEvent(new feng3d.Event(feng3d.Event.CHANGE));
-        };
-        return ShaderCode;
-    }(feng3d.EventDispatcher));
-    feng3d.ShaderCode = ShaderCode;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
     /**
      * 渲染数据拥有者
      * @author feng 2016-6-7
@@ -5900,8 +5846,23 @@ var feng3d;
              * 是否失效
              */
             this._invalid = true;
-            feng3d.Watcher.watch(this, ["indices"], this.invalidate, this);
         }
+        Object.defineProperty(IndexRenderData.prototype, "indices", {
+            /**
+             * 索引数据
+             */
+            get: function () {
+                return this._indices;
+            },
+            set: function (value) {
+                if (this._indices == value)
+                    return;
+                this._indices = value;
+                this.invalidate();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 使缓冲失效
          */
@@ -12167,17 +12128,6 @@ var feng3d;
              * 是否失效
              */
             this._invalid = true;
-            feng3d.Watcher.watch(this, ["textureType"], this.invalidate, this);
-            feng3d.Watcher.watch(this, ["internalformat"], this.invalidate, this);
-            feng3d.Watcher.watch(this, ["format"], this.invalidate, this);
-            feng3d.Watcher.watch(this, ["type"], this.invalidate, this);
-            feng3d.Watcher.watch(this, ["generateMipmap"], this.invalidate, this);
-            feng3d.Watcher.watch(this, ["flipY"], this.invalidate, this);
-            feng3d.Watcher.watch(this, ["premulAlpha"], this.invalidate, this);
-            // Watcher.watch(this, ["minFilter"], this.invalidate, this);
-            // Watcher.watch(this, ["magFilter"], this.invalidate, this);
-            // Watcher.watch(this, ["wrapS"], this.invalidate, this);
-            // Watcher.watch(this, ["wrapT"], this.invalidate, this);
         }
         Object.defineProperty(TextureInfo.prototype, "textureType", {
             /**
@@ -12496,10 +12446,7 @@ var feng3d;
             _super.call(this);
             this._pointSize = 1;
             this._enableBlend = false;
-            /**
-            * 渲染模式，默认RenderMode.TRIANGLES
-            */
-            this.renderMode = feng3d.RenderMode.TRIANGLES;
+            this._renderMode = feng3d.RenderMode.TRIANGLES;
             /**
              * 是否渲染双面
              */
@@ -12519,8 +12466,21 @@ var feng3d;
             this._methods = [];
             this._single = true;
             this._type = Material;
-            feng3d.Watcher.watch(this, ["renderMode"], this.invalidateRenderData, this);
         }
+        Object.defineProperty(Material.prototype, "renderMode", {
+            /**
+            * 渲染模式，默认RenderMode.TRIANGLES
+            */
+            get: function () {
+                return this._renderMode;
+            },
+            set: function (value) {
+                this._renderMode = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Material.prototype, "vertexCode", {
             /**
              * 顶点渲染程序代码
@@ -12659,18 +12619,9 @@ var feng3d;
          */
         function PointMaterial() {
             _super.call(this);
-            this.pointSize = 1;
             this.setShader("point");
             this.renderMode = feng3d.RenderMode.POINTS;
-            feng3d.Watcher.watch(this, ["pointSize"], this.invalidateRenderData, this);
         }
-        /**
-         * 更新渲染数据
-         */
-        PointMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.u_PointSize = this.pointSize;
-            _super.prototype.updateRenderData.call(this, renderContext, renderData);
-        };
         return PointMaterial;
     }(feng3d.Material));
     feng3d.PointMaterial = PointMaterial;
@@ -12693,8 +12644,23 @@ var feng3d;
             _super.call(this);
             this.setShader("color");
             this.color = color || new feng3d.Color();
-            feng3d.Watcher.watch(this, ["color"], this.invalidateRenderData, this);
         }
+        Object.defineProperty(ColorMaterial.prototype, "color", {
+            /**
+             * 颜色
+             */
+            get: function () {
+                return this._color;
+            },
+            set: function (value) {
+                if (this._color == value)
+                    return;
+                this._color = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新渲染数据
          */
@@ -12764,8 +12730,23 @@ var feng3d;
         function TextureMaterial() {
             _super.call(this);
             this.setShader("texture");
-            feng3d.Watcher.watch(this, ["texture"], this.invalidateRenderData, this);
         }
+        Object.defineProperty(TextureMaterial.prototype, "texture", {
+            /**
+             * 纹理数据
+             */
+            get: function () {
+                return this._texture;
+            },
+            set: function (value) {
+                if (this._texture == value)
+                    return;
+                this._texture = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新渲染数据
          */
@@ -12792,8 +12773,20 @@ var feng3d;
             if (images) {
                 this.texture = new feng3d.TextureCube(images);
             }
-            feng3d.Watcher.watch(this, ["skyBoxTextureCube"], this.invalidateRenderData, this);
         }
+        Object.defineProperty(SkyBoxMaterial.prototype, "texture", {
+            get: function () {
+                return this._texture;
+            },
+            set: function (value) {
+                if (this._texture == value)
+                    return;
+                this._texture = value;
+                this.invalidateRenderData();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新渲染数据
          */

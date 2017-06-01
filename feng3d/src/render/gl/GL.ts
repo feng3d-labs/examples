@@ -66,6 +66,10 @@ interface WebGLActiveInfo
      * uniform地址
      */
     uniformLocation: WebGLUniformLocation | WebGLUniformLocation[];
+    /**
+     * texture索引
+     */
+    textureID: number;
 }
 
 interface WebGLRenderingContext

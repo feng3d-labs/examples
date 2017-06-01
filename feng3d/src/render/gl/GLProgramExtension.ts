@@ -93,6 +93,7 @@ module feng3d
         var numUniforms = gl.getProgramParameter(shaderProgram, gl.ACTIVE_UNIFORMS);
         shaderProgram.uniforms = [];
         var i = 0;
+        var textureID = 0;
         while (i < numUniforms)
         {
             var activeInfo = gl.getActiveUniform(shaderProgram, i++);
@@ -110,6 +111,11 @@ module feng3d
             } else
             {
                 activeInfo.uniformLocation = gl.getUniformLocation(shaderProgram, activeInfo.name);
+            }
+            if (activeInfo.type == GL.SAMPLER_2D || activeInfo.type == GL.SAMPLER_CUBE)
+            {
+                activeInfo.textureID = textureID;
+                textureID++;
             }
             shaderProgram.uniforms.push(activeInfo);
         }

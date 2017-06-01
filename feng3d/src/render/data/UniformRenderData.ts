@@ -8,7 +8,7 @@ module feng3d
         /**
          * 模型矩阵
          */
-        u_modelMatrix: Matrix3D;
+        u_modelMatrix: UniformData<Matrix3D>;
         /**
          * 世界投影矩阵
          */
@@ -235,7 +235,6 @@ module feng3d
          */
         public activeUniforms(gl: GL, uniformInfos: WebGLActiveInfo[])
         {
-            _samplerIndex = 0;
             for (var o = 0; o < uniformInfos.length; o++)
             {
                 var activeInfo = uniformInfos[o];
@@ -250,7 +249,7 @@ module feng3d
                     //处理数组
                     for (var j = 0; j < activeInfo.size; j++)
                     {
-                        this.setContext3DUniform(gl, { name: baseName + `[${j}]`, type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j] }, uniformData[j]);
+                        this.setContext3DUniform(gl, { name: baseName + `[${j}]`, type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j], textureID: activeInfo.textureID }, uniformData[j]);
                     }
                 } else
                 {
@@ -274,7 +273,7 @@ module feng3d
         /**
          * 设置环境Uniform数据
          */
-        private setContext3DUniform(gl: GL, activeInfo: { name: string; uniformLocation: WebGLUniformLocation, type: number; }, data)
+        private setContext3DUniform(gl: GL, activeInfo: { name: string; uniformLocation: WebGLUniformLocation, type: number; textureID: number }, data)
         {
             var location = activeInfo.uniformLocation;
             switch (activeInfo.type)
@@ -301,16 +300,14 @@ module feng3d
                 case GL.SAMPLER_CUBE:
                     var textureInfo = <TextureInfo>data;
                     //激活纹理编号
-                    gl.activeTexture(GL["TEXTURE" + _samplerIndex]);
+                    gl.activeTexture(GL["TEXTURE" + activeInfo.textureID]);
                     textureInfo.active(gl);
                     //设置纹理所在采样编号
-                    gl.uniform1i(location, _samplerIndex);
-                    _samplerIndex++;
+                    gl.uniform1i(location, activeInfo.textureID);
                     break;
                 default:
                     throw `无法识别的uniform类型 ${activeInfo.name} ${data}`;
             }
         }
     }
-    var _samplerIndex = 0;
 }

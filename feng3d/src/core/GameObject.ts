@@ -7,6 +7,8 @@ module feng3d
      */
     export class GameObject extends Entity
     {
+        public uniformData = new UniformRenderData();
+
         public get renderData() { return this._renderData; }
         private _renderData = new Object3DRenderAtomic();
         /**
@@ -46,7 +48,7 @@ module feng3d
                 this.renderData.renderHolderInvalid = false;
             }
             if (!this.renderData.uniforms.u_modelMatrix)
-                this.renderData.uniforms.u_modelMatrix = this.sceneTransform;
+                this.renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
             this.renderData.update(renderContext);
         }
 
@@ -81,6 +83,8 @@ module feng3d
         {
             super();
             this.name = name;
+
+            this.uniformData.u_modelMatrix = UniformData.getUniformData(this.sceneTransform);
         }
 
         /**

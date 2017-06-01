@@ -5384,6 +5384,7 @@ var feng3d;
         var numUniforms = gl.getProgramParameter(shaderProgram, gl.ACTIVE_UNIFORMS);
         shaderProgram.uniforms = [];
         var i = 0;
+        var textureID = 0;
         while (i < numUniforms) {
             var activeInfo = gl.getActiveUniform(shaderProgram, i++);
             if (activeInfo.name.indexOf("[") != -1) {
@@ -5398,6 +5399,10 @@ var feng3d;
             }
             else {
                 activeInfo.uniformLocation = gl.getUniformLocation(shaderProgram, activeInfo.name);
+            }
+            if (activeInfo.type == feng3d.GL.SAMPLER_2D || activeInfo.type == feng3d.GL.SAMPLER_CUBE) {
+                activeInfo.textureID = textureID;
+                textureID++;
             }
             shaderProgram.uniforms.push(activeInfo);
         }
@@ -5511,30 +5516,53 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     var UniformData = (function () {
-        function UniformData() {
+        function UniformData(data) {
+            this.data = data;
         }
-        return UniformData;
-    }());
-    feng3d.UniformData = UniformData;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var UniformDataMatrix3D = (function (_super) {
-        __extends(UniformDataMatrix3D, _super);
-        function UniformDataMatrix3D(data) {
-            var _this = _super.call(this) || this;
-            _this.data = data;
-            return _this;
-        }
+        UniformData.getUniformData = function (data) {
+            return new UniformData(data);
+        };
         /**
          * 设置环境Uniform数据
          */
-        UniformDataMatrix3D.prototype.setContext3DUniform = function (gl, activeInfo) {
-            gl.uniformMatrix4fv(location, false, this.data.rawData);
+        UniformData.prototype.setContext3DUniform = function (gl, activeInfo) {
+            var location = activeInfo.uniformLocation;
+            var data = this.data;
+            switch (activeInfo.type) {
+                case feng3d.GL.INT:
+                    gl.uniform1i(location, data);
+                    break;
+                case feng3d.GL.FLOAT_MAT4:
+                    gl.uniformMatrix4fv(location, false, data.rawData);
+                    break;
+                case feng3d.GL.FLOAT:
+                    gl.uniform1f(location, data);
+                    break;
+                case feng3d.GL.FLOAT_VEC2:
+                    gl.uniform2f(location, data.x, data.y);
+                    break;
+                case feng3d.GL.FLOAT_VEC3:
+                    gl.uniform3f(location, data.x, data.y, data.z);
+                    break;
+                case feng3d.GL.FLOAT_VEC4:
+                    gl.uniform4f(location, data.x, data.y, data.z, data.w);
+                    break;
+                case feng3d.GL.SAMPLER_2D:
+                case feng3d.GL.SAMPLER_CUBE:
+                    var textureInfo = data;
+                    //激活纹理编号
+                    gl.activeTexture(feng3d.GL["TEXTURE" + activeInfo.textureID]);
+                    textureInfo.active(gl);
+                    //设置纹理所在采样编号
+                    gl.uniform1i(location, activeInfo.textureID);
+                    break;
+                default:
+                    throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + activeInfo.name + " " + data;
+            }
         };
-        return UniformDataMatrix3D;
-    }(feng3d.UniformData));
-    feng3d.UniformDataMatrix3D = UniformDataMatrix3D;
+        return UniformData;
+    }());
+    feng3d.UniformData = UniformData;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -5548,7 +5576,6 @@ var feng3d;
          * 激活常量
          */
         UniformRenderData.prototype.activeUniforms = function (gl, uniformInfos) {
-            _samplerIndex = 0;
             for (var o = 0; o < uniformInfos.length; o++) {
                 var activeInfo = uniformInfos[o];
                 if (activeInfo.uniformBaseName) {
@@ -5559,7 +5586,7 @@ var feng3d;
                     }
                     //处理数组
                     for (var j = 0; j < activeInfo.size; j++) {
-                        this.setContext3DUniform(gl, { name: baseName + ("[" + j + "]"), type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j] }, uniformData[j]);
+                        this.setContext3DUniform(gl, { name: baseName + ("[" + j + "]"), type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j], textureID: activeInfo.textureID }, uniformData[j]);
                     }
                 }
                 else {
@@ -5604,11 +5631,10 @@ var feng3d;
                 case feng3d.GL.SAMPLER_CUBE:
                     var textureInfo = data;
                     //激活纹理编号
-                    gl.activeTexture(feng3d.GL["TEXTURE" + _samplerIndex]);
+                    gl.activeTexture(feng3d.GL["TEXTURE" + activeInfo.textureID]);
                     textureInfo.active(gl);
                     //设置纹理所在采样编号
-                    gl.uniform1i(location, _samplerIndex);
-                    _samplerIndex++;
+                    gl.uniform1i(location, activeInfo.textureID);
                     break;
                 default:
                     throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + activeInfo.name + " " + data;
@@ -5617,7 +5643,6 @@ var feng3d;
         return UniformRenderData;
     }());
     feng3d.UniformRenderData = UniformRenderData;
-    var _samplerIndex = 0;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -8112,6 +8137,7 @@ var feng3d;
         function GameObject(name) {
             if (name === void 0) { name = "object"; }
             var _this = _super.call(this) || this;
+            _this.uniformData = new feng3d.UniformRenderData();
             _this._renderData = new feng3d.Object3DRenderAtomic();
             /**
              * 组件列表
@@ -8126,6 +8152,7 @@ var feng3d;
              */
             _this.holdSize = NaN;
             _this.name = name;
+            _this.uniformData.u_modelMatrix = feng3d.UniformData.getUniformData(_this.sceneTransform);
             return _this;
         }
         Object.defineProperty(GameObject.prototype, "renderData", {
@@ -8152,7 +8179,7 @@ var feng3d;
                 this.renderData.renderHolderInvalid = false;
             }
             if (!this.renderData.uniforms.u_modelMatrix)
-                this.renderData.uniforms.u_modelMatrix = this.sceneTransform;
+                this.renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
             this.renderData.update(renderContext);
         };
         GameObject.prototype.getDepthScale = function (renderContext) {

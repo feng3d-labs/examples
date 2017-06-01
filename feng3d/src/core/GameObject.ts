@@ -45,7 +45,8 @@ module feng3d
                 this.collectRenderDataHolder(this.renderData);
                 this.renderData.renderHolderInvalid = false;
             }
-            this.updateRenderData(renderContext, this.renderData);
+            if (!this.renderData.uniforms.u_modelMatrix)
+                this.renderData.uniforms.u_modelMatrix = () => this.sceneTransform;
             this.renderData.update(renderContext);
         }
 
@@ -80,17 +81,6 @@ module feng3d
         {
             super();
             this.name = name;
-        }
-
-        
-
-		/**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            //
-            renderData.uniforms.u_modelMatrix = this.sceneTransform;
         }
 
         /**

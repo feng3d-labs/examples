@@ -15,7 +15,7 @@ module feng3d
         }
         public set color(value)
         {
-            if(this._color == value)
+            if (this._color == value)
                 return;
             this._color = value;
             this.invalidateRenderData();
@@ -39,7 +39,7 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.u_diffuseInput = this.color;
+            renderData.uniforms.u_diffuseInput = () => this.color;
             super.updateRenderData(renderContext, renderData);
         }
     }

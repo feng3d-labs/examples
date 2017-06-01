@@ -8,38 +8,37 @@ module feng3d
         /**
          * 模型矩阵
          */
-        // u_modelMatrix: UniformDataMatrix3D;
-        u_modelMatrix: Matrix3D;
+        u_modelMatrix: Matrix3D | (() => Matrix3D);
         /**
          * 世界投影矩阵
          */
-        u_viewProjection: Matrix3D;
+        u_viewProjection: Matrix3D | (() => Matrix3D);
         /**
          * 摄像机矩阵
          */
-        u_cameraMatrix: Matrix3D;
+        u_cameraMatrix: Matrix3D | (() => Matrix3D);
 
-        u_diffuseInput: Vector3D;
+        u_diffuseInput: Vector3D | (() => Vector3D);
         /**
          * 透明阈值，用于透明检测
          */
-        u_alphaThreshold: number;
+        u_alphaThreshold: number | (() => number);
         /**
          * 漫反射贴图
          */
-        s_texture: Texture2D;
+        s_texture: Texture2D | (() => Texture2D);
         /**
          * 漫反射贴图
          */
-        s_diffuse: Texture2D;
+        s_diffuse: Texture2D | (() => Texture2D);
         /**
          * 环境贴图
          */
-        s_ambient: Texture2D;
+        s_ambient: Texture2D | (() => Texture2D);
         /**
          * 法线贴图
          */
-        s_normal: Texture2D;
+        s_normal: Texture2D | (() => Texture2D);
         /**
          * 镜面反射光泽图
          */
@@ -51,7 +50,7 @@ module feng3d
         /**
          * 天空盒尺寸
          */
-        u_skyBoxSize: number;
+        u_skyBoxSize: number | (() => number);
 
         /**
          * 地形混合贴图
@@ -144,11 +143,11 @@ module feng3d
         /**
          * 场景环境光
          */
-        u_sceneAmbientColor: Color;
+        u_sceneAmbientColor: Color | (() => Color);
         /**
          * 基本颜色
          */
-        u_diffuse: Color;
+        u_diffuse: Color | (() => Color);
         /**
          * 镜面反射颜色
          */
@@ -156,7 +155,7 @@ module feng3d
         /**
          * 环境颜色
          */
-        u_ambient: Color;
+        u_ambient: Color | (() => Color);
         /**
          * 高光系数
          */
@@ -229,7 +228,7 @@ module feng3d
         /**
          * 单位深度映射到屏幕像素值
          */
-        u_scaleByDepth: number;
+        u_scaleByDepth: number | (() => number);
 
         /**
          * 激活常量
@@ -242,22 +241,31 @@ module feng3d
                 var activeInfo = uniformInfos[o];
                 if (activeInfo.uniformBaseName)
                 {
-                    //处理数组
                     var baseName = activeInfo.uniformBaseName;
+                    var uniformData = this[baseName];
+                    if (uniformData instanceof Function)
+                    {
+                        uniformData = uniformData();
+                    }
+                    //处理数组
                     for (var j = 0; j < activeInfo.size; j++)
                     {
-                        this.setContext3DUniform(gl, { name: baseName + `[${j}]`, type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j] }, this[baseName][j]);
+                        this.setContext3DUniform(gl, { name: baseName + `[${j}]`, type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j] }, uniformData[j]);
                     }
                 } else
                 {
                     var uniformData = this[activeInfo.name];
-                    if(uniformData instanceof UniformData)
+                    if (uniformData instanceof Function)
                     {
-                        uniformData.setContext3DUniform(gl,activeInfo);
+                        uniformData = uniformData();
+                    }
+                    if (uniformData instanceof UniformData)
+                    {
+                        uniformData.setContext3DUniform(gl, activeInfo);
                     }
                     else
                     {
-                        this.setContext3DUniform(gl, activeInfo, this[activeInfo.name]);
+                        this.setContext3DUniform(gl, activeInfo, uniformData);
                     }
                 }
             }

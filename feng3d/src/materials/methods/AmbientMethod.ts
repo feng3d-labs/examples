@@ -54,8 +54,8 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.u_ambient = () => this._color;
-            renderData.uniforms.s_ambient = () => this._ambientTexture;
+            renderData.uniforms.u_ambient = this._color;
+            renderData.uniforms.s_ambient = this._ambientTexture;
             //
             super.updateRenderData(renderContext, renderData);
         }

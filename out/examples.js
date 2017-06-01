@@ -6231,7 +6231,6 @@ var feng3d;
          * 更新渲染数据
          */
         RenderContext.prototype.updateRenderData = function (renderAtomic) {
-            var _this = this;
             var pointLights = [];
             var directionalLights = [];
             this.camera.updateRenderData(this, renderAtomic);
@@ -6290,8 +6289,8 @@ var feng3d;
                 renderAtomic.uniforms.u_directionalLightColors = directionalLightColors;
                 renderAtomic.uniforms.u_directionalLightIntensitys = directionalLightIntensitys;
             }
-            renderAtomic.uniforms.u_sceneAmbientColor = function () { return _this.scene3d.ambientColor; };
-            renderAtomic.uniforms.u_scaleByDepth = function () { return _this.view3D.getScaleByDepth(1); };
+            renderAtomic.uniforms.u_sceneAmbientColor = this.scene3d.ambientColor;
+            renderAtomic.uniforms.u_scaleByDepth = this.view3D.getScaleByDepth(1);
         };
         return RenderContext;
     }());
@@ -8135,7 +8134,6 @@ var feng3d;
             configurable: true
         });
         GameObject.prototype.updateRender = function (renderContext) {
-            var _this = this;
             if (this.isBillboard) {
                 var parentInverseSceneTransform = (this.parent && this.parent.inverseSceneTransform) || new feng3d.Matrix3D();
                 var cameraPos = parentInverseSceneTransform.transformVector(renderContext.camera.sceneTransform.position);
@@ -8154,7 +8152,7 @@ var feng3d;
                 this.renderData.renderHolderInvalid = false;
             }
             if (!this.renderData.uniforms.u_modelMatrix)
-                this.renderData.uniforms.u_modelMatrix = function () { return _this.sceneTransform; };
+                this.renderData.uniforms.u_modelMatrix = this.sceneTransform;
             this.renderData.update(renderContext);
         };
         GameObject.prototype.getDepthScale = function (renderContext) {
@@ -10142,15 +10140,12 @@ var feng3d;
          * 更新渲染数据
          */
         Camera.prototype.updateRenderData = function (renderContext, renderData) {
-            var _this = this;
             //
-            renderData.uniforms.u_viewProjection = function () { return _this.viewProjection; };
-            renderData.uniforms.u_cameraMatrix = function () {
-                var globalMatrix3d = _this.parentComponent ? _this.parentComponent.sceneTransform : new feng3d.Matrix3D();
-                return globalMatrix3d;
-            };
+            renderData.uniforms.u_viewProjection = this.viewProjection;
+            var globalMatrix3d = this.parentComponent ? this.parentComponent.sceneTransform : new feng3d.Matrix3D();
+            renderData.uniforms.u_cameraMatrix = globalMatrix3d;
             //
-            renderData.uniforms.u_skyBoxSize = function () { return _this._lens.far / Math.sqrt(3); };
+            renderData.uniforms.u_skyBoxSize = this._lens.far / Math.sqrt(3);
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         Object.defineProperty(Camera.prototype, "frustumPlanes", {
@@ -13159,8 +13154,7 @@ var feng3d;
          * 更新渲染数据
          */
         ColorMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            var _this = this;
-            renderData.uniforms.u_diffuseInput = function () { return _this.color; };
+            renderData.uniforms.u_diffuseInput = this.color;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return ColorMaterial;
@@ -13248,8 +13242,7 @@ var feng3d;
          * 更新渲染数据
          */
         TextureMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            var _this = this;
-            renderData.uniforms.s_texture = function () { return _this.texture; };
+            renderData.uniforms.s_texture = this.texture;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return TextureMaterial;
@@ -13520,10 +13513,9 @@ var feng3d;
          * 更新渲染数据
          */
         DiffuseMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            var _this = this;
-            renderData.uniforms.u_diffuse = function () { return _this.color; };
-            renderData.uniforms.s_diffuse = function () { return _this.difuseTexture; };
-            renderData.uniforms.u_alphaThreshold = function () { return _this.alphaThreshold; };
+            renderData.uniforms.u_diffuse = this.color;
+            renderData.uniforms.s_diffuse = this.difuseTexture;
+            renderData.uniforms.u_alphaThreshold = this.alphaThreshold;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13584,8 +13576,7 @@ var feng3d;
          * 更新渲染数据
          */
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            var _this = this;
-            renderData.uniforms.s_normal = function () { return _this.normalTexture; };
+            renderData.uniforms.s_normal = this.normalTexture;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13736,9 +13727,8 @@ var feng3d;
          * 更新渲染数据
          */
         AmbientMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            var _this = this;
-            renderData.uniforms.u_ambient = function () { return _this._color; };
-            renderData.uniforms.s_ambient = function () { return _this._ambientTexture; };
+            renderData.uniforms.u_ambient = this._color;
+            renderData.uniforms.s_ambient = this._ambientTexture;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };

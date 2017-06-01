@@ -48,7 +48,7 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.s_normal = () => this.normalTexture;
+            renderData.uniforms.s_normal = this.normalTexture;
             //
             super.updateRenderData(renderContext, renderData);
         }

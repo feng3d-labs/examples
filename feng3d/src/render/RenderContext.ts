@@ -96,9 +96,8 @@ module feng3d
                 renderAtomic.uniforms.u_directionalLightIntensitys = directionalLightIntensitys;
             }
 
-            renderAtomic.uniforms.u_sceneAmbientColor = () => this.scene3d.ambientColor;
-
-            renderAtomic.uniforms.u_scaleByDepth = () => this.view3D.getScaleByDepth(1);
+            renderAtomic.uniforms.u_sceneAmbientColor = this.scene3d.ambientColor;
+            renderAtomic.uniforms.u_scaleByDepth = this.view3D.getScaleByDepth(1);
         }
     }
 }

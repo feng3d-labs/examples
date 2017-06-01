@@ -74,9 +74,9 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.u_diffuse = () => this.color;
-            renderData.uniforms.s_diffuse = () => this.difuseTexture;
-            renderData.uniforms.u_alphaThreshold = () => this.alphaThreshold;
+            renderData.uniforms.u_diffuse = this.color;
+            renderData.uniforms.s_diffuse = this.difuseTexture;
+            renderData.uniforms.u_alphaThreshold = this.alphaThreshold;
             //
             super.updateRenderData(renderContext, renderData);
         }

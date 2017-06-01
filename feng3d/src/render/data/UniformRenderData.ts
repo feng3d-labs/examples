@@ -8,37 +8,37 @@ module feng3d
         /**
          * 模型矩阵
          */
-        u_modelMatrix: Matrix3D | (() => Matrix3D);
+        u_modelMatrix: Matrix3D;
         /**
          * 世界投影矩阵
          */
-        u_viewProjection: Matrix3D | (() => Matrix3D);
+        u_viewProjection: Matrix3D;
         /**
          * 摄像机矩阵
          */
-        u_cameraMatrix: Matrix3D | (() => Matrix3D);
+        u_cameraMatrix: Matrix3D;
 
-        u_diffuseInput: Vector3D | (() => Vector3D);
+        u_diffuseInput: Vector3D;
         /**
          * 透明阈值，用于透明检测
          */
-        u_alphaThreshold: number | (() => number);
+        u_alphaThreshold: number;
         /**
          * 漫反射贴图
          */
-        s_texture: Texture2D | (() => Texture2D);
+        s_texture: Texture2D;
         /**
          * 漫反射贴图
          */
-        s_diffuse: Texture2D | (() => Texture2D);
+        s_diffuse: Texture2D;
         /**
          * 环境贴图
          */
-        s_ambient: Texture2D | (() => Texture2D);
+        s_ambient: Texture2D;
         /**
          * 法线贴图
          */
-        s_normal: Texture2D | (() => Texture2D);
+        s_normal: Texture2D;
         /**
          * 镜面反射光泽图
          */
@@ -50,7 +50,7 @@ module feng3d
         /**
          * 天空盒尺寸
          */
-        u_skyBoxSize: number | (() => number);
+        u_skyBoxSize: number;
 
         /**
          * 地形混合贴图
@@ -143,11 +143,11 @@ module feng3d
         /**
          * 场景环境光
          */
-        u_sceneAmbientColor: Color | (() => Color);
+        u_sceneAmbientColor: Color;
         /**
          * 基本颜色
          */
-        u_diffuse: Color | (() => Color);
+        u_diffuse: Color;
         /**
          * 镜面反射颜色
          */
@@ -155,7 +155,7 @@ module feng3d
         /**
          * 环境颜色
          */
-        u_ambient: Color | (() => Color);
+        u_ambient: Color;
         /**
          * 高光系数
          */
@@ -228,7 +228,7 @@ module feng3d
         /**
          * 单位深度映射到屏幕像素值
          */
-        u_scaleByDepth: number | (() => number);
+        u_scaleByDepth: number;
 
         /**
          * 激活常量

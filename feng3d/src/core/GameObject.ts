@@ -46,7 +46,7 @@ module feng3d
                 this.renderData.renderHolderInvalid = false;
             }
             if (!this.renderData.uniforms.u_modelMatrix)
-                this.renderData.uniforms.u_modelMatrix = () => this.sceneTransform;
+                this.renderData.uniforms.u_modelMatrix = this.sceneTransform;
             this.renderData.update(renderContext);
         }
 

@@ -21,6 +21,7 @@ module feng3d
             if (this._normalTexture)
                 this._normalTexture.addEventListener(Event.LOADED, this.onLoaded, this);
             this.invalidateRenderData();
+            this.invalidateShader();
         }
         private _normalTexture: Texture2D;
 
@@ -39,6 +40,7 @@ module feng3d
         private onLoaded()
         {
             this.invalidateRenderData();
+            this.invalidateShader();
         }
 
         /**
@@ -46,18 +48,17 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            if (this.normalTexture.checkRenderData())
-            {
-                renderData.uniforms.s_normal = this.normalTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
-            } else
-            {
-                delete renderData.uniforms.s_normal;
-                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
-            }
-
+            renderData.uniforms.s_normal = this.normalTexture;
             //
             super.updateRenderData(renderContext, renderData);
+        }
+
+		/**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = this.normalTexture.checkRenderData();
         }
     }
 }

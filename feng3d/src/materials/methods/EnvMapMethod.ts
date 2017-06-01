@@ -30,8 +30,11 @@ module feng3d
 
         public set envMap(value)
         {
+            if (this._cubeTexture == value)
+                return;
             this._cubeTexture = value;
             this.invalidateRenderData();
+            this.invalidateShader();
         }
 
         /**
@@ -44,6 +47,8 @@ module feng3d
 
         public set reflectivity(value: number)
         {
+            if(this._reflectivity == value)
+                return;
             this._reflectivity = value;
             this.invalidateRenderData();
         }
@@ -53,12 +58,19 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
             renderData.uniforms.s_envMap = this._cubeTexture;
             renderData.uniforms.u_reflectivity = this._reflectivity;
 
             //
             super.updateRenderData(renderContext, renderData);
+        }
+
+		/**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            renderData.shader.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
         }
     }
 }

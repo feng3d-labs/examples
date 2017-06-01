@@ -16,11 +16,12 @@ module feng3d
         public set difuseTexture(value)
         {
             if (this._difuseTexture)
-                this.difuseTexture.removeEventListener(Event.LOADED, this.invalidateRenderData, this);
+                this.difuseTexture.removeEventListener(Event.LOADED, this.onLoaded, this);
             this._difuseTexture = value;
             if (this._difuseTexture)
-                this.difuseTexture.addEventListener(Event.LOADED, this.invalidateRenderData, this);
+                this.difuseTexture.addEventListener(Event.LOADED, this.onLoaded, this);
             this.invalidateRenderData();
+            this.invalidateShader();
         }
         private _difuseTexture: Texture2D;
 
@@ -62,26 +63,30 @@ module feng3d
             this.color = new Color(1, 1, 1, 1);
         }
 
+        private onLoaded()
+        {
+            this.invalidateRenderData();
+            this.invalidateShader();
+        }
+
         /**
 		 * 更新渲染数据
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             renderData.uniforms.u_diffuse = this.color;
-
-            if (this.difuseTexture.checkRenderData())
-            {
-                renderData.uniforms.s_diffuse = this.difuseTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
-            } else
-            {
-                delete renderData.uniforms.s_diffuse;
-                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
-            }
+            renderData.uniforms.s_diffuse = this.difuseTexture;
             renderData.uniforms.u_alphaThreshold = this.alphaThreshold;
-
             //
             super.updateRenderData(renderContext, renderData);
+        }
+
+		/**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = this.difuseTexture.checkRenderData();
         }
     }
 }

@@ -5617,10 +5617,9 @@ var feng3d;
         ShaderRenderData.prototype.activeShaderProgram = function (gl) {
             if (!this.vertexCode || !this.fragmentCode)
                 return null;
-            // if (this._invalid)
-            // {
-            this.update();
-            // }
+            if (this._invalid) {
+                this.update();
+            }
             //渲染程序
             var shaderProgram = gl.programs[this.uuid];
             if (shaderProgram) {
@@ -12999,18 +12998,14 @@ var feng3d;
          */
         Material.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.shader.shaderParams.renderMode = this.renderMode;
             renderData.uniforms.u_PointSize = this.pointSize;
-            for (var i = 0; i < this._methods.length; i++) {
-                this._methods[i].updateRenderData(renderContext, renderData);
-            }
-            _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**
          * 更新渲染数据
          */
         Material.prototype.updateRenderShader = function (renderContext, renderData) {
             //
+            renderData.shader.shaderParams.renderMode = this.renderMode;
             renderData.shader.vertexCode = this.vertexCode;
             renderData.shader.fragmentCode = this.fragmentCode;
             renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = this.renderMode == feng3d.RenderMode.POINTS;
@@ -13386,11 +13381,12 @@ var feng3d;
             },
             set: function (value) {
                 if (this._difuseTexture)
-                    this.difuseTexture.removeEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                    this.difuseTexture.removeEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this._difuseTexture = value;
                 if (this._difuseTexture)
-                    this.difuseTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                    this.difuseTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13423,22 +13419,25 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        DiffuseMethod.prototype.onLoaded = function () {
+            this.invalidateRenderData();
+            this.invalidateShader();
+        };
         /**
          * 更新渲染数据
          */
         DiffuseMethod.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.uniforms.u_diffuse = this.color;
-            if (this.difuseTexture.checkRenderData()) {
-                renderData.uniforms.s_diffuse = this.difuseTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = true;
-            }
-            else {
-                delete renderData.uniforms.s_diffuse;
-                renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = false;
-            }
+            renderData.uniforms.s_diffuse = this.difuseTexture;
             renderData.uniforms.u_alphaThreshold = this.alphaThreshold;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        DiffuseMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = this.difuseTexture.checkRenderData();
         };
         return DiffuseMethod;
     }(feng3d.RenderDataHolder));
@@ -13474,6 +13473,7 @@ var feng3d;
                 if (this._normalTexture)
                     this._normalTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13483,21 +13483,21 @@ var feng3d;
          */
         NormalMethod.prototype.onLoaded = function () {
             this.invalidateRenderData();
+            this.invalidateShader();
         };
         /**
          * 更新渲染数据
          */
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            if (this.normalTexture.checkRenderData()) {
-                renderData.uniforms.s_normal = this.normalTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = true;
-            }
-            else {
-                delete renderData.uniforms.s_normal;
-                renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = false;
-            }
+            renderData.uniforms.s_normal = this.normalTexture;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        NormalMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.boolMacros.HAS_NORMAL_SAMPLER = this.normalTexture.checkRenderData();
         };
         return NormalMethod;
     }(feng3d.RenderDataHolder));
@@ -13536,11 +13536,12 @@ var feng3d;
             },
             set: function (value) {
                 if (this._specularTexture)
-                    this._specularTexture.removeEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                    this._specularTexture.removeEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this._specularTexture = value;
                 if (this._specularTexture)
-                    this._specularTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
+                    this._specularTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13558,22 +13559,25 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        SpecularMethod.prototype.onLoaded = function () {
+            this.invalidateRenderData();
+            this.invalidateShader();
+        };
         /**
          * 更新渲染数据
          */
         SpecularMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            if (this.specularTexture.checkRenderData()) {
-                renderData.uniforms.s_specular = this.specularTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
-            }
-            else {
-                delete renderData.uniforms.s_specular;
-                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
-            }
+            renderData.uniforms.s_specular = this.specularTexture;
             renderData.uniforms.u_specular = this.specularColor;
             renderData.uniforms.u_glossiness = this.glossiness;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        SpecularMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = this.specularTexture.checkRenderData();
         };
         return SpecularMethod;
     }(feng3d.RenderDataHolder));
@@ -13611,6 +13615,7 @@ var feng3d;
                 if (this.ambientTexture)
                     this.ambientTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
                 this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13634,16 +13639,15 @@ var feng3d;
          */
         AmbientMethod.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.uniforms.u_ambient = this._color;
-            if (this.ambientTexture.checkRenderData()) {
-                renderData.uniforms.s_ambient = this._ambientTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
-            }
-            else {
-                delete renderData.uniforms.s_ambient;
-                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
-            }
+            renderData.uniforms.s_ambient = this._ambientTexture;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        AmbientMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = this.ambientTexture.checkRenderData();
         };
         return AmbientMethod;
     }(feng3d.RenderDataHolder));
@@ -13673,7 +13677,6 @@ var feng3d;
             this._maxDistance = maxDistance;
             this._density = density;
             this._mode = mode;
-            this.invalidateRenderData();
         }
         Object.defineProperty(FogMethod.prototype, "minDistance", {
             /**
@@ -13746,16 +13749,21 @@ var feng3d;
          * 更新渲染数据
          */
         FogMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shader.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
             renderData.uniforms.u_fogColor = this._fogColor;
             renderData.uniforms.u_fogMinDistance = this._minDistance;
             renderData.uniforms.u_fogMaxDistance = this._maxDistance;
             renderData.uniforms.u_fogDensity = this._density;
             renderData.uniforms.u_fogMode = this._mode;
             //
-            renderData.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
-            //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        FogMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            //
+            renderData.shader.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
+            renderData.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
         };
         return FogMethod;
     }(feng3d.RenderDataHolder));
@@ -13797,8 +13805,11 @@ var feng3d;
                 return this._cubeTexture;
             },
             set: function (value) {
+                if (this._cubeTexture == value)
+                    return;
                 this._cubeTexture = value;
                 this.invalidateRenderData();
+                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13811,6 +13822,8 @@ var feng3d;
                 return this._reflectivity;
             },
             set: function (value) {
+                if (this._reflectivity == value)
+                    return;
                 this._reflectivity = value;
                 this.invalidateRenderData();
             },
@@ -13821,11 +13834,16 @@ var feng3d;
          * 更新渲染数据
          */
         EnvMapMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shader.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
             renderData.uniforms.s_envMap = this._cubeTexture;
             renderData.uniforms.u_reflectivity = this._reflectivity;
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        EnvMapMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.boolMacros.HAS_ENV_METHOD = true;
         };
         return EnvMapMethod;
     }(feng3d.RenderDataHolder));
@@ -14876,7 +14894,6 @@ var feng3d;
             this._heightImage.crossOrigin = "Anonymous";
             this._heightImage.addEventListener("load", this.onHeightMapLoad.bind(this));
             this.heightMapUrl = heightMapUrl;
-            feng3d.Binding.bindProperty(this, ["heightMapUrl"], this._heightImage, "src");
         }
         Object.defineProperty(TerrainGeometry.prototype, "heightMapUrl", {
             get: function () {
@@ -15229,13 +15246,18 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
             renderData.uniforms.s_blendTexture = this.blendTexture;
             renderData.uniforms.s_splatTexture1 = this.splatTexture1;
             renderData.uniforms.s_splatTexture2 = this.splatTexture2;
             renderData.uniforms.s_splatTexture3 = this.splatTexture3;
             renderData.uniforms.u_splatRepeats = this.splatRepeats;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        TerrainMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
         };
         return TerrainMethod;
     }(feng3d.RenderDataHolder));
@@ -15316,8 +15338,6 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMergeMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
-            renderData.shader.shaderMacro.boolMacros.USE_TERRAIN_MERGE = true;
             renderData.uniforms.s_blendTexture = this.blendTexture;
             renderData.uniforms.s_splatMergeTexture = this.splatMergeTexture;
             renderData.uniforms.u_splatMergeTextureSize = this.splatMergeTexture.size;
@@ -15334,6 +15354,13 @@ var feng3d;
             ];
             renderData.uniforms.u_lod0vec = new feng3d.Vector3D(0.5, 1, 0, 0);
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        TerrainMergeMethod.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.USE_TERRAIN_MERGE = true;
         };
         return TerrainMergeMethod;
     }(feng3d.RenderDataHolder));
@@ -16381,6 +16408,22 @@ var feng3d;
             this._globalPropertiesDirty = true;
             this.skeleton = skeleton;
         }
+        Object.defineProperty(SkeletonAnimator.prototype, "skeleton", {
+            /**
+             * 骨骼
+             */
+            get: function () {
+                return this._skeleton;
+            },
+            set: function (value) {
+                if (this._skeleton == value)
+                    return;
+                this._skeleton = value;
+                this.invalidateShader();
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(SkeletonAnimator.prototype, "globalMatrices", {
             /**
              * 当前骨骼姿势的全局矩阵
@@ -16408,21 +16451,23 @@ var feng3d;
                 this._activeState.positionDelta;
             }
             this._activeSkeletonState = this._activeState;
+            this.invalidateRenderData();
+            this.invalidateShader();
             this.start();
         };
         /**
          * 更新渲染数据
          */
         SkeletonAnimator.prototype.updateRenderData = function (renderContext, renderData) {
-            if (this._activeSkeletonState) {
-                renderData.shader.shaderMacro.valueMacros.NUM_SKELETONJOINT = this.skeleton.numJoints;
-                renderData.uniforms.u_skeletonGlobalMatriices = this.globalMatrices;
-                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = true;
-                _super.prototype.updateRenderData.call(this, renderContext, renderData);
-            }
-            else {
-                renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = false;
-            }
+            renderData.uniforms.u_skeletonGlobalMatriices = this.globalMatrices;
+            _super.prototype.updateRenderData.call(this, renderContext, renderData);
+        };
+        /**
+         * 更新渲染数据
+         */
+        SkeletonAnimator.prototype.updateRenderShader = function (renderContext, renderData) {
+            renderData.shader.shaderMacro.valueMacros.NUM_SKELETONJOINT = this._skeleton.numJoints;
+            renderData.shader.shaderMacro.boolMacros.HAS_SKELETON_ANIMATION = !!this._activeSkeletonState;
         };
         /**
          * @inheritDoc
@@ -16436,14 +16481,16 @@ var feng3d;
          * 更新骨骼全局变换矩阵
          */
         SkeletonAnimator.prototype.updateGlobalProperties = function () {
+            if (!this._activeSkeletonState)
+                return;
             this._globalPropertiesDirty = false;
             //获取全局骨骼姿势
             var currentSkeletonPose = this._activeSkeletonState.getSkeletonPose();
             var globalMatrix3Ds = currentSkeletonPose.globalMatrix3Ds;
             //姿势变换矩阵
-            var joints = this.skeleton.joints;
+            var joints = this._skeleton.joints;
             //遍历每个关节
-            for (var i = 0; i < this.skeleton.numJoints; ++i) {
+            for (var i = 0; i < this._skeleton.numJoints; ++i) {
                 var inverseMatrix3D = joints[i].invertMatrix3D;
                 var matrix3D = globalMatrix3Ds[i].clone();
                 matrix3D.prepend(inverseMatrix3D);

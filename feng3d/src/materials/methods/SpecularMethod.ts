@@ -16,11 +16,12 @@ module feng3d
         public set specularTexture(value)
         {
             if (this._specularTexture)
-                this._specularTexture.removeEventListener(Event.LOADED, this.invalidateRenderData, this);
+                this._specularTexture.removeEventListener(Event.LOADED, this.onLoaded, this);
             this._specularTexture = value;
             if (this._specularTexture)
-                this._specularTexture.addEventListener(Event.LOADED, this.invalidateRenderData, this);
+                this._specularTexture.addEventListener(Event.LOADED, this.onLoaded, this);
             this.invalidateRenderData();
+            this.invalidateShader();
         }
         private _specularTexture: Texture2D;
         /**
@@ -52,25 +53,30 @@ module feng3d
             this.specularTexture = new Texture2D(specularUrl);
         }
 
+        private onLoaded()
+        {
+            this.invalidateRenderData();
+            this.invalidateShader();
+        }
+
         /**
 		 * 更新渲染数据
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            if (this.specularTexture.checkRenderData())
-            {
-                renderData.uniforms.s_specular = this.specularTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = true;
-            } else
-            {
-                delete renderData.uniforms.s_specular;
-                renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = false;
-            }
+            renderData.uniforms.s_specular = this.specularTexture;
             renderData.uniforms.u_specular = this.specularColor;
             renderData.uniforms.u_glossiness = this.glossiness;
-
             //
             super.updateRenderData(renderContext, renderData);
+        }
+
+        /**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            renderData.shader.shaderMacro.boolMacros.HAS_SPECULAR_SAMPLER = this.specularTexture.checkRenderData();
         }
     }
 }

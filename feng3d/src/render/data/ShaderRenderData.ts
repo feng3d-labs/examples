@@ -66,10 +66,10 @@ module feng3d
             if (!this.vertexCode || !this.fragmentCode)
                 return null;
 
-            // if (this._invalid)
-            // {
-            this.update();
-            // }
+            if (this._invalid)
+            {
+                this.update();
+            }
 
             //渲染程序
             var shaderProgram = gl.programs[this.uuid];

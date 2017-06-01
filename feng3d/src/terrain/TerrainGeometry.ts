@@ -139,8 +139,6 @@ module feng3d
             this._heightImage.crossOrigin = "Anonymous";
             this._heightImage.addEventListener("load", this.onHeightMapLoad.bind(this));
             this.heightMapUrl = heightMapUrl;
-
-            Binding.bindProperty(this, ["heightMapUrl"], this._heightImage, "src");
         }
 
         /**

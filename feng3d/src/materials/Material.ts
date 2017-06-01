@@ -170,14 +170,7 @@ module feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.shader.shaderParams.renderMode = this.renderMode;
             renderData.uniforms.u_PointSize = this.pointSize;
-
-            for (var i = 0; i < this._methods.length; i++)
-            {
-                this._methods[i].updateRenderData(renderContext, renderData);
-            }
-            super.updateRenderData(renderContext, renderData);
         }
 
         /**
@@ -186,6 +179,7 @@ module feng3d
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
+            renderData.shader.shaderParams.renderMode = this.renderMode;
             renderData.shader.vertexCode = this.vertexCode;
             renderData.shader.fragmentCode = this.fragmentCode;
             renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = this.renderMode == RenderMode.POINTS;

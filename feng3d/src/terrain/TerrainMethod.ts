@@ -123,8 +123,6 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
-
             renderData.uniforms.s_blendTexture = this.blendTexture;
             renderData.uniforms.s_splatTexture1 = this.splatTexture1;
             renderData.uniforms.s_splatTexture2 = this.splatTexture2;
@@ -132,6 +130,14 @@ module feng3d
             renderData.uniforms.u_splatRepeats = this.splatRepeats;
 
             super.updateRenderData(renderContext, renderData);
+        }
+
+        /**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
         }
     }
 }

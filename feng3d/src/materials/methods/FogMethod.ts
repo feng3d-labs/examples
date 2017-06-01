@@ -79,7 +79,6 @@ module feng3d
             this._maxDistance = maxDistance;
             this._density = density;
             this._mode = mode;
-            this.invalidateRenderData();
         }
 
         /**
@@ -87,16 +86,23 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
             renderData.uniforms.u_fogColor = this._fogColor;
             renderData.uniforms.u_fogMinDistance = this._minDistance;
             renderData.uniforms.u_fogMaxDistance = this._maxDistance;
             renderData.uniforms.u_fogDensity = this._density;
             renderData.uniforms.u_fogMode = this._mode;
             //
-            renderData.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
-            //
             super.updateRenderData(renderContext, renderData);
+        }
+
+		/**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            //
+            renderData.shader.shaderMacro.boolMacros.HAS_FOG_METHOD = true;
+            renderData.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED++;
         }
     }
 

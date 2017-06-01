@@ -81,9 +81,6 @@ module feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
-            renderData.shader.shaderMacro.boolMacros.USE_TERRAIN_MERGE = true;
-
             renderData.uniforms.s_blendTexture = this.blendTexture;
             renderData.uniforms.s_splatMergeTexture = this.splatMergeTexture;
             renderData.uniforms.u_splatMergeTextureSize = this.splatMergeTexture.size;
@@ -100,8 +97,16 @@ module feng3d
             ];
             renderData.uniforms.u_lod0vec = new Vector3D(0.5, 1, 0, 0);
 
-
             super.updateRenderData(renderContext, renderData);
+        }
+
+        /**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            renderData.shader.shaderMacro.boolMacros.HAS_TERRAIN_METHOD = true;
+            renderData.shader.shaderMacro.boolMacros.USE_TERRAIN_MERGE = true;
         }
     }
 }

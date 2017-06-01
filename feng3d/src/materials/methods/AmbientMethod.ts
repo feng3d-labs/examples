@@ -21,6 +21,7 @@ module feng3d
             if (this.ambientTexture)
                 this.ambientTexture.addEventListener(Event.LOADED, this.invalidateRenderData, this);
             this.invalidateRenderData();
+            this.invalidateShader();
         }
         private _ambientTexture: Texture2D;
 
@@ -54,18 +55,17 @@ module feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             renderData.uniforms.u_ambient = this._color;
-
-            if (this.ambientTexture.checkRenderData())
-            {
-                renderData.uniforms.s_ambient = this._ambientTexture;
-                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = true;
-            } else
-            {
-                delete renderData.uniforms.s_ambient;
-                renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = false;
-            }
+            renderData.uniforms.s_ambient = this._ambientTexture;
             //
             super.updateRenderData(renderContext, renderData);
+        }
+
+		/**
+		 * 更新渲染数据
+		 */
+        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = this.ambientTexture.checkRenderData();
         }
     }
 }

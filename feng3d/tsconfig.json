@@ -70,6 +70,8 @@
         "src/render/consts/BlendEquation.ts",
         "src/render/consts/TextureType.ts",
         //
+        "src/render/data/UniformData.ts",
+        "src/render/data/UniformDataMatrix3D.ts",
         "src/render/data/UniformRenderData.ts",
         "src/render/data/ShaderRenderData.ts",
         "src/render/data/ShaderParams.ts",

@@ -8,6 +8,7 @@ module feng3d
         /**
          * 模型矩阵
          */
+        // u_modelMatrix: UniformDataMatrix3D;
         u_modelMatrix: Matrix3D;
         /**
          * 世界投影矩阵
@@ -249,7 +250,15 @@ module feng3d
                     }
                 } else
                 {
-                    this.setContext3DUniform(gl, activeInfo, this[activeInfo.name]);
+                    var uniformData = this[activeInfo.name];
+                    if(uniformData instanceof UniformData)
+                    {
+                        uniformData.setContext3DUniform(gl,activeInfo);
+                    }
+                    else
+                    {
+                        this.setContext3DUniform(gl, activeInfo, this[activeInfo.name]);
+                    }
                 }
             }
         }

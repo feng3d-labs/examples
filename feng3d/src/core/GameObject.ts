@@ -82,6 +82,8 @@ module feng3d
             this.name = name;
         }
 
+        
+
 		/**
 		 * 更新渲染数据
 		 */

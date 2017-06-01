@@ -5497,6 +5497,33 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var UniformData = (function () {
+        function UniformData() {
+        }
+        return UniformData;
+    }());
+    feng3d.UniformData = UniformData;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var UniformDataMatrix3D = (function (_super) {
+        __extends(UniformDataMatrix3D, _super);
+        function UniformDataMatrix3D(data) {
+            _super.call(this);
+            this.data = data;
+        }
+        /**
+         * 设置环境Uniform数据
+         */
+        UniformDataMatrix3D.prototype.setContext3DUniform = function (gl, activeInfo) {
+            gl.uniformMatrix4fv(location, false, this.data.rawData);
+        };
+        return UniformDataMatrix3D;
+    }(feng3d.UniformData));
+    feng3d.UniformDataMatrix3D = UniformDataMatrix3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * Uniform渲染数据
      */
@@ -5518,7 +5545,13 @@ var feng3d;
                     }
                 }
                 else {
-                    this.setContext3DUniform(gl, activeInfo, this[activeInfo.name]);
+                    var uniformData = this[activeInfo.name];
+                    if (uniformData instanceof feng3d.UniformData) {
+                        uniformData.setContext3DUniform(gl, activeInfo);
+                    }
+                    else {
+                        this.setContext3DUniform(gl, activeInfo, this[activeInfo.name]);
+                    }
                 }
             }
         };

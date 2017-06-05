@@ -7,6 +7,12 @@ namespace feng3d
      */
     export class GameObject extends Component
     {
+        public static get gameObjects()
+        {
+            return this._gameObjects;
+        }
+        private static _gameObjects: GameObject[] = [];
+
         /**
          * The Transform attached to this GameObject. (null if there is none attached).
          */
@@ -58,6 +64,8 @@ namespace feng3d
             this.name = name;
             this._transform = new Transform();
             this.addComponent(this._transform);
+            //
+            GameObject._gameObjects.push(this);
         }
 
 		/**

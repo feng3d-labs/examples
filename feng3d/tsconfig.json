@@ -97,7 +97,7 @@
         "src/core/MeshFilter.ts",
         "src/core/Object3D.ts",
         "src/core/ObjectContainer3D.ts",
-        "src/core/Entity.ts",
+        "src/core/Transform.ts",
         "src/core/GameObject.ts",
         "src/core/View3D.ts",
         //3D对象组件

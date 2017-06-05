@@ -81,7 +81,7 @@
 		"feng3d/src/core/MeshFilter.ts",
 		"feng3d/src/core/Object3D.ts",
 		"feng3d/src/core/ObjectContainer3D.ts",
-		"feng3d/src/core/Entity.ts",
+		"feng3d/src/core/Transform.ts",
 		"feng3d/src/core/GameObject.ts",
 		"feng3d/src/core/View3D.ts",
 		"feng3d/src/core/Object3DEvent.ts",

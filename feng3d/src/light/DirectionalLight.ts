@@ -6,6 +6,12 @@ namespace feng3d
      */
     export class DirectionalLight extends Light
     {
+        public static get directionalLights()
+        {
+            return this._directionalLights;
+        }
+        private static _directionalLights: DirectionalLight[] = [];
+
         private _direction: Vector3D;
         private _sceneDirection: Vector3D;
 
@@ -19,10 +25,12 @@ namespace feng3d
             this.direction = new Vector3D(xDir, yDir, zDir);
             this._sceneDirection = new Vector3D(xDir, yDir, zDir);
             this._sceneDirection.normalize();
+            //
+            DirectionalLight._directionalLights.push(this);
         }
 
         public get sceneDirection(): Vector3D
-        {            
+        {
             return this._sceneDirection;
         }
 
@@ -37,7 +45,7 @@ namespace feng3d
         public set direction(value: Vector3D)
         {
             this._direction = value;
-            if(this.gameObject)
+            if (this.gameObject)
             {
                 var tmpLookAt = this.gameObject.transform.getPosition();
                 tmpLookAt.incrementBy(this._direction);
@@ -52,7 +60,7 @@ namespace feng3d
          */
         protected onBeAddedComponent(event: ComponentEvent): void
         {
-            this.gameObject.addEventListener(Object3DEvent.SCENETRANSFORM_CHANGED,this.onScenetransformChanged,this);
+            this.gameObject.transform.addEventListener(Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
             var tmpLookAt = this.gameObject.transform.getPosition();
             tmpLookAt.incrementBy(this._direction);
             this.gameObject.transform.lookAt(tmpLookAt);
@@ -63,7 +71,7 @@ namespace feng3d
          */
         protected onBeRemovedComponent(event: ComponentEvent): void
         {
-            this.gameObject.removeEventListener(Object3DEvent.SCENETRANSFORM_CHANGED,this.onScenetransformChanged,this);
+            this.gameObject.transform.removeEventListener(Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
         }
 
         protected onScenetransformChanged()

@@ -7,6 +7,12 @@ namespace feng3d
      */
     export class PointLight extends Light
     {
+        public static get pointLights()
+        {
+            return this._pointLights;
+        }
+        private static _pointLights: PointLight[] = [];
+
         /**
          * 光照范围
          */
@@ -27,6 +33,7 @@ namespace feng3d
         {
             super();
             this.lightType = LightType.Point;
+            PointLight._pointLights.push(this);
         }
     }
 }

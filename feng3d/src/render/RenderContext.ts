@@ -32,21 +32,11 @@ namespace feng3d
 		 */
         public updateRenderData(renderAtomic: RenderAtomic)
         {
-            var pointLights: PointLight[] = [];
-            var directionalLights: DirectionalLight[] = [];
+            var pointLights = PointLight.pointLights;
+            var directionalLights = DirectionalLight.directionalLights;
             this.camera.updateRenderData(this, renderAtomic);
-            var lights = this.scene3d.lights;
-            var light: Light;
-            for (var i = 0; i < lights.length; i++)
-            {
-                light = lights[i];
-                light.updateRenderData(this, renderAtomic);
-                if (light instanceof PointLight)
-                    pointLights.push(light);
-                if (light instanceof DirectionalLight)
-                    directionalLights.push(light);
-            }
-            renderAtomic.shader.shaderMacro.valueMacros.NUM_LIGHT = lights.length;
+
+            renderAtomic.shader.shaderMacro.valueMacros.NUM_LIGHT = Light.lights.length;
             //收集点光源数据
             var pointLightPositions: Vector3D[] = [];
             var pointLightColors: Vector3D[] = [];

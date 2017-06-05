@@ -7,6 +7,11 @@ namespace feng3d
      */
     export class Light extends Component
     {
+        public static get lights()
+        {
+            return this._lights;
+        }
+        private static _lights: Light[] = [];
 
         /**
          * 灯光类型
@@ -37,6 +42,7 @@ namespace feng3d
         constructor()
         {
             super();
+            Light._lights.push(this);
         }
     }
 }

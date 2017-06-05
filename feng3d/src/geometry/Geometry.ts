@@ -5,7 +5,7 @@ module feng3d
      * 几何体
      * @author feng 2016-04-28
      */
-    export class Geometry extends RenderDataHolder
+    export class Geometry extends Component
     {
         /**
          * 顶点索引缓冲

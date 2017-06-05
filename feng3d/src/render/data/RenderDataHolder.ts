@@ -5,13 +5,15 @@ module feng3d
 	 * 渲染数据拥有者
 	 * @author feng 2016-6-7
 	 */
-    export class RenderDataHolder extends Component
+    export class RenderDataHolder extends EventDispatcher
     {
         /**
          * 是否每次必须更新
          */
         public get updateEverytime() { return this._updateEverytime; }
         protected _updateEverytime = false;
+
+        private childrenRenderDataHolder:RenderDataHolder[] = [];
 
 		/**
 		 * 创建GL数据缓冲
@@ -28,13 +30,19 @@ module feng3d
         public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
         {
             renderAtomic.addRenderDataHolder(this);
-            this.components_.forEach(element =>
-            {
-                if (element instanceof RenderDataHolder)
-                {
-                    element.collectRenderDataHolder(renderAtomic);
-                }
-            });
+        }
+
+        public addRenderDataHolder(renderDataHolder:RenderDataHolder)
+        {
+            if(this.childrenRenderDataHolder.indexOf(renderDataHolder) == -1)
+                this.childrenRenderDataHolder.push(renderDataHolder);
+        }
+
+        public removeRenderDataHolder(renderDataHolder:RenderDataHolder)
+        {
+            var index = this.childrenRenderDataHolder.indexOf(renderDataHolder);
+            if(index != -1)
+                this.childrenRenderDataHolder.splice(index,1);
         }
 
 		/**
@@ -51,28 +59,6 @@ module feng3d
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
             
-        }
-
-        /**
-		 * 添加组件到指定位置
-		 * @param component		被添加的组件
-		 * @param index			插入的位置
-		 */
-        public addComponentAt(component: Component, index: number): void
-        {
-            super.addComponentAt(component, index);
-            this.invalidateRenderHolder();
-        }
-
-        /**
-         * 移除组件
-         * @param index		要删除的 Component 的子索引。
-         */
-        public removeComponentAt(index: number): Component
-        {
-            var component = super.removeComponentAt(index);
-            this.invalidateRenderHolder();
-            return component;
         }
 
         protected invalidateRenderData()

@@ -5,7 +5,7 @@ module feng3d
 	 * 组件容器（集合）
 	 * @author feng 2015-5-6
 	 */
-    export class Component extends EventDispatcher
+    export class Component extends RenderDataHolder
     {
         // private m_cachedTransform
         // public get transform()
@@ -119,6 +119,7 @@ module feng3d
             //派发添加组件事件
             component.dispatchEvent(new ComponentEvent(ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
             this.dispatchEvent(new ComponentEvent(ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
+            this.invalidateRenderHolder();
         }
 
 		/**
@@ -159,6 +160,7 @@ module feng3d
             //派发移除组件事件
             component.dispatchEvent(new ComponentEvent(ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
             this.dispatchEvent(new ComponentEvent(ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
+            this.invalidateRenderHolder();
             return component;
         }
 
@@ -314,6 +316,36 @@ module feng3d
                 value.dispatchEvent(event);
                 value.dispatchChildrenEvent(event, depth - 1)
             });
+        }
+
+        /**
+         * 收集渲染数据拥有者
+         * @param renderAtomic 渲染原子
+         */
+        public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
+        {
+            renderAtomic.addRenderDataHolder(this);
+            this.components_.forEach(element =>
+            {
+                if (element instanceof RenderDataHolder)
+                {
+                    element.collectRenderDataHolder(renderAtomic);
+                }
+            });
+        }
+
+        /**
+         * 派发事件，该事件将会强制冒泡到3D对象中
+		 * @param event						调度到事件流中的 Event 对象。
+         */
+        public dispatchEvent(event: Event): boolean
+        {
+            var result = super.dispatchEvent(event);
+            if (result)
+            {
+                this.gameObject && this.gameObject.dispatchEvent(event);
+            }
+            return result;
         }
 
         //------------------------------------------

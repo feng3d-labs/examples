@@ -5,7 +5,7 @@ module feng3d
      * 灯光
      * @author feng 2016-12-12
      */
-    export class Light extends Object3DComponent
+    export class Light extends Component
     {
 
         /**

@@ -4,7 +4,7 @@ module feng3d
 	 * 摄像机
 	 * @author feng 2016-08-16
 	 */
-    export class Camera extends Object3DComponent
+    export class Camera extends Component
     {
         private _viewProjection: Matrix3D = new Matrix3D();
         private _viewProjectionDirty: boolean = true;

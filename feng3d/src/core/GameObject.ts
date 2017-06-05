@@ -14,7 +14,7 @@ module feng3d
         /**
 		 * 组件列表
 		 */
-        protected components_: Object3DComponent[] = [];
+        protected components_: Component[] = [];
 
         /**
          * 是否为公告牌（默认永远朝向摄像机），默认false。

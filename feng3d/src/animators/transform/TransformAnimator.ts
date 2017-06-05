@@ -4,7 +4,7 @@ module feng3d
     /**
      * 变换动作
      */
-    export class TransformAnimator extends Object3DComponent
+    export class TransformAnimator extends Component
     {
         /**
          * 动作名称

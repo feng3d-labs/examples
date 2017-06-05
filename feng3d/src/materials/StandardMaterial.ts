@@ -50,7 +50,7 @@ module feng3d
             if (this._specularMethod)
                 this.addMethod(this._specularMethod);
         }
-        private _specularMethod : SpecularMethod;
+        private _specularMethod: SpecularMethod;
 
         /**
          * 环境反射函数
@@ -65,29 +65,7 @@ module feng3d
             if (this._ambientMethod)
                 this.addMethod(this._ambientMethod);
         }
-        private _ambientMethod : AmbientMethod;
-
-        /**
-         * 地形函数
-         */
-        public get terrainMethod()
-        {
-            return this._terrainMethod;
-        }
-        public set terrainMethod(value)
-        {
-            if (this._terrainMethod)
-            {
-                this.removeComponent(this._terrainMethod);
-            }
-            this._terrainMethod = value;
-            if (this._terrainMethod)
-            {
-                this.addComponent(this._terrainMethod);
-                this.invalidateRenderData();
-            }
-        }
-        private _terrainMethod: RenderDataHolder;
+        private _ambientMethod: AmbientMethod;
 
         // /**
         //  * 反射率
@@ -120,15 +98,15 @@ module feng3d
         /**
          * 构建
          */
-        constructor(diffuseUrl = "", normalUrl = "",specularUrl = "",ambientUrl = "")
+        constructor(diffuseUrl = "", normalUrl = "", specularUrl = "", ambientUrl = "")
         {
             super();
             this.setShader("standard");
 
             this.diffuseMethod = new DiffuseMethod(diffuseUrl);
             this.normalMethod = new NormalMethod(normalUrl);
-            this.specularMethod =  new SpecularMethod(specularUrl);
-            this.ambientMethod= new AmbientMethod(ambientUrl);
+            this.specularMethod = new SpecularMethod(specularUrl);
+            this.ambientMethod = new AmbientMethod(ambientUrl);
 
             // Watcher.watch(this, ["ambientColor"], this.invalidateRenderData, this);
             // Watcher.watch(this, ["reflectance"], this.invalidateRenderData, this);

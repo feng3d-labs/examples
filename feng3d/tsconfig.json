@@ -52,9 +52,6 @@
         "src/shortcut/handle/ShortCutCapture.ts",
         "src/shortcut/handle/ShortCutEvent.ts",
         "src/shortcut/ShortCut.ts",
-        //组件模块
-        "src/component/event/ComponentEvent.ts",
-        "src/component/Component.ts",
         //加载模块
         "src/net/Loader.ts",
         "src/net/LoaderEvent.ts",
@@ -93,6 +90,9 @@
         //后处理效果
         "src/render/postEffect/PostEffect.ts",
         "src/render/postEffect/FXAAEffect.ts",
+        //组件模块
+        "src/component/event/ComponentEvent.ts",
+        "src/component/Component.ts",
         //
         "src/core/Object3D.ts",
         "src/core/ObjectContainer3D.ts",
@@ -100,7 +100,6 @@
         "src/core/GameObject.ts",
         "src/core/View3D.ts",
         //3D对象组件
-        "src/core/Object3DComponent.ts",
         "src/core/Object3DEvent.ts",
         "src/core/Model.ts",
         "src/core/Object3dScript.ts",

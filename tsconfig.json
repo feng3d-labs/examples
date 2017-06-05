@@ -78,6 +78,7 @@
 		"feng3d/src/render/postEffect/FXAAEffect.ts",
 		"feng3d/src/component/event/ComponentEvent.ts",
 		"feng3d/src/component/Component.ts",
+		"feng3d/src/core/MeshFilter.ts",
 		"feng3d/src/core/Object3D.ts",
 		"feng3d/src/core/ObjectContainer3D.ts",
 		"feng3d/src/core/Entity.ts",

@@ -94,6 +94,7 @@
         "src/component/event/ComponentEvent.ts",
         "src/component/Component.ts",
         //
+        "src/core/MeshFilter.ts",
         "src/core/Object3D.ts",
         "src/core/ObjectContainer3D.ts",
         "src/core/Entity.ts",

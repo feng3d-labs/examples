@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     /**
      * feng3d的版本号

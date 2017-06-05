@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     /**
      * opengl顶点属性名称

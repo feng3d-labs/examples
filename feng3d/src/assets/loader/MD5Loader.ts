@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     /**
      * MD5模型加载类

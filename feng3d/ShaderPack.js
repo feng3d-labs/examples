@@ -8,7 +8,7 @@ var savePath = "src/autofiles/shaders.ts";
 var filesContent = readFiles(getFilePaths("shaders"));
 var contentStr = JSON.stringify(filesContent, null, '\t');
 contentStr = contentStr.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1');
-writeFile(savePath, `module feng3d\n{\nfeng3d.shaderFileMap = ${contentStr}\n}`);
+writeFile(savePath, `namespace feng3d\n{\nfeng3d.shaderFileMap = ${contentStr}\n}`);
 debuglog("自动生成" + savePath)
 //     } catch (error) {
 //         debuglog("error!!!!!\n" + error);

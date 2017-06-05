@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     /**
      * 球体几何体

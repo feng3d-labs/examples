@@ -11,7 +11,7 @@ var root = "feng3d/";
         var filesContent = readFiles(getFilePaths(root + "shaders"));
         var contentStr = JSON.stringify(filesContent, null, '\t').replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1');
         contentStr = contentStr.replace(new RegExp(root, "g"), "");
-        writeFile(savePath, `module feng3d\n{\nfeng3d.shaderFileMap = ${contentStr}\n}`);
+        writeFile(savePath, `namespace feng3d\n{\nfeng3d.shaderFileMap = ${contentStr}\n}`);
         debuglog("自动生成" + savePath)
 //     } catch (error) {
 //         debuglog("error!!!!!\n" + error);

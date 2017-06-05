@@ -96,7 +96,7 @@ interface WebGLRenderingContext
     maxAnisotropy: number;
 }
 
-module feng3d
+namespace feng3d
 {
     export var GL = WebGL2RenderingContext || WebGLRenderingContext;
     export interface GL extends WebGL2RenderingContext

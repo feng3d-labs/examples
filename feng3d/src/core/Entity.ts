@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
 	/**
 	 * Entity为所有场景绘制对象提供一个基类，表示存在场景中。可以被entityCollector收集。

@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     /**
      * Uniform渲染数据

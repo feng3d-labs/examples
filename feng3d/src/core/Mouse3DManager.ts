@@ -139,7 +139,7 @@ namespace feng3d
                 var checkObject = checkList[i++];
                 if (checkObject.mouseEnabled && checkObject.getComponentsByType(Geometry))
                 {
-                    results.push(checkObject as GameObject);
+                    results.push(checkObject.gameObject as GameObject);
                 }
                 if (checkObject.mouseChildren)
                 {

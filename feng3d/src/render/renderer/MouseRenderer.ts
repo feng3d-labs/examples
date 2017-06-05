@@ -44,7 +44,7 @@ namespace feng3d
 
         protected drawRenderables(renderContext: RenderContext, meshRenderer: MeshRenderer)
         {
-            if (meshRenderer.gameObject.mouseEnabled)
+            if (meshRenderer.gameObject.transform.mouseEnabled)
             {
                 var object = meshRenderer.gameObject;
                 this.objects.push(object);

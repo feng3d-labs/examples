@@ -33,11 +33,11 @@ namespace feng3d
             skybox.getOrCreateComponentByClass(MeshFilter).mesh = new SkyBoxGeometry();
             var material = model.material = new SkyBoxMaterial();
             material.texture = cubeTexture;
-            scene.addChild(skybox);
+            scene.addChild(skybox.transform);
 
             var camera = this.camera = view3D.camera;
-            camera.z = -600;
-            camera.lookAt(new Vector3D());
+            camera.transform.z = -600;
+            camera.transform.lookAt(new Vector3D());
             camera.camera.lens = new PerspectiveLens(90);
 
             var torusMaterial = new StandardMaterial();
@@ -50,18 +50,18 @@ namespace feng3d
             var model = torus.getOrCreateComponentByClass(MeshRenderer);
             torus.getOrCreateComponentByClass(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;
-            scene.addChild(torus);
+            scene.addChild(torus.transform);
 
             ticker.addEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);
         }
 
         private _onEnterFrame(e: Event)
         {
-            this._torus.rotationX += 2;
-            this._torus.rotationY += 1;
-            this.camera.setPosition(0, 0, 0);
-            this.camera.rotationY += 0.5 * (this._view.mousePos.x - this._view.width / 2) / 800;
-            this.camera.moveBackward(600);
+            this._torus.transform.rotationX += 2;
+            this._torus.transform.rotationY += 1;
+            this.camera.transform.setPosition(0, 0, 0);
+            this.camera.transform.rotationY += 0.5 * (this._view.mousePos.x - this._view.width / 2) / 800;
+            this.camera.transform.moveBackward(600);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace feng3d
 		/**
 		 * 第一个穿过的物体
 		 */
-		public firstEntity: Entity;
+		public firstEntity: GameObject;
 
 		/**
 		 * 碰撞的uv坐标
@@ -60,7 +60,7 @@ namespace feng3d
 		 * 创建射线拾取碰撞数据
 		 * @param entity
 		 */
-		constructor(entity: Entity)
+		constructor(entity: GameObject)
 		{
 			this.firstEntity = entity;
 		}
@@ -70,7 +70,7 @@ namespace feng3d
 		 */
 		public get scenePosition(): Vector3D
 		{
-			return this.firstEntity.sceneTransform.transformVector(this.localPosition);
+			return this.firstEntity.transform.sceneTransform.transformVector(this.localPosition);
 		}
 	}
 }

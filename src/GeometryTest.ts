@@ -34,9 +34,9 @@ namespace feng3d
             geometry.addGeometry(addGeometry, matrix3D);
 
 
-            object3d.z = 300;
-            object3d.y = -100;
-            this.view3D.scene.addChild(object3d);
+            object3d.transform.z = 300;
+            object3d.transform.y = -100;
+            this.view3D.scene.addChild(object3d.transform);
 
             //初始化颜色材质
             var colorMaterial = model.material = new ColorMaterial();
@@ -44,7 +44,7 @@ namespace feng3d
             //变化旋转与颜色
             setInterval(function ()
             {
-                object3d.rotationY += 1;
+                object3d.transform.rotationY += 1;
             }, 15);
             setInterval(function ()
             {

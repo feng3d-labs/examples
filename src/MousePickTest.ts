@@ -17,8 +17,8 @@ namespace feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.cameraObj);
         }
@@ -30,29 +30,29 @@ namespace feng3d
             var scene3D = this.view3D.scene;
 
             var cube = GameObjectFactory.createCube();
-            cube.mouseEnabled = true;
-            scene3D.addChild(cube);
+            cube.transform.mouseEnabled = true;
+            scene3D.addChild(cube.transform);
 
             var plane = GameObjectFactory.createPlane();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            plane.mouseEnabled = true;
-            scene3D.addChild(plane);
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            plane.transform.mouseEnabled = true;
+            scene3D.addChild(plane.transform);
 
             var sphere = GameObjectFactory.createSphere();
-            sphere.setPosition(-150, 0, 0);
-            sphere.mouseEnabled = true;
-            scene3D.addChild(sphere);
+            sphere.transform.setPosition(-150, 0, 0);
+            sphere.transform.mouseEnabled = true;
+            scene3D.addChild(sphere.transform);
 
             var capsule = GameObjectFactory.createCapsule();
-            capsule.setPosition(300, 0, 0);
-            capsule.mouseEnabled = true;
-            scene3D.addChild(capsule);
+            capsule.transform.setPosition(300, 0, 0);
+            capsule.transform.mouseEnabled = true;
+            scene3D.addChild(capsule.transform);
 
             var cylinder = GameObjectFactory.createCylinder();
-            cylinder.setPosition(-300, 0, 0);
-            cylinder.mouseEnabled = true;
-            scene3D.addChild(cylinder);
+            cylinder.transform.setPosition(-300, 0, 0);
+            cylinder.transform.mouseEnabled = true;
+            scene3D.addChild(cylinder.transform);
 
             scene3D.addEventListener(Mouse3DEvent.CLICK, this.onMouseClick, this);
         }

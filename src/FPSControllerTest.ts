@@ -16,8 +16,8 @@ namespace feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.cameraObj);
             //
@@ -27,7 +27,7 @@ namespace feng3d
 
         process()
         {
-            var screenPos = this.view3D.project(sphere.scenePosition);
+            var screenPos = this.view3D.project(sphere.transform.scenePosition);
             console.log("球体视窗坐标" + screenPos.toString());
         }
 
@@ -38,24 +38,24 @@ namespace feng3d
             var scene3D = this.view3D.scene;
 
             var cube = GameObjectFactory.createCube();
-            scene3D.addChild(cube);
+            scene3D.addChild(cube.transform);
 
             var plane = GameObjectFactory.createPlane();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            scene3D.addChild(plane);
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            scene3D.addChild(plane.transform);
 
             sphere = GameObjectFactory.createSphere();
-            sphere.setPosition(-150, 0, 0);
-            scene3D.addChild(sphere);
+            sphere.transform.setPosition(-150, 0, 0);
+            scene3D.addChild(sphere.transform);
 
             var capsule = GameObjectFactory.createCapsule();
-            capsule.setPosition(300, 0, 0);
-            scene3D.addChild(capsule);
+            capsule.transform.setPosition(300, 0, 0);
+            scene3D.addChild(capsule.transform);
 
             var cylinder = GameObjectFactory.createCylinder();
-            cylinder.setPosition(-300, 0, 0);
-            scene3D.addChild(cylinder);
+            cylinder.transform.setPosition(-300, 0, 0);
+            scene3D.addChild(cylinder.transform);
         }
     }
     var sphere: GameObject;

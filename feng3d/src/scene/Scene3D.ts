@@ -5,7 +5,7 @@ namespace feng3d
      * 3D场景
      * @author feng 2016-05-01
      */
-    export class Scene3D extends GameObject
+    export class Scene3D extends Transform
     {
         /**
          * 背景颜色
@@ -41,7 +41,7 @@ namespace feng3d
          */
         constructor()
         {
-            super("root");
+            super();
             this._scene = this;
             this._isRoot = true;
             //
@@ -54,9 +54,9 @@ namespace feng3d
          */
         private onAddedToScene(event: Scene3DEvent)
         {
-            if (event.data instanceof GameObject)
+            if (event.data instanceof Transform)
             {
-                var gameObject = event.data;
+                var gameObject = event.data.gameObject;
                 var model = gameObject.getComponentByType(MeshRenderer);
                 model && this.renderers.push(model);
                 var light = gameObject.getComponentByType(Light);

@@ -5,9 +5,16 @@ namespace feng3d
      * 3D对象
      * @author feng 2016-04-26
      */
-    export class GameObject extends Entity
+    export class GameObject extends Component
     {
-        public uniformData = new UniformRenderData();
+        /**
+         * The Transform attached to this GameObject. (null if there is none attached).
+         */
+        public get transform()
+        {
+            return this._transform;
+        }
+        private _transform: Transform;
 
         public get renderData() { return this._renderData; }
         private _renderData = new Object3DRenderAtomic();
@@ -16,49 +23,15 @@ namespace feng3d
 		 */
         protected components_: Component[] = [];
 
-        /**
-         * 是否为公告牌（默认永远朝向摄像机），默认false。
-         */
-        public isBillboard = false;
-        /**
-         * 保持缩放尺寸
-         */
-        public holdSize = NaN;
-
         public updateRender(renderContext: RenderContext)
         {
-            if (this.isBillboard)
-            {
-                var parentInverseSceneTransform = (this.parent && this.parent.inverseSceneTransform) || new Matrix3D();
-                var cameraPos = parentInverseSceneTransform.transformVector(renderContext.camera.sceneTransform.position);
-                var yAxis = parentInverseSceneTransform.deltaTransformVector(Vector3D.Y_AXIS);
-                this.lookAt(cameraPos, yAxis);
-            }
-            if (this.holdSize)
-            {
-                var depthScale = this.getDepthScale(renderContext);
-                var vec = this.sceneTransform.decompose();
-                vec[2].setTo(depthScale, depthScale, depthScale);
-                this.sceneTransform.recompose(vec);
-            }
             if (this.renderData.renderHolderInvalid)
             {
                 this.renderData.clear();
                 this.collectRenderDataHolder(this.renderData);
                 this.renderData.renderHolderInvalid = false;
             }
-            if (!this.renderData.uniforms.u_modelMatrix)
-                this.renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
             this.renderData.update(renderContext);
-        }
-
-        private getDepthScale(renderContext: RenderContext)
-        {
-            var cameraTranform = renderContext.camera.sceneTransform;
-            var distance = this.scenePosition.subtract(cameraTranform.position);
-            var depth = distance.dotProduct(cameraTranform.forward);
-            var scale = renderContext.view3D.getScaleByDepth(depth);
-            return scale;
         }
 
         /**
@@ -83,41 +56,8 @@ namespace feng3d
         {
             super();
             this.name = name;
-
-            this.uniformData.u_modelMatrix = UniformData.getUniformData(this.sceneTransform);
-        }
-
-        /**
-		 * @inheritDoc
-		 */
-        protected updateBounds()
-        {
-            var meshFilter = this.getOrCreateComponentByClass(MeshFilter);
-            this._bounds.geometry = meshFilter.mesh;
-            this._bounds.fromGeometry(meshFilter.mesh);
-            this._boundsInvalid = false;
-        }
-
-		/**
-		 * @inheritDoc
-		 */
-        public collidesBefore(pickingCollider: AS3PickingCollider, shortestCollisionDistance: number, findClosest: boolean): boolean
-        {
-            pickingCollider.setLocalRay(this._pickingCollisionVO.localRay);
-            this._pickingCollisionVO.renderable = null;
-
-            var meshFilter = this.getComponentByType(MeshFilter);
-            var model = meshFilter.mesh;
-
-            if (pickingCollider.testSubMeshCollision(model, this._pickingCollisionVO, shortestCollisionDistance))
-            {
-                shortestCollisionDistance = this._pickingCollisionVO.rayEntryDistance;
-                this._pickingCollisionVO.renderable = model;
-                if (!findClosest)
-                    return true;
-            }
-
-            return this._pickingCollisionVO.renderable != null;
+            this._transform = new Transform();
+            this.addComponent(this._transform);
         }
 
 		/**

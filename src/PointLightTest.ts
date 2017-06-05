@@ -15,9 +15,9 @@ namespace feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.y = 200;
-            this.cameraObj.lookAt(new Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.y = 200;
+            this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.view3D.camera);
 
@@ -34,8 +34,8 @@ namespace feng3d
                     break;
                 case "b":
                     this.initObjects();
-                    this.scene.addChild(this.light0);
-                    this.scene.addChild(this.light1);
+                    this.scene.addChild(this.light0.transform);
+                    this.scene.addChild(this.light1.transform);
                     break;
             }
         }
@@ -68,19 +68,19 @@ namespace feng3d
 
             //初始化立方体
             var plane = new GameObject();
-            plane.y = -100;
+            plane.transform.y = -100;
             var model = plane.getOrCreateComponentByClass(MeshRenderer);
             var geometry = plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
             model.material = material;
-            this.scene.addChild(plane);
+            this.scene.addChild(plane.transform);
 
             var cube = new GameObject();
             var model = cube.getOrCreateComponentByClass(MeshRenderer);
             model.material = material;
             cube.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
             cube.getOrCreateComponentByClass(MeshFilter).mesh.scaleUV(2, 2);
-            this.scene.addChild(cube);
+            this.scene.addChild(cube.transform);
         }
 
         private clearObjects()
@@ -102,7 +102,7 @@ namespace feng3d
             pointLight0.color = lightColor0;
             this.light0.addComponent(pointLight0);
             this.light0.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial(lightColor0);
-            this.scene.addChild(this.light0);
+            this.scene.addChild(this.light0.transform);
 
             //
             var lightColor1 = new Color(0, 1, 0, 1);
@@ -113,7 +113,7 @@ namespace feng3d
             pointLight1.color = lightColor1;
             this.light1.addComponent(pointLight1);
             this.light1.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial(lightColor1);
-            this.scene.addChild(this.light1);
+            this.scene.addChild(this.light1.transform);
         }
         
         setPointLightPosition()
@@ -121,13 +121,13 @@ namespace feng3d
             var time = new Date().getTime();
             //
             var angle = time / 1000;
-            this.light0.x = Math.sin(angle) * 300;
-            this.light0.z = Math.cos(angle) * 300;
+            this.light0.transform.x = Math.sin(angle) * 300;
+            this.light0.transform.z = Math.cos(angle) * 300;
             //
             angle = angle + Math.PI / 2;
-            this.light1.x = Math.sin(angle) * 300;
-            this.light1.z = Math.cos(angle) * 300;
-            this.light1.lookAt(new feng3d.Vector3D());
+            this.light1.transform.x = Math.sin(angle) * 300;
+            this.light1.transform.z = Math.cos(angle) * 300;
+            this.light1.transform.lookAt(new feng3d.Vector3D());
         }
     }
 }

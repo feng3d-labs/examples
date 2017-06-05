@@ -17,7 +17,7 @@ namespace feng3d
          */
         public get position()
         {
-            return this.gameObject.scenePosition;
+            return this.gameObject.transform.scenePosition;
         }
 
         /**

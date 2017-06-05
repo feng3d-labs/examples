@@ -59,7 +59,7 @@ namespace feng3d
             this.directionalLight.intensity = .5;
             var gameObject = new GameObject();
             gameObject.addComponent(this.directionalLight);
-            this.scene.addChild(gameObject);
+            this.scene.addChild(gameObject.transform);
         }
 
         private initMaterials()
@@ -104,8 +104,8 @@ namespace feng3d
             this.plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             this.plane.getOrCreateComponentByClass(MeshFilter).mesh.scaleUV(2, 2);
             model.material = this.planeMaterial;
-            this.plane.y = -20;
-            this.scene.addChild(this.plane);
+            this.plane.transform.y = -20;
+            this.scene.addChild(this.plane.transform);
             for (var i: number = 0; i < Basic_Fire.NUM_FIRES; i++)
             {
                 var particleMesh = new GameObject();
@@ -114,11 +114,11 @@ namespace feng3d
                 model.material = this.particleMaterial;
                 particleMesh.addComponent(this.fireAnimationSet);
                 var degree: number = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
-                particleMesh.x = Math.sin(degree) * 400;
-                particleMesh.z = Math.cos(degree) * 400;
-                particleMesh.y = 5;
+                particleMesh.transform.x = Math.sin(degree) * 400;
+                particleMesh.transform.z = Math.cos(degree) * 400;
+                particleMesh.transform.y = 5;
                 this.fireObjects.push(new FireVO(particleMesh));
-                this.view.scene.addChild(particleMesh);
+                this.view.scene.addChild(particleMesh.transform);
             }
             this.timer = new Timer(1000, this.fireObjects.length);
             this.timer.addEventListener(TimerEvent.TIMER, this.onTimer, this);
@@ -154,7 +154,7 @@ namespace feng3d
             light.intensity = 0;
             var lightObject = new GameObject();
             lightObject.addComponent(light);
-            lightObject.position = fireObject.mesh.position;
+            lightObject.transform.position = fireObject.mesh.transform.position;
             fireObject.light = light;
         }
 

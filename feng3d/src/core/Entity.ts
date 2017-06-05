@@ -1,11 +1,14 @@
 namespace feng3d
 {
 	/**
-	 * Entity为所有场景绘制对象提供一个基类，表示存在场景中。可以被entityCollector收集。
-	 * @author feng 2014-3-24
+	 * Position, rotation and scale of an object.
+     * 
+	 * Every object in a scene has a Transform. It's used to store and manipulate the position, rotation and scale of the object. Every Transform can have a parent, which allows you to apply position, rotation and scale hierarchically. This is the hierarchy seen in the Hierarchy pane.
 	 */
-    export abstract class Entity extends ObjectContainer3D
+    export class Transform extends ObjectContainer3D
     {
+        public uniformData = new UniformRenderData();
+
         protected _bounds: BoundingVolumeBase;
         protected _boundsInvalid: boolean = true;
 
@@ -14,6 +17,15 @@ namespace feng3d
         private _worldBounds: BoundingVolumeBase;
         private _worldBoundsInvalid: boolean = true;
 
+        /**
+         * 是否为公告牌（默认永远朝向摄像机），默认false。
+         */
+        public isBillboard = false;
+        /**
+         * 保持缩放尺寸
+         */
+        public holdSize = NaN;
+
 		/**
 		 * 创建一个实体，该类为虚类
 		 */
@@ -21,9 +33,46 @@ namespace feng3d
         {
             super();
 
+            this._updateEverytime = true;
+
             this._bounds = this.getDefaultBoundingVolume();
             this._worldBounds = this.getDefaultBoundingVolume();
             this._bounds.addEventListener(Event.CHANGE, this.onBoundsChange, this);
+
+            //
+            this.uniformData.u_modelMatrix = UniformData.getUniformData(this.sceneTransform);
+        }
+
+        /**
+		 * 更新渲染数据
+		 */
+        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
+        {
+            if (this.isBillboard)
+            {
+                var parentInverseSceneTransform = (this.parent && this.parent.inverseSceneTransform) || new Matrix3D();
+                var cameraPos = parentInverseSceneTransform.transformVector(renderContext.camera.sceneTransform.position);
+                var yAxis = parentInverseSceneTransform.deltaTransformVector(Vector3D.Y_AXIS);
+                this.lookAt(cameraPos, yAxis);
+            }
+            if (this.holdSize)
+            {
+                var depthScale = this.getDepthScale(renderContext);
+                var vec = this.sceneTransform.decompose();
+                vec[2].setTo(depthScale, depthScale, depthScale);
+                this.sceneTransform.recompose(vec);
+            }
+            if (!renderData.uniforms.u_modelMatrix)
+                renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
+        }
+
+        private getDepthScale(renderContext: RenderContext)
+        {
+            var cameraTranform = renderContext.camera.sceneTransform;
+            var distance = this.scenePosition.subtract(cameraTranform.position);
+            var depth = distance.dotProduct(cameraTranform.forward);
+            var scale = renderContext.view3D.getScaleByDepth(depth);
+            return scale;
         }
 
 		/**
@@ -130,17 +179,12 @@ namespace feng3d
         }
 
 		/**
-		 * 更新边界
-		 */
-        protected abstract updateBounds();
-
-		/**
 		 * 获取碰撞数据
 		 */
         public get pickingCollisionVO(): PickingCollisionVO
         {
             if (!this._pickingCollisionVO)
-                this._pickingCollisionVO = new PickingCollisionVO(this);
+                this._pickingCollisionVO = new PickingCollisionVO(this.gameObject);
 
             return this._pickingCollisionVO;
         }
@@ -175,17 +219,6 @@ namespace feng3d
         }
 
 		/**
-		 * 碰撞前设置碰撞状态
-		 * @param shortestCollisionDistance 最短碰撞距离
-		 * @param findClosest 是否寻找最优碰撞
-		 * @return
-		 */
-        public collidesBefore(pickingCollider: AS3PickingCollider, shortestCollisionDistance: number, findClosest: boolean): boolean
-        {
-            return true;
-        }
-
-		/**
 		 * 世界边界
 		 */
         public get worldBounds(): BoundingVolumeBase
@@ -211,6 +244,42 @@ namespace feng3d
         protected onBoundsChange()
         {
             this._worldBoundsInvalid = true;
+        }
+
+        /**
+		 * @inheritDoc
+		 */
+        protected updateBounds()
+        {
+            var meshFilter = this.gameObject.getOrCreateComponentByClass(MeshFilter);
+            this._bounds.geometry = meshFilter.mesh;
+            this._bounds.fromGeometry(meshFilter.mesh);
+            this._boundsInvalid = false;
+        }
+
+		/**
+		 * 碰撞前设置碰撞状态
+		 * @param shortestCollisionDistance 最短碰撞距离
+		 * @param findClosest 是否寻找最优碰撞
+		 * @return
+		 */
+        public collidesBefore(pickingCollider: AS3PickingCollider, shortestCollisionDistance: number, findClosest: boolean): boolean
+        {
+            pickingCollider.setLocalRay(this._pickingCollisionVO.localRay);
+            this._pickingCollisionVO.renderable = null;
+
+            var meshFilter = this.gameObject.getComponentByType(MeshFilter);
+            var model = meshFilter.mesh;
+
+            if (pickingCollider.testSubMeshCollision(model, this._pickingCollisionVO, shortestCollisionDistance))
+            {
+                shortestCollisionDistance = this._pickingCollisionVO.rayEntryDistance;
+                this._pickingCollisionVO.renderable = model;
+                if (!findClosest)
+                    return true;
+            }
+
+            return this._pickingCollisionVO.renderable != null;
         }
     }
 }

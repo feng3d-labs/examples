@@ -20,19 +20,19 @@ namespace feng3d
 
             //初始化颜色材质
             var cube = GameObjectFactory.createCube();
-            cube.z = 500;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 500;
+            this.view3D.scene.addChild(cube.transform);
 
             var colorMaterial = cube.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial();
 
             var cylinder = GameObjectFactory.createCylinder();
-            cylinder.x = 200;
-            cube.addChild(cylinder);
+            cylinder.transform.x = 200;
+            cube.transform.addChild(cylinder.transform);
 
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             setInterval(function ()
             {

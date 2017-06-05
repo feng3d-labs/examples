@@ -3221,7 +3221,7 @@ var feng3d;
                 var children = this.readObject(data);
                 var object3D = object;
                 for (var i = 0; i < children.length; i++) {
-                    children[i] && object3D.setChildAt(children[i], i);
+                    children[i] && object3D.transform.setChildAt(children[i].transform, i);
                 }
                 return true;
             }
@@ -6482,7 +6482,7 @@ var feng3d;
              * Is this renderer visible in any camera? (Read Only)
              */
             get: function () {
-                return this.gameObject.visible;
+                return this.gameObject.transform.visible;
             },
             enumerable: true,
             configurable: true
@@ -6592,10 +6592,10 @@ var feng3d;
             _super.prototype.draw.call(this, renderContext);
         };
         ForwardRenderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
-            if (meshRenderer.gameObject.isVisible) {
+            if (meshRenderer.gameObject.transform.isVisible) {
                 var frustumPlanes = renderContext.camera.frustumPlanes;
                 var gameObject = meshRenderer.gameObject;
-                var isIn = gameObject.worldBounds.isInFrustum(frustumPlanes, 6);
+                var isIn = gameObject.transform.worldBounds.isInFrustum(frustumPlanes, 6);
                 var model = gameObject.getComponentByType(feng3d.MeshRenderer);
                 if (gameObject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh instanceof feng3d.SkyBoxGeometry) {
                     isIn = true;
@@ -6658,7 +6658,7 @@ var feng3d;
             this.selectedObject3D = this.objects[id];
         };
         MouseRenderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
-            if (meshRenderer.gameObject.mouseEnabled) {
+            if (meshRenderer.gameObject.transform.mouseEnabled) {
                 var object = meshRenderer.gameObject;
                 this.objects.push(object);
                 object.renderData.uniforms.u_objectID = this.objects.length - 1;
@@ -6802,6 +6802,9 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    /**
+     * Position, rotation and scale of an object.
+     */
     var Object3D = (function (_super) {
         __extends(Object3D, _super);
         function Object3D() {
@@ -7896,24 +7899,63 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * Entity为所有场景绘制对象提供一个基类，表示存在场景中。可以被entityCollector收集。
-     * @author feng 2014-3-24
+     * Position, rotation and scale of an object.
+     *
+     * Every object in a scene has a Transform. It's used to store and manipulate the position, rotation and scale of the object. Every Transform can have a parent, which allows you to apply position, rotation and scale hierarchically. This is the hierarchy seen in the Hierarchy pane.
      */
-    var Entity = (function (_super) {
-        __extends(Entity, _super);
+    var Transform = (function (_super) {
+        __extends(Transform, _super);
         /**
          * 创建一个实体，该类为虚类
          */
-        function Entity() {
+        function Transform() {
             var _this = _super.call(this) || this;
+            _this.uniformData = new feng3d.UniformRenderData();
             _this._boundsInvalid = true;
             _this._worldBoundsInvalid = true;
+            /**
+             * 是否为公告牌（默认永远朝向摄像机），默认false。
+             */
+            _this.isBillboard = false;
+            /**
+             * 保持缩放尺寸
+             */
+            _this.holdSize = NaN;
+            _this._updateEverytime = true;
             _this._bounds = _this.getDefaultBoundingVolume();
             _this._worldBounds = _this.getDefaultBoundingVolume();
             _this._bounds.addEventListener(feng3d.Event.CHANGE, _this.onBoundsChange, _this);
+            //
+            _this.uniformData.u_modelMatrix = feng3d.UniformData.getUniformData(_this.sceneTransform);
             return _this;
         }
-        Object.defineProperty(Entity.prototype, "minX", {
+        /**
+         * 更新渲染数据
+         */
+        Transform.prototype.updateRenderData = function (renderContext, renderData) {
+            if (this.isBillboard) {
+                var parentInverseSceneTransform = (this.parent && this.parent.inverseSceneTransform) || new feng3d.Matrix3D();
+                var cameraPos = parentInverseSceneTransform.transformVector(renderContext.camera.sceneTransform.position);
+                var yAxis = parentInverseSceneTransform.deltaTransformVector(feng3d.Vector3D.Y_AXIS);
+                this.lookAt(cameraPos, yAxis);
+            }
+            if (this.holdSize) {
+                var depthScale = this.getDepthScale(renderContext);
+                var vec = this.sceneTransform.decompose();
+                vec[2].setTo(depthScale, depthScale, depthScale);
+                this.sceneTransform.recompose(vec);
+            }
+            if (!renderData.uniforms.u_modelMatrix)
+                renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
+        };
+        Transform.prototype.getDepthScale = function (renderContext) {
+            var cameraTranform = renderContext.camera.sceneTransform;
+            var distance = this.scenePosition.subtract(cameraTranform.position);
+            var depth = distance.dotProduct(cameraTranform.forward);
+            var scale = renderContext.view3D.getScaleByDepth(depth);
+            return scale;
+        };
+        Object.defineProperty(Transform.prototype, "minX", {
             /**
              * @inheritDoc
              */
@@ -7925,7 +7967,7 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Entity.prototype, "minY", {
+        Object.defineProperty(Transform.prototype, "minY", {
             /**
              * @inheritDoc
              */
@@ -7937,7 +7979,7 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Entity.prototype, "minZ", {
+        Object.defineProperty(Transform.prototype, "minZ", {
             /**
              * @inheritDoc
              */
@@ -7949,7 +7991,7 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Entity.prototype, "maxX", {
+        Object.defineProperty(Transform.prototype, "maxX", {
             /**
              * @inheritDoc
              */
@@ -7961,7 +8003,7 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Entity.prototype, "maxY", {
+        Object.defineProperty(Transform.prototype, "maxY", {
             /**
              * @inheritDoc
              */
@@ -7973,7 +8015,7 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Entity.prototype, "maxZ", {
+        Object.defineProperty(Transform.prototype, "maxZ", {
             /**
              * @inheritDoc
              */
@@ -7985,7 +8027,7 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Entity.prototype, "bounds", {
+        Object.defineProperty(Transform.prototype, "bounds", {
             /**
              * 边界
              */
@@ -8000,30 +8042,30 @@ var feng3d;
         /**
          * @inheritDoc
          */
-        Entity.prototype.invalidateSceneTransform = function () {
+        Transform.prototype.invalidateSceneTransform = function () {
             _super.prototype.invalidateSceneTransform.call(this);
             this._worldBoundsInvalid = true;
         };
         /**
          * 边界失效
          */
-        Entity.prototype.invalidateBounds = function () {
+        Transform.prototype.invalidateBounds = function () {
             this._boundsInvalid = true;
         };
         /**
          * 获取默认边界（默认盒子边界）
          * @return
          */
-        Entity.prototype.getDefaultBoundingVolume = function () {
+        Transform.prototype.getDefaultBoundingVolume = function () {
             return new feng3d.AxisAlignedBoundingBox();
         };
-        Object.defineProperty(Entity.prototype, "pickingCollisionVO", {
+        Object.defineProperty(Transform.prototype, "pickingCollisionVO", {
             /**
              * 获取碰撞数据
              */
             get: function () {
                 if (!this._pickingCollisionVO)
-                    this._pickingCollisionVO = new feng3d.PickingCollisionVO(this);
+                    this._pickingCollisionVO = new feng3d.PickingCollisionVO(this.gameObject);
                 return this._pickingCollisionVO;
             },
             enumerable: true,
@@ -8034,7 +8076,7 @@ var feng3d;
           * @param ray3D
           * @return
           */
-        Entity.prototype.isIntersectingRay = function (ray3D) {
+        Transform.prototype.isIntersectingRay = function (ray3D) {
             if (!this.pickingCollisionVO.localNormal)
                 this.pickingCollisionVO.localNormal = new feng3d.Vector3D();
             //转换到当前实体坐标系空间
@@ -8051,16 +8093,7 @@ var feng3d;
             this.pickingCollisionVO.rayOriginIsInsideBounds = rayEntryDistance == 0;
             return true;
         };
-        /**
-         * 碰撞前设置碰撞状态
-         * @param shortestCollisionDistance 最短碰撞距离
-         * @param findClosest 是否寻找最优碰撞
-         * @return
-         */
-        Entity.prototype.collidesBefore = function (pickingCollider, shortestCollisionDistance, findClosest) {
-            return true;
-        };
-        Object.defineProperty(Entity.prototype, "worldBounds", {
+        Object.defineProperty(Transform.prototype, "worldBounds", {
             /**
              * 世界边界
              */
@@ -8075,19 +8108,47 @@ var feng3d;
         /**
          * 更新世界边界
          */
-        Entity.prototype.updateWorldBounds = function () {
+        Transform.prototype.updateWorldBounds = function () {
             this._worldBounds.transformFrom(this.bounds, this.sceneTransform);
             this._worldBoundsInvalid = false;
         };
         /**
          * 处理包围盒变换事件
          */
-        Entity.prototype.onBoundsChange = function () {
+        Transform.prototype.onBoundsChange = function () {
             this._worldBoundsInvalid = true;
         };
-        return Entity;
+        /**
+         * @inheritDoc
+         */
+        Transform.prototype.updateBounds = function () {
+            var meshFilter = this.gameObject.getOrCreateComponentByClass(feng3d.MeshFilter);
+            this._bounds.geometry = meshFilter.mesh;
+            this._bounds.fromGeometry(meshFilter.mesh);
+            this._boundsInvalid = false;
+        };
+        /**
+         * 碰撞前设置碰撞状态
+         * @param shortestCollisionDistance 最短碰撞距离
+         * @param findClosest 是否寻找最优碰撞
+         * @return
+         */
+        Transform.prototype.collidesBefore = function (pickingCollider, shortestCollisionDistance, findClosest) {
+            pickingCollider.setLocalRay(this._pickingCollisionVO.localRay);
+            this._pickingCollisionVO.renderable = null;
+            var meshFilter = this.gameObject.getComponentByType(feng3d.MeshFilter);
+            var model = meshFilter.mesh;
+            if (pickingCollider.testSubMeshCollision(model, this._pickingCollisionVO, shortestCollisionDistance)) {
+                shortestCollisionDistance = this._pickingCollisionVO.rayEntryDistance;
+                this._pickingCollisionVO.renderable = model;
+                if (!findClosest)
+                    return true;
+            }
+            return this._pickingCollisionVO.renderable != null;
+        };
+        return Transform;
     }(feng3d.ObjectContainer3D));
-    feng3d.Entity = Entity;
+    feng3d.Transform = Transform;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -8103,57 +8164,38 @@ var feng3d;
         function GameObject(name) {
             if (name === void 0) { name = "object"; }
             var _this = _super.call(this) || this;
-            _this.uniformData = new feng3d.UniformRenderData();
             _this._renderData = new feng3d.Object3DRenderAtomic();
             /**
              * 组件列表
              */
             _this.components_ = [];
-            /**
-             * 是否为公告牌（默认永远朝向摄像机），默认false。
-             */
-            _this.isBillboard = false;
-            /**
-             * 保持缩放尺寸
-             */
-            _this.holdSize = NaN;
             _this.name = name;
-            _this.uniformData.u_modelMatrix = feng3d.UniformData.getUniformData(_this.sceneTransform);
+            _this._transform = new feng3d.Transform();
+            _this.addComponent(_this._transform);
             return _this;
         }
+        Object.defineProperty(GameObject.prototype, "transform", {
+            /**
+             * The Transform attached to this GameObject. (null if there is none attached).
+             */
+            get: function () {
+                return this._transform;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(GameObject.prototype, "renderData", {
             get: function () { return this._renderData; },
             enumerable: true,
             configurable: true
         });
         GameObject.prototype.updateRender = function (renderContext) {
-            if (this.isBillboard) {
-                var parentInverseSceneTransform = (this.parent && this.parent.inverseSceneTransform) || new feng3d.Matrix3D();
-                var cameraPos = parentInverseSceneTransform.transformVector(renderContext.camera.sceneTransform.position);
-                var yAxis = parentInverseSceneTransform.deltaTransformVector(feng3d.Vector3D.Y_AXIS);
-                this.lookAt(cameraPos, yAxis);
-            }
-            if (this.holdSize) {
-                var depthScale = this.getDepthScale(renderContext);
-                var vec = this.sceneTransform.decompose();
-                vec[2].setTo(depthScale, depthScale, depthScale);
-                this.sceneTransform.recompose(vec);
-            }
             if (this.renderData.renderHolderInvalid) {
                 this.renderData.clear();
                 this.collectRenderDataHolder(this.renderData);
                 this.renderData.renderHolderInvalid = false;
             }
-            if (!this.renderData.uniforms.u_modelMatrix)
-                this.renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
             this.renderData.update(renderContext);
-        };
-        GameObject.prototype.getDepthScale = function (renderContext) {
-            var cameraTranform = renderContext.camera.sceneTransform;
-            var distance = this.scenePosition.subtract(cameraTranform.position);
-            var depth = distance.dotProduct(cameraTranform.forward);
-            var scale = renderContext.view3D.getScaleByDepth(depth);
-            return scale;
         };
         /**
          * 收集渲染数据拥有者
@@ -8166,31 +8208,6 @@ var feng3d;
                     element.collectRenderDataHolder(renderAtomic);
                 }
             });
-        };
-        /**
-         * @inheritDoc
-         */
-        GameObject.prototype.updateBounds = function () {
-            var meshFilter = this.getOrCreateComponentByClass(feng3d.MeshFilter);
-            this._bounds.geometry = meshFilter.mesh;
-            this._bounds.fromGeometry(meshFilter.mesh);
-            this._boundsInvalid = false;
-        };
-        /**
-         * @inheritDoc
-         */
-        GameObject.prototype.collidesBefore = function (pickingCollider, shortestCollisionDistance, findClosest) {
-            pickingCollider.setLocalRay(this._pickingCollisionVO.localRay);
-            this._pickingCollisionVO.renderable = null;
-            var meshFilter = this.getComponentByType(feng3d.MeshFilter);
-            var model = meshFilter.mesh;
-            if (pickingCollider.testSubMeshCollision(model, this._pickingCollisionVO, shortestCollisionDistance)) {
-                shortestCollisionDistance = this._pickingCollisionVO.rayEntryDistance;
-                this._pickingCollisionVO.renderable = model;
-                if (!findClosest)
-                    return true;
-            }
-            return this._pickingCollisionVO.renderable != null;
         };
         /**
          * 添加组件
@@ -8319,7 +8336,7 @@ var feng3d;
             return removeComponents;
         };
         return GameObject;
-    }(feng3d.Entity));
+    }(feng3d.Component));
     feng3d.GameObject = GameObject;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -8633,7 +8650,7 @@ var feng3d;
          * 构造3D场景
          */
         function Scene3D() {
-            var _this = _super.call(this, "root") || this;
+            var _this = _super.call(this) || this;
             /**
              * 背景颜色
              */
@@ -8676,8 +8693,8 @@ var feng3d;
          * 处理添加对象事件
          */
         Scene3D.prototype.onAddedToScene = function (event) {
-            if (event.data instanceof feng3d.GameObject) {
-                var gameObject = event.data;
+            if (event.data instanceof feng3d.Transform) {
+                var gameObject = event.data.gameObject;
                 var model = gameObject.getComponentByType(feng3d.MeshRenderer);
                 model && this.renderers.push(model);
                 var light = gameObject.getComponentByType(feng3d.Light);
@@ -8749,7 +8766,7 @@ var feng3d;
             }
         };
         return Scene3D;
-    }(feng3d.GameObject));
+    }(feng3d.Transform));
     feng3d.Scene3D = Scene3D;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -10151,14 +10168,14 @@ var feng3d;
         });
         Object.defineProperty(Camera.prototype, "inverseSceneTransform", {
             get: function () {
-                return this.gameObject ? this.gameObject.inverseSceneTransform : new feng3d.Matrix3D();
+                return this.gameObject ? this.gameObject.transform.inverseSceneTransform : new feng3d.Matrix3D();
             },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(Camera.prototype, "sceneTransform", {
             get: function () {
-                return this.gameObject ? this.gameObject.sceneTransform : new feng3d.Matrix3D();
+                return this.gameObject ? this.gameObject.transform.sceneTransform : new feng3d.Matrix3D();
             },
             enumerable: true,
             configurable: true
@@ -10189,7 +10206,7 @@ var feng3d;
          * 处理被添加组件事件
          */
         Camera.prototype.onBeAddedComponent = function (event) {
-            this.gameObject.addEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
+            this.gameObject.transform.addEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
             this._viewProjectionDirty = true;
             this._frustumPlanesDirty = true;
         };
@@ -10197,7 +10214,7 @@ var feng3d;
          * 处理被移除组件事件
          */
         Camera.prototype.onBeRemovedComponent = function (event) {
-            this.gameObject.removeEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
+            this.gameObject.transform.removeEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
         };
         /**
          * 处理场景变换改变事件
@@ -10212,7 +10229,7 @@ var feng3d;
         Camera.prototype.updateRenderData = function (renderContext, renderData) {
             //
             renderData.uniforms.u_viewProjection = this.viewProjection;
-            var globalMatrix3d = this.gameObject ? this.gameObject.sceneTransform : new feng3d.Matrix3D();
+            var globalMatrix3d = this.gameObject ? this.gameObject.transform.sceneTransform : new feng3d.Matrix3D();
             renderData.uniforms.u_cameraMatrix = globalMatrix3d;
             //
             renderData.uniforms.u_skyBoxSize = this._lens.far / Math.sqrt(3);
@@ -14087,10 +14104,10 @@ var feng3d;
             set: function (value) {
                 this._direction = value;
                 if (this.gameObject) {
-                    var tmpLookAt = this.gameObject.getPosition();
+                    var tmpLookAt = this.gameObject.transform.getPosition();
                     tmpLookAt.incrementBy(this._direction);
-                    this.gameObject.lookAt(tmpLookAt);
-                    this.gameObject.sceneTransform.copyColumnTo(2, this._sceneDirection);
+                    this.gameObject.transform.lookAt(tmpLookAt);
+                    this.gameObject.transform.sceneTransform.copyColumnTo(2, this._sceneDirection);
                     this._sceneDirection.normalize();
                 }
             },
@@ -14102,9 +14119,9 @@ var feng3d;
          */
         DirectionalLight.prototype.onBeAddedComponent = function (event) {
             this.gameObject.addEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
-            var tmpLookAt = this.gameObject.getPosition();
+            var tmpLookAt = this.gameObject.transform.getPosition();
             tmpLookAt.incrementBy(this._direction);
-            this.gameObject.lookAt(tmpLookAt);
+            this.gameObject.transform.lookAt(tmpLookAt);
         };
         /**
          * 处理被移除组件事件
@@ -14113,7 +14130,7 @@ var feng3d;
             this.gameObject.removeEventListener(feng3d.Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
         };
         DirectionalLight.prototype.onScenetransformChanged = function () {
-            this.gameObject.sceneTransform.copyColumnTo(2, this._sceneDirection);
+            this.gameObject.transform.sceneTransform.copyColumnTo(2, this._sceneDirection);
             this._sceneDirection.normalize();
         };
         return DirectionalLight;
@@ -14145,7 +14162,7 @@ var feng3d;
              * 灯光位置
              */
             get: function () {
-                return this.gameObject.scenePosition;
+                return this.gameObject.transform.scenePosition;
             },
             enumerable: true,
             configurable: true
@@ -14237,11 +14254,11 @@ var feng3d;
             if (interpolate === void 0) { interpolate = true; }
             if (this._targetObject) {
                 if (this._lookAtPosition) {
-                    this._targetObject.lookAt(this.lookAtPosition, this._upAxis);
+                    this._targetObject.transform.lookAt(this.lookAtPosition, this._upAxis);
                 }
                 else if (this._lookAtObject) {
-                    this._lookAtObject.getPosition(this._pos);
-                    this._targetObject.lookAt(this._pos, this._upAxis);
+                    this._lookAtObject.transform.getPosition(this._pos);
+                    this._targetObject.transform.lookAt(this._pos, this._upAxis);
                 }
             }
         };
@@ -14464,21 +14481,21 @@ var feng3d;
                 this._pos["z"] = this._lookAtPosition["z"];
             }
             else if (this._lookAtObject) {
-                if (this._targetObject.parent && this._lookAtObject.parent) {
-                    if (this._targetObject.parent != this._lookAtObject.parent) {
-                        this._pos["x"] = this._lookAtObject.scenePosition["x"];
-                        this._pos["y"] = this._lookAtObject.scenePosition["y"];
-                        this._pos["z"] = this._lookAtObject.scenePosition["z"];
-                        this._targetObject.parent.inverseSceneTransform.transformVector(this._pos, this._pos);
+                if (this._targetObject.transform.parent && this._lookAtObject.transform.parent) {
+                    if (this._targetObject.transform.parent != this._lookAtObject.transform.parent) {
+                        this._pos["x"] = this._lookAtObject.transform.scenePosition["x"];
+                        this._pos["y"] = this._lookAtObject.transform.scenePosition["y"];
+                        this._pos["z"] = this._lookAtObject.transform.scenePosition["z"];
+                        this._targetObject.transform.parent.inverseSceneTransform.transformVector(this._pos, this._pos);
                     }
                     else {
                         this._pos.copyFrom(this._lookAtObject.transform.position);
                     }
                 }
-                else if (this._lookAtObject.scene) {
-                    this._pos["x"] = this._lookAtObject.scenePosition["x"];
-                    this._pos["y"] = this._lookAtObject.scenePosition["y"];
-                    this._pos["z"] = this._lookAtObject.scenePosition["z"];
+                else if (this._lookAtObject.transform.scene) {
+                    this._pos["x"] = this._lookAtObject.transform.scenePosition["x"];
+                    this._pos["y"] = this._lookAtObject.transform.scenePosition["y"];
+                    this._pos["z"] = this._lookAtObject.transform.scenePosition["z"];
                 }
                 else {
                     this._pos.copyFrom(this._lookAtObject.transform.position);
@@ -14489,9 +14506,9 @@ var feng3d;
                 this._pos["y"] = this._origin["y"];
                 this._pos["z"] = this._origin["z"];
             }
-            this._targetObject.x = this._pos["x"] + this._distance * Math.sin(this._currentPanAngle * Math.DEG2RAD) * Math.cos(this._currentTiltAngle * Math.DEG2RAD);
-            this._targetObject.z = this._pos["z"] + this._distance * Math.cos(this._currentPanAngle * Math.DEG2RAD) * Math.cos(this._currentTiltAngle * Math.DEG2RAD);
-            this._targetObject.y = this._pos["y"] + this._distance * Math.sin(this._currentTiltAngle * Math.DEG2RAD) * this._yFactor;
+            this._targetObject.transform.x = this._pos["x"] + this._distance * Math.sin(this._currentPanAngle * Math.DEG2RAD) * Math.cos(this._currentTiltAngle * Math.DEG2RAD);
+            this._targetObject.transform.z = this._pos["z"] + this._distance * Math.cos(this._currentPanAngle * Math.DEG2RAD) * Math.cos(this._currentTiltAngle * Math.DEG2RAD);
+            this._targetObject.transform.y = this._pos["y"] + this._distance * Math.sin(this._currentTiltAngle * Math.DEG2RAD) * this._yFactor;
             _super.prototype.update.call(this);
         };
         return HoverController;
@@ -14589,9 +14606,9 @@ var feng3d;
             accelerationVec.scaleBy(this.acceleration);
             //计算速度
             this.velocity.incrementBy(accelerationVec);
-            var right = this.targetObject.rightVector;
-            var up = this.targetObject.upVector;
-            var forward = this.targetObject.forwardVector;
+            var right = this.targetObject.transform.rightVector;
+            var up = this.targetObject.transform.upVector;
+            var forward = this.targetObject.transform.forwardVector;
             right.scaleBy(this.velocity.x);
             up.scaleBy(this.velocity.y);
             forward.scaleBy(this.velocity.z);
@@ -14599,9 +14616,9 @@ var feng3d;
             var displacement = right.clone();
             displacement.incrementBy(up);
             displacement.incrementBy(forward);
-            this.targetObject.x += displacement.x;
-            this.targetObject.y += displacement.y;
-            this.targetObject.z += displacement.z;
+            this.targetObject.transform.x += displacement.x;
+            this.targetObject.transform.y += displacement.y;
+            this.targetObject.transform.z += displacement.z;
         };
         /**
          * 处理鼠标移动事件
@@ -14618,7 +14635,7 @@ var feng3d;
             var offsetPoint = mousePoint.subtract(this.preMousePoint);
             offsetPoint.x *= 0.15;
             offsetPoint.y *= 0.15;
-            var matrix3d = this.targetObject.sceneTransform;
+            var matrix3d = this.targetObject.transform.sceneTransform;
             matrix3d.appendRotation(offsetPoint.y, matrix3d.right, matrix3d.position);
             var up = feng3d.Vector3D.Y_AXIS;
             if (matrix3d.up.dotProduct(up) < 0) {
@@ -14626,7 +14643,7 @@ var feng3d;
                 up.scaleBy(-1);
             }
             matrix3d.appendRotation(offsetPoint.x, up, matrix3d.position);
-            this.targetObject.sceneTransform = matrix3d;
+            this.targetObject.transform.sceneTransform = matrix3d;
             //
             this.preMousePoint = mousePoint;
         };
@@ -14698,7 +14715,7 @@ var feng3d;
              * 实体上碰撞世界坐标
              */
             get: function () {
-                return this.firstEntity.sceneTransform.transformVector(this.localPosition);
+                return this.firstEntity.transform.sceneTransform.transformVector(this.localPosition);
             },
             enumerable: true,
             configurable: true
@@ -14924,7 +14941,7 @@ var feng3d;
             if (entitys.length == 0)
                 return null;
             entitys.forEach(function (entity) {
-                if (entity.isIntersectingRay(ray3D))
+                if (entity.transform.isIntersectingRay(ray3D))
                     _this._entities.push(entity);
             });
             if (this._entities.length == 0)
@@ -14948,10 +14965,10 @@ var feng3d;
             var i;
             for (i = 0; i < this._entities.length; ++i) {
                 entity = this._entities[i];
-                pickingCollisionVO = entity._pickingCollisionVO;
+                pickingCollisionVO = entity.transform._pickingCollisionVO;
                 if (RaycastPicker.pickingCollider) {
                     // If a collision exists, update the collision data and stop all checks.
-                    if ((bestCollisionVO == null || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance) && entity.collidesBefore(RaycastPicker.pickingCollider, shortestCollisionDistance, this._findClosestCollision)) {
+                    if ((bestCollisionVO == null || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance) && entity.transform.collidesBefore(RaycastPicker.pickingCollider, shortestCollisionDistance, this._findClosestCollision)) {
                         shortestCollisionDistance = pickingCollisionVO.rayEntryDistance;
                         bestCollisionVO = pickingCollisionVO;
                         if (!this._findClosestCollision) {
@@ -14977,7 +14994,7 @@ var feng3d;
          * 按与射线原点距离排序
          */
         RaycastPicker.prototype.sortOnNearT = function (entity1, entity2) {
-            return entity1.pickingCollisionVO.rayEntryDistance > entity2.pickingCollisionVO.rayEntryDistance ? 1 : -1;
+            return entity1.transform.pickingCollisionVO.rayEntryDistance > entity2.transform.pickingCollisionVO.rayEntryDistance ? 1 : -1;
         };
         /**
          * 更新碰撞本地坐标
@@ -16086,14 +16103,14 @@ var feng3d;
         ParticleBillboard.prototype.setRenderState = function (particleGlobal, gameObject, renderContext) {
             var comps;
             if (this._billboardAxis) {
-                var pos = gameObject.sceneTransform.position;
+                var pos = gameObject.transform.sceneTransform.position;
                 var look = renderContext.camera.sceneTransform.position.subtract(pos);
                 var right = look.crossProduct(this._billboardAxis);
                 right.normalize();
                 look = this._billboardAxis.crossProduct(right);
                 look.normalize();
                 //create a quick inverse projection matrix
-                this._matrix.copyFrom(gameObject.sceneTransform);
+                this._matrix.copyFrom(gameObject.transform.sceneTransform);
                 comps = this._matrix.decompose(feng3d.Orientation3D.AXIS_ANGLE);
                 this._matrix.copyColumnFrom(0, right);
                 this._matrix.copyColumnFrom(1, this._billboardAxis);
@@ -16103,7 +16120,7 @@ var feng3d;
             }
             else {
                 //create a quick inverse projection matrix
-                this._matrix.copyFrom(gameObject.sceneTransform);
+                this._matrix.copyFrom(gameObject.transform.sceneTransform);
                 this._matrix.append(renderContext.camera.inverseSceneTransform);
                 //decompose using axis angle rotations
                 comps = this._matrix.decompose(feng3d.Orientation3D.AXIS_ANGLE);
@@ -17599,7 +17616,7 @@ var feng3d;
             for (var i = 0; i < objs.length; i++) {
                 var obj = objs[i];
                 var object3D = this.createSubObj(obj, material);
-                object.addChild(object3D);
+                object.transform.addChild(object3D.transform);
             }
             if (this._completed) {
                 this._completed(object);
@@ -17610,7 +17627,7 @@ var feng3d;
             var subObjs = obj.subObjs;
             for (var i = 0; i < subObjs.length; i++) {
                 var materialObj = this.createMaterialObj(obj, subObjs[i], material);
-                object3D.addChild(materialObj);
+                object3D.transform.addChild(materialObj.transform);
             }
             return object3D;
         };
@@ -17746,7 +17763,7 @@ var feng3d;
                 skeletonObject3D.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.StandardMaterial();
                 skeletonObject3D.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = geometry;
                 skeletonObject3D.addComponent(skeletonAnimator);
-                object3D.addChild(skeletonObject3D);
+                object3D.transform.addChild(skeletonObject3D.transform);
             }
             if (this._completed) {
                 this._completed(object3D, skeletonAnimator);
@@ -18005,45 +18022,45 @@ var feng3d;
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(length, 0, 0), 0xff0000, 0xff0000));
             this._xLine.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = segmentGeometry;
             this._xLine.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
-            this.addChild(this._xLine);
+            this.transform.addChild(this._xLine.transform);
             //
             this._yLine = new feng3d.GameObject();
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(0, length, 0), 0x00ff00, 0x00ff00));
             this._yLine.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = segmentGeometry;
             this._yLine.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
-            this.addChild(this._yLine);
+            this.transform.addChild(this._yLine.transform);
             //
             this._zLine = new feng3d.GameObject();
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(0, 0, length), 0x0000ff, 0x0000ff));
             this._zLine.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = segmentGeometry;
             this._zLine.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
-            this.addChild(this._zLine);
+            this.transform.addChild(this._zLine.transform);
             //
             this._xArrow = new feng3d.GameObject();
-            this._xArrow.x = length;
-            this._xArrow.rotationZ = -90;
+            this._xArrow.transform.x = length;
+            this._xArrow.transform.rotationZ = -90;
             this._xArrow.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
             ;
             var material = this._xArrow.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(1, 0, 0);
-            this.addChild(this._xArrow);
+            this.transform.addChild(this._xArrow.transform);
             //
             this._yArrow = new feng3d.GameObject();
-            this._yArrow.y = length;
+            this._yArrow.transform.y = length;
             this._yArrow.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
             var material = this._yArrow.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(0, 1, 0);
-            this.addChild(this._yArrow);
+            this.transform.addChild(this._yArrow.transform);
             //
             this._zArrow = new feng3d.GameObject();
-            this._zArrow.z = length;
-            this._zArrow.rotationX = 90;
+            this._zArrow.transform.z = length;
+            this._zArrow.transform.rotationX = 90;
             this._zArrow.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
             var material = this._zArrow.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(0, 0, 1);
-            this.addChild(this._zArrow);
+            this.transform.addChild(this._zArrow.transform);
         };
         return Trident;
     }(feng3d.GameObject));
@@ -18217,7 +18234,7 @@ var feng3d;
             while (i < checkList.length) {
                 var checkObject = checkList[i++];
                 if (checkObject.mouseEnabled && checkObject.getComponentsByType(feng3d.Geometry)) {
-                    results.push(checkObject);
+                    results.push(checkObject.gameObject);
                 }
                 if (checkObject.mouseChildren) {
                     checkList = checkList.concat(checkObject.getChildren());
@@ -18393,13 +18410,13 @@ var feng3d;
             var scene = this.view3D.scene;
             scene.background.setTo(0.3, 0.3, 0.3);
             var cube = feng3d.GameObjectFactory.createCube();
-            cube.z = 300;
-            scene.addChild(cube);
+            cube.transform.z = 300;
+            scene.addChild(cube.transform);
             var gameObject = feng3d.GameObjectFactory.createPlane();
-            gameObject.y = 150;
-            gameObject.isBillboard = true;
-            gameObject.holdSize = 1;
-            cube.addChild(gameObject);
+            gameObject.transform.y = 150;
+            gameObject.transform.isBillboard = true;
+            gameObject.transform.holdSize = 1;
+            cube.transform.addChild(gameObject.transform);
             //材质
             var model = gameObject.getOrCreateComponentByClass(feng3d.MeshRenderer);
             gameObject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(100, 100, 1, 1, false);
@@ -18435,13 +18452,13 @@ var feng3d;
         ColorMaterialTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var cube = feng3d.GameObjectFactory.createCube();
-            cube.z = 300;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 300;
+            this.view3D.scene.addChild(cube.transform);
             //初始化颜色材质
             var colorMaterial = cube.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             //变化旋转与颜色
             setInterval(function () {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             setInterval(function () {
                 colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
@@ -18464,15 +18481,15 @@ var feng3d;
             this.view3D = new feng3d.View3D();
             //初始化颜色材质
             var cube = feng3d.GameObjectFactory.createCube();
-            cube.z = 500;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 500;
+            this.view3D.scene.addChild(cube.transform);
             var colorMaterial = cube.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             var cylinder = feng3d.GameObjectFactory.createCylinder();
-            cylinder.x = 200;
-            cube.addChild(cylinder);
+            cylinder.transform.x = 200;
+            cube.transform.addChild(cylinder.transform);
             //变化旋转与颜色
             setInterval(function () {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             setInterval(function () {
                 colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
@@ -18491,8 +18508,8 @@ var feng3d;
         function FPSControllerTest() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.cameraObj);
             //
@@ -18500,27 +18517,27 @@ var feng3d;
             setInterval(this.process.bind(this), 17);
         }
         FPSControllerTest.prototype.process = function () {
-            var screenPos = this.view3D.project(sphere.scenePosition);
+            var screenPos = this.view3D.project(sphere.transform.scenePosition);
             console.log("球体视窗坐标" + screenPos.toString());
         };
         FPSControllerTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var cube = feng3d.GameObjectFactory.createCube();
-            scene3D.addChild(cube);
+            scene3D.addChild(cube.transform);
             var plane = feng3d.GameObjectFactory.createPlane();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            scene3D.addChild(plane);
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            scene3D.addChild(plane.transform);
             sphere = feng3d.GameObjectFactory.createSphere();
-            sphere.setPosition(-150, 0, 0);
-            scene3D.addChild(sphere);
+            sphere.transform.setPosition(-150, 0, 0);
+            scene3D.addChild(sphere.transform);
             var capsule = feng3d.GameObjectFactory.createCapsule();
-            capsule.setPosition(300, 0, 0);
-            scene3D.addChild(capsule);
+            capsule.transform.setPosition(300, 0, 0);
+            scene3D.addChild(capsule.transform);
             var cylinder = feng3d.GameObjectFactory.createCylinder();
-            cylinder.setPosition(-300, 0, 0);
-            scene3D.addChild(cylinder);
+            cylinder.transform.setPosition(-300, 0, 0);
+            scene3D.addChild(cylinder.transform);
         };
         return FPSControllerTest;
     }());
@@ -18549,14 +18566,14 @@ var feng3d;
             matrix3D.appendTranslation(0, 50, 0);
             matrix3D.appendRotation(45, feng3d.Vector3D.Z_AXIS);
             geometry.addGeometry(addGeometry, matrix3D);
-            object3d.z = 300;
-            object3d.y = -100;
-            this.view3D.scene.addChild(object3d);
+            object3d.transform.z = 300;
+            object3d.transform.y = -100;
+            this.view3D.scene.addChild(object3d.transform);
             //初始化颜色材质
             var colorMaterial = model.material = new feng3d.ColorMaterial();
             //变化旋转与颜色
             setInterval(function () {
-                object3d.rotationY += 1;
+                object3d.transform.rotationY += 1;
             }, 15);
             setInterval(function () {
                 colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
@@ -18577,7 +18594,7 @@ var feng3d;
             // //变化旋转
             setInterval(function () {
                 if (object) {
-                    object.rotationY += 1;
+                    object.transform.rotationY += 1;
                 }
             }, 15);
             var md5meshUrl = "resources/hellknight/hellknight.md5mesh";
@@ -18587,12 +18604,12 @@ var feng3d;
             var useMatrial = this.useMatrial;
             var md5Loader = new feng3d.MD5Loader();
             md5Loader.load(md5meshUrl, function (object3D, animator) {
-                object3D.y = -100;
-                object3D.rotationX = -90;
+                object3D.transform.y = -100;
+                object3D.transform.rotationX = -90;
                 object = object3D;
                 useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
-                object.z = 300;
-                scene.addChild(object3D);
+                object.transform.z = 300;
+                scene.addChild(object3D.transform);
                 skeletonAnimator = animator;
                 //
                 md5Loader.loadAnim(md5animUrl, function (skeletonClipNode) {
@@ -18607,13 +18624,13 @@ var feng3d;
             var pointLight1 = new feng3d.PointLight();
             pointLight1.color = new feng3d.Color(0, 1, 0, 1);
             light1.addComponent(pointLight1);
-            scene.addChild(light1);
+            scene.addChild(light1.transform);
         };
         MD5LoaderTest.prototype.useMatrial = function (object3D, imageUrl) {
             var material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = imageUrl;
-            for (var i = 0; i < object3D.numChildren; i++) {
-                var child = object3D.getChildAt(i);
+            for (var i = 0; i < object3D.transform.numChildren; i++) {
+                var child = object3D.transform.getChildAt(i);
                 var model = child.getComponentByType(feng3d.MeshRenderer);
                 if (model) {
                     model.material = material;
@@ -18634,8 +18651,8 @@ var feng3d;
         function MousePickTest() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.cameraObj);
         }
@@ -18643,25 +18660,25 @@ var feng3d;
             this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var cube = feng3d.GameObjectFactory.createCube();
-            cube.mouseEnabled = true;
-            scene3D.addChild(cube);
+            cube.transform.mouseEnabled = true;
+            scene3D.addChild(cube.transform);
             var plane = feng3d.GameObjectFactory.createPlane();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            plane.mouseEnabled = true;
-            scene3D.addChild(plane);
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            plane.transform.mouseEnabled = true;
+            scene3D.addChild(plane.transform);
             var sphere = feng3d.GameObjectFactory.createSphere();
-            sphere.setPosition(-150, 0, 0);
-            sphere.mouseEnabled = true;
-            scene3D.addChild(sphere);
+            sphere.transform.setPosition(-150, 0, 0);
+            sphere.transform.mouseEnabled = true;
+            scene3D.addChild(sphere.transform);
             var capsule = feng3d.GameObjectFactory.createCapsule();
-            capsule.setPosition(300, 0, 0);
-            capsule.mouseEnabled = true;
-            scene3D.addChild(capsule);
+            capsule.transform.setPosition(300, 0, 0);
+            capsule.transform.mouseEnabled = true;
+            scene3D.addChild(capsule.transform);
             var cylinder = feng3d.GameObjectFactory.createCylinder();
-            cylinder.setPosition(-300, 0, 0);
-            cylinder.mouseEnabled = true;
-            scene3D.addChild(cylinder);
+            cylinder.transform.setPosition(-300, 0, 0);
+            cylinder.transform.mouseEnabled = true;
+            scene3D.addChild(cylinder.transform);
             scene3D.addEventListener(feng3d.Mouse3DEvent.CLICK, this.onMouseClick, this);
         };
         MousePickTest.prototype.onMouseClick = function (event) {
@@ -18684,7 +18701,7 @@ var feng3d;
             // //变化旋转
             setInterval(function () {
                 if (object) {
-                    object.rotationY += 1;
+                    object.transform.rotationY += 1;
                 }
             }, 15);
             // var objUrl = "resources/cube.obj";
@@ -18698,18 +18715,18 @@ var feng3d;
             var objLoader = new feng3d.ObjLoader();
             objLoader.load(objUrl, material, function (object3D) {
                 object = object3D;
-                object.scaleX = 20;
-                object.scaleY = 20;
-                object.scaleZ = 20;
-                object.z = 300;
-                scene.addChild(object3D);
+                object.transform.scaleX = 20;
+                object.transform.scaleY = 20;
+                object.transform.scaleZ = 20;
+                object.transform.z = 300;
+                scene.addChild(object3D.transform);
             });
             //初始化光源
             var light1 = new feng3d.GameObject();
             var pointLight1 = new feng3d.PointLight();
             pointLight1.color = new feng3d.Color(0, 1, 0, 1);
             light1.addComponent(pointLight1);
-            scene.addChild(light1);
+            scene.addChild(light1.transform);
         };
         return OBJParserTest;
     }());
@@ -18722,8 +18739,8 @@ var feng3d;
         function ParticleAnimatorTest() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.view3D.camera);
         }
@@ -18734,8 +18751,8 @@ var feng3d;
             particle.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PointGeometry();
             var material = particle.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.StandardMaterial();
             material.renderMode = feng3d.RenderMode.POINTS;
-            particle.y = -100;
-            scene.addChild(particle);
+            particle.transform.y = -100;
+            scene.addChild(particle.transform);
             var particleAnimator = particle.getOrCreateComponentByClass(feng3d.ParticleAnimator);
             particleAnimator.cycle = 10;
             particleAnimator.numParticles = 1000;
@@ -18769,9 +18786,9 @@ var feng3d;
             this.light1 = new feng3d.GameObject("pointLight");
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.y = 200;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.y = 200;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.view3D.camera);
             feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyUp, this);
@@ -18784,8 +18801,8 @@ var feng3d;
                     break;
                 case "b":
                     this.initObjects();
-                    this.scene.addChild(this.light0);
-                    this.scene.addChild(this.light1);
+                    this.scene.addChild(this.light0.transform);
+                    this.scene.addChild(this.light1.transform);
                     break;
             }
         };
@@ -18809,18 +18826,18 @@ var feng3d;
             material.specularMethod.specularTexture.wrapT = feng3d.GL.MIRRORED_REPEAT;
             //初始化立方体
             var plane = new feng3d.GameObject();
-            plane.y = -100;
+            plane.transform.y = -100;
             var model = plane.getOrCreateComponentByClass(feng3d.MeshRenderer);
             var geometry = plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
             model.material = material;
-            this.scene.addChild(plane);
+            this.scene.addChild(plane.transform);
             var cube = new feng3d.GameObject();
             var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
             model.material = material;
             cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
             cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh.scaleUV(2, 2);
-            this.scene.addChild(cube);
+            this.scene.addChild(cube.transform);
         };
         PointLightTest.prototype.clearObjects = function () {
             for (var i = this.scene.numChildren - 1; i >= 0; i--) {
@@ -18837,7 +18854,7 @@ var feng3d;
             pointLight0.color = lightColor0;
             this.light0.addComponent(pointLight0);
             this.light0.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor0);
-            this.scene.addChild(this.light0);
+            this.scene.addChild(this.light0.transform);
             //
             var lightColor1 = new feng3d.Color(0, 1, 0, 1);
             this.light1.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(5);
@@ -18847,19 +18864,19 @@ var feng3d;
             pointLight1.color = lightColor1;
             this.light1.addComponent(pointLight1);
             this.light1.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor1);
-            this.scene.addChild(this.light1);
+            this.scene.addChild(this.light1.transform);
         };
         PointLightTest.prototype.setPointLightPosition = function () {
             var time = new Date().getTime();
             //
             var angle = time / 1000;
-            this.light0.x = Math.sin(angle) * 300;
-            this.light0.z = Math.cos(angle) * 300;
+            this.light0.transform.x = Math.sin(angle) * 300;
+            this.light0.transform.z = Math.cos(angle) * 300;
             //
             angle = angle + Math.PI / 2;
-            this.light1.x = Math.sin(angle) * 300;
-            this.light1.z = Math.cos(angle) * 300;
-            this.light1.lookAt(new feng3d.Vector3D());
+            this.light1.transform.x = Math.sin(angle) * 300;
+            this.light1.transform.z = Math.cos(angle) * 300;
+            this.light1.transform.lookAt(new feng3d.Vector3D());
         };
         return PointLightTest;
     }());
@@ -18878,8 +18895,8 @@ var feng3d;
             var object3D = new feng3d.GameObject("plane");
             object3D.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = pointGeometry;
             object3D.getOrCreateComponentByClass(feng3d.MeshRenderer).material = pointMaterial;
-            object3D.z = 300;
-            this.view3D.scene.addChild(object3D);
+            object3D.transform.z = 300;
+            this.view3D.scene.addChild(object3D.transform);
             var length = 200;
             var height = 200 / Math.PI;
             for (var x = -length; x <= length; x = x + 4) {
@@ -18889,8 +18906,8 @@ var feng3d;
             }
             //变化旋转
             setInterval(function () {
-                object3D.rotationY += 1;
-                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.rotationY / 30);
+                object3D.transform.rotationY += 1;
+                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.rotationY / 30);
             }, 15);
         };
         return PointMaterialTest;
@@ -18913,27 +18930,27 @@ var feng3d;
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
             angle = angle * Math.DEG2RAD;
-            this.cameraObj.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
+            this.cameraObj.transform.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
             this.controller.update();
         };
         PrimitiveTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var cube = feng3d.GameObjectFactory.createCube();
-            scene3D.addChild(cube);
+            scene3D.addChild(cube.transform);
             var plane = feng3d.GameObjectFactory.createPlane();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            scene3D.addChild(plane);
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            scene3D.addChild(plane.transform);
             var sphere = feng3d.GameObjectFactory.createSphere();
-            sphere.setPosition(-150, 0, 0);
-            scene3D.addChild(sphere);
+            sphere.transform.setPosition(-150, 0, 0);
+            scene3D.addChild(sphere.transform);
             var capsule = feng3d.GameObjectFactory.createCapsule();
-            capsule.setPosition(300, 0, 0);
-            scene3D.addChild(capsule);
+            capsule.transform.setPosition(300, 0, 0);
+            scene3D.addChild(capsule.transform);
             var cylinder = feng3d.GameObjectFactory.createCylinder();
-            cylinder.setPosition(-300, 0, 0);
-            scene3D.addChild(cylinder);
+            cylinder.transform.setPosition(-300, 0, 0);
+            scene3D.addChild(cylinder.transform);
         };
         return PrimitiveTest;
     }());
@@ -18945,8 +18962,8 @@ var feng3d;
         function SceneLoadTest() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.view3D.camera);
         }
@@ -18976,8 +18993,8 @@ var feng3d;
         SegmentMaterialTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var segment = new feng3d.GameObject("segment");
-            segment.z = 300;
-            this.view3D.scene.addChild(segment);
+            segment.transform.z = 300;
+            this.view3D.scene.addChild(segment.transform);
             //初始化材质
             segment.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
             var segmentGeometry = segment.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SegmentGeometry();
@@ -18997,7 +19014,7 @@ var feng3d;
             }
             //变化旋转
             setInterval(function () {
-                segment.rotationY += 1;
+                segment.transform.rotationY += 1;
             }, 15);
         };
         return SegmentMaterialTest;
@@ -19010,8 +19027,8 @@ var feng3d;
         function SkyBoxTest() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.view3D.camera);
         }
@@ -19029,7 +19046,7 @@ var feng3d;
                 'resources/skybox/ny.jpg',
                 'resources/skybox/nz.jpg'
             ]);
-            scene.addChild(skybox);
+            scene.addChild(skybox.transform);
         };
         return SkyBoxTest;
     }());
@@ -19044,12 +19061,12 @@ var feng3d;
         StandardMaterialTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var cube = new feng3d.GameObject();
-            cube.z = 300;
-            cube.y = -100;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 300;
+            cube.transform.y = -100;
+            this.view3D.scene.addChild(cube.transform);
             //变化旋转与颜色
             setInterval(function () {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
             cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
@@ -19074,9 +19091,9 @@ var feng3d;
         function TerrainTest() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.y = 200;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.y = 200;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.cameraObj);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
@@ -19084,8 +19101,8 @@ var feng3d;
         TerrainTest.prototype.onEnterFrame = function () {
             var time = new Date().getTime();
             var angle = time / 1000;
-            this.light1.x = Math.sin(angle) * 300;
-            this.light1.z = Math.cos(angle) * 300;
+            this.light1.transform.x = Math.sin(angle) * 300;
+            this.light1.transform.z = Math.cos(angle) * 300;
         };
         TerrainTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
@@ -19098,14 +19115,14 @@ var feng3d;
             var terrainMethod = new feng3d.TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new feng3d.Vector3D(1, 50, 50, 50));
             material.addMethod(terrainMethod);
             terrain.getOrCreateComponentByClass(feng3d.MeshRenderer).material = material;
-            scene.addChild(terrain);
+            scene.addChild(terrain.transform);
             //初始化光源
             var light1 = this.light1 = new feng3d.GameObject();
             var pointLight1 = new feng3d.PointLight();
             // pointLight1.range = 1000;
             pointLight1.color = new feng3d.Color(1, 1, 0, 1);
             light1.addComponent(pointLight1);
-            light1.y = 300;
+            light1.transform.y = 300;
             // scene.addChild(light1);
         };
         return TerrainTest;
@@ -19118,9 +19135,9 @@ var feng3d;
         function TerrainMergeTest() {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.y = 200;
-            this.cameraObj.lookAt(new feng3d.Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.y = 200;
+            this.cameraObj.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.cameraObj);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
@@ -19128,8 +19145,8 @@ var feng3d;
         TerrainMergeTest.prototype.onEnterFrame = function () {
             var time = new Date().getTime();
             var angle = time / 1000;
-            this.light1.x = Math.sin(angle) * 300;
-            this.light1.z = Math.cos(angle) * 300;
+            this.light1.transform.x = Math.sin(angle) * 300;
+            this.light1.transform.z = Math.cos(angle) * 300;
         };
         TerrainMergeTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
@@ -19143,14 +19160,14 @@ var feng3d;
             var terrainMethod = new feng3d.TerrainMergeMethod(root + 'terrain_splats.png', root + 'test1.jpg', new feng3d.Vector3D(50, 50, 50));
             material.addMethod(terrainMethod);
             terrain.getOrCreateComponentByClass(feng3d.MeshRenderer).material = material;
-            scene.addChild(terrain);
+            scene.addChild(terrain.transform);
             //初始化光源
             var light1 = this.light1 = new feng3d.GameObject();
             var pointLight1 = new feng3d.PointLight();
             // pointLight1.range = 1000;
             pointLight1.color = new feng3d.Color(1, 1, 0, 1);
             light1.addComponent(pointLight1);
-            light1.y = 300;
+            light1.transform.y = 300;
             // scene.addChild(light1);
         };
         return TerrainMergeTest;
@@ -19166,12 +19183,12 @@ var feng3d;
         TextureMaterialTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var cube = new feng3d.GameObject();
-            cube.z = 300;
-            cube.y = -100;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 300;
+            cube.transform.y = -100;
+            this.view3D.scene.addChild(cube.transform);
             //变化旋转与颜色
             setInterval(function () {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
             cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
@@ -19196,12 +19213,12 @@ var feng3d;
         FogTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var cube = new feng3d.GameObject();
-            cube.z = 300;
-            cube.y = -100;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 300;
+            cube.transform.y = -100;
+            this.view3D.scene.addChild(cube.transform);
             //变化旋转与颜色
             setInterval(function () {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
             cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
@@ -19240,10 +19257,10 @@ var feng3d;
             skybox.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SkyBoxGeometry();
             var material = model.material = new feng3d.SkyBoxMaterial();
             material.texture = cubeTexture;
-            scene.addChild(skybox);
+            scene.addChild(skybox.transform);
             var camera = this.camera = view3D.camera;
-            camera.z = -600;
-            camera.lookAt(new feng3d.Vector3D());
+            camera.transform.z = -600;
+            camera.transform.lookAt(new feng3d.Vector3D());
             camera.camera.lens = new feng3d.PerspectiveLens(90);
             var torusMaterial = new feng3d.StandardMaterial();
             torusMaterial.specularMethod.specular = 0.5;
@@ -19254,15 +19271,15 @@ var feng3d;
             var model = torus.getOrCreateComponentByClass(feng3d.MeshRenderer);
             torus.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;
-            scene.addChild(torus);
+            scene.addChild(torus.transform);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
         }
         Basic_SkyBox.prototype._onEnterFrame = function (e) {
-            this._torus.rotationX += 2;
-            this._torus.rotationY += 1;
-            this.camera.setPosition(0, 0, 0);
-            this.camera.rotationY += 0.5 * (this._view.mousePos.x - this._view.width / 2) / 800;
-            this.camera.moveBackward(600);
+            this._torus.transform.rotationX += 2;
+            this._torus.transform.rotationY += 1;
+            this.camera.transform.setPosition(0, 0, 0);
+            this.camera.transform.rotationY += 0.5 * (this._view.mousePos.x - this._view.width / 2) / 800;
+            this.camera.transform.moveBackward(600);
         };
         return Basic_SkyBox;
     }());
@@ -19309,15 +19326,15 @@ var feng3d;
             var directionalLight = new feng3d.DirectionalLight();
             directionalLight.intensity = 0.7;
             this.light1.addComponent(directionalLight);
-            this.light1.rotationX = 90;
-            this.scene.addChild(this.light1);
+            this.light1.transform.rotationX = 90;
+            this.scene.addChild(this.light1.transform);
             this.light2 = new feng3d.GameObject();
             var directionalLight = new feng3d.DirectionalLight();
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
             this.light2.addComponent(directionalLight);
-            this.light2.rotationX = 90;
-            this.scene.addChild(this.light2);
+            this.light2.transform.rotationX = 90;
+            this.scene.addChild(this.light2.transform);
         };
         Basic_Shading.prototype.initObjects = function () {
             this.plane = new feng3d.GameObject();
@@ -19325,33 +19342,33 @@ var feng3d;
             var geometry = this.plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
             model.material = this.planeMaterial;
             geometry.scaleUV(2, 2);
-            this.plane.y = -20;
-            this.scene.addChild(this.plane);
+            this.plane.transform.y = -20;
+            this.scene.addChild(this.plane.transform);
             this.sphere = new feng3d.GameObject();
             var model = this.sphere.getOrCreateComponentByClass(feng3d.MeshRenderer);
             this.sphere.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(150, 40, 20);
             model.material = this.sphereMaterial;
-            this.sphere.x = 300;
-            this.sphere.y = 160;
-            this.sphere.z = 300;
-            this.scene.addChild(this.sphere);
+            this.sphere.transform.x = 300;
+            this.sphere.transform.y = 160;
+            this.sphere.transform.z = 300;
+            this.scene.addChild(this.sphere.transform);
             this.cube = new feng3d.GameObject();
             var model = this.cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
             this.cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(200, 200, 200, 1, 1, 1, false);
             model.material = this.cubeMaterial;
-            this.cube.x = 300;
-            this.cube.y = 160;
-            this.cube.z = -250;
-            this.scene.addChild(this.cube);
+            this.cube.transform.x = 300;
+            this.cube.transform.y = 160;
+            this.cube.transform.z = -250;
+            this.scene.addChild(this.cube.transform);
             this.torus = new feng3d.GameObject();
             var model = this.torus.getOrCreateComponentByClass(feng3d.MeshRenderer);
             geometry = this.torus.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.TorusGeometry(150, 60, 40, 20);
             model.material = this.torusMaterial;
             geometry.scaleUV(10, 5);
-            this.torus.x = -250;
-            this.torus.y = 160;
-            this.torus.z = -250;
-            this.scene.addChild(this.torus);
+            this.torus.transform.x = -250;
+            this.torus.transform.y = 160;
+            this.torus.transform.z = -250;
+            this.scene.addChild(this.torus.transform);
         };
         Basic_Shading.prototype.initListeners = function () {
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
@@ -19363,8 +19380,8 @@ var feng3d;
                 this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
                 this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
             }
-            this.light1.rotationX = 30;
-            this.light1.rotationY++;
+            this.light1.transform.rotationX = 30;
+            this.light1.transform.rotationY++;
         };
         Basic_Shading.prototype.onMouseDown = function (event) {
             this.lastPanAngle = this.cameraController.panAngle;
@@ -19418,7 +19435,7 @@ var feng3d;
             particleAnimator.addAnimation(new feng3d.ParticleBillboard());
             this._particleMesh.addComponent(particleAnimator);
             // this._particleAnimator.start();
-            this._view.scene.addChild(this._particleMesh);
+            this._view.scene.addChild(this._particleMesh.transform);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
             feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
             feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
@@ -19481,7 +19498,7 @@ var feng3d;
             this.directionalLight.intensity = .5;
             var gameObject = new feng3d.GameObject();
             gameObject.addComponent(this.directionalLight);
-            this.scene.addChild(gameObject);
+            this.scene.addChild(gameObject.transform);
         };
         Basic_Fire.prototype.initMaterials = function () {
             this.planeMaterial = new feng3d.StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
@@ -19518,8 +19535,8 @@ var feng3d;
             this.plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
             this.plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh.scaleUV(2, 2);
             model.material = this.planeMaterial;
-            this.plane.y = -20;
-            this.scene.addChild(this.plane);
+            this.plane.transform.y = -20;
+            this.scene.addChild(this.plane.transform);
             for (var i = 0; i < Basic_Fire.NUM_FIRES; i++) {
                 var particleMesh = new feng3d.GameObject();
                 var model = particleMesh.getOrCreateComponentByClass(feng3d.MeshRenderer);
@@ -19527,11 +19544,11 @@ var feng3d;
                 model.material = this.particleMaterial;
                 particleMesh.addComponent(this.fireAnimationSet);
                 var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
-                particleMesh.x = Math.sin(degree) * 400;
-                particleMesh.z = Math.cos(degree) * 400;
-                particleMesh.y = 5;
+                particleMesh.transform.x = Math.sin(degree) * 400;
+                particleMesh.transform.z = Math.cos(degree) * 400;
+                particleMesh.transform.y = 5;
                 this.fireObjects.push(new FireVO(particleMesh));
-                this.view.scene.addChild(particleMesh);
+                this.view.scene.addChild(particleMesh.transform);
             }
             this.timer = new feng3d.Timer(1000, this.fireObjects.length);
             this.timer.addEventListener(feng3d.TimerEvent.TIMER, this.onTimer, this);
@@ -19560,7 +19577,7 @@ var feng3d;
             light.intensity = 0;
             var lightObject = new feng3d.GameObject();
             lightObject.addComponent(light);
-            lightObject.position = fireObject.mesh.position;
+            lightObject.transform.position = fireObject.mesh.transform.position;
             fireObject.light = light;
         };
         Basic_Fire.prototype.onEnterFrame = function (event) {
@@ -19613,18 +19630,18 @@ var feng3d;
         function Basic_View() {
             this._view = new feng3d.View3D(null, null, null, false);
             var scene = this._view.scene;
-            this._view.camera.z = -600;
-            this._view.camera.y = 500;
-            this._view.camera.lookAt(new feng3d.Vector3D());
+            this._view.camera.transform.z = -600;
+            this._view.camera.transform.y = 500;
+            this._view.camera.transform.lookAt(new feng3d.Vector3D());
             this._plane = new feng3d.GameObject();
             this._plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(700, 700);
             var model = this._plane.getOrCreateComponentByClass(feng3d.MeshRenderer);
             var material = model.material = new feng3d.StandardMaterial("resources/floor_diffuse.jpg");
-            scene.addChild(this._plane);
+            scene.addChild(this._plane.transform);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
         }
         Basic_View.prototype._onEnterFrame = function (e) {
-            this._plane.rotationY += 1;
+            this._plane.transform.rotationY += 1;
             this._view.render();
         };
         return Basic_View;

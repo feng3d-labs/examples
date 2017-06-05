@@ -33,7 +33,7 @@ namespace feng3d
          */
         public get isVisible()
         {
-            return this.gameObject.visible;
+            return this.gameObject.transform.visible;
         }
 
         /**

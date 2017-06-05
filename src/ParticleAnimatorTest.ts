@@ -11,8 +11,8 @@ namespace feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.view3D.camera);
         }
@@ -28,8 +28,8 @@ namespace feng3d
             particle.getOrCreateComponentByClass(MeshFilter).mesh = new PointGeometry();
             var material = particle.getOrCreateComponentByClass(MeshRenderer).material = new StandardMaterial();
             material.renderMode = RenderMode.POINTS;
-            particle.y = -100;
-            scene.addChild(particle);
+            particle.transform.y = -100;
+            scene.addChild(particle.transform);
 
             var particleAnimator = particle.getOrCreateComponentByClass(ParticleAnimator);
             particleAnimator.cycle = 10;

@@ -23,7 +23,7 @@ namespace feng3d
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
             angle = angle * Math.DEG2RAD;
-            this.cameraObj.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
+            this.cameraObj.transform.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
 
             this.controller.update();
         }
@@ -35,24 +35,24 @@ namespace feng3d
             var scene3D = this.view3D.scene;
 
             var cube = GameObjectFactory.createCube();
-            scene3D.addChild(cube);
+            scene3D.addChild(cube.transform);
 
             var plane = GameObjectFactory.createPlane();
-            plane.setPosition(150, 0, 0);
-            plane.rotationX = 90;
-            scene3D.addChild(plane);
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            scene3D.addChild(plane.transform);
 
             var sphere = GameObjectFactory.createSphere();
-            sphere.setPosition(-150, 0, 0);
-            scene3D.addChild(sphere);
+            sphere.transform.setPosition(-150, 0, 0);
+            scene3D.addChild(sphere.transform);
 
             var capsule = GameObjectFactory.createCapsule();
-            capsule.setPosition(300, 0, 0);
-            scene3D.addChild(capsule);
+            capsule.transform.setPosition(300, 0, 0);
+            scene3D.addChild(capsule.transform);
 
             var cylinder = GameObjectFactory.createCylinder();
-            cylinder.setPosition(-300, 0, 0);
-            scene3D.addChild(cylinder);
+            cylinder.transform.setPosition(-300, 0, 0);
+            scene3D.addChild(cylinder.transform);
         }
     }
 }

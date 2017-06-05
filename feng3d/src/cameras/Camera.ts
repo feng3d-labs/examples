@@ -84,12 +84,12 @@ namespace feng3d
 
         public get inverseSceneTransform()
         {
-            return this.gameObject ? this.gameObject.inverseSceneTransform : new Matrix3D();
+            return this.gameObject ? this.gameObject.transform.inverseSceneTransform : new Matrix3D();
         }
 
         public get sceneTransform()
         {
-            return this.gameObject ? this.gameObject.sceneTransform : new Matrix3D();
+            return this.gameObject ? this.gameObject.transform.sceneTransform : new Matrix3D();
         }
 
         /**
@@ -121,7 +121,7 @@ namespace feng3d
          */
         protected onBeAddedComponent(event: ComponentEvent): void
         {
-            this.gameObject.addEventListener(Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
+            this.gameObject.transform.addEventListener(Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
             this._viewProjectionDirty = true;
             this._frustumPlanesDirty = true;
         }
@@ -131,7 +131,7 @@ namespace feng3d
          */
         protected onBeRemovedComponent(event: ComponentEvent): void
         {
-            this.gameObject.removeEventListener(Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
+            this.gameObject.transform.removeEventListener(Object3DEvent.SCENETRANSFORM_CHANGED, this.onScenetransformChanged, this);
         }
 
         /**
@@ -150,7 +150,7 @@ namespace feng3d
         {
             //
             renderData.uniforms.u_viewProjection = this.viewProjection;
-            var globalMatrix3d = this.gameObject ? this.gameObject.sceneTransform : new Matrix3D();
+            var globalMatrix3d = this.gameObject ? this.gameObject.transform.sceneTransform : new Matrix3D();
             renderData.uniforms.u_cameraMatrix = globalMatrix3d;
             //
             renderData.uniforms.u_skyBoxSize = this._lens.far / Math.sqrt(3);

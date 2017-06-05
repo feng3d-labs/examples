@@ -69,16 +69,16 @@ namespace feng3d
             var directionalLight = new DirectionalLight();
             directionalLight.intensity = 0.7;
             this.light1.addComponent(directionalLight);
-            this.light1.rotationX = 90;
-            this.scene.addChild(this.light1);
+            this.light1.transform.rotationX = 90;
+            this.scene.addChild(this.light1.transform);
 
             this.light2 = new GameObject();
             var directionalLight = new DirectionalLight();
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
             this.light2.addComponent(directionalLight);
-            this.light2.rotationX = 90;
-            this.scene.addChild(this.light2);
+            this.light2.transform.rotationX = 90;
+            this.scene.addChild(this.light2.transform);
         }
 
         private initObjects()
@@ -88,33 +88,33 @@ namespace feng3d
             var geometry: Geometry = this.plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             model.material = this.planeMaterial;
             geometry.scaleUV(2, 2);
-            this.plane.y = -20;
-            this.scene.addChild(this.plane);
+            this.plane.transform.y = -20;
+            this.scene.addChild(this.plane.transform);
             this.sphere = new GameObject();
             var model = this.sphere.getOrCreateComponentByClass(MeshRenderer);
             this.sphere.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry(150, 40, 20)
             model.material = this.sphereMaterial;
-            this.sphere.x = 300;
-            this.sphere.y = 160;
-            this.sphere.z = 300;
-            this.scene.addChild(this.sphere);
+            this.sphere.transform.x = 300;
+            this.sphere.transform.y = 160;
+            this.sphere.transform.z = 300;
+            this.scene.addChild(this.sphere.transform);
             this.cube = new GameObject();
             var model = this.cube.getOrCreateComponentByClass(MeshRenderer);
             this.cube.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
             model.material = this.cubeMaterial;
-            this.cube.x = 300;
-            this.cube.y = 160;
-            this.cube.z = -250;
-            this.scene.addChild(this.cube);
+            this.cube.transform.x = 300;
+            this.cube.transform.y = 160;
+            this.cube.transform.z = -250;
+            this.scene.addChild(this.cube.transform);
             this.torus = new GameObject();
             var model = this.torus.getOrCreateComponentByClass(MeshRenderer);
             geometry = this.torus.getOrCreateComponentByClass(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = this.torusMaterial;
             geometry.scaleUV(10, 5);
-            this.torus.x = -250;
-            this.torus.y = 160;
-            this.torus.z = -250;
-            this.scene.addChild(this.torus);
+            this.torus.transform.x = -250;
+            this.torus.transform.y = 160;
+            this.torus.transform.z = -250;
+            this.scene.addChild(this.torus.transform);
         }
 
         private initListeners()
@@ -131,8 +131,8 @@ namespace feng3d
                 this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
                 this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
             }
-            this.light1.rotationX = 30;
-            this.light1.rotationY++;
+            this.light1.transform.rotationX = 30;
+            this.light1.transform.rotationY++;
         }
 
         private onMouseDown(event: Event)

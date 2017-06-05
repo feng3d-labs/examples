@@ -1,5 +1,8 @@
 namespace feng3d
 {
+    /**
+     * Position, rotation and scale of an object.
+     */
     export class Object3D extends Component
     {
         public _controller: ControllerBase;

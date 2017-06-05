@@ -18,8 +18,8 @@ namespace feng3d
             var object3D = new GameObject("plane");
             object3D.getOrCreateComponentByClass(MeshFilter).mesh = pointGeometry;
             object3D.getOrCreateComponentByClass(MeshRenderer).material = pointMaterial;
-            object3D.z = 300;
-            this.view3D.scene.addChild(object3D);
+            object3D.transform.z = 300;
+            this.view3D.scene.addChild(object3D.transform);
 
             var length = 200;
             var height = 200 / Math.PI;
@@ -33,8 +33,8 @@ namespace feng3d
             //变化旋转
             setInterval(function ()
             {
-                object3D.rotationY += 1;
-                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.rotationY / 30);
+                object3D.transform.rotationY += 1;
+                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.rotationY / 30);
             }, 15);
         }
     }

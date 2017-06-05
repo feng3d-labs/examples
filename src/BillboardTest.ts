@@ -19,14 +19,14 @@ namespace feng3d
             scene.background.setTo(0.3, 0.3, 0.3);
 
             var cube = GameObjectFactory.createCube();
-            cube.z = 300;
-            scene.addChild(cube);
+            cube.transform.z = 300;
+            scene.addChild(cube.transform);
 
            var gameObject =  GameObjectFactory.createPlane();
-            gameObject.y = 150;
-            gameObject.isBillboard = true;
-            gameObject.holdSize = 1;
-            cube.addChild(gameObject);
+            gameObject.transform.y = 150;
+            gameObject.transform.isBillboard = true;
+            gameObject.transform.holdSize = 1;
+            cube.transform.addChild(gameObject.transform);
 
             //材质
             var model = gameObject.getOrCreateComponentByClass(MeshRenderer);

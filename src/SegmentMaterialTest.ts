@@ -15,8 +15,8 @@ namespace feng3d
             this.view3D = new View3D();
 
             var segment = new GameObject("segment");
-            segment.z = 300;
-            this.view3D.scene.addChild(segment);
+            segment.transform.z = 300;
+            this.view3D.scene.addChild(segment.transform);
 
             //初始化材质
             segment.getOrCreateComponentByClass(MeshRenderer).material = new SegmentMaterial();
@@ -42,7 +42,7 @@ namespace feng3d
             //变化旋转
             setInterval(function ()
             {
-                segment.rotationY += 1;
+                segment.transform.rotationY += 1;
             }, 15);
         }
     }

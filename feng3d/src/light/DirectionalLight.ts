@@ -39,10 +39,10 @@ namespace feng3d
             this._direction = value;
             if(this.gameObject)
             {
-                var tmpLookAt = this.gameObject.getPosition();
+                var tmpLookAt = this.gameObject.transform.getPosition();
                 tmpLookAt.incrementBy(this._direction);
-                this.gameObject.lookAt(tmpLookAt);
-                this.gameObject.sceneTransform.copyColumnTo(2, this._sceneDirection);
+                this.gameObject.transform.lookAt(tmpLookAt);
+                this.gameObject.transform.sceneTransform.copyColumnTo(2, this._sceneDirection);
                 this._sceneDirection.normalize();
             }
         }
@@ -53,9 +53,9 @@ namespace feng3d
         protected onBeAddedComponent(event: ComponentEvent): void
         {
             this.gameObject.addEventListener(Object3DEvent.SCENETRANSFORM_CHANGED,this.onScenetransformChanged,this);
-            var tmpLookAt = this.gameObject.getPosition();
+            var tmpLookAt = this.gameObject.transform.getPosition();
             tmpLookAt.incrementBy(this._direction);
-            this.gameObject.lookAt(tmpLookAt);
+            this.gameObject.transform.lookAt(tmpLookAt);
         }
 
         /**
@@ -68,7 +68,7 @@ namespace feng3d
 
         protected onScenetransformChanged()
         {
-            this.gameObject.sceneTransform.copyColumnTo(2, this._sceneDirection);
+            this.gameObject.transform.sceneTransform.copyColumnTo(2, this._sceneDirection);
             this._sceneDirection.normalize();
         }
     }

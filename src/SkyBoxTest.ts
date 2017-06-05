@@ -11,8 +11,8 @@ namespace feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.lookAt(new Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.view3D.camera);
         }
@@ -35,7 +35,7 @@ namespace feng3d
                 'resources/skybox/ny.jpg',
                 'resources/skybox/nz.jpg'
             ]);
-            scene.addChild(skybox);
+            scene.addChild(skybox.transform);
         }
     }
 }

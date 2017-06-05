@@ -15,8 +15,8 @@ namespace feng3d
             this.view3D = new View3D();
 
             var cube = GameObjectFactory.createCube();
-            cube.z = 300;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 300;
+            this.view3D.scene.addChild(cube.transform);
 
             //初始化颜色材质
             var colorMaterial = cube.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial();
@@ -24,7 +24,7 @@ namespace feng3d
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             setInterval(function ()
             {

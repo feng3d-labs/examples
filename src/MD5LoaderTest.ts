@@ -19,7 +19,7 @@ namespace feng3d
             {
                 if (object)
                 {
-                    object.rotationY += 1;
+                    object.transform.rotationY += 1;
                 }
             }, 15);
 
@@ -33,15 +33,15 @@ namespace feng3d
             md5Loader.load(md5meshUrl, function (object3D: GameObject, animator: SkeletonAnimator)
             {
 
-                object3D.y = -100;
-                object3D.rotationX = -90;
+                object3D.transform.y = -100;
+                object3D.transform.rotationX = -90;
 
                 object = object3D;
 
                 useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
 
-                object.z = 300;
-                scene.addChild(object3D);
+                object.transform.z = 300;
+                scene.addChild(object3D.transform);
                 skeletonAnimator = animator;
                 //
                 md5Loader.loadAnim(md5animUrl, function (skeletonClipNode: SkeletonClipNode)
@@ -58,7 +58,7 @@ namespace feng3d
             var pointLight1 = new PointLight();
             pointLight1.color = new Color(0, 1, 0, 1);
             light1.addComponent(pointLight1);
-            scene.addChild(light1);
+            scene.addChild(light1.transform);
         }
 
         private useMatrial(object3D: GameObject, imageUrl: string)
@@ -66,9 +66,9 @@ namespace feng3d
             var material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = imageUrl;
 
-            for (var i = 0; i < object3D.numChildren; i++)
+            for (var i = 0; i < object3D.transform.numChildren; i++)
             {
-                var child = object3D.getChildAt(i);
+                var child = object3D.transform.getChildAt(i);
                 var model = child.getComponentByType(MeshRenderer);
                 if (model)
                 {
@@ -77,5 +77,5 @@ namespace feng3d
             }
         }
     }
-    var object: Object3D;
+    var object: GameObject;
 }

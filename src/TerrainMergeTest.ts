@@ -10,9 +10,9 @@ namespace feng3d
         {
             this.init();
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.z = -500;
-            this.cameraObj.y = 200;
-            this.cameraObj.lookAt(new Vector3D());
+            this.cameraObj.transform.z = -500;
+            this.cameraObj.transform.y = 200;
+            this.cameraObj.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.cameraObj);
             ticker.addEventListener(Event.ENTER_FRAME,this.onEnterFrame,this);
@@ -22,8 +22,8 @@ namespace feng3d
 
             var time = new Date().getTime();
             var angle = time / 1000;
-            this.light1.x = Math.sin(angle) * 300;
-            this.light1.z = Math.cos(angle) * 300;
+            this.light1.transform.x = Math.sin(angle) * 300;
+            this.light1.transform.z = Math.cos(angle) * 300;
         }
 
         init()
@@ -42,7 +42,7 @@ namespace feng3d
             var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test1.jpg',new Vector3D(50, 50, 50));
             material.addMethod(terrainMethod);
             terrain.getOrCreateComponentByClass(MeshRenderer).material = material;
-            scene.addChild(terrain);
+            scene.addChild(terrain.transform);
 
             //初始化光源
             var light1 = this.light1 = new GameObject();
@@ -50,7 +50,7 @@ namespace feng3d
             // pointLight1.range = 1000;
             pointLight1.color = new Color(1, 1, 0, 1);
             light1.addComponent(pointLight1);
-            light1.y = 300;
+            light1.transform.y = 300;
             // scene.addChild(light1);
         }
 

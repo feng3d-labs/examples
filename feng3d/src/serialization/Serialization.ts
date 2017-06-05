@@ -52,7 +52,7 @@ namespace feng3d
                 var object3D: GameObject = object;
                 for (var i = 0; i < children.length; i++)
                 {
-                    children[i] && object3D.setChildAt(children[i], i);
+                    children[i] && object3D.transform.setChildAt(children[i].transform, i);
                 }
                 return true;
             }

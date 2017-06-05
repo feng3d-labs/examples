@@ -19,7 +19,7 @@ namespace feng3d
             {
                 if (object)
                 {
-                    object.rotationY += 1;
+                    object.transform.rotationY += 1;
                 }
             }, 15);
 
@@ -37,11 +37,11 @@ namespace feng3d
             objLoader.load(objUrl, material, function (object3D: GameObject)
             {
                 object = object3D;
-                object.scaleX = 20;
-                object.scaleY = 20;
-                object.scaleZ = 20;
-                object.z = 300;
-                scene.addChild(object3D);
+                object.transform.scaleX = 20;
+                object.transform.scaleY = 20;
+                object.transform.scaleZ = 20;
+                object.transform.z = 300;
+                scene.addChild(object3D.transform);
             });
 
             //初始化光源
@@ -49,7 +49,7 @@ namespace feng3d
             var pointLight1 = new PointLight();
             pointLight1.color = new Color(0, 1, 0, 1);
             light1.addComponent(pointLight1);
-            scene.addChild(light1);
+            scene.addChild(light1.transform);
         }
     }
     var object: GameObject;

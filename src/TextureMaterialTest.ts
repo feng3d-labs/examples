@@ -14,14 +14,14 @@ namespace feng3d
             this.view3D = new View3D();
 
             var cube = new GameObject();
-            cube.z = 300;
-            cube.y = -100;
-            this.view3D.scene.addChild(cube);
+            cube.transform.z = 300;
+            cube.transform.y = -100;
+            this.view3D.scene.addChild(cube.transform);
 
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.rotationY += 1;
+                cube.transform.rotationY += 1;
             }, 15);
 
             var model = cube.getOrCreateComponentByClass(MeshRenderer);

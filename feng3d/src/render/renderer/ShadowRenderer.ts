@@ -5,13 +5,12 @@ namespace feng3d
      * 阴影图渲染器
      * @author  feng    2017-03-25
      */
-    export class ShadowRenderer extends Renderer
+    export class ShadowRenderer
     {
         private frameBufferObject: FrameBufferObject;
 
         constructor()
         {
-            super();
         }
 
         /**
@@ -32,7 +31,7 @@ namespace feng3d
                 frameBufferObject.active(gl);
                 scene3D.renderers.forEach(element =>
                 {
-                    this.drawRenderables(renderContext, element);
+                    // this.drawRenderables(renderContext, element);
                 });
                 frameBufferObject.deactive(gl);
             }

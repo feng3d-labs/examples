@@ -5,6 +5,12 @@ namespace feng3d
      */
     export class MeshRenderer extends Renderer
     {
+        public static get meshRenderers()
+        {
+            return this._meshRenderers;
+        }
+        private static _meshRenderers: MeshRenderer[] = [];
+
         /**
          * 构建
          */
@@ -12,6 +18,26 @@ namespace feng3d
         {
             super();
             this._single = true;
+            MeshRenderer._meshRenderers.push(this);
+        }
+
+        public drawRenderables(renderContext: RenderContext)
+        {
+            if (this.gameObject.transform.isVisible)
+            {
+                var frustumPlanes = renderContext.camera.frustumPlanes;
+                var gameObject = this.gameObject;
+                var isIn = gameObject.transform.worldBounds.isInFrustum(frustumPlanes, 6);
+                var model = gameObject.getComponentByType(MeshRenderer);
+                if (gameObject.getOrCreateComponentByClass(MeshFilter).mesh instanceof SkyBoxGeometry)
+                {
+                    isIn = true;
+                }
+                if (isIn)
+                {
+                    super.drawRenderables(renderContext);
+                }
+            }
         }
     }
 }

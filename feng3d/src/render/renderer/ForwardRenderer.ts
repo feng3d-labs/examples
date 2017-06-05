@@ -5,13 +5,12 @@ namespace feng3d
      * 前向渲染器
      * @author feng 2017-02-20
      */
-    export class ForwardRenderer extends Renderer
+    export class ForwardRenderer
     {
         public viewRect: Rectangle = new Rectangle(0, 0, 100, 100);
 
         constructor()
         {
-            super();
         }
 
         /**
@@ -27,26 +26,12 @@ namespace feng3d
             gl.viewport(0, 0, this.viewRect.width, this.viewRect.height);
             gl.enable(GL.DEPTH_TEST);
             // gl.cullFace()
-            super.draw(renderContext);
-        }
-
-        protected drawRenderables(renderContext: RenderContext, meshRenderer: MeshRenderer)
-        {
-            if (meshRenderer.gameObject.transform.isVisible)
+            var meshRenderers = MeshRenderer.meshRenderers;
+            for (var i = 0; i < meshRenderers.length; i++)
             {
-                var frustumPlanes = renderContext.camera.frustumPlanes;
-                var gameObject = meshRenderer.gameObject;
-                var isIn = gameObject.transform.worldBounds.isInFrustum(frustumPlanes, 6);
-                var model = gameObject.getComponentByType(MeshRenderer);
-                if (gameObject.getOrCreateComponentByClass(MeshFilter).mesh instanceof SkyBoxGeometry)
-                {
-                    isIn = true;
-                }
-                if (isIn)
-                {
-                    super.drawRenderables(renderContext, meshRenderer);
-                }
+                meshRenderers[i].drawRenderables(renderContext);
             }
         }
+
     }
 }

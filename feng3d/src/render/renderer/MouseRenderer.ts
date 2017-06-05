@@ -5,7 +5,7 @@ namespace feng3d
      * 鼠标拾取渲染器
      * @author feng 2017-02-06
      */
-    export class MouseRenderer extends Renderer
+    export class MouseRenderer
     {
 
         private _shaderName = "mouse";
@@ -14,7 +14,6 @@ namespace feng3d
 
         constructor()
         {
-            super();
         }
 
         /**
@@ -28,7 +27,7 @@ namespace feng3d
             //启动裁剪，只绘制一个像素
             gl.enable(GL.SCISSOR_TEST);
             gl.scissor(0, 0, 1, 1);
-            super.draw(renderContext);
+            // super.draw(renderContext);
             gl.disable(GL.SCISSOR_TEST);
 
             //读取鼠标拾取索引
@@ -49,7 +48,7 @@ namespace feng3d
                 var object = meshRenderer.gameObject;
                 this.objects.push(object);
                 object.renderData.uniforms.u_objectID = this.objects.length - 1;
-                super.drawRenderables(renderContext, meshRenderer);
+                // super.drawRenderables(renderContext, meshRenderer);
             }
         }
 
@@ -63,7 +62,7 @@ namespace feng3d
             var shader = new ShaderRenderData();
             shader.vertexCode = vertexCode;
             shader.fragmentCode = fragmentCode;
-            super.drawObject3D(gl, renderAtomic, shader);
+            // super.drawObject3D(gl, renderAtomic, shader);
         }
     }
 }

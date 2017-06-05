@@ -7,6 +7,8 @@ namespace feng3d
      */
     export class Renderer extends Component
     {
+        private static renderers: Renderer[] = [];
+
         /**
          * 材质
          * Returns the first instantiated Material assigned to the renderer.
@@ -36,30 +38,22 @@ namespace feng3d
             return this.gameObject.transform.visible;
         }
 
-        /**
-		 * 渲染
-		 */
-        public draw(renderContext: RenderContext)
+        constructor()
         {
-            var scene3D = renderContext.scene3d;
-            var renderers = scene3D.renderers;
-            for (var i = 0; i < renderers.length; i++)
-            {
-                var element = renderers[i];
-                this.drawRenderables(renderContext, element);
-            }
+            super();
+            Renderer.renderers.push(this);
         }
 
-        protected drawRenderables(renderContext: RenderContext, meshRenderer: MeshRenderer)
+        public drawRenderables(renderContext: RenderContext)
         {
-            var object3D = meshRenderer.gameObject;
+            var object3D = this.gameObject;
             //更新数据
             object3D.updateRender(renderContext);
             var gl = renderContext.gl;
             try
             {
                 //绘制
-                var material = meshRenderer.material;
+                var material = this.material;
                 if (material.enableBlend)
                 {
                     //

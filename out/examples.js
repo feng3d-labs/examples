@@ -6142,349 +6142,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * 帧缓冲对象
-     * @author feng 2017-02-18
-     */
-    var FrameBufferObject = (function () {
-        function FrameBufferObject() {
-            this.OFFSCREEN_WIDTH = 1024;
-            this.OFFSCREEN_HEIGHT = 1024;
-        }
-        FrameBufferObject.prototype.init = function (gl) {
-            // Create a framebuffer object (FBO)
-            this.framebuffer = gl.createFramebuffer();
-            if (!this.framebuffer) {
-                feng3d.debuger && alert('Failed to create frame buffer object');
-                return this.clear(gl);
-            }
-            // Create a texture object and set its size and parameters
-            this.texture = gl.createTexture(); // Create a texture object
-            if (!this.texture) {
-                feng3d.debuger && alert('Failed to create texture object');
-                return this.clear(gl);
-            }
-            gl.bindTexture(gl.TEXTURE_2D, this.texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.OFFSCREEN_WIDTH, this.OFFSCREEN_HEIGHT, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            // Create a renderbuffer object and Set its size and parameters
-            this.depthBuffer = gl.createRenderbuffer(); // Create a renderbuffer object
-            if (!this.depthBuffer) {
-                feng3d.debuger && alert('Failed to create renderbuffer object');
-                return this.clear(gl);
-            }
-            gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
-            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.OFFSCREEN_WIDTH, this.OFFSCREEN_HEIGHT);
-            // Attach the texture and the renderbuffer object to the FBO
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
-            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
-            // Check if FBO is configured correctly
-            var e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-            if (gl.FRAMEBUFFER_COMPLETE !== e) {
-                feng3d.debuger && alert('Frame buffer object is incomplete: ' + e.toString());
-                return this.clear(gl);
-            }
-            // Unbind the buffer object
-            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-            gl.bindTexture(gl.TEXTURE_2D, null);
-            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-        };
-        FrameBufferObject.prototype.active = function (gl) {
-            gl.bindFramebuffer(feng3d.GL.FRAMEBUFFER, this.framebuffer);
-        };
-        FrameBufferObject.prototype.deactive = function (gl) {
-            gl.bindFramebuffer(feng3d.GL.FRAMEBUFFER, null);
-        };
-        FrameBufferObject.prototype.clear = function (gl) {
-            if (this.framebuffer)
-                gl.deleteFramebuffer(this.framebuffer);
-            if (this.texture)
-                gl.deleteTexture(this.texture);
-            if (this.depthBuffer)
-                gl.deleteRenderbuffer(this.depthBuffer);
-            return null;
-        };
-        return FrameBufferObject;
-    }());
-    feng3d.FrameBufferObject = FrameBufferObject;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 渲染器
-     * @author feng 2016-05-01
-     */
-    var Renderer = (function () {
-        function Renderer() {
-        }
-        /**
-         * 渲染
-         */
-        Renderer.prototype.draw = function (renderContext) {
-            var scene3D = renderContext.scene3d;
-            var renderers = scene3D.renderers;
-            for (var i = 0; i < renderers.length; i++) {
-                var element = renderers[i];
-                this.drawRenderables(renderContext, element);
-            }
-        };
-        Renderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
-            var object3D = meshRenderer.gameObject;
-            //更新数据
-            object3D.updateRender(renderContext);
-            var gl = renderContext.gl;
-            try {
-                //绘制
-                var material = meshRenderer.material;
-                if (material.enableBlend) {
-                    //
-                    gl.enable(feng3d.GL.BLEND);
-                    gl.blendEquation(material.blendEquation);
-                    gl.depthMask(false);
-                    gl.blendFunc(material.sfactor, material.dfactor);
-                }
-                else {
-                    gl.disable(feng3d.GL.BLEND);
-                    gl.depthMask(true);
-                }
-                this.drawObject3D(gl, object3D.renderData); //
-            }
-            catch (error) {
-                console.log(error);
-            }
-        };
-        /**
-         * 绘制3D对象
-         */
-        Renderer.prototype.drawObject3D = function (gl, renderAtomic, shader) {
-            if (shader === void 0) { shader = null; }
-            shader = shader || renderAtomic.shader;
-            var shaderProgram = shader.activeShaderProgram(gl);
-            if (!shaderProgram)
-                return;
-            //
-            renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
-            renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
-            dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
-        };
-        return Renderer;
-    }());
-    feng3d.Renderer = Renderer;
-    /**
-     */
-    function dodraw(gl, shaderParams, indexBuffer, instanceCount) {
-        if (instanceCount === void 0) { instanceCount = 1; }
-        instanceCount = ~~instanceCount;
-        indexBuffer.active(gl);
-        var renderMode = shaderParams.renderMode;
-        if (instanceCount > 1) {
-            gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
-        }
-        else {
-            gl.drawElements(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
-        }
-    }
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 前向渲染器
-     * @author feng 2017-02-20
-     */
-    var ForwardRenderer = (function (_super) {
-        __extends(ForwardRenderer, _super);
-        function ForwardRenderer() {
-            var _this = _super.call(this) || this;
-            _this.viewRect = new feng3d.Rectangle(0, 0, 100, 100);
-            return _this;
-        }
-        /**
-         * 渲染
-         */
-        ForwardRenderer.prototype.draw = function (renderContext) {
-            var gl = renderContext.gl;
-            var scene3D = renderContext.scene3d;
-            // 默认渲染
-            gl.clearColor(scene3D.background.r, scene3D.background.g, scene3D.background.b, scene3D.background.a);
-            gl.clear(feng3d.GL.COLOR_BUFFER_BIT | feng3d.GL.DEPTH_BUFFER_BIT);
-            gl.viewport(0, 0, this.viewRect.width, this.viewRect.height);
-            gl.enable(feng3d.GL.DEPTH_TEST);
-            // gl.cullFace()
-            _super.prototype.draw.call(this, renderContext);
-        };
-        ForwardRenderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
-            if (meshRenderer.gameObject.isVisible) {
-                var frustumPlanes = renderContext.camera.frustumPlanes;
-                var gameObject = meshRenderer.gameObject;
-                var isIn = gameObject.worldBounds.isInFrustum(frustumPlanes, 6);
-                var model = gameObject.getComponentByType(feng3d.MeshRenderer);
-                if (gameObject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh instanceof feng3d.SkyBoxGeometry) {
-                    isIn = true;
-                }
-                if (isIn) {
-                    _super.prototype.drawRenderables.call(this, renderContext, meshRenderer);
-                }
-            }
-        };
-        return ForwardRenderer;
-    }(feng3d.Renderer));
-    feng3d.ForwardRenderer = ForwardRenderer;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 深度渲染器
-     * @author  feng    2017-03-25
-     */
-    var DepthRenderer = (function (_super) {
-        __extends(DepthRenderer, _super);
-        function DepthRenderer() {
-            return _super.call(this) || this;
-        }
-        return DepthRenderer;
-    }(feng3d.Renderer));
-    feng3d.DepthRenderer = DepthRenderer;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 鼠标拾取渲染器
-     * @author feng 2017-02-06
-     */
-    var MouseRenderer = (function (_super) {
-        __extends(MouseRenderer, _super);
-        function MouseRenderer() {
-            var _this = _super.call(this) || this;
-            _this._shaderName = "mouse";
-            _this.objects = [null];
-            return _this;
-        }
-        /**
-         * 渲染
-         */
-        MouseRenderer.prototype.draw = function (renderContext) {
-            this.objects.length = 1;
-            var gl = renderContext.gl;
-            //启动裁剪，只绘制一个像素
-            gl.enable(feng3d.GL.SCISSOR_TEST);
-            gl.scissor(0, 0, 1, 1);
-            _super.prototype.draw.call(this, renderContext);
-            gl.disable(feng3d.GL.SCISSOR_TEST);
-            //读取鼠标拾取索引
-            // this.frameBufferObject.readBuffer(gl, "objectID");
-            var data = new Uint8Array(4);
-            gl.readPixels(0, 0, 1, 1, feng3d.GL.RGBA, feng3d.GL.UNSIGNED_BYTE, data);
-            var id = data[0] + data[1] * 255 + data[2] * 255 * 255 + data[3] * 255 * 255 * 255 - data[3]; //最后（- data[3]）表示很奇怪，不过data[3]一般情况下为0
-            // console.log(`选中索引3D对象${id}`, data.toString());
-            this.selectedObject3D = this.objects[id];
-        };
-        MouseRenderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
-            if (meshRenderer.gameObject.mouseEnabled) {
-                var object = meshRenderer.gameObject;
-                this.objects.push(object);
-                object.renderData.uniforms.u_objectID = this.objects.length - 1;
-                _super.prototype.drawRenderables.call(this, renderContext, meshRenderer);
-            }
-        };
-        /**
-         * 绘制3D对象
-         */
-        MouseRenderer.prototype.drawObject3D = function (gl, renderAtomic, shader) {
-            if (shader === void 0) { shader = null; }
-            var vertexCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".vertex");
-            var fragmentCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".fragment");
-            var shader = new feng3d.ShaderRenderData();
-            shader.vertexCode = vertexCode;
-            shader.fragmentCode = fragmentCode;
-            _super.prototype.drawObject3D.call(this, gl, renderAtomic, shader);
-        };
-        return MouseRenderer;
-    }(feng3d.Renderer));
-    feng3d.MouseRenderer = MouseRenderer;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 后处理渲染器
-     * @author feng 2017-02-20
-     */
-    var PostProcessRenderer = (function (_super) {
-        __extends(PostProcessRenderer, _super);
-        function PostProcessRenderer() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return PostProcessRenderer;
-    }(feng3d.Renderer));
-    feng3d.PostProcessRenderer = PostProcessRenderer;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 阴影图渲染器
-     * @author  feng    2017-03-25
-     */
-    var ShadowRenderer = (function (_super) {
-        __extends(ShadowRenderer, _super);
-        function ShadowRenderer() {
-            return _super.call(this) || this;
-        }
-        /**
-         * 渲染
-         */
-        ShadowRenderer.prototype.draw = function (renderContext) {
-            var _this = this;
-            var gl = renderContext.gl;
-            var scene3D = renderContext.scene3d;
-            var lights = scene3D.lights;
-            for (var i = 0; i < lights.length; i++) {
-                var light = lights[i];
-                var frameBufferObject = new feng3d.FrameBufferObject();
-                frameBufferObject.init(gl);
-                frameBufferObject.active(gl);
-                scene3D.renderers.forEach(function (element) {
-                    _this.drawRenderables(renderContext, element);
-                });
-                frameBufferObject.deactive(gl);
-            }
-        };
-        return ShadowRenderer;
-    }(feng3d.Renderer));
-    feng3d.ShadowRenderer = ShadowRenderer;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 后处理效果
-     * @author feng 2017-02-20
-     */
-    var PostEffect = (function () {
-        function PostEffect() {
-        }
-        return PostEffect;
-    }());
-    feng3d.PostEffect = PostEffect;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 快速近似抗锯齿（Fast Approximate Anti-Aliasing）后处理效果
-     * @author feng 2017-02-20
-     *
-     * @see
-     * https://github.com/BabylonJS/Babylon.js/blob/master/src/Shaders/fxaa.fragment.fx
-     * https://github.com/playcanvas/engine/blob/master/extras/posteffects/posteffect-fxaa.js
-     */
-    var FXAAEffect = (function () {
-        function FXAAEffect() {
-        }
-        return FXAAEffect;
-    }());
-    feng3d.FXAAEffect = FXAAEffect;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 组件事件
      * @author feng 2015-12-2
      */
@@ -6711,6 +6368,397 @@ var feng3d;
         return Component;
     }(feng3d.RenderDataHolder));
     feng3d.Component = Component;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 帧缓冲对象
+     * @author feng 2017-02-18
+     */
+    var FrameBufferObject = (function () {
+        function FrameBufferObject() {
+            this.OFFSCREEN_WIDTH = 1024;
+            this.OFFSCREEN_HEIGHT = 1024;
+        }
+        FrameBufferObject.prototype.init = function (gl) {
+            // Create a framebuffer object (FBO)
+            this.framebuffer = gl.createFramebuffer();
+            if (!this.framebuffer) {
+                feng3d.debuger && alert('Failed to create frame buffer object');
+                return this.clear(gl);
+            }
+            // Create a texture object and set its size and parameters
+            this.texture = gl.createTexture(); // Create a texture object
+            if (!this.texture) {
+                feng3d.debuger && alert('Failed to create texture object');
+                return this.clear(gl);
+            }
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.OFFSCREEN_WIDTH, this.OFFSCREEN_HEIGHT, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            // Create a renderbuffer object and Set its size and parameters
+            this.depthBuffer = gl.createRenderbuffer(); // Create a renderbuffer object
+            if (!this.depthBuffer) {
+                feng3d.debuger && alert('Failed to create renderbuffer object');
+                return this.clear(gl);
+            }
+            gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.OFFSCREEN_WIDTH, this.OFFSCREEN_HEIGHT);
+            // Attach the texture and the renderbuffer object to the FBO
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
+            // Check if FBO is configured correctly
+            var e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+            if (gl.FRAMEBUFFER_COMPLETE !== e) {
+                feng3d.debuger && alert('Frame buffer object is incomplete: ' + e.toString());
+                return this.clear(gl);
+            }
+            // Unbind the buffer object
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        };
+        FrameBufferObject.prototype.active = function (gl) {
+            gl.bindFramebuffer(feng3d.GL.FRAMEBUFFER, this.framebuffer);
+        };
+        FrameBufferObject.prototype.deactive = function (gl) {
+            gl.bindFramebuffer(feng3d.GL.FRAMEBUFFER, null);
+        };
+        FrameBufferObject.prototype.clear = function (gl) {
+            if (this.framebuffer)
+                gl.deleteFramebuffer(this.framebuffer);
+            if (this.texture)
+                gl.deleteTexture(this.texture);
+            if (this.depthBuffer)
+                gl.deleteRenderbuffer(this.depthBuffer);
+            return null;
+        };
+        return FrameBufferObject;
+    }());
+    feng3d.FrameBufferObject = FrameBufferObject;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 渲染器
+     * @author feng 2016-05-01
+     */
+    var Renderer = (function (_super) {
+        __extends(Renderer, _super);
+        function Renderer() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Object.defineProperty(Renderer.prototype, "material", {
+            /**
+             * 材质
+             * Returns the first instantiated Material assigned to the renderer.
+             */
+            get: function () { return this._material || feng3d.defaultMaterial; },
+            set: function (value) { this._material = value; this.invalidateRenderHolder(); },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Renderer.prototype, "enabled", {
+            /**
+             * Makes the rendered 3D object visible if enabled.
+             */
+            get: function () {
+                return this._enabled;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Renderer.prototype, "enable", {
+            set: function (value) {
+                this._enabled = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Renderer.prototype, "isVisible", {
+            /**
+             * Is this renderer visible in any camera? (Read Only)
+             */
+            get: function () {
+                return this.gameObject.visible;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 渲染
+         */
+        Renderer.prototype.draw = function (renderContext) {
+            var scene3D = renderContext.scene3d;
+            var renderers = scene3D.renderers;
+            for (var i = 0; i < renderers.length; i++) {
+                var element = renderers[i];
+                this.drawRenderables(renderContext, element);
+            }
+        };
+        Renderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
+            var object3D = meshRenderer.gameObject;
+            //更新数据
+            object3D.updateRender(renderContext);
+            var gl = renderContext.gl;
+            try {
+                //绘制
+                var material = meshRenderer.material;
+                if (material.enableBlend) {
+                    //
+                    gl.enable(feng3d.GL.BLEND);
+                    gl.blendEquation(material.blendEquation);
+                    gl.depthMask(false);
+                    gl.blendFunc(material.sfactor, material.dfactor);
+                }
+                else {
+                    gl.disable(feng3d.GL.BLEND);
+                    gl.depthMask(true);
+                }
+                this.drawObject3D(gl, object3D.renderData); //
+            }
+            catch (error) {
+                console.log(error);
+            }
+        };
+        /**
+         * 绘制3D对象
+         */
+        Renderer.prototype.drawObject3D = function (gl, renderAtomic, shader) {
+            if (shader === void 0) { shader = null; }
+            shader = shader || renderAtomic.shader;
+            var shaderProgram = shader.activeShaderProgram(gl);
+            if (!shaderProgram)
+                return;
+            //
+            renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
+            renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
+            dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
+        };
+        /**
+         * 收集渲染数据拥有者
+         * @param renderAtomic 渲染原子
+         */
+        Renderer.prototype.collectRenderDataHolder = function (renderAtomic) {
+            if (renderAtomic === void 0) { renderAtomic = null; }
+            this.material.collectRenderDataHolder(renderAtomic);
+            _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
+        };
+        return Renderer;
+    }(feng3d.Component));
+    feng3d.Renderer = Renderer;
+    /**
+     */
+    function dodraw(gl, shaderParams, indexBuffer, instanceCount) {
+        if (instanceCount === void 0) { instanceCount = 1; }
+        instanceCount = ~~instanceCount;
+        indexBuffer.active(gl);
+        var renderMode = shaderParams.renderMode;
+        if (instanceCount > 1) {
+            gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
+        }
+        else {
+            gl.drawElements(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
+        }
+    }
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 前向渲染器
+     * @author feng 2017-02-20
+     */
+    var ForwardRenderer = (function (_super) {
+        __extends(ForwardRenderer, _super);
+        function ForwardRenderer() {
+            var _this = _super.call(this) || this;
+            _this.viewRect = new feng3d.Rectangle(0, 0, 100, 100);
+            return _this;
+        }
+        /**
+         * 渲染
+         */
+        ForwardRenderer.prototype.draw = function (renderContext) {
+            var gl = renderContext.gl;
+            var scene3D = renderContext.scene3d;
+            // 默认渲染
+            gl.clearColor(scene3D.background.r, scene3D.background.g, scene3D.background.b, scene3D.background.a);
+            gl.clear(feng3d.GL.COLOR_BUFFER_BIT | feng3d.GL.DEPTH_BUFFER_BIT);
+            gl.viewport(0, 0, this.viewRect.width, this.viewRect.height);
+            gl.enable(feng3d.GL.DEPTH_TEST);
+            // gl.cullFace()
+            _super.prototype.draw.call(this, renderContext);
+        };
+        ForwardRenderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
+            if (meshRenderer.gameObject.isVisible) {
+                var frustumPlanes = renderContext.camera.frustumPlanes;
+                var gameObject = meshRenderer.gameObject;
+                var isIn = gameObject.worldBounds.isInFrustum(frustumPlanes, 6);
+                var model = gameObject.getComponentByType(feng3d.MeshRenderer);
+                if (gameObject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh instanceof feng3d.SkyBoxGeometry) {
+                    isIn = true;
+                }
+                if (isIn) {
+                    _super.prototype.drawRenderables.call(this, renderContext, meshRenderer);
+                }
+            }
+        };
+        return ForwardRenderer;
+    }(feng3d.Renderer));
+    feng3d.ForwardRenderer = ForwardRenderer;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 深度渲染器
+     * @author  feng    2017-03-25
+     */
+    var DepthRenderer = (function (_super) {
+        __extends(DepthRenderer, _super);
+        function DepthRenderer() {
+            return _super.call(this) || this;
+        }
+        return DepthRenderer;
+    }(feng3d.Renderer));
+    feng3d.DepthRenderer = DepthRenderer;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 鼠标拾取渲染器
+     * @author feng 2017-02-06
+     */
+    var MouseRenderer = (function (_super) {
+        __extends(MouseRenderer, _super);
+        function MouseRenderer() {
+            var _this = _super.call(this) || this;
+            _this._shaderName = "mouse";
+            _this.objects = [null];
+            return _this;
+        }
+        /**
+         * 渲染
+         */
+        MouseRenderer.prototype.draw = function (renderContext) {
+            this.objects.length = 1;
+            var gl = renderContext.gl;
+            //启动裁剪，只绘制一个像素
+            gl.enable(feng3d.GL.SCISSOR_TEST);
+            gl.scissor(0, 0, 1, 1);
+            _super.prototype.draw.call(this, renderContext);
+            gl.disable(feng3d.GL.SCISSOR_TEST);
+            //读取鼠标拾取索引
+            // this.frameBufferObject.readBuffer(gl, "objectID");
+            var data = new Uint8Array(4);
+            gl.readPixels(0, 0, 1, 1, feng3d.GL.RGBA, feng3d.GL.UNSIGNED_BYTE, data);
+            var id = data[0] + data[1] * 255 + data[2] * 255 * 255 + data[3] * 255 * 255 * 255 - data[3]; //最后（- data[3]）表示很奇怪，不过data[3]一般情况下为0
+            // console.log(`选中索引3D对象${id}`, data.toString());
+            this.selectedObject3D = this.objects[id];
+        };
+        MouseRenderer.prototype.drawRenderables = function (renderContext, meshRenderer) {
+            if (meshRenderer.gameObject.mouseEnabled) {
+                var object = meshRenderer.gameObject;
+                this.objects.push(object);
+                object.renderData.uniforms.u_objectID = this.objects.length - 1;
+                _super.prototype.drawRenderables.call(this, renderContext, meshRenderer);
+            }
+        };
+        /**
+         * 绘制3D对象
+         */
+        MouseRenderer.prototype.drawObject3D = function (gl, renderAtomic, shader) {
+            if (shader === void 0) { shader = null; }
+            var vertexCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".vertex");
+            var fragmentCode = feng3d.ShaderLib.getShaderCode(this._shaderName + ".fragment");
+            var shader = new feng3d.ShaderRenderData();
+            shader.vertexCode = vertexCode;
+            shader.fragmentCode = fragmentCode;
+            _super.prototype.drawObject3D.call(this, gl, renderAtomic, shader);
+        };
+        return MouseRenderer;
+    }(feng3d.Renderer));
+    feng3d.MouseRenderer = MouseRenderer;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 后处理渲染器
+     * @author feng 2017-02-20
+     */
+    var PostProcessRenderer = (function (_super) {
+        __extends(PostProcessRenderer, _super);
+        function PostProcessRenderer() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return PostProcessRenderer;
+    }(feng3d.Renderer));
+    feng3d.PostProcessRenderer = PostProcessRenderer;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 阴影图渲染器
+     * @author  feng    2017-03-25
+     */
+    var ShadowRenderer = (function (_super) {
+        __extends(ShadowRenderer, _super);
+        function ShadowRenderer() {
+            return _super.call(this) || this;
+        }
+        /**
+         * 渲染
+         */
+        ShadowRenderer.prototype.draw = function (renderContext) {
+            var _this = this;
+            var gl = renderContext.gl;
+            var scene3D = renderContext.scene3d;
+            var lights = scene3D.lights;
+            for (var i = 0; i < lights.length; i++) {
+                var light = lights[i];
+                var frameBufferObject = new feng3d.FrameBufferObject();
+                frameBufferObject.init(gl);
+                frameBufferObject.active(gl);
+                scene3D.renderers.forEach(function (element) {
+                    _this.drawRenderables(renderContext, element);
+                });
+                frameBufferObject.deactive(gl);
+            }
+        };
+        return ShadowRenderer;
+    }(feng3d.Renderer));
+    feng3d.ShadowRenderer = ShadowRenderer;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 后处理效果
+     * @author feng 2017-02-20
+     */
+    var PostEffect = (function () {
+        function PostEffect() {
+        }
+        return PostEffect;
+    }());
+    feng3d.PostEffect = PostEffect;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 快速近似抗锯齿（Fast Approximate Anti-Aliasing）后处理效果
+     * @author feng 2017-02-20
+     *
+     * @see
+     * https://github.com/BabylonJS/Babylon.js/blob/master/src/Shaders/fxaa.fragment.fx
+     * https://github.com/playcanvas/engine/blob/master/extras/posteffects/posteffect-fxaa.js
+     */
+    var FXAAEffect = (function () {
+        function FXAAEffect() {
+        }
+        return FXAAEffect;
+    }());
+    feng3d.FXAAEffect = FXAAEffect;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -8549,26 +8597,8 @@ var feng3d;
             _this._single = true;
             return _this;
         }
-        Object.defineProperty(MeshRenderer.prototype, "material", {
-            /**
-             * 材质
-             */
-            get: function () { return this._material || feng3d.defaultMaterial; },
-            set: function (value) { this._material = value; this.invalidateRenderHolder(); },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        MeshRenderer.prototype.collectRenderDataHolder = function (renderAtomic) {
-            if (renderAtomic === void 0) { renderAtomic = null; }
-            this.material.collectRenderDataHolder(renderAtomic);
-            _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
-        };
         return MeshRenderer;
-    }(feng3d.Component));
+    }(feng3d.Renderer));
     feng3d.MeshRenderer = MeshRenderer;
 })(feng3d || (feng3d = {}));
 var feng3d;

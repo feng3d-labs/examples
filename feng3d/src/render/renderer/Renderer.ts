@@ -5,8 +5,37 @@ namespace feng3d
      * 渲染器
      * @author feng 2016-05-01
      */
-    export class Renderer
+    export class Renderer extends Component
     {
+        /**
+         * 材质
+         * Returns the first instantiated Material assigned to the renderer.
+         */
+        public get material() { return this._material || defaultMaterial; }
+        public set material(value) { this._material = value; this.invalidateRenderHolder(); }
+        private _material: Material;
+
+        /**
+         * Makes the rendered 3D object visible if enabled.
+         */
+        public get enabled()
+        {
+            return this._enabled;
+        }
+        public set enable(value)
+        {
+            this._enabled = value;
+        }
+        private _enabled: boolean;
+
+        /**
+         * Is this renderer visible in any camera? (Read Only)
+         */
+        public get isVisible()
+        {
+            return this.gameObject.visible;
+        }
+
         /**
 		 * 渲染
 		 */
@@ -63,6 +92,16 @@ namespace feng3d
             renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
             dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
+        }
+
+        /**
+         * 收集渲染数据拥有者
+         * @param renderAtomic 渲染原子
+         */
+        public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
+        {
+            this.material.collectRenderDataHolder(renderAtomic);
+            super.collectRenderDataHolder(renderAtomic);
         }
     }
 

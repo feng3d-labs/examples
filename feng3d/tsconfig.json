@@ -79,6 +79,9 @@
         "src/render/RenderContext.ts",
         "src/render/shader/ShaderMacro.ts",
         "src/render/shader/ShaderLib.ts",
+        //组件模块
+        "src/component/event/ComponentEvent.ts",
+        "src/component/Component.ts",
         //
         "src/render/FrameBufferObject.ts",
         "src/render/renderer/Renderer.ts",
@@ -90,9 +93,6 @@
         //后处理效果
         "src/render/postEffect/PostEffect.ts",
         "src/render/postEffect/FXAAEffect.ts",
-        //组件模块
-        "src/component/event/ComponentEvent.ts",
-        "src/component/Component.ts",
         //
         "src/core/MeshFilter.ts",
         "src/core/Object3D.ts",

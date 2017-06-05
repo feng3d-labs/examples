@@ -25,7 +25,7 @@ module feng3d
             var scene = this.view3D.scene;
 
             var particle = new GameObject("particle");
-            particle.getOrCreateComponentByClass(Model).geometry = new PointGeometry();
+            particle.geometry = new PointGeometry();
             var material = particle.getOrCreateComponentByClass(Model).material = new StandardMaterial();
             material.renderMode = RenderMode.POINTS;
             particle.y = -100;
@@ -47,9 +47,9 @@ module feng3d
                 { time: 5, particles: 100 },
             );
             //通过组件来创建粒子初始状态
-            particleAnimator.addComponent(emission);
-            particleAnimator.addComponent(new ParticlePosition());
-            particleAnimator.addComponent(new ParticleVelocity());
+            particleAnimator.addAnimation(emission);
+            particleAnimator.addAnimation(new ParticlePosition());
+            particleAnimator.addAnimation(new ParticleVelocity());
             particleAnimator.particleGlobal.acceleration = new Vector3D(0, -9.8, 0);
             //通过函数来创建粒子初始状态
             particleAnimator.generateFunctions.push({

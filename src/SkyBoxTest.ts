@@ -26,7 +26,7 @@ module feng3d
 
             var skybox = new GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(Model);
-            model.geometry = new SkyBoxGeometry();
+            skybox.geometry = new SkyBoxGeometry();
             model.material = new SkyBoxMaterial([
                 'resources/skybox/px.jpg',
                 'resources/skybox/py.jpg',

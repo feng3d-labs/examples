@@ -6,7 +6,7 @@ module feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            model.geometry = new CubeGeometry();
+            gameobject.geometry = new CubeGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -15,7 +15,7 @@ module feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            model.geometry = new PlaneGeometry();
+            gameobject.geometry = new PlaneGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -24,7 +24,7 @@ module feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            model.geometry = new CylinderGeometry();
+            gameobject.geometry = new CylinderGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -33,7 +33,7 @@ module feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            model.geometry = new SphereGeometry();
+            gameobject.geometry = new SphereGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -42,7 +42,7 @@ module feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            model.geometry = new CapsuleGeometry();
+            gameobject.geometry = new CapsuleGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }

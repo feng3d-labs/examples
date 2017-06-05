@@ -62,6 +62,14 @@ module feng3d
             this._updateEverytime = true;
         }
 
+        private _animations:ParticleComponent[] = [];
+
+        public addAnimation(animation:ParticleComponent)
+        {
+            if(this._animations.indexOf(animation) == -1)
+                this._animations.push(animation);
+        }
+
         /**
 		 * 生成粒子
 		 */
@@ -69,7 +77,7 @@ module feng3d
         {
             var generateFunctions = this.generateFunctions.concat();
 
-            var components = this.getComponentsByType(ParticleComponent);
+            var components = this._animations;
             components.forEach(element =>
             {
                 generateFunctions.push({ generate: element.generateParticle.bind(element), priority: element.priority });
@@ -112,7 +120,7 @@ module feng3d
                 renderData.attributes[attributeName] = this._attributes[attributeName];
             }
 
-            var components = this.getComponentsByType(ParticleComponent);
+            var components = this._animations;
             components.forEach(element =>
             {
                 element.setRenderState(this.particleGlobal, this.gameObject, renderContext);

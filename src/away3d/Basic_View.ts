@@ -16,8 +16,8 @@ module feng3d
             this._view.camera.lookAt(new Vector3D());
 
             this._plane = new GameObject();
+            this._plane.geometry = new PlaneGeometry(700, 700);
             var model = this._plane.getOrCreateComponentByClass(Model);
-            model.geometry = new PlaneGeometry(700, 700);
             var material = model.material = new StandardMaterial("resources/floor_diffuse.jpg");
             scene.addChild(this._plane);
 

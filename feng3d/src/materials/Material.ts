@@ -5,7 +5,7 @@ module feng3d
      * 材质
      * @author feng 2016-05-02
      */
-    export class Material extends Component
+    export class Material extends RenderDataHolder
     {
         protected _pointSize = 1;
         protected _enableBlend = false;
@@ -112,8 +112,6 @@ module feng3d
         constructor()
         {
             super();
-            this._single = true;
-            this._type = Material;
         }
 
         /**

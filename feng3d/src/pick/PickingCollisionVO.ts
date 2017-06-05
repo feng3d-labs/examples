@@ -54,7 +54,7 @@ module feng3d
 		/**
 		 * 碰撞关联的渲染对象
 		 */
-		public renderable: Model;
+		public renderable: Geometry;
 
 		/**
 		 * 创建射线拾取碰撞数据

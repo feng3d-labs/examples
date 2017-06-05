@@ -61,9 +61,9 @@ module feng3d
 
                 var skeletonObject3D = new GameObject();
                 var model = new Model();
-                model.geometry = geometry;
                 model.material = new StandardMaterial();
                 skeletonObject3D.addComponent(model);
+                skeletonObject3D.addComponent(geometry);
                 skeletonObject3D.addComponent(skeletonAnimator);
 
                 object3D.addChild(skeletonObject3D);

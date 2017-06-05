@@ -16,7 +16,7 @@ module feng3d
             var pointGeometry = new PointGeometry();
             var pointMaterial = new PointMaterial();
             var object3D = new GameObject("plane");
-            object3D.getOrCreateComponentByClass(Model).geometry = pointGeometry;
+            object3D.geometry = pointGeometry;
             object3D.getOrCreateComponentByClass(Model).material = pointMaterial;
             object3D.z = 300;
             this.view3D.scene.addChild(object3D);

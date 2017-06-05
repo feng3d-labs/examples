@@ -25,7 +25,7 @@ module feng3d
             }, 15);
 
             var model = cube.getOrCreateComponentByClass(Model);
-            model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            cube.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
             //材质
             var material = model.material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/m.png';

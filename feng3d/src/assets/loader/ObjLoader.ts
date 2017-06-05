@@ -93,7 +93,7 @@ module feng3d
             this._vertexNormals = obj.vn;
             this._uvs = obj.vt;
 
-            var geometry = model.geometry = new Geometry();
+            var geometry = object3D.geometry = new Geometry();
             var vertices: number[] = [];
             var normals: number[] = [];
             var uvs: number[] = [];

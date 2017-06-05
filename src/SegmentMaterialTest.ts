@@ -20,7 +20,7 @@ module feng3d
 
             //初始化材质
             segment.getOrCreateComponentByClass(Model).material = new SegmentMaterial();
-            var segmentGeometry = segment.getOrCreateComponentByClass(Model).geometry = new SegmentGeometry();
+            var segmentGeometry = segment.geometry = new SegmentGeometry();
 
             var length = 200;
             var height = 200 / Math.PI;

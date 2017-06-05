@@ -24,8 +24,8 @@ module feng3d
             // this._particleAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
 
             this._particleMesh = new GameObject("particle");
-            // this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PointGeometry();
-            this._particleMesh.getOrCreateComponentByClass(Model).geometry = new PlaneGeometry(10, 10, 1, 1, false);
+            // this._particleMesh.geometry = new PointGeometry();
+            this._particleMesh.geometry = new PlaneGeometry(10, 10, 1, 1, false);
             var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new StandardMaterial("resources/blue.png");
             material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             material.enableBlend = true;
@@ -45,7 +45,7 @@ module feng3d
                     particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                 }, priority: 0
             });
-            particleAnimator.addComponent(new ParticleBillboard());
+            particleAnimator.addAnimation(new ParticleBillboard());
             this._particleMesh.addComponent(particleAnimator);
             // this._particleAnimator.start();
             this._view.scene.addChild(this._particleMesh);

@@ -30,7 +30,7 @@ module feng3d
 
             var skybox = new GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(Model);
-            model.geometry = new SkyBoxGeometry();
+            skybox.geometry = new SkyBoxGeometry();
             var material = model.material = new SkyBoxMaterial();
             material.texture = cubeTexture;
             scene.addChild(skybox);
@@ -48,7 +48,7 @@ module feng3d
 
             var torus = this._torus = new GameObject("torus");
             var model = torus.getOrCreateComponentByClass(Model);
-            model.geometry = new TorusGeometry(150, 60, 40, 20);
+            torus.geometry = new TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;
             scene.addChild(torus);
 

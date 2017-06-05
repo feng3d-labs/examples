@@ -74,7 +74,7 @@ module feng3d
         private initParticles()
         {
             this.fireAnimationSet = new ParticleAnimator();
-            this.fireAnimationSet.addComponent(new ParticleBillboard());
+            this.fireAnimationSet.addAnimation(new ParticleBillboard());
             // this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
             // this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
@@ -101,8 +101,8 @@ module feng3d
         {
             this.plane = new GameObject();
             var model = this.plane.getOrCreateComponentByClass(Model);
-            model.geometry = new PlaneGeometry(1000, 1000);
-            model.geometry.scaleUV(2, 2);
+            this.plane.geometry = new PlaneGeometry(1000, 1000);
+            this.plane.geometry.scaleUV(2, 2);
             model.material = this.planeMaterial;
             this.plane.y = -20;
             this.scene.addChild(this.plane);
@@ -110,7 +110,7 @@ module feng3d
             {
                 var particleMesh = new GameObject();
                 var model = particleMesh.getOrCreateComponentByClass(Model);
-                model.geometry = this.particleGeometry;
+                particleMesh.geometry = this.particleGeometry;
                 model.material = this.particleMaterial;
                 particleMesh.addComponent(this.fireAnimationSet);
                 var degree: number = i / Basic_Fire.NUM_FIRES * Math.PI * 2;

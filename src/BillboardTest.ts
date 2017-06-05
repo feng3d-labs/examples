@@ -30,7 +30,7 @@ module feng3d
 
             //材质
             var model = gameObject.getOrCreateComponentByClass(Model);
-            model.geometry = new PlaneGeometry(100, 100, 1, 1, false);
+            gameObject.geometry = new PlaneGeometry(100, 100, 1, 1, false);
             var textureMaterial = model.material = new TextureMaterial();
             //
             // var texture = textureMaterial.texture = new Texture2D('resources/m.png');

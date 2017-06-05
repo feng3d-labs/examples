@@ -19,9 +19,8 @@ module feng3d
             this._findClosestCollision = findClosestCollision;
         }
 
-        public testSubMeshCollision(subMesh: Model, pickingCollisionVO: PickingCollisionVO, shortestCollisionDistance = 0, bothSides: boolean = true): boolean
+        public testSubMeshCollision(geometry: Geometry, pickingCollisionVO: PickingCollisionVO, shortestCollisionDistance = 0, bothSides: boolean = true): boolean
         {
-            var geometry = subMesh.geometry;
             var indexData = geometry.getIndexData().indices;
             var vertexData = geometry.getVAData(GLAttribute.a_position).data;
             var uvData = geometry.getVAData(GLAttribute.a_uv).data;

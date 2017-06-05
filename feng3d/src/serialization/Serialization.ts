@@ -56,10 +56,10 @@ module feng3d
                 }
                 return true;
             }
-            if (ClassUtils.is(object, Component) && key == "components_")
+            if (ClassUtils.is(object, GameObject) && key == "components_")
             {
                 var components: Component[] = this.readObject(data);
-                var component: Component = object;
+                var component: GameObject = object;
                 for (var i = 0; i < components.length; i++)
                 {
                     component.setComponentAt(components[i], i);

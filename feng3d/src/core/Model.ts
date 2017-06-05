@@ -7,12 +7,6 @@ module feng3d
     export class Model extends Component
     {
         /**
-         * 几何体
-         */
-        public get geometry() { return this._geometry || defaultGeometry; }
-        public set geometry(value) { this._geometry = value; this.invalidateRenderHolder(); }
-        private _geometry: Geometry;
-        /**
          * 材质
          */
         public get material() { return this._material || defaultMaterial; }
@@ -34,7 +28,6 @@ module feng3d
          */
         public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
         {
-            this.geometry.collectRenderDataHolder(renderAtomic);
             this.material.collectRenderDataHolder(renderAtomic);
             super.collectRenderDataHolder(renderAtomic);
         }

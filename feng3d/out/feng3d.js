@@ -6564,7 +6564,7 @@ var feng3d;
             var gl = renderContext.gl;
             try {
                 //绘制
-                var material = meshRenderer.material;
+                var material = meshRenderer.getOrCreateComponentByClass(Model).material;
                 if (material.enableBlend) {
                     //
                     gl.enable(feng3d.GL.BLEND);
@@ -8519,7 +8519,7 @@ var feng3d;
         Model.prototype.collectRenderDataHolder = function (renderAtomic) {
             if (renderAtomic === void 0) { renderAtomic = null; }
             this.geometry.collectRenderDataHolder(renderAtomic);
-            this.material.collectRenderDataHolder(renderAtomic);
+            this.getOrCreateComponentByClass(Model).material.collectRenderDataHolder(renderAtomic);
             _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
         };
         return Model;
@@ -13065,7 +13065,7 @@ var feng3d;
         };
         return Material;
     }(feng3d.RenderDataHolder));
-    feng3d.Material = Material;
+    feng3d.getOrCreateComponentByClass(Model).material = Material;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -13084,7 +13084,7 @@ var feng3d;
             this.renderMode = feng3d.RenderMode.POINTS;
         }
         return PointMaterial;
-    }(feng3d.Material));
+    }(feng3d.getOrCreateComponentByClass(Model).material));
     feng3d.PointMaterial = PointMaterial;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -13130,7 +13130,7 @@ var feng3d;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return ColorMaterial;
-    }(feng3d.Material));
+    }(feng3d.getOrCreateComponentByClass(Model).material));
     feng3d.ColorMaterial = ColorMaterial;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -13151,7 +13151,7 @@ var feng3d;
             this.renderMode = feng3d.RenderMode.LINES;
         }
         return SegmentMaterial;
-    }(feng3d.Material));
+    }(feng3d.getOrCreateComponentByClass(Model).material));
     feng3d.SegmentMaterial = SegmentMaterial;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -13178,7 +13178,7 @@ var feng3d;
         });
         return MaterialComponent;
     }(feng3d.Component));
-    feng3d.MaterialComponent = MaterialComponent;
+    feng3d.getOrCreateComponentByClass(Model).materialComponent = MaterialComponent;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -13216,7 +13216,7 @@ var feng3d;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return TextureMaterial;
-    }(feng3d.Material));
+    }(feng3d.getOrCreateComponentByClass(Model).material));
     feng3d.TextureMaterial = TextureMaterial;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -13257,7 +13257,7 @@ var feng3d;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return SkyBoxMaterial;
-    }(feng3d.Material));
+    }(feng3d.getOrCreateComponentByClass(Model).material));
     feng3d.SkyBoxMaterial = SkyBoxMaterial;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -13403,7 +13403,7 @@ var feng3d;
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return StandardMaterial;
-    }(feng3d.Material));
+    }(feng3d.getOrCreateComponentByClass(Model).material));
     feng3d.StandardMaterial = StandardMaterial;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -17081,7 +17081,7 @@ var feng3d;
         else if ((result = usemtlReg.exec(line)) && result[0] == line) {
             currentSubObj = { faces: [] };
             currentObj.subObjs.push(currentSubObj);
-            currentSubObj.material = result[1];
+            currentSubObj.getOrCreateComponentByClass(Model).material = result[1];
         }
         else if ((result = faceVReg.exec(line)) && result[0] == line) {
             currentSubObj.faces.push({
@@ -17530,8 +17530,8 @@ var feng3d;
             geometry.setVAData(feng3d.GLAttribute.a_normal, new Float32Array(normals), 3);
             geometry.setVAData(feng3d.GLAttribute.a_uv, new Float32Array(uvs), 2);
             geometry.createVertexTangents();
-            if (this._mtlData && this._mtlData[subObj.material]) {
-                var materialInfo = this._mtlData[subObj.material];
+            if (this._mtlData && this._mtlData[subObj.getOrCreateComponentByClass(Model).material]) {
+                var materialInfo = this._mtlData[subObj.getOrCreateComponentByClass(Model).material];
                 var kd = materialInfo.kd;
                 var colorMaterial = new feng3d.ColorMaterial();
                 colorMaterial.color.r = kd[0];
@@ -17891,21 +17891,21 @@ var feng3d;
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(length, 0, 0), 0xff0000, 0xff0000));
             this._xLine.getOrCreateComponentByClass(feng3d.Model).geometry = segmentGeometry;
-            this._xLine.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.SegmentMaterial();
+            this._xLine.getOrCreateComponentByClass(feng3d.Model).getOrCreateComponentByClass(Model).material = new feng3d.SegmentMaterial();
             this.addChild(this._xLine);
             //
             this._yLine = new feng3d.GameObject();
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(0, length, 0), 0x00ff00, 0x00ff00));
             this._yLine.getOrCreateComponentByClass(feng3d.Model).geometry = segmentGeometry;
-            this._yLine.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.SegmentMaterial();
+            this._yLine.getOrCreateComponentByClass(feng3d.Model).getOrCreateComponentByClass(Model).material = new feng3d.SegmentMaterial();
             this.addChild(this._yLine);
             //
             this._zLine = new feng3d.GameObject();
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(0, 0, length), 0x0000ff, 0x0000ff));
             this._zLine.getOrCreateComponentByClass(feng3d.Model).geometry = segmentGeometry;
-            this._zLine.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.SegmentMaterial();
+            this._zLine.getOrCreateComponentByClass(feng3d.Model).getOrCreateComponentByClass(Model).material = new feng3d.SegmentMaterial();
             this.addChild(this._zLine);
             //
             this._xArrow = new feng3d.GameObject();
@@ -17913,14 +17913,14 @@ var feng3d;
             this._xArrow.rotationZ = -90;
             this._xArrow.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.ConeGeometry(5, 18);
             ;
-            var material = this._xArrow.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
+            var material = this._xArrow.getOrCreateComponentByClass(feng3d.Model).getOrCreateComponentByClass(Model).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(1, 0, 0);
             this.addChild(this._xArrow);
             //
             this._yArrow = new feng3d.GameObject();
             this._yArrow.y = length;
             this._yArrow.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.ConeGeometry(5, 18);
-            var material = this._yArrow.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
+            var material = this._yArrow.getOrCreateComponentByClass(feng3d.Model).getOrCreateComponentByClass(Model).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(0, 1, 0);
             this.addChild(this._yArrow);
             //
@@ -17928,7 +17928,7 @@ var feng3d;
             this._zArrow.z = length;
             this._zArrow.rotationX = 90;
             this._zArrow.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.ConeGeometry(5, 18);
-            var material = this._zArrow.getOrCreateComponentByClass(feng3d.Model).material = new feng3d.ColorMaterial();
+            var material = this._zArrow.getOrCreateComponentByClass(feng3d.Model).getOrCreateComponentByClass(Model).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(0, 0, 1);
             this.addChild(this._zArrow);
         };

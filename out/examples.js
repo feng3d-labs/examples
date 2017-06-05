@@ -8213,6 +8213,7 @@ var feng3d;
          * @param camera    摄像机
          */
         function View3D(canvas, scene, camera, autoRender) {
+            if (canvas === void 0) { canvas = null; }
             if (scene === void 0) { scene = null; }
             if (camera === void 0) { camera = null; }
             if (autoRender === void 0) { autoRender = true; }
@@ -8222,6 +8223,13 @@ var feng3d;
             this.mousePos = new feng3d.Point();
             //初始化引擎
             feng3d.initEngine();
+            if (!canvas) {
+                canvas = document.createElement("canvas");
+                canvas.id = "glcanvas";
+                canvas.style.width = "100%";
+                canvas.style.height = "100%";
+                document.body.appendChild(canvas);
+            }
             feng3d.debuger && feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
             this._canvas = canvas;
             var glProxy = new feng3d.GLProxy(canvas);
@@ -18275,8 +18283,7 @@ var feng3d;
             this.controller = new feng3d.FPSController(this.view3D.camera);
         }
         BillboardTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene = this.view3D.scene;
             scene.background.setTo(0.3, 0.3, 0.3);
             var cube = feng3d.GameObjectFactory.createCube();
@@ -18320,8 +18327,7 @@ var feng3d;
             this.init();
         }
         ColorMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var cube = feng3d.GameObjectFactory.createCube();
             cube.z = 300;
             this.view3D.scene.addChild(cube);
@@ -18349,8 +18355,7 @@ var feng3d;
             this.init();
         }
         Container3DTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             //初始化颜色材质
             var cube = feng3d.GameObjectFactory.createCube();
             cube.z = 500;
@@ -18393,8 +18398,7 @@ var feng3d;
             console.log("球体视窗坐标" + screenPos.toString());
         };
         FPSControllerTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var cube = feng3d.GameObjectFactory.createCube();
             scene3D.addChild(cube);
@@ -18424,8 +18428,7 @@ var feng3d;
             this.init();
         }
         GeometryTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var object3d = new feng3d.GameObject();
             var model = object3d.getOrCreateComponentByClass(feng3d.Model);
             var geometry = model.geometry = new feng3d.Geometry();
@@ -18464,8 +18467,7 @@ var feng3d;
             this.init();
         }
         MD5LoaderTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             // //变化旋转
             setInterval(function () {
                 if (object) {
@@ -18532,8 +18534,7 @@ var feng3d;
             this.controller = new feng3d.FPSController(this.cameraObj);
         }
         MousePickTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var cube = feng3d.GameObjectFactory.createCube();
             cube.mouseEnabled = true;
@@ -18573,8 +18574,7 @@ var feng3d;
             this.init();
         }
         OBJParserTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             // //变化旋转
             setInterval(function () {
                 if (object) {
@@ -18622,8 +18622,7 @@ var feng3d;
             this.controller = new feng3d.FPSController(this.view3D.camera);
         }
         ParticleAnimatorTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene = this.view3D.scene;
             var particle = new feng3d.GameObject("particle");
             particle.getOrCreateComponentByClass(feng3d.Model).geometry = new feng3d.PointGeometry();
@@ -18685,8 +18684,7 @@ var feng3d;
             }
         };
         PointLightTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             this.scene = this.view3D.scene;
             this.initObjects();
             this.initLights();
@@ -18768,8 +18766,7 @@ var feng3d;
             this.init();
         }
         PointMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var pointGeometry = new feng3d.PointGeometry();
             var pointMaterial = new feng3d.PointMaterial();
             var object3D = new feng3d.GameObject("plane");
@@ -18814,8 +18811,7 @@ var feng3d;
             this.controller.update();
         };
         PrimitiveTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var cube = feng3d.GameObjectFactory.createCube();
             scene3D.addChild(cube);
@@ -18849,8 +18845,7 @@ var feng3d;
             this.controller = new feng3d.FPSController(this.view3D.camera);
         }
         SceneLoadTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var loader = new feng3d.Loader();
             loader.addEventListener(feng3d.LoaderEvent.COMPLETE, function () {
@@ -18873,8 +18868,7 @@ var feng3d;
             this.init();
         }
         SegmentMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var segment = new feng3d.GameObject("segment");
             segment.z = 300;
             this.view3D.scene.addChild(segment);
@@ -18916,8 +18910,7 @@ var feng3d;
             this.controller = new feng3d.FPSController(this.view3D.camera);
         }
         SkyBoxTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene = this.view3D.scene;
             var skybox = new feng3d.GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(feng3d.Model);
@@ -18943,8 +18936,7 @@ var feng3d;
             this.init();
         }
         StandardMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var cube = new feng3d.GameObject();
             cube.z = 300;
             cube.y = -100;
@@ -18990,8 +18982,7 @@ var feng3d;
             this.light1.z = Math.cos(angle) * 300;
         };
         TerrainTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene = this.view3D.scene;
             var root = 'resources/terrain/';
             //
@@ -19035,8 +19026,7 @@ var feng3d;
             this.light1.z = Math.cos(angle) * 300;
         };
         TerrainMergeTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var scene = this.view3D.scene;
             var root = 'resources/terrain/';
             //
@@ -19068,8 +19058,7 @@ var feng3d;
             this.init();
         }
         TextureMaterialTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var cube = new feng3d.GameObject();
             cube.z = 300;
             cube.y = -100;
@@ -19099,8 +19088,7 @@ var feng3d;
             this.init();
         }
         FogTest.prototype.init = function () {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new feng3d.View3D(canvas);
+            this.view3D = new feng3d.View3D();
             var cube = new feng3d.GameObject();
             cube.z = 300;
             cube.y = -100;
@@ -19125,8 +19113,7 @@ var feng3d;
 (function (feng3d) {
     var Basic_SkyBox = (function () {
         function Basic_SkyBox() {
-            var canvas = document.getElementById("glcanvas");
-            var view3D = this._view = new feng3d.View3D(canvas);
+            var view3D = this._view = new feng3d.View3D();
             var scene = view3D.scene;
             var cubeTexture = new feng3d.TextureCube([
                 // 'resources/skybox/px.jpg',
@@ -19194,8 +19181,7 @@ var feng3d;
             this.initListeners();
         };
         Basic_Shading.prototype.initEngine = function () {
-            var canvas = document.getElementById("glcanvas");
-            var view3D = this.view = new feng3d.View3D(canvas);
+            var view3D = this.view = new feng3d.View3D();
             this.scene = view3D.scene;
             this.camera = view3D.camera;
             this.cameraController = new feng3d.HoverController(this.camera);
@@ -19297,8 +19283,7 @@ var feng3d;
             this._lastTiltAngle = NaN;
             this._lastMouseX = NaN;
             this._lastMouseY = NaN;
-            var canvas = document.getElementById("glcanvas");
-            var view3D = this._view = new feng3d.View3D(canvas);
+            var view3D = this._view = new feng3d.View3D();
             this._cameraController = new feng3d.HoverController(this._view.camera, null, 45, 20, 1000);
             // this._particleAnimationSet = new ParticleAnimationSet(true, true);
             // this._particleAnimationSet["addAnimation"](new ParticleBillboardNode());
@@ -19373,8 +19358,7 @@ var feng3d;
             this.initListeners();
         };
         Basic_Fire.prototype.initEngine = function () {
-            var canvas = document.getElementById("glcanvas");
-            var view3D = this.view = new feng3d.View3D(canvas);
+            var view3D = this.view = new feng3d.View3D();
             this.camera = view3D.camera;
             this.scene = view3D.scene;
             this.cameraController = new feng3d.HoverController(this.camera);
@@ -19521,8 +19505,7 @@ var feng3d;
 (function (feng3d) {
     var Basic_View = (function () {
         function Basic_View() {
-            var canvas = document.getElementById("glcanvas");
-            this._view = new feng3d.View3D(canvas, null, null, false);
+            this._view = new feng3d.View3D(null, null, null, false);
             var scene = this._view.scene;
             this._view.camera.z = -600;
             this._view.camera.y = 500;

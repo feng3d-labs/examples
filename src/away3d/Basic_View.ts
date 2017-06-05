@@ -8,8 +8,7 @@ module feng3d
 
         public constructor()
         {
-            var canvas = document.getElementById("glcanvas");
-            this._view = new View3D(canvas, null, null, false);
+            this._view = new View3D(null, null, null, false);
             var scene = this._view.scene;
 
             this._view.camera.z = -600;

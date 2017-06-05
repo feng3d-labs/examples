@@ -8,8 +8,8 @@ module feng3d
 
         public constructor()
         {
-            var canvas = document.getElementById("glcanvas");
-            var view3D = this._view = new View3D(canvas);
+            
+            var view3D = this._view = new View3D();
 
             var scene = view3D.scene;
 

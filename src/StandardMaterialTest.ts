@@ -10,8 +10,8 @@ module feng3d
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+            
+            this.view3D = new View3D();
 
             var cube = new GameObject();
             cube.z = 300;

@@ -39,8 +39,8 @@ module feng3d
 
         private initEngine()
         {
-            var canvas = document.getElementById("glcanvas");
-            var view3D = this.view = new View3D(canvas);
+            
+            var view3D = this.view = new View3D();
 
             this.scene = view3D.scene;
             this.camera = view3D.camera;

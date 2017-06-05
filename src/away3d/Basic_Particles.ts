@@ -13,8 +13,8 @@ module feng3d
 
         public constructor()
         {
-            var canvas = document.getElementById("glcanvas");
-            var view3D = this._view = new View3D(canvas);
+            
+            var view3D = this._view = new View3D();
 
             this._cameraController = new HoverController(this._view.camera, null, 45, 20, 1000);
 

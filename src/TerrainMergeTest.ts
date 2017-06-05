@@ -41,7 +41,7 @@ namespace feng3d
             // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3D(50, 50, 50));
             var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test1.jpg',new Vector3D(50, 50, 50));
             material.addMethod(terrainMethod);
-            terrain.getOrCreateComponentByClass(Model).material = material;
+            terrain.getOrCreateComponentByClass(MeshRenderer).material = material;
             scene.addChild(terrain);
 
             //初始化光源

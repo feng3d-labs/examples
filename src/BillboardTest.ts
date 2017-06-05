@@ -29,7 +29,7 @@ namespace feng3d
             cube.addChild(gameObject);
 
             //材质
-            var model = gameObject.getOrCreateComponentByClass(Model);
+            var model = gameObject.getOrCreateComponentByClass(MeshRenderer);
             gameObject.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(100, 100, 1, 1, false);
             var textureMaterial = model.material = new TextureMaterial();
             //

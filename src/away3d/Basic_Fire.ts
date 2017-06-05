@@ -100,7 +100,7 @@ namespace feng3d
         private initObjects()
         {
             this.plane = new GameObject();
-            var model = this.plane.getOrCreateComponentByClass(Model);
+            var model = this.plane.getOrCreateComponentByClass(MeshRenderer);
             this.plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             this.plane.getOrCreateComponentByClass(MeshFilter).mesh.scaleUV(2, 2);
             model.material = this.planeMaterial;
@@ -109,7 +109,7 @@ namespace feng3d
             for (var i: number = 0; i < Basic_Fire.NUM_FIRES; i++)
             {
                 var particleMesh = new GameObject();
-                var model = particleMesh.getOrCreateComponentByClass(Model);
+                var model = particleMesh.getOrCreateComponentByClass(MeshRenderer);
                 particleMesh.getOrCreateComponentByClass(MeshFilter).mesh = this.particleGeometry;
                 model.material = this.particleMaterial;
                 particleMesh.addComponent(this.fireAnimationSet);

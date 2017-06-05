@@ -15,7 +15,7 @@ namespace feng3d
             this.view3D = new View3D();
 
             var object3d = new GameObject();
-            var model = object3d.getOrCreateComponentByClass(Model);
+            var model = object3d.getOrCreateComponentByClass(MeshRenderer);
 
 
             var geometry = object3d.getOrCreateComponentByClass(MeshFilter).mesh = new Geometry();

@@ -30,14 +30,14 @@ namespace feng3d
             super.draw(renderContext);
         }
 
-        protected drawRenderables(renderContext: RenderContext, meshRenderer: Model)
+        protected drawRenderables(renderContext: RenderContext, meshRenderer: MeshRenderer)
         {
             if (meshRenderer.gameObject.isVisible)
             {
                 var frustumPlanes = renderContext.camera.frustumPlanes;
                 var gameObject = meshRenderer.gameObject;
                 var isIn = gameObject.worldBounds.isInFrustum(frustumPlanes, 6);
-                var model = gameObject.getComponentByType(Model);
+                var model = gameObject.getComponentByType(MeshRenderer);
                 if (gameObject.getOrCreateComponentByClass(MeshFilter).mesh instanceof SkyBoxGeometry)
                 {
                     isIn = true;

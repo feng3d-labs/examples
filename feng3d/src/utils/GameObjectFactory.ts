@@ -5,7 +5,7 @@ namespace feng3d
         public static createCube(name: string = "cube")
         {
             var gameobject = new GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(Model);
+            var model = gameobject.getOrCreateComponentByClass(MeshRenderer);
             gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry();
             model.material = new StandardMaterial();
             return gameobject;
@@ -14,7 +14,7 @@ namespace feng3d
         public static createPlane(name: string = "plane")
         {
             var gameobject = new GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(Model);
+            var model = gameobject.getOrCreateComponentByClass(MeshRenderer);
             gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry();
             model.material = new StandardMaterial();
             return gameobject;
@@ -23,7 +23,7 @@ namespace feng3d
         public static createCylinder(name: string = "cylinder")
         {
             var gameobject = new GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(Model);
+            var model = gameobject.getOrCreateComponentByClass(MeshRenderer);
             gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new CylinderGeometry();
             model.material = new StandardMaterial();
             return gameobject;
@@ -32,7 +32,7 @@ namespace feng3d
         public static createSphere(name: string = "sphere")
         {
             var gameobject = new GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(Model);
+            var model = gameobject.getOrCreateComponentByClass(MeshRenderer);
             gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry();
             model.material = new StandardMaterial();
             return gameobject;
@@ -41,7 +41,7 @@ namespace feng3d
         public static createCapsule(name: string = "capsule")
         {
             var gameobject = new GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(Model);
+            var model = gameobject.getOrCreateComponentByClass(MeshRenderer);
             gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new CapsuleGeometry();
             model.material = new StandardMaterial();
             return gameobject;

@@ -85,7 +85,7 @@
 		"feng3d/src/core/GameObject.ts",
 		"feng3d/src/core/View3D.ts",
 		"feng3d/src/core/Object3DEvent.ts",
-		"feng3d/src/core/Model.ts",
+		"feng3d/src/core/MeshRenderer.ts",
 		"feng3d/src/core/Object3dScript.ts",
 		"feng3d/src/scene/Scene3D.ts",
 		"feng3d/src/scene/Scene3DEvent.ts",

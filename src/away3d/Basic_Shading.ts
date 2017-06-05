@@ -84,14 +84,14 @@ namespace feng3d
         private initObjects()
         {
             this.plane = new GameObject();
-            var model = this.plane.getOrCreateComponentByClass(Model);
+            var model = this.plane.getOrCreateComponentByClass(MeshRenderer);
             var geometry: Geometry = this.plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             model.material = this.planeMaterial;
             geometry.scaleUV(2, 2);
             this.plane.y = -20;
             this.scene.addChild(this.plane);
             this.sphere = new GameObject();
-            var model = this.sphere.getOrCreateComponentByClass(Model);
+            var model = this.sphere.getOrCreateComponentByClass(MeshRenderer);
             this.sphere.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry(150, 40, 20)
             model.material = this.sphereMaterial;
             this.sphere.x = 300;
@@ -99,7 +99,7 @@ namespace feng3d
             this.sphere.z = 300;
             this.scene.addChild(this.sphere);
             this.cube = new GameObject();
-            var model = this.cube.getOrCreateComponentByClass(Model);
+            var model = this.cube.getOrCreateComponentByClass(MeshRenderer);
             this.cube.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
             model.material = this.cubeMaterial;
             this.cube.x = 300;
@@ -107,7 +107,7 @@ namespace feng3d
             this.cube.z = -250;
             this.scene.addChild(this.cube);
             this.torus = new GameObject();
-            var model = this.torus.getOrCreateComponentByClass(Model);
+            var model = this.torus.getOrCreateComponentByClass(MeshRenderer);
             geometry = this.torus.getOrCreateComponentByClass(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = this.torusMaterial;
             geometry.scaleUV(10, 5);

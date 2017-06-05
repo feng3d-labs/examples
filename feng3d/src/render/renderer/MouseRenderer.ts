@@ -42,7 +42,7 @@ namespace feng3d
             this.selectedObject3D = this.objects[id];
         }
 
-        protected drawRenderables(renderContext: RenderContext, meshRenderer: Model)
+        protected drawRenderables(renderContext: RenderContext, meshRenderer: MeshRenderer)
         {
             if (meshRenderer.gameObject.mouseEnabled)
             {

@@ -86,7 +86,7 @@ namespace feng3d
         private createMaterialObj(obj: OBJ_OBJ, subObj: OBJ_SubOBJ, material: Material)
         {
             var gameObject = new GameObject();
-            var model = gameObject.getOrCreateComponentByClass(Model);
+            var model = gameObject.getOrCreateComponentByClass(MeshRenderer);
             model.material = material || new ColorMaterial();
 
             this._vertices = obj.vertex;

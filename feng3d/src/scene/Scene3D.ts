@@ -17,7 +17,7 @@ namespace feng3d
         public ambientColor = new Color();
 
         private _object3Ds: GameObject[] = [];
-        private _renderers: Model[] = [];
+        private _renderers: MeshRenderer[] = [];
         private _lights: Light[] = [];
 
         /**
@@ -57,7 +57,7 @@ namespace feng3d
             if (event.data instanceof GameObject)
             {
                 var gameObject = event.data;
-                var model = gameObject.getComponentByType(Model);
+                var model = gameObject.getComponentByType(MeshRenderer);
                 model && this.renderers.push(model);
                 var light = gameObject.getComponentByType(Light);
                 light && this.lights.push(light);
@@ -77,7 +77,7 @@ namespace feng3d
             if (event.data instanceof GameObject)
             {
                 var gameObject = event.data;
-                var model = gameObject.getComponentByType(Model);
+                var model = gameObject.getComponentByType(MeshRenderer);
                 if (model)
                 {
                     var index = this.renderers.indexOf(model);
@@ -115,7 +115,7 @@ namespace feng3d
             {
                 this.lights.push(component);
             }
-            if (component instanceof Model)
+            if (component instanceof MeshRenderer)
             {
                 this.renderers.push(component);
             }
@@ -135,7 +135,7 @@ namespace feng3d
                     this.lights.splice(index, 1);
                 }
             }
-            if (component instanceof Model)
+            if (component instanceof MeshRenderer)
             {
                 var index = this.renderers.indexOf(component);
                 if (index != -1)

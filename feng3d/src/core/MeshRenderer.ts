@@ -1,10 +1,9 @@
 namespace feng3d
 {
     /**
-     * 网格渲染器
-     * @author feng 2016-12-12
+     * Renders meshes inserted by the MeshFilter or TextMesh.
      */
-    export class Model extends Component
+    export class MeshRenderer extends Component
     {
         /**
          * 材质

@@ -23,7 +23,7 @@ namespace feng3d
             cube.z = 500;
             this.view3D.scene.addChild(cube);
 
-            var colorMaterial = cube.getOrCreateComponentByClass(Model).material = new ColorMaterial();
+            var colorMaterial = cube.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial();
 
             var cylinder = GameObjectFactory.createCylinder();
             cylinder.x = 200;

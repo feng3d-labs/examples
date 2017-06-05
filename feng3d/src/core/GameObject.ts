@@ -25,18 +25,6 @@ namespace feng3d
          */
         public holdSize = NaN;
 
-        /**
-         * 几何体
-         */
-        public get geometry() { return this._geometry || defaultGeometry; }
-        public set geometry(value) 
-        { 
-            this._geometry = value;
-            this.addComponent(this._geometry);
-            this.invalidateRenderHolder(); 
-        }
-        private _geometry: Geometry;
-
         public updateRender(renderContext: RenderContext)
         {
             if (this.isBillboard)
@@ -104,8 +92,9 @@ namespace feng3d
 		 */
         protected updateBounds()
         {
-            this._bounds.geometry = this.geometry;
-            this._bounds.fromGeometry(this.geometry);
+            var meshFilter = this.getOrCreateComponentByClass(MeshFilter);
+            this._bounds.geometry = meshFilter.mesh;
+            this._bounds.fromGeometry(meshFilter.mesh);
             this._boundsInvalid = false;
         }
 
@@ -117,7 +106,8 @@ namespace feng3d
             pickingCollider.setLocalRay(this._pickingCollisionVO.localRay);
             this._pickingCollisionVO.renderable = null;
 
-            var model = this.geometry;
+            var meshFilter = this.getComponentByType(MeshFilter);
+            var model = meshFilter.mesh;
 
             if (pickingCollider.testSubMeshCollision(model, this._pickingCollisionVO, shortestCollisionDistance))
             {
@@ -129,7 +119,7 @@ namespace feng3d
 
             return this._pickingCollisionVO.renderable != null;
         }
-        
+
 		/**
 		 * 添加组件
 		 * @param component 被添加组件
@@ -246,7 +236,7 @@ namespace feng3d
             }
             return component;
         }
-        
+
         /**
          * 交换子组件位置
          * @param index1		第一个子组件的索引位置
@@ -274,7 +264,7 @@ namespace feng3d
 
             this.swapComponentsAt(this.getComponentIndex(a), this.getComponentIndex(b));
         }
-        
+
         /**
          * 移除指定类型组件
          * @param type 组件类型

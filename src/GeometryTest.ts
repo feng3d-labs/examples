@@ -18,7 +18,7 @@ namespace feng3d
             var model = object3d.getOrCreateComponentByClass(Model);
 
 
-            var geometry = object3d.geometry = new Geometry();
+            var geometry = object3d.getOrCreateComponentByClass(MeshFilter).mesh = new Geometry();
             geometry.addGeometry(new PlaneGeometry());
             var matrix3D = new Matrix3D();
             matrix3D.appendTranslation(0, 50, 0);

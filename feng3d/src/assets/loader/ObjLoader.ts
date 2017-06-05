@@ -77,23 +77,24 @@ namespace feng3d
             return object3D;
         }
 
-        private _vertices: {x: number;y: number;z: number;}[];
-        private _vertexNormals :{x: number;y: number;z: number;}[];
-        private _uvs:{u:number,v:number,s:number}[];
-        private _realIndices:string[];
-        private _vertexIndex:number;
-        
+        private _vertices: { x: number; y: number; z: number; }[];
+        private _vertexNormals: { x: number; y: number; z: number; }[];
+        private _uvs: { u: number, v: number, s: number }[];
+        private _realIndices: string[];
+        private _vertexIndex: number;
+
         private createMaterialObj(obj: OBJ_OBJ, subObj: OBJ_SubOBJ, material: Material)
         {
-            var object3D = new GameObject();
-            var model = object3D.getOrCreateComponentByClass(Model);
+            var gameObject = new GameObject();
+            var model = gameObject.getOrCreateComponentByClass(Model);
             model.material = material || new ColorMaterial();
 
             this._vertices = obj.vertex;
             this._vertexNormals = obj.vn;
             this._uvs = obj.vt;
 
-            var geometry = object3D.geometry = new Geometry();
+            var meshFilter = gameObject.getOrCreateComponentByClass(MeshFilter);
+            var geometry = meshFilter.mesh = new Geometry();
             var vertices: number[] = [];
             var normals: number[] = [];
             var uvs: number[] = [];
@@ -128,15 +129,15 @@ namespace feng3d
                 colorMaterial.color.b = kd[2];
                 model.material = colorMaterial;
             }
-            return object3D;
+            return gameObject;
         }
 
         private translateVertexData(face: OBJ_Face, vertexIndex: number, vertices: Array<number>, uvs: Array<number>, indices: Array<number>, normals: Array<number>)
         {
             var index: number;
-            var vertex: {x: number;y: number;z: number;};
-            var vertexNormal: {x: number;y: number;z: number;};
-            var uv: {u:number,v:number,s:number};
+            var vertex: { x: number; y: number; z: number; };
+            var vertexNormal: { x: number; y: number; z: number; };
+            var uv: { u: number, v: number, s: number };
             if (!this._realIndices[face.indexIds[vertexIndex]])
             {
                 index = this._vertexIndex;

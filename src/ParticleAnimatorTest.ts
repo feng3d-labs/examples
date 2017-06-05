@@ -25,7 +25,7 @@ namespace feng3d
             var scene = this.view3D.scene;
 
             var particle = new GameObject("particle");
-            particle.geometry = new PointGeometry();
+            particle.getOrCreateComponentByClass(MeshFilter).mesh = new PointGeometry();
             var material = particle.getOrCreateComponentByClass(Model).material = new StandardMaterial();
             material.renderMode = RenderMode.POINTS;
             particle.y = -100;

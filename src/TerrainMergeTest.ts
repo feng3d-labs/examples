@@ -35,7 +35,7 @@ namespace feng3d
             var root = 'resources/terrain/';
             //
             var terrain = new GameObject("terrain");
-            terrain.geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
+            terrain.getOrCreateComponentByClass(MeshFilter).mesh = new TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new StandardMaterial(root + 'terrain_diffuse.jpg',root + "terrain_normals.jpg");
 
             // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3D(50, 50, 50));

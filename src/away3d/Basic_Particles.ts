@@ -25,7 +25,7 @@ namespace feng3d
 
             this._particleMesh = new GameObject("particle");
             // this._particleMesh.geometry = new PointGeometry();
-            this._particleMesh.geometry = new PlaneGeometry(10, 10, 1, 1, false);
+            this._particleMesh.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(10, 10, 1, 1, false);
             var material = this._particleMesh.getOrCreateComponentByClass(Model).material = new StandardMaterial("resources/blue.png");
             material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             material.enableBlend = true;

@@ -101,8 +101,8 @@ namespace feng3d
         {
             this.plane = new GameObject();
             var model = this.plane.getOrCreateComponentByClass(Model);
-            this.plane.geometry = new PlaneGeometry(1000, 1000);
-            this.plane.geometry.scaleUV(2, 2);
+            this.plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
+            this.plane.getOrCreateComponentByClass(MeshFilter).mesh.scaleUV(2, 2);
             model.material = this.planeMaterial;
             this.plane.y = -20;
             this.scene.addChild(this.plane);
@@ -110,7 +110,7 @@ namespace feng3d
             {
                 var particleMesh = new GameObject();
                 var model = particleMesh.getOrCreateComponentByClass(Model);
-                particleMesh.geometry = this.particleGeometry;
+                particleMesh.getOrCreateComponentByClass(MeshFilter).mesh = this.particleGeometry;
                 model.material = this.particleMaterial;
                 particleMesh.addComponent(this.fireAnimationSet);
                 var degree: number = i / Basic_Fire.NUM_FIRES * Math.PI * 2;

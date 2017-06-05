@@ -6,7 +6,7 @@ namespace feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            gameobject.geometry = new CubeGeometry();
+            gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -15,7 +15,7 @@ namespace feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            gameobject.geometry = new PlaneGeometry();
+            gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -24,7 +24,7 @@ namespace feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            gameobject.geometry = new CylinderGeometry();
+            gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new CylinderGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -33,7 +33,7 @@ namespace feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            gameobject.geometry = new SphereGeometry();
+            gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }
@@ -42,7 +42,7 @@ namespace feng3d
         {
             var gameobject = new GameObject(name);
             var model = gameobject.getOrCreateComponentByClass(Model);
-            gameobject.geometry = new CapsuleGeometry();
+            gameobject.getOrCreateComponentByClass(MeshFilter).mesh = new CapsuleGeometry();
             model.material = new StandardMaterial();
             return gameobject;
         }

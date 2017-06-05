@@ -26,7 +26,7 @@ namespace feng3d
 
             var skybox = new GameObject("skybox");
             var model = skybox.getOrCreateComponentByClass(Model);
-            skybox.geometry = new SkyBoxGeometry();
+            skybox.getOrCreateComponentByClass(MeshFilter).mesh = new SkyBoxGeometry();
             model.material = new SkyBoxMaterial([
                 'resources/skybox/px.jpg',
                 'resources/skybox/py.jpg',

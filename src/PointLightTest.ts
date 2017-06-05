@@ -70,7 +70,7 @@ namespace feng3d
             var plane = new GameObject();
             plane.y = -100;
             var model = plane.getOrCreateComponentByClass(Model);
-            var geometry = plane.geometry = new PlaneGeometry(1000, 1000);
+            var geometry = plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
             model.material = material;
             this.scene.addChild(plane);
@@ -78,8 +78,8 @@ namespace feng3d
             var cube = new GameObject();
             var model = cube.getOrCreateComponentByClass(Model);
             model.material = material;
-            cube.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
-            cube.geometry.scaleUV(2, 2);
+            cube.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            cube.getOrCreateComponentByClass(MeshFilter).mesh.scaleUV(2, 2);
             this.scene.addChild(cube);
         }
 
@@ -95,7 +95,7 @@ namespace feng3d
         {
             //
             var lightColor0 = new Color(1, 0, 0, 1);
-            this.light0.geometry = new SphereGeometry(5);
+            this.light0.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry(5);
             this.light0.getOrCreateComponentByClass(Model);
             //初始化点光源
             var pointLight0 = new PointLight();
@@ -106,7 +106,7 @@ namespace feng3d
 
             //
             var lightColor1 = new Color(0, 1, 0, 1);
-            this.light1.geometry = new SphereGeometry(5);
+            this.light1.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry(5);
             this.light1.getOrCreateComponentByClass(Model);
             //初始化点光源
             var pointLight1 = new DirectionalLight();

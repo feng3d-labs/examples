@@ -37,39 +37,38 @@ module feng3d
         public set direction(value: Vector3D)
         {
             this._direction = value;
-            if(this._parentComponent)
+            if(this.gameObject)
             {
-                var tmpLookAt = this._parentComponent.getPosition();
+                var tmpLookAt = this.gameObject.getPosition();
                 tmpLookAt.incrementBy(this._direction);
-                this._parentComponent.lookAt(tmpLookAt);
-                this._parentComponent.sceneTransform.copyColumnTo(2, this._sceneDirection);
+                this.gameObject.lookAt(tmpLookAt);
+                this.gameObject.sceneTransform.copyColumnTo(2, this._sceneDirection);
                 this._sceneDirection.normalize();
             }
         }
 
-        public get parentComponent()
+        /**
+         * 处理被添加组件事件
+         */
+        protected onBeAddedComponent(event: ComponentEvent): void
         {
-            return this._parentComponent;
+            this.gameObject.addEventListener(Object3DEvent.SCENETRANSFORM_CHANGED,this.onScenetransformChanged,this);
+            var tmpLookAt = this.gameObject.getPosition();
+            tmpLookAt.incrementBy(this._direction);
+            this.gameObject.lookAt(tmpLookAt);
         }
-        public set parentComponent(value)
+
+        /**
+         * 处理被移除组件事件
+         */
+        protected onBeRemovedComponent(event: ComponentEvent): void
         {
-            if(this._parentComponent)
-            {
-                this._parentComponent.removeEventListener(Object3DEvent.SCENETRANSFORM_CHANGED,this.onScenetransformChanged,this);
-            }
-            this._parentComponent = value;
-            if(this._parentComponent)
-            {
-                this._parentComponent.addEventListener(Object3DEvent.SCENETRANSFORM_CHANGED,this.onScenetransformChanged,this);
-                var tmpLookAt = this._parentComponent.getPosition();
-                tmpLookAt.incrementBy(this._direction);
-                this._parentComponent.lookAt(tmpLookAt);
-            }
+            this.gameObject.removeEventListener(Object3DEvent.SCENETRANSFORM_CHANGED,this.onScenetransformChanged,this);
         }
-        
+
         protected onScenetransformChanged()
         {
-            this._parentComponent.sceneTransform.copyColumnTo(2, this._sceneDirection);
+            this.gameObject.sceneTransform.copyColumnTo(2, this._sceneDirection);
             this._sceneDirection.normalize();
         }
     }

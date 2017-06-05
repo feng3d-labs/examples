@@ -10,8 +10,7 @@ module feng3d
         /**
          * 父组件,所属3d对象
          */
-        public parentComponent: GameObject;
-        protected _parentComponent: GameObject;
+        public gameObject: GameObject;
 
         /**
          * 构建3D对象组件
@@ -30,7 +29,7 @@ module feng3d
             var result = super.dispatchEvent(event);
             if (result)
             {
-                this.parentComponent && this.parentComponent.dispatchEvent(event);
+                this.gameObject && this.gameObject.dispatchEvent(event);
             }
             return result;
         }

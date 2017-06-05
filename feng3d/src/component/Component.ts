@@ -7,10 +7,24 @@ module feng3d
 	 */
     export class Component extends EventDispatcher
     {
+        // private m_cachedTransform
+        // public get transform()
+        // {
+        //     if (this.m_cachedTransform == null)
+        //     {
+        //         this.m_cachedTransform = this.internalGetTransform();
+        //     }
+        //     return this.m_cachedTransform;
+        // }
+
         /**
-         * 父组件
+         * 游戏对象
          */
-        protected _parentComponent: Component;
+        public gameObject: GameObject;
+        // public get gameObject()
+        // {
+        //     return this.internalGetGameObject();
+        // }
 
 		/**
 		 * 组件列表
@@ -48,19 +62,6 @@ module feng3d
             this.addEventListener(ComponentEvent.ADDED_COMPONENT, this._onAddedComponent, this, Number.MAX_VALUE);
             //以最低优先级监听组件被删除，清空父组件
             this.addEventListener(ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
-        }
-
-        /**
-         * 父组件
-         */
-        public get parentComponent(): Component
-        {
-            return this._parentComponent;
-        }
-
-        public set parentComponent(value)
-        {
-            this._parentComponent = value;
         }
 
 		/**
@@ -341,7 +342,7 @@ module feng3d
         protected getBubbleTargets(event: Event = null): IEventDispatcher[]
         {
             var bubbleTargets = super.getBubbleTargets(event);
-            bubbleTargets.push(this._parentComponent);
+            bubbleTargets.push(this.gameObject);
             return bubbleTargets;
         }
 
@@ -354,10 +355,10 @@ module feng3d
          */
         private _onAddedComponent(event: ComponentEvent): void
         {
-            var data: { container: Component, child: Component } = event.data;
+            var data: { container: GameObject, child: Component } = event.data;
             if (data.child == this)
             {
-                this.parentComponent = data.container;
+                this.gameObject = data.container;
                 this.onBeAddedComponent(event);
             }
         }
@@ -367,11 +368,11 @@ module feng3d
          */
         private _onRemovedComponent(event: ComponentEvent): void
         {
-            var data: { container: Component, child: Component } = event.data;
+            var data: { container: GameObject, child: Component } = event.data;
             if (event.data.child == this)
             {
                 this.onBeRemovedComponent(event);
-                this.parentComponent = null;
+                this.gameObject = null;
             }
         }
     }

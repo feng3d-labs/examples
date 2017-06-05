@@ -115,7 +115,7 @@ module feng3d
             var components = this.getComponentsByType(ParticleComponent);
             components.forEach(element =>
             {
-                element.setRenderState(this.particleGlobal, this.parentComponent, renderContext);
+                element.setRenderState(this.particleGlobal, this.gameObject, renderContext);
             });
 
             this.update(this.particleGlobal, renderData);

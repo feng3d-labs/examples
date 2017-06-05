@@ -44,9 +44,9 @@ module feng3d
 
         protected drawRenderables(renderContext: RenderContext, meshRenderer: Model)
         {
-            if (meshRenderer.parentComponent.mouseEnabled)
+            if (meshRenderer.gameObject.mouseEnabled)
             {
-                var object = meshRenderer.parentComponent;
+                var object = meshRenderer.gameObject;
                 this.objects.push(object);
                 object.renderData.uniforms.u_objectID = this.objects.length - 1;
                 super.drawRenderables(renderContext, meshRenderer);

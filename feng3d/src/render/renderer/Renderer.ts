@@ -23,7 +23,7 @@ module feng3d
 
         protected drawRenderables(renderContext: RenderContext, meshRenderer: Model)
         {
-            var object3D = meshRenderer.parentComponent;
+            var object3D = meshRenderer.gameObject;
             //更新数据
             object3D.updateRender(renderContext);
             var gl = renderContext.gl;

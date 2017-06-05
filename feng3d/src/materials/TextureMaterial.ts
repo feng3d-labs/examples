@@ -16,7 +16,7 @@ module feng3d
         }
         public set texture(value)
         {
-            if(this._texture == value)
+            if (this._texture == value)
                 return;
             this._texture = value;
             this.invalidateRenderData();

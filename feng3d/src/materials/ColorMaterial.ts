@@ -15,7 +15,7 @@ module feng3d
         }
         public set color(value)
         {
-            if(this._color == value)
+            if (this._color == value)
                 return;
             this._color = value;
             this.invalidateRenderData();

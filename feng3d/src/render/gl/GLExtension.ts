@@ -22,7 +22,7 @@ module feng3d
             for (var key in gl)
             {
                 var element = gl[key];
-                if (typeof element == "number")
+                if (typeof element == "number" && GL[key] == undefined)
                 {
                     GL[key] = element;
                 }

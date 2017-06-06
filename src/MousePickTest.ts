@@ -25,7 +25,7 @@ namespace feng3d
 
         init()
         {
-            
+
             this.view3D = new View3D();
             var scene3D = this.view3D.scene;
 
@@ -60,7 +60,7 @@ namespace feng3d
         onMouseClick(event: Event)
         {
             var object3D: Object3D = <Object3D>event.target;
-            var material = object3D.getComponentByType(MeshRenderer).material = new ColorMaterial();
+            var material = object3D.getComponent(MeshRenderer).material = new ColorMaterial();
             material.color.fromUnit(Math.random() * (1 << 24));
         }
     }

@@ -40,7 +40,7 @@ namespace feng3d
             this._bounds.addEventListener(Event.CHANGE, this.onBoundsChange, this);
 
             //
-            this.uniformData.u_modelMatrix = UniformData.getUniformData(this.sceneTransform);
+            this.uniformData.u_modelMatrix = UniformData.getUniformData(this.localToWorldMatrix);
         }
 
         /**
@@ -50,7 +50,7 @@ namespace feng3d
         {
             if (this.isBillboard)
             {
-                var parentInverseSceneTransform = (this.parent && this.parent.inverseSceneTransform) || new Matrix3D();
+                var parentInverseSceneTransform = (this.parent && this.parent.worldToLocalMatrix) || new Matrix3D();
                 var cameraPos = parentInverseSceneTransform.transformVector(renderContext.camera.sceneTransform.position);
                 var yAxis = parentInverseSceneTransform.deltaTransformVector(Vector3D.Y_AXIS);
                 this.lookAt(cameraPos, yAxis);
@@ -58,9 +58,9 @@ namespace feng3d
             if (this.holdSize)
             {
                 var depthScale = this.getDepthScale(renderContext);
-                var vec = this.sceneTransform.decompose();
+                var vec = this.localToWorldMatrix.decompose();
                 vec[2].setTo(depthScale, depthScale, depthScale);
-                this.sceneTransform.recompose(vec);
+                this.localToWorldMatrix.recompose(vec);
             }
             if (!renderData.uniforms.u_modelMatrix)
                 renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
@@ -202,8 +202,8 @@ namespace feng3d
             //转换到当前实体坐标系空间
             var localRay: Ray3D = this.pickingCollisionVO.localRay;
 
-            this.inverseSceneTransform.transformVector(ray3D.position, localRay.position);
-            this.inverseSceneTransform.deltaTransformVector(ray3D.direction, localRay.direction);
+            this.worldToLocalMatrix.transformVector(ray3D.position, localRay.position);
+            this.worldToLocalMatrix.deltaTransformVector(ray3D.direction, localRay.direction);
 
             //检测射线与边界的碰撞
             var rayEntryDistance: number = this.bounds.rayIntersection(localRay, this.pickingCollisionVO.localNormal);
@@ -234,7 +234,7 @@ namespace feng3d
 		 */
         private updateWorldBounds()
         {
-            this._worldBounds.transformFrom(this.bounds, this.sceneTransform);
+            this._worldBounds.transformFrom(this.bounds, this.localToWorldMatrix);
             this._worldBoundsInvalid = false;
         }
 

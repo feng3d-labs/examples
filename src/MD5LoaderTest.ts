@@ -66,7 +66,7 @@ namespace feng3d
             var material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = imageUrl;
 
-            for (var i = 0; i < object3D.transform.numChildren; i++)
+            for (var i = 0; i < object3D.transform.childCount; i++)
             {
                 var child = object3D.transform.getChildAt(i);
                 var model = child.getComponent(MeshRenderer);

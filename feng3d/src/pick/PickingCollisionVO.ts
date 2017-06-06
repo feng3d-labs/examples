@@ -70,7 +70,7 @@ namespace feng3d
 		 */
 		public get scenePosition(): Vector3D
 		{
-			return this.firstEntity.transform.sceneTransform.transformVector(this.localPosition);
+			return this.firstEntity.transform.localToWorldMatrix.transformVector(this.localPosition);
 		}
 	}
 }

@@ -20,7 +20,6 @@ namespace feng3d
 
         init()
         {
-            
             this.view3D = new View3D();
             var scene3D = this.view3D.scene;
 
@@ -29,13 +28,12 @@ namespace feng3d
             {
                 var json = JSON.parse(loader.content);
                 var scene: Scene3D = serialization.readObject(json);
-                for (var i = 0; i < scene.numChildren; i++)
+                for (var i = 0; i < scene.childCount; i++)
                 {
                     scene3D.addChild(scene.getChildAt(i));
                 }
             }, this);
             loader.loadText("resources/scene/scene.json");
         }
-
     }
 }

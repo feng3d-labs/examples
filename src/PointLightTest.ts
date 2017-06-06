@@ -85,7 +85,7 @@ namespace feng3d
 
         private clearObjects()
         {
-            for (var i = this.scene.numChildren - 1; i >= 0; i--)
+            for (var i = this.scene.childCount - 1; i >= 0; i--)
             {
                 this.scene.removeChildAt(i);
             }

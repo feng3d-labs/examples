@@ -84,12 +84,12 @@ namespace feng3d
 
         public get inverseSceneTransform()
         {
-            return this.gameObject ? this.gameObject.transform.inverseSceneTransform : new Matrix3D();
+            return this.gameObject ? this.gameObject.transform.worldToLocalMatrix : new Matrix3D();
         }
 
         public get sceneTransform()
         {
-            return this.gameObject ? this.gameObject.transform.sceneTransform : new Matrix3D();
+            return this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();
         }
 
         /**
@@ -150,7 +150,7 @@ namespace feng3d
         {
             //
             renderData.uniforms.u_viewProjection = this.viewProjection;
-            var globalMatrix3d = this.gameObject ? this.gameObject.transform.sceneTransform : new Matrix3D();
+            var globalMatrix3d = this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();
             renderData.uniforms.u_cameraMatrix = globalMatrix3d;
             //
             renderData.uniforms.u_skyBoxSize = this._lens.far / Math.sqrt(3);

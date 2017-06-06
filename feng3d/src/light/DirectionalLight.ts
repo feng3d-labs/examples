@@ -50,7 +50,7 @@ namespace feng3d
                 var tmpLookAt = this.gameObject.transform.getPosition();
                 tmpLookAt.incrementBy(this._direction);
                 this.gameObject.transform.lookAt(tmpLookAt);
-                this.gameObject.transform.sceneTransform.copyColumnTo(2, this._sceneDirection);
+                this.gameObject.transform.localToWorldMatrix.copyColumnTo(2, this._sceneDirection);
                 this._sceneDirection.normalize();
             }
         }
@@ -76,7 +76,7 @@ namespace feng3d
 
         protected onScenetransformChanged()
         {
-            this.gameObject.transform.sceneTransform.copyColumnTo(2, this._sceneDirection);
+            this.gameObject.transform.localToWorldMatrix.copyColumnTo(2, this._sceneDirection);
             this._sceneDirection.normalize();
         }
     }

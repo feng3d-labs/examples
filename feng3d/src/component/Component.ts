@@ -1,5 +1,16 @@
 namespace feng3d
 {
+    export class ComponentMap
+    {
+        private static _instance: ComponentMap;
+        public static get instance()
+        {
+            return this._instance = this._instance || new ComponentMap();
+        }
+
+        "camera" = Camera;
+        "meshFilter" = MeshFilter;
+    }
 
 	/**
 	 * 组件容器（集合）
@@ -64,22 +75,6 @@ namespace feng3d
             this.addEventListener(ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
         }
 
-		/**
-		 * 子组件个数
-		 */
-        public get numComponents(): number
-        {
-            return this.components_.length;
-        }
-
-        /**
-         * 获取组件列表，无法通过返回数组对该组件进行子组件增删等操作
-         */
-        public get components()
-        {
-            return this.components_.concat();
-        }
-
         /**
          * 获取组件在容器的索引位置
          * @param component			查询的组件
@@ -91,17 +86,6 @@ namespace feng3d
 
             var index: number = this.components_.indexOf(component);
             return index;
-        }
-
-        /**
-         * 获取指定位置索引的子组件
-         * @param index			位置索引
-         * @return				子组件
-         */
-        public getComponentAt(index: number): Component
-        {
-            debuger && assert(index < this.numComponents, "给出索引超出范围");
-            return this.components_[index];
         }
 
         /**

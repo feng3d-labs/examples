@@ -48,10 +48,7 @@ namespace feng3d
         {
             this.components_.forEach(element =>
             {
-                if (element instanceof RenderDataHolder)
-                {
-                    element.collectRenderDataHolder(renderAtomic);
-                }
+                element.collectRenderDataHolder(renderAtomic);
             });
         }
 
@@ -69,18 +66,51 @@ namespace feng3d
         }
 
 		/**
-		 * 添加组件
-		 * @param component 被添加组件
+		 * 子组件个数
 		 */
-        public addComponent(component: Component): void
+        public get numComponents(): number
         {
+            return this.components_.length;
+        }
+
+        /**
+         * 获取指定位置索引的子组件
+         * @param index			位置索引
+         * @return				子组件
+         */
+        public getComponentAt(index: number): Component
+        {
+            debuger && assert(index < this.numComponents, "给出索引超出范围");
+            return this.components_[index];
+        }
+
+		/**
+		 * 添加组件
+         * Adds a component class named className to the game object.
+		 * @param param 被添加组件
+		 */
+        public addComponent<T extends Component, K extends keyof ComponentMap>(param: T | (new () => T) | K): T
+        {
+            var component: T;
+            if (param instanceof Component)
+            {
+                component = param;
+            } else if (param instanceof String)
+            {
+                var cls = ComponentMap.instance[param];
+                component = <any>(new cls());
+            }
+            else
+            {
+                component = new param();
+            }
             if (this.hasComponent(component))
             {
                 this.setComponentIndex(component, this.components_.length - 1);
                 return;
             }
-
             this.addComponentAt(component, this.components_.length);
+            return component;
         }
 
 		/**
@@ -88,7 +118,7 @@ namespace feng3d
 		 * @param component		被添加的组件
 		 * @param index			插入的位置
 		 */
-        public addComponentAt(component: Component, index: number): void
+        private addComponentAt(component: Component, index: number): void
         {
             debuger && assert(component != this, "子项与父项不能相同");
             debuger && assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");

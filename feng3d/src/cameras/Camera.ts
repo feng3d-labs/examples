@@ -27,6 +27,14 @@ namespace feng3d
 
             for (var i: number = 0; i < 6; ++i)
                 this._frustumPlanes[i] = new Plane3D();
+
+            //
+            this.renderData.uniforms.u_viewProjection = UniformData.getUniformData(this.viewProjection);
+            this.renderData.uniforms.u_cameraMatrix = UniformData.getUniformData(() =>
+            {
+                return this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();
+            });
+            this.renderData.uniforms.u_skyBoxSize = UniformData.getUniformData(() => { return this._lens.far / Math.sqrt(3); });
         }
 
 		/**
@@ -149,11 +157,10 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.uniforms.u_viewProjection = this.viewProjection;
-            var globalMatrix3d = this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();
-            renderData.uniforms.u_cameraMatrix = globalMatrix3d;
+            renderData.uniforms.u_viewProjection = this.renderData.uniforms.u_viewProjection;
+            renderData.uniforms.u_cameraMatrix = this.renderData.uniforms.u_cameraMatrix;
+            renderData.uniforms.u_skyBoxSize = this.renderData.uniforms.u_skyBoxSize;
             //
-            renderData.uniforms.u_skyBoxSize = this._lens.far / Math.sqrt(3);
             super.updateRenderData(renderContext, renderData);
         }
 

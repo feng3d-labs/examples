@@ -7,8 +7,6 @@ namespace feng3d
 	 */
     export class Transform extends ObjectContainer3D
     {
-        public uniformData = new UniformRenderData();
-
         protected _bounds: BoundingVolumeBase;
         protected _boundsInvalid: boolean = true;
 
@@ -40,7 +38,7 @@ namespace feng3d
             this._bounds.addEventListener(Event.CHANGE, this.onBoundsChange, this);
 
             //
-            this.uniformData.u_modelMatrix = UniformData.getUniformData(this.localToWorldMatrix);
+            this.renderData.uniforms.u_modelMatrix = UniformData.getUniformData(this.localToWorldMatrix);
         }
 
         /**
@@ -63,7 +61,7 @@ namespace feng3d
                 this.localToWorldMatrix.recompose(vec);
             }
             if (!renderData.uniforms.u_modelMatrix)
-                renderData.uniforms.u_modelMatrix = this.uniformData.u_modelMatrix;
+                renderData.uniforms.u_modelMatrix = this.renderData.uniforms.u_modelMatrix;
         }
 
         private getDepthScale(renderContext: RenderContext)

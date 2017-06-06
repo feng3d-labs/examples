@@ -1,19 +1,23 @@
 namespace feng3d
 {
-
     /**
 	 * 渲染数据拥有者
 	 * @author feng 2016-6-7
 	 */
     export class RenderDataHolder extends EventDispatcher
     {
+        public get renderData()
+        {
+            return this._renderData;
+        }
+        private _renderData: RenderAtomic;
         /**
          * 是否每次必须更新
          */
         public get updateEverytime() { return this._updateEverytime; }
         protected _updateEverytime = false;
 
-        private childrenRenderDataHolder:RenderDataHolder[] = [];
+        private childrenRenderDataHolder: RenderDataHolder[] = [];
 
 		/**
 		 * 创建GL数据缓冲
@@ -21,6 +25,7 @@ namespace feng3d
         constructor()
         {
             super();
+            this._renderData = new RenderAtomic();
         }
 
         /**
@@ -32,17 +37,17 @@ namespace feng3d
             renderAtomic.addRenderDataHolder(this);
         }
 
-        public addRenderDataHolder(renderDataHolder:RenderDataHolder)
+        public addRenderDataHolder(renderDataHolder: RenderDataHolder)
         {
-            if(this.childrenRenderDataHolder.indexOf(renderDataHolder) == -1)
+            if (this.childrenRenderDataHolder.indexOf(renderDataHolder) == -1)
                 this.childrenRenderDataHolder.push(renderDataHolder);
         }
 
-        public removeRenderDataHolder(renderDataHolder:RenderDataHolder)
+        public removeRenderDataHolder(renderDataHolder: RenderDataHolder)
         {
             var index = this.childrenRenderDataHolder.indexOf(renderDataHolder);
-            if(index != -1)
-                this.childrenRenderDataHolder.splice(index,1);
+            if (index != -1)
+                this.childrenRenderDataHolder.splice(index, 1);
         }
 
 		/**
@@ -58,7 +63,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            
+
         }
 
         protected invalidateRenderData()

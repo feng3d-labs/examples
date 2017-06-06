@@ -47,7 +47,7 @@ namespace feng3d
             {
                 var object = meshRenderer.gameObject;
                 this.objects.push(object);
-                object.renderData.uniforms.u_objectID = this.objects.length - 1;
+                object.renderData.uniforms.u_objectID = UniformData.getUniformData(this.objects.length - 1);
                 // super.drawRenderables(renderContext, meshRenderer);
             }
         }

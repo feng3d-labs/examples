@@ -36,7 +36,7 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.uniforms.s_skyboxTexture = this.texture;
+            renderData.uniforms.s_skyboxTexture = UniformData.getUniformData(this.texture);
             super.updateRenderData(renderContext, renderData);
         }
     }

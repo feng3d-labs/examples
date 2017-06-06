@@ -12,223 +12,223 @@ namespace feng3d
         /**
          * 世界投影矩阵
          */
-        u_viewProjection: Matrix3D;
+        u_viewProjection: UniformData<Matrix3D>;
         /**
          * 摄像机矩阵
          */
-        u_cameraMatrix: Matrix3D;
+        u_cameraMatrix: UniformData<Matrix3D>;
 
-        u_diffuseInput: Vector3D;
+        u_diffuseInput: UniformData<Vector3D>;
         /**
          * 透明阈值，用于透明检测
          */
-        u_alphaThreshold: number;
+        u_alphaThreshold: UniformData<number>;
         /**
          * 漫反射贴图
          */
-        s_texture: Texture2D;
+        s_texture: UniformData<Texture2D>;
         /**
          * 漫反射贴图
          */
-        s_diffuse: Texture2D;
+        s_diffuse: UniformData<Texture2D>;
         /**
          * 环境贴图
          */
-        s_ambient: Texture2D;
+        s_ambient: UniformData<Texture2D>;
         /**
          * 法线贴图
          */
-        s_normal: Texture2D;
+        s_normal: UniformData<Texture2D>;
         /**
          * 镜面反射光泽图
          */
-        s_specular: Texture2D;
+        s_specular: UniformData<Texture2D>;
         /**
          * 天空盒纹理
          */
-        s_skyboxTexture: TextureCube;
+        s_skyboxTexture: UniformData<TextureCube>;
         /**
          * 天空盒尺寸
          */
-        u_skyBoxSize: number;
+        u_skyBoxSize: UniformData<number>;
 
         /**
          * 地形混合贴图
          */
-        s_blendTexture: Texture2D;
+        s_blendTexture: UniformData<Texture2D>;
 
         /**
          * 地形块贴图1
          */
-        s_splatTexture1: Texture2D;
+        s_splatTexture1: UniformData<Texture2D>;
         /**
          * 地形块贴图2
          */
-        s_splatTexture2: Texture2D;
+        s_splatTexture2: UniformData<Texture2D>;
         /**
          * 地形块贴图3
          */
-        s_splatTexture3: Texture2D;
+        s_splatTexture3: UniformData<Texture2D>;
         /**
          * 地形块混合贴图
          */
-        s_splatMergeTexture: Texture2D;
+        s_splatMergeTexture: UniformData<Texture2D>;
         /**
          * 地形块重复次数
          */
-        u_splatRepeats: Vector3D;
+        u_splatRepeats: UniformData<Vector3D>;
         /**
          * 地形混合贴图尺寸
          */
-        u_splatMergeTextureSize: Point;
+        u_splatMergeTextureSize: UniformData<Point>;
         /**
          * 图片尺寸
          */
-        u_imageSize: Point;
+        u_imageSize: UniformData<Point>;
         /**
          * 地形块尺寸
          */
-        u_tileSize: Point;
+        u_tileSize: UniformData<Point>;
         /**
          * 地形块偏移
          */
-        u_tileOffset: Vector3D[];
+        u_tileOffset: UniformData<Vector3D[]>;
         /**
          * 最大lod
          */
-        u_maxLod: number;
+        u_maxLod: UniformData<number>;
         /**
          * uv与坐标比
          */
-        u_uvPositionScale: number;
+        u_uvPositionScale: UniformData<number>;
         /**
          * lod0时在贴图中的uv缩放偏移向量
          */
-        u_lod0vec: Vector3D;
+        u_lod0vec: UniformData<Vector3D>;
         /******************************************************/
         //                  点光源
         /******************************************************/
         /**
          * 点光源位置数组
          */
-        u_pointLightPositions: Vector3D[];
+        u_pointLightPositions: UniformData<Vector3D[]>;
         /**
          * 点光源颜色数组
          */
-        u_pointLightColors: Vector3D[];
+        u_pointLightColors: UniformData<Vector3D[]>;
         /**
          * 点光源光照强度数组
          */
-        u_pointLightIntensitys: number[];
+        u_pointLightIntensitys: UniformData<number[]>;
         /**
          * 点光源光照范围数组
          */
-        u_pointLightRanges: number[];
+        u_pointLightRanges: UniformData<number[]>;
         /******************************************************/
         //                  方向光源
         /******************************************************/
         /**
          * 方向光源方向数组
          */
-        u_directionalLightDirections: Vector3D[];
+        u_directionalLightDirections: UniformData<Vector3D[]>;
         /**
          * 方向光源颜色数组
          */
-        u_directionalLightColors: Vector3D[];
+        u_directionalLightColors: UniformData<Vector3D[]>;
         /**
          * 方向光源光照强度数组
          */
-        u_directionalLightIntensitys: number[];
+        u_directionalLightIntensitys: UniformData<number[]>;
 
         /**
          * 场景环境光
          */
-        u_sceneAmbientColor: Color;
+        u_sceneAmbientColor: UniformData<Color>;
         /**
          * 基本颜色
          */
-        u_diffuse: Color;
+        u_diffuse: UniformData<Color>;
         /**
          * 镜面反射颜色
          */
-        u_specular: Color;
+        u_specular: UniformData<Color>;
         /**
          * 环境颜色
          */
-        u_ambient: Color;
+        u_ambient: UniformData<Color>;
         /**
          * 高光系数
          */
-        u_glossiness: number;
+        u_glossiness: UniformData<number>;
 
         /**
          * 反射率
          */
-        u_reflectance: number;
+        u_reflectance: UniformData<number>;
 
         /**
          * 粗糙度
          */
-        u_roughness: number;
+        u_roughness: UniformData<number>;
 
         /**
          * 金属度
          */
-        u_metalic: number;
+        u_metalic: UniformData<number>;
 
         /**
          * 粒子时间
          */
-        u_particleTime: number;
+        u_particleTime: UniformData<number>;
 
         /**
          * 点大小
          */
-        u_PointSize: number;
+        u_PointSize: UniformData<number>;
 
         /**
          * 骨骼全局矩阵
          */
-        u_skeletonGlobalMatriices: Matrix3D[];
+        u_skeletonGlobalMatriices: UniformData<Matrix3D[]>;
 
         /**
          * 3D对象编号
          */
-        u_objectID: number;
+        u_objectID: UniformData<number>;
 
         /**
          * 雾颜色
          */
-        u_fogColor: Color;
+        u_fogColor: UniformData<Color>;
         /**
          * 雾最近距离
          */
-        u_fogMinDistance: number;
+        u_fogMinDistance: UniformData<number>;
         /**
          * 雾最远距离
          */
-        u_fogMaxDistance: number;
+        u_fogMaxDistance: UniformData<number>;
         /**
          * 雾浓度
          */
-        u_fogDensity: number;
+        u_fogDensity: UniformData<number>;
         /**
          * 雾模式
          */
-        u_fogMode: number;
+        u_fogMode: UniformData<number>;
 
         /**
          * 环境反射纹理
          */
-        s_envMap: TextureCube;
+        s_envMap: UniformData<TextureCube>;
 		/**
 		 * 反射率
 		 */
-        u_reflectivity: number;
+        u_reflectivity: UniformData<number>;
         /**
          * 单位深度映射到屏幕像素值
          */
-        u_scaleByDepth: number;
+        u_scaleByDepth: UniformData<number>;
 
         /**
          * 激活常量
@@ -246,6 +246,10 @@ namespace feng3d
                     {
                         uniformData = uniformData();
                     }
+                    if (uniformData instanceof UniformData)
+                    {
+                        uniformData = uniformData.data;
+                    }
                     //处理数组
                     for (var j = 0; j < activeInfo.size; j++)
                     {
@@ -260,12 +264,9 @@ namespace feng3d
                     }
                     if (uniformData instanceof UniformData)
                     {
-                        uniformData.setContext3DUniform(gl, activeInfo);
+                        uniformData = uniformData.data;
                     }
-                    else
-                    {
-                        this.setContext3DUniform(gl, activeInfo, uniformData);
-                    }
+                    this.setContext3DUniform(gl, activeInfo, uniformData);
                 }
             }
         }

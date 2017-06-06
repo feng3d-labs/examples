@@ -170,7 +170,7 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.uniforms.u_PointSize = this.pointSize;
+            renderData.uniforms.u_PointSize = UniformData.getUniformData(this.pointSize);
         }
 
         /**

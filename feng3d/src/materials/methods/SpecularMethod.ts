@@ -64,9 +64,9 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.s_specular = this.specularTexture;
-            renderData.uniforms.u_specular = this.specularColor;
-            renderData.uniforms.u_glossiness = this.glossiness;
+            renderData.uniforms.s_specular = UniformData.getUniformData(this.specularTexture);
+            renderData.uniforms.u_specular = UniformData.getUniformData(this.specularColor);
+            renderData.uniforms.u_glossiness = UniformData.getUniformData(this.glossiness);
             //
             super.updateRenderData(renderContext, renderData);
         }

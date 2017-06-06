@@ -62,11 +62,11 @@ namespace feng3d
             this._updateEverytime = true;
         }
 
-        private _animations:ParticleComponent[] = [];
+        private _animations: ParticleComponent[] = [];
 
-        public addAnimation(animation:ParticleComponent)
+        public addAnimation(animation: ParticleComponent)
         {
-            if(this._animations.indexOf(animation) == -1)
+            if (this._animations.indexOf(animation) == -1)
                 this._animations.push(animation);
         }
 
@@ -112,7 +112,7 @@ namespace feng3d
             }
 
             this.time = ((getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.uniforms.u_particleTime = this.time;
+            renderData.uniforms.u_particleTime = UniformData.getUniformData(() => this.time);
             renderData.instanceCount = this.numParticles;
 
             for (var attributeName in this._attributes)

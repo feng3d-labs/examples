@@ -86,11 +86,11 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.u_fogColor = this._fogColor;
-            renderData.uniforms.u_fogMinDistance = this._minDistance;
-            renderData.uniforms.u_fogMaxDistance = this._maxDistance;
-            renderData.uniforms.u_fogDensity = this._density;
-            renderData.uniforms.u_fogMode = this._mode;
+            renderData.uniforms.u_fogColor = UniformData.getUniformData(this._fogColor);
+            renderData.uniforms.u_fogMinDistance = UniformData.getUniformData(this._minDistance);
+            renderData.uniforms.u_fogMaxDistance = UniformData.getUniformData(this._maxDistance);
+            renderData.uniforms.u_fogDensity = UniformData.getUniformData(this._density);
+            renderData.uniforms.u_fogMode = UniformData.getUniformData(this._mode);
             //
             super.updateRenderData(renderContext, renderData);
         }

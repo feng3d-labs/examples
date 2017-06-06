@@ -1,5 +1,41 @@
 namespace feng3d
 {
+
+    export class ShaderCode extends EventDispatcher
+    {
+        /**
+         * 顶点渲染程序代码
+         */
+        public get vertexCode()
+        {
+            return this._vertexCode;
+        }
+        public set vertexCode(value)
+        {
+            if (this._vertexCode == value)
+                return;
+            this._vertexCode = value;
+            this.dispatchEvent(new Event(Event.CHANGE));
+        }
+        private _vertexCode: string;
+
+        /**
+         * 片段渲染程序代码
+         */
+        public get fragmentCode()
+        {
+            return this._fragmentCode;
+        }
+        public set fragmentCode(value)
+        {
+            if (this._fragmentCode == value)
+                return;
+            this._fragmentCode = value;
+            this.dispatchEvent(new Event(Event.CHANGE));
+        }
+        private _fragmentCode: string;
+    }
+
     export class ShaderRenderData
     {
         public uuid: string;

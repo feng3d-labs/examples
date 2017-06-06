@@ -33,10 +33,17 @@ namespace feng3d
             this.indexBuffer = indexBuffer;
         }
 
+        public setShaderCode(shaderCode: ShaderCode)
+        {
+            this.shaderCode = shaderCode;
+        }
+
         /**
          * 顶点索引缓冲
          */
         private indexBuffer: IndexRenderData;
+
+        private shaderCode: ShaderCode;
 
         /**
          * 渲染程序

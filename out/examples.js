@@ -5210,6 +5210,46 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var ShaderCode = (function (_super) {
+        __extends(ShaderCode, _super);
+        function ShaderCode() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Object.defineProperty(ShaderCode.prototype, "vertexCode", {
+            /**
+             * 顶点渲染程序代码
+             */
+            get: function () {
+                return this._vertexCode;
+            },
+            set: function (value) {
+                if (this._vertexCode == value)
+                    return;
+                this._vertexCode = value;
+                this.dispatchEvent(new feng3d.Event(feng3d.Event.CHANGE));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShaderCode.prototype, "fragmentCode", {
+            /**
+             * 片段渲染程序代码
+             */
+            get: function () {
+                return this._fragmentCode;
+            },
+            set: function (value) {
+                if (this._fragmentCode == value)
+                    return;
+                this._fragmentCode = value;
+                this.dispatchEvent(new feng3d.Event(feng3d.Event.CHANGE));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ShaderCode;
+    }(feng3d.EventDispatcher));
+    feng3d.ShaderCode = ShaderCode;
     var ShaderRenderData = (function () {
         function ShaderRenderData() {
             //
@@ -5399,6 +5439,9 @@ var feng3d;
         };
         RenderAtomic.prototype.setIndexBuffer = function (indexBuffer) {
             this.indexBuffer = indexBuffer;
+        };
+        RenderAtomic.prototype.setShaderCode = function (shaderCode) {
+            this.shaderCode = shaderCode;
         };
         RenderAtomic.prototype.invalidateShader = function () {
             this.shader.invalidate();

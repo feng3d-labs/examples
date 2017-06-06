@@ -5,33 +5,14 @@ namespace feng3d
         //------------------------------------------
         // Variables
         //------------------------------------------
+        public _ancestorsAllowMouseEnabled: boolean = false;
+        public _isRoot: boolean = false;
+
         public get childCount(): number
         {
             return this._children.length;
         }
-        
 
-        public _ancestorsAllowMouseEnabled: boolean = false;
-        public _isRoot: boolean = false;
-        protected _scene: Scene3D;
-        protected _parent: ObjectContainer3D;
-        protected _sceneTransform: Matrix3D = new Matrix3D();
-        protected _sceneTransformDirty: boolean = true;
-        protected _mouseEnabled: boolean = false;
-        private _sceneTransformChanged: Object3DEvent;
-        private _scenechanged: Object3DEvent;
-        private _children: ObjectContainer3D[] = [];
-        private _mouseChildren: boolean = true;
-        private _oldScene: Scene3D;
-        private _inverseSceneTransform: Matrix3D = new Matrix3D();
-        private _inverseSceneTransformDirty: boolean = true;
-        private _scenePosition: Vector3D = new Vector3D();
-        private _scenePositionDirty: boolean = true;
-        private _explicitVisibility: boolean = true;
-        private _implicitVisibility: boolean = true;
-        private _listenToSceneTransformChanged: boolean = false;
-        private _listenToSceneChanged: boolean = false;
-        protected _ignoreTransform: boolean = false;
         public get ignoreTransform(): boolean
         {
             return this._ignoreTransform;
@@ -41,7 +22,7 @@ namespace feng3d
         {
             this._ignoreTransform = value;
             this._sceneTransformDirty = <any>!value;
-            this._inverseSceneTransformDirty = <any>!value;
+            this._worldToLocalMatrixDirty = <any>!value;
             this._scenePositionDirty = <any>!value;
             if (<any>!value)
             {
@@ -55,64 +36,6 @@ namespace feng3d
             return this._implicitVisibility && this._explicitVisibility;
         }
 
-        public setParent(value: ObjectContainer3D)
-        {
-            this._parent = value;
-            this.updateMouseChildren();
-            if (value == null)
-            {
-                this.scene = null;
-                return;
-            }
-            this.notifySceneTransformChange();
-            this.notifySceneChange();
-        }
-
-        private notifySceneTransformChange()
-        {
-            if (this._sceneTransformDirty || this._ignoreTransform)
-                return;
-            this.invalidateSceneTransform();
-            var i: number = 0;
-            var len: number = this._children.length;
-            while (i < len)
-                this._children[i++].notifySceneTransformChange();
-            if (this._listenToSceneTransformChanged)
-            {
-                if (<any>!this._sceneTransformChanged)
-                    this._sceneTransformChanged = new Object3DEvent(Object3DEvent.SCENETRANSFORM_CHANGED, this);
-                this.dispatchEvent(this._sceneTransformChanged);
-            }
-        }
-
-        private notifySceneChange()
-        {
-            this.notifySceneTransformChange();
-            var i: number = 0;
-            var len: number = this._children.length;
-            while (i < len)
-                this._children[i++].notifySceneChange();
-            if (this._listenToSceneChanged)
-            {
-                if (<any>!this._scenechanged)
-                    this._scenechanged = new Object3DEvent(Object3DEvent.SCENE_CHANGED, this);
-                this.dispatchEvent(this._scenechanged);
-            }
-        }
-
-        protected updateMouseChildren()
-        {
-            if (this._parent && <any>!this._parent._isRoot)
-            {
-                this._ancestorsAllowMouseEnabled = this.parent._ancestorsAllowMouseEnabled && this._parent.mouseChildren;
-            }
-            else
-                this._ancestorsAllowMouseEnabled = this.mouseChildren;
-            var len: number = this._children.length;
-            for (var i: number = 0; i < len; ++i)
-                this._children[i].updateMouseChildren();
-        }
-
         public get mouseEnabled(): boolean
         {
             return this._mouseEnabled;
@@ -123,32 +46,6 @@ namespace feng3d
             this._mouseEnabled = value;
             this.updateMouseChildren();
         }
-
-        public invalidateTransform()
-        {
-            super.invalidateTransform();
-            this.notifySceneTransformChange();
-        }
-
-        protected invalidateSceneTransform()
-        {
-            this._sceneTransformDirty = <any>!this._ignoreTransform;
-            this._inverseSceneTransformDirty = <any>!this._ignoreTransform;
-            this._scenePositionDirty = <any>!this._ignoreTransform;
-        }
-
-        protected updateSceneTransform()
-        {
-            if (this._parent && <any>!this._parent._isRoot)
-            {
-                this._sceneTransform.copyFrom(this._parent.sceneTransform);
-                this._sceneTransform.prepend(this.matrix3d);
-            }
-            else
-                this._sceneTransform.copyFrom(this.matrix3d);
-            this._sceneTransformDirty = false;
-        }
-
         public get mouseChildren(): boolean
         {
             return this._mouseChildren;
@@ -177,7 +74,7 @@ namespace feng3d
         {
             if (this._scenePositionDirty)
             {
-                this.sceneTransform.copyColumnTo(3, this._scenePosition);
+                this.localToWorldMatrix.copyColumnTo(3, this._scenePosition);
                 this._scenePositionDirty = false;
             }
             return this._scenePosition;
@@ -279,17 +176,20 @@ namespace feng3d
             return max;
         }
 
-        public get sceneTransform(): Matrix3D
+        /**
+         * Matrix that transforms a point from local space into world space.
+         */
+        public get localToWorldMatrix(): Matrix3D
         {
             if (this._sceneTransformDirty)
-                this.updateSceneTransform();
+                this.updateLocalToWorldMatrix();
             return this._sceneTransform;
         }
 
-        public set sceneTransform(value: Matrix3D)
+        public set localToWorldMatrix(value: Matrix3D)
         {
             value = value.clone();
-            this._parent && value.append(this._parent.inverseSceneTransform);
+            this._parent && value.append(this._parent.worldToLocalMatrix);
             this.matrix3d = value;
         }
 
@@ -317,15 +217,18 @@ namespace feng3d
                 this._oldScene.dispatchEvent(new Scene3DEvent(Scene3DEvent.REMOVED_FROM_SCENE, this));
         }
 
-        public get inverseSceneTransform(): Matrix3D
+        /**
+         * Matrix that transforms a point from world space into local space (Read Only).
+         */
+        public get worldToLocalMatrix(): Matrix3D
         {
-            if (this._inverseSceneTransformDirty)
+            if (this._worldToLocalMatrixDirty)
             {
-                this._inverseSceneTransform.copyFrom(this.sceneTransform);
-                this._inverseSceneTransform.invert();
-                this._inverseSceneTransformDirty = false;
+                this._worldToLocalMatrix.copyFrom(this.localToWorldMatrix);
+                this._worldToLocalMatrix.invert();
+                this._worldToLocalMatrixDirty = false;
             }
-            return this._inverseSceneTransform;
+            return this._worldToLocalMatrix;
         }
 
         public get parent(): ObjectContainer3D
@@ -333,6 +236,9 @@ namespace feng3d
             return this._parent;
         }
 
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
         public constructor()
         {
             super();
@@ -412,11 +318,17 @@ namespace feng3d
             this.removeChildInternal(index, child);
         }
 
-        private removeChildInternal(childIndex: number, child: ObjectContainer3D)
+        public setParent(value: ObjectContainer3D)
         {
-            childIndex = childIndex;
-            this._children.splice(childIndex, 1);
-            child.setParent(null);
+            this._parent = value;
+            this.updateMouseChildren();
+            if (value == null)
+            {
+                this.scene = null;
+                return;
+            }
+            this.notifySceneTransformChange();
+            this.notifySceneChange();
         }
 
         public getChildAt(index: number): ObjectContainer3D
@@ -515,5 +427,114 @@ namespace feng3d
             return this._children.concat();
         }
 
+        public invalidateTransform()
+        {
+            super.invalidateTransform();
+            this.notifySceneTransformChange();
+        }
+
+        //------------------------------------------
+        // Protected Properties
+        //------------------------------------------
+        protected _scene: Scene3D;
+        protected _parent: ObjectContainer3D;
+        protected _sceneTransform: Matrix3D = new Matrix3D();
+        protected _sceneTransformDirty: boolean = true;
+        protected _mouseEnabled: boolean = false;
+        protected _ignoreTransform: boolean = false;
+
+        //------------------------------------------
+        // Protected Functions
+        //------------------------------------------
+        protected updateMouseChildren()
+        {
+            if (this._parent && <any>!this._parent._isRoot)
+            {
+                this._ancestorsAllowMouseEnabled = this.parent._ancestorsAllowMouseEnabled && this._parent.mouseChildren;
+            }
+            else
+                this._ancestorsAllowMouseEnabled = this.mouseChildren;
+            var len: number = this._children.length;
+            for (var i: number = 0; i < len; ++i)
+                this._children[i].updateMouseChildren();
+        }
+
+        protected invalidateSceneTransform()
+        {
+            this._sceneTransformDirty = <any>!this._ignoreTransform;
+            this._worldToLocalMatrixDirty = <any>!this._ignoreTransform;
+            this._scenePositionDirty = <any>!this._ignoreTransform;
+        }
+
+        protected updateLocalToWorldMatrix()
+        {
+            if (this._parent && <any>!this._parent._isRoot)
+            {
+                this._sceneTransform.copyFrom(this._parent.localToWorldMatrix);
+                this._sceneTransform.prepend(this.matrix3d);
+            }
+            else
+                this._sceneTransform.copyFrom(this.matrix3d);
+            this._sceneTransformDirty = false;
+        }
+
+        //------------------------------------------
+        // Private Properties
+        //------------------------------------------
+        private _sceneTransformChanged: Object3DEvent;
+        private _scenechanged: Object3DEvent;
+        private _children: ObjectContainer3D[] = [];
+        private _mouseChildren: boolean = true;
+        private _oldScene: Scene3D;
+        private _worldToLocalMatrix: Matrix3D = new Matrix3D();
+        private _worldToLocalMatrixDirty: boolean = true;
+        private _scenePosition: Vector3D = new Vector3D();
+        private _scenePositionDirty: boolean = true;
+        private _explicitVisibility: boolean = true;
+        private _implicitVisibility: boolean = true;
+        private _listenToSceneTransformChanged: boolean = false;
+        private _listenToSceneChanged: boolean = false;
+
+        //------------------------------------------
+        // Private Methods
+        //------------------------------------------
+        private notifySceneTransformChange()
+        {
+            if (this._sceneTransformDirty || this._ignoreTransform)
+                return;
+            this.invalidateSceneTransform();
+            var i: number = 0;
+            var len: number = this._children.length;
+            while (i < len)
+                this._children[i++].notifySceneTransformChange();
+            if (this._listenToSceneTransformChanged)
+            {
+                if (<any>!this._sceneTransformChanged)
+                    this._sceneTransformChanged = new Object3DEvent(Object3DEvent.SCENETRANSFORM_CHANGED, this);
+                this.dispatchEvent(this._sceneTransformChanged);
+            }
+        }
+
+        private notifySceneChange()
+        {
+            this.notifySceneTransformChange();
+            var i: number = 0;
+            var len: number = this._children.length;
+            while (i < len)
+                this._children[i++].notifySceneChange();
+            if (this._listenToSceneChanged)
+            {
+                if (<any>!this._scenechanged)
+                    this._scenechanged = new Object3DEvent(Object3DEvent.SCENE_CHANGED, this);
+                this.dispatchEvent(this._scenechanged);
+            }
+        }
+
+        private removeChildInternal(childIndex: number, child: ObjectContainer3D)
+        {
+            childIndex = childIndex;
+            this._children.splice(childIndex, 1);
+            child.setParent(null);
+        }
     }
 }

@@ -219,7 +219,7 @@ namespace feng3d
                         this._pos["x"] = this._lookAtObject.transform.scenePosition["x"];
                         this._pos["y"] = this._lookAtObject.transform.scenePosition["y"];
                         this._pos["z"] = this._lookAtObject.transform.scenePosition["z"];
-                        this._targetObject.transform.parent.inverseSceneTransform.transformVector(this._pos, this._pos);
+                        this._targetObject.transform.parent.worldToLocalMatrix.transformVector(this._pos, this._pos);
                     }
                     else
                     {

@@ -118,7 +118,7 @@ namespace feng3d
          * 设置渲染程序
          * @param shaderName 渲染程序名称
          */
-        public setShader(shaderName:string)
+        public setShader(shaderName: string)
         {
             this.vertexCode = ShaderLib.getShaderCode(shaderName + ".vertex");
             this.fragmentCode = ShaderLib.getShaderCode(shaderName + ".fragment")
@@ -150,7 +150,7 @@ namespace feng3d
                 this.invalidateRenderData();
             }
         }
-        
+
         /**
          * 收集渲染数据拥有者
          * @param renderAtomic 渲染原子
@@ -163,14 +163,14 @@ namespace feng3d
             }
             super.collectRenderDataHolder(renderAtomic);
         }
-        
+
         /**
 		 * 更新渲染数据
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.uniforms.u_PointSize = UniformData.getUniformData(this.pointSize);
+            renderData.addUniform("u_PointSize", UniformData.getUniformData(this.pointSize));
         }
 
         /**

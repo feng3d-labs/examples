@@ -49,8 +49,6 @@ namespace feng3d
             super();
 
             this.skeleton = skeleton;
-            //
-            this.renderData.uniforms.u_skeletonGlobalMatriices = UniformData.getUniformData(() => this.globalMatrices);
         }
 
 		/**
@@ -82,7 +80,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.u_skeletonGlobalMatriices = this.renderData.uniforms.u_skeletonGlobalMatriices;
+            renderData.addUniform("u_skeletonGlobalMatriices", UniformData.getUniformData(() => this.globalMatrices));
             super.updateRenderData(renderContext, renderData);
         }
 

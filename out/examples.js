@@ -5312,16 +5312,8 @@ var feng3d;
             var _this = _super.call(this) || this;
             _this._updateEverytime = false;
             _this.childrenRenderDataHolder = [];
-            _this._renderData = new feng3d.RenderAtomic();
             return _this;
         }
-        Object.defineProperty(RenderDataHolder.prototype, "renderData", {
-            get: function () {
-                return this._renderData;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(RenderDataHolder.prototype, "updateEverytime", {
             /**
              * 是否每次必须更新
@@ -5916,10 +5908,10 @@ var feng3d;
                 renderAtomic.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED = 1;
                 renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
-                renderAtomic.uniforms.u_pointLightPositions = feng3d.UniformData.getUniformData(pointLightPositions);
-                renderAtomic.uniforms.u_pointLightColors = feng3d.UniformData.getUniformData(pointLightColors);
-                renderAtomic.uniforms.u_pointLightIntensitys = feng3d.UniformData.getUniformData(pointLightIntensitys);
-                renderAtomic.uniforms.u_pointLightRanges = feng3d.UniformData.getUniformData(pointLightRanges);
+                renderAtomic.addUniform("u_pointLightPositions", feng3d.UniformData.getUniformData(pointLightPositions));
+                renderAtomic.addUniform("u_pointLightColors", feng3d.UniformData.getUniformData(pointLightColors));
+                renderAtomic.addUniform("u_pointLightIntensitys", feng3d.UniformData.getUniformData(pointLightIntensitys));
+                renderAtomic.addUniform("u_pointLightRanges", feng3d.UniformData.getUniformData(pointLightRanges));
             }
             var directionalLightDirections = [];
             var directionalLightColors = [];
@@ -5936,12 +5928,12 @@ var feng3d;
                 renderAtomic.shader.shaderMacro.addMacros.V_NORMAL_NEED = 1;
                 renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
-                renderAtomic.uniforms.u_directionalLightDirections = feng3d.UniformData.getUniformData(directionalLightDirections);
-                renderAtomic.uniforms.u_directionalLightColors = feng3d.UniformData.getUniformData(directionalLightColors);
-                renderAtomic.uniforms.u_directionalLightIntensitys = feng3d.UniformData.getUniformData(directionalLightIntensitys);
+                renderAtomic.addUniform("u_directionalLightDirections", feng3d.UniformData.getUniformData(directionalLightDirections));
+                renderAtomic.addUniform("u_directionalLightColors", feng3d.UniformData.getUniformData(directionalLightColors));
+                renderAtomic.addUniform("u_directionalLightIntensitys", feng3d.UniformData.getUniformData(directionalLightIntensitys));
             }
-            renderAtomic.uniforms.u_sceneAmbientColor = feng3d.UniformData.getUniformData(this.scene3d.ambientColor);
-            renderAtomic.uniforms.u_scaleByDepth = feng3d.UniformData.getUniformData(this.view3D.getScaleByDepth(1));
+            renderAtomic.addUniform("u_sceneAmbientColor", feng3d.UniformData.getUniformData(this.scene3d.ambientColor));
+            renderAtomic.addUniform("u_scaleByDepth", feng3d.UniformData.getUniformData(this.view3D.getScaleByDepth(1)));
         };
         return RenderContext;
     }());
@@ -6765,7 +6757,7 @@ var feng3d;
             if (meshRenderer.gameObject.transform.mouseEnabled) {
                 var object = meshRenderer.gameObject;
                 this.objects.push(object);
-                object.renderData.uniforms.u_objectID = feng3d.UniformData.getUniformData(this.objects.length - 1);
+                object.renderData.addUniform("u_objectID", feng3d.UniformData.getUniformData(this.objects.length - 1));
                 // super.drawRenderables(renderContext, meshRenderer);
             }
         };
@@ -8061,8 +8053,6 @@ var feng3d;
             _this._bounds = _this.getDefaultBoundingVolume();
             _this._worldBounds = _this.getDefaultBoundingVolume();
             _this._bounds.addEventListener(feng3d.Event.CHANGE, _this.onBoundsChange, _this);
-            //
-            _this.renderData.uniforms.u_modelMatrix = feng3d.UniformData.getUniformData(_this.localToWorldMatrix);
             return _this;
         }
         /**
@@ -8081,8 +8071,8 @@ var feng3d;
                 vec[2].setTo(depthScale, depthScale, depthScale);
                 this.localToWorldMatrix.recompose(vec);
             }
-            if (!renderData.uniforms.u_modelMatrix)
-                renderData.uniforms.u_modelMatrix = this.renderData.uniforms.u_modelMatrix;
+            //
+            renderData.addUniform("u_modelMatrix", feng3d.UniformData.getUniformData(this.localToWorldMatrix));
         };
         Transform.prototype.getDepthScale = function (renderContext) {
             var cameraTranform = renderContext.camera.sceneTransform;
@@ -10258,12 +10248,6 @@ var feng3d;
             _this._frustumPlanes = [];
             for (var i = 0; i < 6; ++i)
                 _this._frustumPlanes[i] = new feng3d.Plane3D();
-            //
-            _this.renderData.uniforms.u_viewProjection = feng3d.UniformData.getUniformData(_this.viewProjection);
-            _this.renderData.uniforms.u_cameraMatrix = feng3d.UniformData.getUniformData(function () {
-                return _this.gameObject ? _this.gameObject.transform.localToWorldMatrix : new feng3d.Matrix3D();
-            });
-            _this.renderData.uniforms.u_skyBoxSize = feng3d.UniformData.getUniformData(function () { return _this._lens.far / Math.sqrt(3); });
             return _this;
         }
         /**
@@ -10372,10 +10356,13 @@ var feng3d;
          * 更新渲染数据
          */
         Camera.prototype.updateRenderData = function (renderContext, renderData) {
+            var _this = this;
             //
-            renderData.uniforms.u_viewProjection = this.renderData.uniforms.u_viewProjection;
-            renderData.uniforms.u_cameraMatrix = this.renderData.uniforms.u_cameraMatrix;
-            renderData.uniforms.u_skyBoxSize = this.renderData.uniforms.u_skyBoxSize;
+            renderData.addUniform("u_viewProjection", feng3d.UniformData.getUniformData(this.viewProjection));
+            renderData.addUniform("u_cameraMatrix", feng3d.UniformData.getUniformData(function () {
+                return _this.gameObject ? _this.gameObject.transform.localToWorldMatrix : new feng3d.Matrix3D();
+            }));
+            renderData.addUniform("u_skyBoxSize", feng3d.UniformData.getUniformData(function () { return _this._lens.far / Math.sqrt(3); }));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13308,7 +13295,7 @@ var feng3d;
          */
         Material.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.uniforms.u_PointSize = feng3d.UniformData.getUniformData(this.pointSize);
+            renderData.addUniform("u_PointSize", feng3d.UniformData.getUniformData(this.pointSize));
         };
         /**
          * 更新渲染数据
@@ -13385,7 +13372,7 @@ var feng3d;
          * 更新渲染数据
          */
         ColorMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.u_diffuseInput = feng3d.UniformData.getUniformData(this.color);
+            renderData.addUniform("u_diffuseInput", feng3d.UniformData.getUniformData(this.color));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return ColorMaterial;
@@ -13473,7 +13460,7 @@ var feng3d;
          * 更新渲染数据
          */
         TextureMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.s_texture = feng3d.UniformData.getUniformData(this.texture);
+            renderData.addUniform("s_texture", feng3d.UniformData.getUniformData(this.texture));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return TextureMaterial;
@@ -13515,7 +13502,7 @@ var feng3d;
          */
         SkyBoxMaterial.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.uniforms.s_skyboxTexture = feng3d.UniformData.getUniformData(this.texture);
+            renderData.addUniform("s_skyboxTexture", feng3d.UniformData.getUniformData(this.texture));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return SkyBoxMaterial;
@@ -13724,9 +13711,9 @@ var feng3d;
          * 更新渲染数据
          */
         DiffuseMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.u_diffuse = feng3d.UniformData.getUniformData(this.color);
-            renderData.uniforms.s_diffuse = feng3d.UniformData.getUniformData(this.difuseTexture);
-            renderData.uniforms.u_alphaThreshold = feng3d.UniformData.getUniformData(this.alphaThreshold);
+            renderData.addUniform("u_diffuse", feng3d.UniformData.getUniformData(this.color));
+            renderData.addUniform("s_diffuse", feng3d.UniformData.getUniformData(this.difuseTexture));
+            renderData.addUniform("u_alphaThreshold", feng3d.UniformData.getUniformData(this.alphaThreshold));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13787,7 +13774,7 @@ var feng3d;
          * 更新渲染数据
          */
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.s_normal = feng3d.UniformData.getUniformData(this.normalTexture);
+            renderData.addUniform("s_normal", feng3d.UniformData.getUniformData(this.normalTexture));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13866,9 +13853,9 @@ var feng3d;
          * 更新渲染数据
          */
         SpecularMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.s_specular = feng3d.UniformData.getUniformData(this.specularTexture);
-            renderData.uniforms.u_specular = feng3d.UniformData.getUniformData(this.specularColor);
-            renderData.uniforms.u_glossiness = feng3d.UniformData.getUniformData(this.glossiness);
+            renderData.addUniform("s_specular", feng3d.UniformData.getUniformData(this.specularTexture));
+            renderData.addUniform("u_specular", feng3d.UniformData.getUniformData(this.specularColor));
+            renderData.addUniform("u_glossiness", feng3d.UniformData.getUniformData(this.glossiness));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13938,8 +13925,8 @@ var feng3d;
          * 更新渲染数据
          */
         AmbientMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.u_ambient = feng3d.UniformData.getUniformData(this._color);
-            renderData.uniforms.s_ambient = feng3d.UniformData.getUniformData(this._ambientTexture);
+            renderData.addUniform("u_ambient", feng3d.UniformData.getUniformData(this._color));
+            renderData.addUniform("s_ambient", feng3d.UniformData.getUniformData(this._ambientTexture));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14050,11 +14037,12 @@ var feng3d;
          * 更新渲染数据
          */
         FogMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.u_fogColor = feng3d.UniformData.getUniformData(this._fogColor);
-            renderData.uniforms.u_fogMinDistance = feng3d.UniformData.getUniformData(this._minDistance);
-            renderData.uniforms.u_fogMaxDistance = feng3d.UniformData.getUniformData(this._maxDistance);
-            renderData.uniforms.u_fogDensity = feng3d.UniformData.getUniformData(this._density);
-            renderData.uniforms.u_fogMode = feng3d.UniformData.getUniformData(this._mode);
+            renderData.addUniform;
+            renderData.addUniform("u_fogColor", feng3d.UniformData.getUniformData(this._fogColor));
+            renderData.addUniform("u_fogMinDistance", feng3d.UniformData.getUniformData(this._minDistance));
+            renderData.addUniform("u_fogMaxDistance", feng3d.UniformData.getUniformData(this._maxDistance));
+            renderData.addUniform("u_fogDensity", feng3d.UniformData.getUniformData(this._density));
+            renderData.addUniform("u_fogMode", feng3d.UniformData.getUniformData(this._mode));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14136,8 +14124,8 @@ var feng3d;
          * 更新渲染数据
          */
         EnvMapMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.s_envMap = feng3d.UniformData.getUniformData(this._cubeTexture);
-            renderData.uniforms.u_reflectivity = feng3d.UniformData.getUniformData(this._reflectivity);
+            renderData.addUniform("s_envMap", feng3d.UniformData.getUniformData(this._cubeTexture));
+            renderData.addUniform("u_reflectivity", feng3d.UniformData.getUniformData(this._reflectivity));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -15579,11 +15567,11 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.s_blendTexture = feng3d.UniformData.getUniformData(this.blendTexture);
-            renderData.uniforms.s_splatTexture1 = feng3d.UniformData.getUniformData(this.splatTexture1);
-            renderData.uniforms.s_splatTexture2 = feng3d.UniformData.getUniformData(this.splatTexture2);
-            renderData.uniforms.s_splatTexture3 = feng3d.UniformData.getUniformData(this.splatTexture3);
-            renderData.uniforms.u_splatRepeats = feng3d.UniformData.getUniformData(this.splatRepeats);
+            renderData.addUniform("s_blendTexture", feng3d.UniformData.getUniformData(this.blendTexture));
+            renderData.addUniform("s_splatTexture1", feng3d.UniformData.getUniformData(this.splatTexture1));
+            renderData.addUniform("s_splatTexture2", feng3d.UniformData.getUniformData(this.splatTexture2));
+            renderData.addUniform("s_splatTexture3", feng3d.UniformData.getUniformData(this.splatTexture3));
+            renderData.addUniform("u_splatRepeats", feng3d.UniformData.getUniformData(this.splatRepeats));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**
@@ -15672,21 +15660,21 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMergeMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.s_blendTexture = feng3d.UniformData.getUniformData(this.blendTexture);
-            renderData.uniforms.s_splatMergeTexture = feng3d.UniformData.getUniformData(this.splatMergeTexture);
-            renderData.uniforms.u_splatMergeTextureSize = feng3d.UniformData.getUniformData(this.splatMergeTexture.size);
-            renderData.uniforms.u_splatRepeats = feng3d.UniformData.getUniformData(this.splatRepeats);
+            renderData.addUniform("s_blendTexture", feng3d.UniformData.getUniformData(this.blendTexture));
+            renderData.addUniform("s_splatMergeTexture", feng3d.UniformData.getUniformData(this.splatMergeTexture));
+            renderData.addUniform("u_splatMergeTextureSize", feng3d.UniformData.getUniformData(this.splatMergeTexture.size));
+            renderData.addUniform("u_splatRepeats", feng3d.UniformData.getUniformData(this.splatRepeats));
             //
-            renderData.uniforms.u_imageSize = feng3d.UniformData.getUniformData(new feng3d.Point(2048.0, 1024.0));
-            renderData.uniforms.u_tileSize = feng3d.UniformData.getUniformData(new feng3d.Point(512.0, 512.0));
-            renderData.uniforms.u_maxLod = feng3d.UniformData.getUniformData(7);
-            renderData.uniforms.u_uvPositionScale = feng3d.UniformData.getUniformData(0.001);
-            renderData.uniforms.u_tileOffset = feng3d.UniformData.getUniformData([
+            renderData.addUniform("u_imageSize", feng3d.UniformData.getUniformData(new feng3d.Point(2048.0, 1024.0)));
+            renderData.addUniform("u_tileSize", feng3d.UniformData.getUniformData(new feng3d.Point(512.0, 512.0)));
+            renderData.addUniform("u_maxLod", feng3d.UniformData.getUniformData(7));
+            renderData.addUniform("u_uvPositionScale", feng3d.UniformData.getUniformData(0.001));
+            renderData.addUniform("u_tileOffset", feng3d.UniformData.getUniformData([
                 new feng3d.Vector3D(0.5, 0.5, 0.0, 0.0),
                 new feng3d.Vector3D(0.5, 0.5, 0.5, 0.0),
                 new feng3d.Vector3D(0.5, 0.5, 0.0, 0.5),
-            ]);
-            renderData.uniforms.u_lod0vec = feng3d.UniformData.getUniformData(new feng3d.Vector3D(0.5, 1, 0, 0));
+            ]));
+            renderData.addUniform("u_lod0vec", feng3d.UniformData.getUniformData(new feng3d.Vector3D(0.5, 1, 0, 0)));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**
@@ -16007,7 +15995,7 @@ var feng3d;
                 this._isDirty = false;
             }
             this.time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.uniforms.u_particleTime = feng3d.UniformData.getUniformData(function () { return _this.time; });
+            renderData.addUniform("u_particleTime", feng3d.UniformData.getUniformData(function () { return _this.time; }));
             renderData.instanceCount = this.numParticles;
             for (var attributeName in this._attributes) {
                 renderData.addAttribute(attributeName, this._attributes[attributeName]);
@@ -16031,7 +16019,7 @@ var feng3d;
         ParticleAnimator.prototype.update = function (particleGlobal, renderData) {
             //更新常量数据
             for (var uniform in particleGlobal) {
-                renderData.uniforms["u_particle_" + uniform] = particleGlobal[uniform];
+                renderData.addUniform(("u_particle_" + uniform), particleGlobal[uniform]);
             }
             //更新宏定义
             var boolMacros = renderData.shader.shaderMacro.boolMacros;
@@ -16754,8 +16742,6 @@ var feng3d;
             _this._globalMatrices = [];
             _this._globalPropertiesDirty = true;
             _this.skeleton = skeleton;
-            //
-            _this.renderData.uniforms.u_skeletonGlobalMatriices = feng3d.UniformData.getUniformData(function () { return _this.globalMatrices; });
             return _this;
         }
         Object.defineProperty(SkeletonAnimator.prototype, "skeleton", {
@@ -16809,7 +16795,8 @@ var feng3d;
          * 更新渲染数据
          */
         SkeletonAnimator.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.uniforms.u_skeletonGlobalMatriices = this.renderData.uniforms.u_skeletonGlobalMatriices;
+            var _this = this;
+            renderData.addUniform("u_skeletonGlobalMatriices", feng3d.UniformData.getUniformData(function () { return _this.globalMatrices; }));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**

@@ -54,8 +54,8 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.u_ambient = UniformData.getUniformData(this._color);
-            renderData.uniforms.s_ambient = UniformData.getUniformData(this._ambientTexture);
+            renderData.addUniform("u_ambient", UniformData.getUniformData(this._color));
+            renderData.addUniform("s_ambient", UniformData.getUniformData(this._ambientTexture));
             //
             super.updateRenderData(renderContext, renderData);
         }

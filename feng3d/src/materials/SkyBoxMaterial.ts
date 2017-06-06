@@ -13,7 +13,7 @@ namespace feng3d
         }
         public set texture(value)
         {
-            if(this._texture == value)
+            if (this._texture == value)
                 return;
             this._texture = value;
             this.invalidateRenderData();
@@ -36,7 +36,7 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.uniforms.s_skyboxTexture = UniformData.getUniformData(this.texture);
+            renderData.addUniform("s_skyboxTexture", UniformData.getUniformData(this.texture));
             super.updateRenderData(renderContext, renderData);
         }
     }

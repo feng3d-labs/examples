@@ -59,10 +59,10 @@ namespace feng3d
                 renderAtomic.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED = 1;
                 renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
-                renderAtomic.uniforms.u_pointLightPositions = UniformData.getUniformData(pointLightPositions);
-                renderAtomic.uniforms.u_pointLightColors = UniformData.getUniformData(pointLightColors);
-                renderAtomic.uniforms.u_pointLightIntensitys = UniformData.getUniformData(pointLightIntensitys);
-                renderAtomic.uniforms.u_pointLightRanges = UniformData.getUniformData(pointLightRanges);
+                renderAtomic.addUniform("u_pointLightPositions", UniformData.getUniformData(pointLightPositions));
+                renderAtomic.addUniform("u_pointLightColors", UniformData.getUniformData(pointLightColors));
+                renderAtomic.addUniform("u_pointLightIntensitys", UniformData.getUniformData(pointLightIntensitys));
+                renderAtomic.addUniform("u_pointLightRanges", UniformData.getUniformData(pointLightRanges));
             }
             var directionalLightDirections: Vector3D[] = [];
             var directionalLightColors: Vector3D[] = [];
@@ -81,13 +81,13 @@ namespace feng3d
                 renderAtomic.shader.shaderMacro.addMacros.V_NORMAL_NEED = 1;
                 renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
                 //
-                renderAtomic.uniforms.u_directionalLightDirections = UniformData.getUniformData(directionalLightDirections);
-                renderAtomic.uniforms.u_directionalLightColors = UniformData.getUniformData(directionalLightColors);
-                renderAtomic.uniforms.u_directionalLightIntensitys = UniformData.getUniformData(directionalLightIntensitys);
+                renderAtomic.addUniform("u_directionalLightDirections", UniformData.getUniformData(directionalLightDirections));
+                renderAtomic.addUniform("u_directionalLightColors", UniformData.getUniformData(directionalLightColors));
+                renderAtomic.addUniform("u_directionalLightIntensitys", UniformData.getUniformData(directionalLightIntensitys));
             }
 
-            renderAtomic.uniforms.u_sceneAmbientColor = UniformData.getUniformData(this.scene3d.ambientColor);
-            renderAtomic.uniforms.u_scaleByDepth = UniformData.getUniformData(this.view3D.getScaleByDepth(1));
+            renderAtomic.addUniform("u_sceneAmbientColor", UniformData.getUniformData(this.scene3d.ambientColor));
+            renderAtomic.addUniform("u_scaleByDepth", UniformData.getUniformData(this.view3D.getScaleByDepth(1)));
         }
     }
 }

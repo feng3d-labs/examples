@@ -36,9 +36,6 @@ namespace feng3d
             this._bounds = this.getDefaultBoundingVolume();
             this._worldBounds = this.getDefaultBoundingVolume();
             this._bounds.addEventListener(Event.CHANGE, this.onBoundsChange, this);
-
-            //
-            this.renderData.uniforms.u_modelMatrix = UniformData.getUniformData(this.localToWorldMatrix);
         }
 
         /**
@@ -60,8 +57,8 @@ namespace feng3d
                 vec[2].setTo(depthScale, depthScale, depthScale);
                 this.localToWorldMatrix.recompose(vec);
             }
-            if (!renderData.uniforms.u_modelMatrix)
-                renderData.uniforms.u_modelMatrix = this.renderData.uniforms.u_modelMatrix;
+            //
+            renderData.addUniform("u_modelMatrix", UniformData.getUniformData(this.localToWorldMatrix));
         }
 
         private getDepthScale(renderContext: RenderContext)

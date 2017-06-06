@@ -47,7 +47,7 @@ namespace feng3d
 
         public set reflectivity(value: number)
         {
-            if(this._reflectivity == value)
+            if (this._reflectivity == value)
                 return;
             this._reflectivity = value;
             this.invalidateRenderData();
@@ -58,8 +58,8 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.uniforms.s_envMap = UniformData.getUniformData(this._cubeTexture);
-            renderData.uniforms.u_reflectivity = UniformData.getUniformData(this._reflectivity);
+            renderData.addUniform("s_envMap", UniformData.getUniformData(this._cubeTexture));
+            renderData.addUniform("u_reflectivity", UniformData.getUniformData(this._reflectivity));
 
             //
             super.updateRenderData(renderContext, renderData);

@@ -6,11 +6,6 @@ namespace feng3d
 	 */
     export class RenderDataHolder extends EventDispatcher
     {
-        public get renderData()
-        {
-            return this._renderData;
-        }
-        private _renderData: RenderAtomic;
         /**
          * 是否每次必须更新
          */
@@ -25,7 +20,6 @@ namespace feng3d
         constructor()
         {
             super();
-            this._renderData = new RenderAtomic();
         }
 
         /**

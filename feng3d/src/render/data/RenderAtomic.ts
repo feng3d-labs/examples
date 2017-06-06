@@ -46,7 +46,7 @@ namespace feng3d
         /**
          * Uniform渲染数据
          */
-        public uniforms: UniformRenderData = <any>{};
+        private uniforms: UniformRenderData = <any>{};
 
         /**
          * 渲染实例数量

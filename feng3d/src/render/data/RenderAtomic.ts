@@ -28,10 +28,15 @@ namespace feng3d
             return uniformData;
         }
 
+        public setIndexBuffer(indexBuffer: IndexRenderData)
+        {
+            this.indexBuffer = indexBuffer;
+        }
+
         /**
          * 顶点索引缓冲
          */
-        public indexBuffer: IndexRenderData;
+        private indexBuffer: IndexRenderData;
 
         /**
          * 渲染程序
@@ -151,6 +156,27 @@ namespace feng3d
                     break;
                 default:
                     throw `无法识别的uniform类型 ${activeInfo.name} ${data}`;
+            }
+        }
+
+        /**
+         */
+        public dodraw(gl: GL)
+        {
+            var instanceCount = ~~this.instanceCount;
+            var indexBuffer = this.indexBuffer;
+            var shaderParams = this.shader.shaderParams;
+
+            indexBuffer.active(gl);
+
+            var renderMode = shaderParams.renderMode;
+            if (instanceCount > 1)
+            {
+                gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
+            }
+            else
+            {
+                gl.drawElements(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
             }
         }
     }

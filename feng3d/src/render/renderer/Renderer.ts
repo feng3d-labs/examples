@@ -52,21 +52,21 @@ namespace feng3d
             var gl = renderContext.gl;
             // try
             // {
-                //绘制
-                var material = this.material;
-                if (material.enableBlend)
-                {
-                    //
-                    gl.enable(GL.BLEND);
-                    gl.blendEquation(material.blendEquation);
-                    gl.depthMask(false);
-                    gl.blendFunc(material.sfactor, material.dfactor);
-                } else
-                {
-                    gl.disable(GL.BLEND);
-                    gl.depthMask(true);
-                }
-                this.drawObject3D(gl, object3D.renderData);            //
+            //绘制
+            var material = this.material;
+            if (material.enableBlend)
+            {
+                //
+                gl.enable(GL.BLEND);
+                gl.blendEquation(material.blendEquation);
+                gl.depthMask(false);
+                gl.blendFunc(material.sfactor, material.dfactor);
+            } else
+            {
+                gl.disable(GL.BLEND);
+                gl.depthMask(true);
+            }
+            this.drawObject3D(gl, object3D.renderData);            //
             // } catch (error)
             // {
             //     console.log(error);
@@ -85,7 +85,7 @@ namespace feng3d
             //
             renderAtomic.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.activeUniforms(gl, shaderProgram.uniforms);
-            dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
+            renderAtomic.dodraw(gl);
         }
 
         /**
@@ -96,25 +96,6 @@ namespace feng3d
         {
             this.material.collectRenderDataHolder(renderAtomic);
             super.collectRenderDataHolder(renderAtomic);
-        }
-    }
-
-    /**
-     */
-    function dodraw(gl: GL, shaderParams: ShaderParams, indexBuffer: IndexRenderData, instanceCount: number = 1)
-    {
-        instanceCount = ~~instanceCount;
-
-        indexBuffer.active(gl);
-
-        var renderMode = shaderParams.renderMode;
-        if (instanceCount > 1)
-        {
-            gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
-        }
-        else
-        {
-            gl.drawElements(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
         }
     }
 }

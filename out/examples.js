@@ -5397,6 +5397,9 @@ var feng3d;
             var uniformData = this.attributes[name];
             return uniformData;
         };
+        RenderAtomic.prototype.setIndexBuffer = function (indexBuffer) {
+            this.indexBuffer = indexBuffer;
+        };
         RenderAtomic.prototype.invalidateShader = function () {
             this.shader.invalidate();
         };
@@ -5477,6 +5480,21 @@ var feng3d;
                     break;
                 default:
                     throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + activeInfo.name + " " + data;
+            }
+        };
+        /**
+         */
+        RenderAtomic.prototype.dodraw = function (gl) {
+            var instanceCount = ~~this.instanceCount;
+            var indexBuffer = this.indexBuffer;
+            var shaderParams = this.shader.shaderParams;
+            indexBuffer.active(gl);
+            var renderMode = shaderParams.renderMode;
+            if (instanceCount > 1) {
+                gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
+            }
+            else {
+                gl.drawElements(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
             }
         };
         return RenderAtomic;
@@ -6649,7 +6667,7 @@ var feng3d;
             //
             renderAtomic.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.activeUniforms(gl, shaderProgram.uniforms);
-            dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
+            renderAtomic.dodraw(gl);
         };
         /**
          * 收集渲染数据拥有者
@@ -6664,20 +6682,6 @@ var feng3d;
     }(feng3d.Component));
     Renderer.renderers = [];
     feng3d.Renderer = Renderer;
-    /**
-     */
-    function dodraw(gl, shaderParams, indexBuffer, instanceCount) {
-        if (instanceCount === void 0) { instanceCount = 1; }
-        instanceCount = ~~instanceCount;
-        indexBuffer.active(gl);
-        var renderMode = shaderParams.renderMode;
-        if (instanceCount > 1) {
-            gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
-        }
-        else {
-            gl.drawElements(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
-        }
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

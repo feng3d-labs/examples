@@ -76,19 +76,6 @@ namespace feng3d
         }
 
         /**
-         * 获取组件在容器的索引位置
-         * @param component			查询的组件
-         * @return				    组件在容器的索引位置
-         */
-        public getComponentIndex(component: Component): number
-        {
-            debuger && assert(this.components_.indexOf(component) != -1, "组件不在容器中");
-
-            var index: number = this.components_.indexOf(component);
-            return index;
-        }
-
-        /**
          * Returns the component of Type type if the game object has one attached, null if it doesn't.
          * @param type				The type of Component to retrieve.
          * @return                  返回指定类型组件
@@ -111,16 +98,6 @@ namespace feng3d
             });
 
             return filterResult;
-        }
-
-        /**
-         * 判断是否拥有组件
-         * @param com	被检测的组件
-         * @return		true：拥有该组件；false：不拥有该组件。
-         */
-        public hasComponent(com: Component): boolean
-        {
-            return this.components_.indexOf(com) != -1;
         }
 
         /**

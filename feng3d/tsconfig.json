@@ -12,8 +12,6 @@
         "typings/webglExt.d.ts",
         //基础工具
         "src/debug/assert.ts",
-        "src/core/HideFlags.ts",
-        "src/core/Object.ts",
         "src/utils/ClassUtils.ts",
         "src/utils/ObjectUtils.ts",
         "src/utils/VersionUtils.ts",
@@ -80,6 +78,9 @@
         "src/render/RenderContext.ts",
         "src/render/shader/ShaderMacro.ts",
         "src/render/shader/ShaderLib.ts",
+        //
+        "src/core/HideFlags.ts",
+        "src/core/Feng3dObject.ts",
         //组件模块
         "src/component/event/ComponentEvent.ts",
         "src/component/Component.ts",

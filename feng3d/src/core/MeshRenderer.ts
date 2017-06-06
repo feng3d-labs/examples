@@ -28,7 +28,7 @@ namespace feng3d
                 var frustumPlanes = renderContext.camera.frustumPlanes;
                 var gameObject = this.gameObject;
                 var isIn = gameObject.transform.worldBounds.isInFrustum(frustumPlanes, 6);
-                var model = gameObject.getComponentByType(MeshRenderer);
+                var model = gameObject.getComponent(MeshRenderer);
                 if (gameObject.getOrCreateComponentByClass(MeshFilter).mesh instanceof SkyBoxGeometry)
                 {
                     isIn = true;

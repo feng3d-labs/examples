@@ -4,7 +4,7 @@ namespace feng3d
     /**
      * Base class for all entities in feng3d scenes.
      */
-    export class GameObject extends Component
+    export class GameObject extends Feng3dObject
     {
         public static get gameObjects()
         {
@@ -113,6 +113,16 @@ namespace feng3d
         }
 
         /**
+         * 判断是否拥有组件
+         * @param com	被检测的组件
+         * @return		true：拥有该组件；false：不拥有该组件。
+         */
+        public hasComponent(com: Component): boolean
+        {
+            return this.components_.indexOf(com) != -1;
+        }
+        
+        /**
          * Returns the component of Type type if the game object has one attached, null if it doesn't.
          * @param type				类定义
          * @return                  返回指定类型组件
@@ -151,7 +161,6 @@ namespace feng3d
 		 */
         private addComponentAt(component: Component, index: number): void
         {
-            debuger && assert(component != this, "子项与父项不能相同");
             debuger && assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
 
             if (this.hasComponent(component))
@@ -213,6 +222,19 @@ namespace feng3d
             this.removeComponentAt(index);
         }
 
+        /**
+         * 获取组件在容器的索引位置
+         * @param component			查询的组件
+         * @return				    组件在容器的索引位置
+         */
+        public getComponentIndex(component: Component): number
+        {
+            debuger && assert(this.components_.indexOf(component) != -1, "组件不在容器中");
+
+            var index: number = this.components_.indexOf(component);
+            return index;
+        }
+        
         /**
          * 移除组件
          * @param index		要删除的 Component 的子索引。

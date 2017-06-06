@@ -69,7 +69,7 @@ namespace feng3d
             for (var i = 0; i < object3D.transform.numChildren; i++)
             {
                 var child = object3D.transform.getChildAt(i);
-                var model = child.getComponentByType(MeshRenderer);
+                var model = child.getComponent(MeshRenderer);
                 if (model)
                 {
                     model.material = material;

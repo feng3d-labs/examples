@@ -21,132 +21,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * Bit mask that controls object destruction, saving and visibility in inspectors.
-     */
-    (function (HideFlags) {
-        /**
-         * A normal, visible object. This is the default.
-         */
-        HideFlags[HideFlags["None"] = 0] = "None";
-        /**
-         * The object will not appear in the hierarchy.
-         */
-        HideFlags[HideFlags["HideInHierarchy"] = 1] = "HideInHierarchy";
-        /**
-         * It is not possible to view it in the inspector.
-         */
-        HideFlags[HideFlags["HideInInspector"] = 2] = "HideInInspector";
-        /**
-         * The object will not be saved to the scene in the editor.
-         */
-        HideFlags[HideFlags["DontSaveInEditor"] = 4] = "DontSaveInEditor";
-        /**
-         * The object is not be editable in the inspector.
-         */
-        HideFlags[HideFlags["NotEditable"] = 8] = "NotEditable";
-        /**
-         * The object will not be saved when building a player.
-         */
-        HideFlags[HideFlags["DontSaveInBuild"] = 16] = "DontSaveInBuild";
-        /**
-         * The object will not be unloaded by Resources.UnloadUnusedAssets.
-         */
-        HideFlags[HideFlags["DontUnloadUnusedAsset"] = 32] = "DontUnloadUnusedAsset";
-        /**
-         * The object will not be saved to the scene. It will not be destroyed when a new scene is loaded. It is a shortcut for HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.DontUnloadUnusedAsset.
-         */
-        HideFlags[HideFlags["DontSave"] = 52] = "DontSave";
-        /**
-         * A combination of not shown in the hierarchy, not saved to to scenes and not unloaded by The object will not be unloaded by Resources.UnloadUnusedAssets.
-         */
-        HideFlags[HideFlags["HideAndDontSave"] = 61] = "HideAndDontSave";
-    })(feng3d.HideFlags || (feng3d.HideFlags = {}));
-    var HideFlags = feng3d.HideFlags;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * Base class for all objects feng3d can reference.
-     *
-     * Any public variable you make that derives from Object gets shown in the inspector as a drop target, allowing you to set the value from the GUI.
-     */
-    var Object = (function () {
-        //------------------------------------------
-        // Public Functions
-        //------------------------------------------
-        function Object() {
-            this._uuid = Math.generateUUID();
-        }
-        /**
-         * Returns the instance id of the object.
-         */
-        Object.prototype.getInstanceID = function () {
-            return this._uuid;
-        };
-        /**
-         * Returns the name of the game object.
-         */
-        Object.prototype.toString = function () {
-            return this.name;
-        };
-        //------------------------------------------
-        // Static Functions
-        //------------------------------------------
-        /**
-         * Removes a gameobject, component or asset.
-         * @param obj	The object to destroy.
-         * @param t	    The optional amount of time to delay before destroying the object.
-         */
-        Object.destroy = function (obj, t) {
-            if (t === void 0) { t = 0; }
-        };
-        /**
-         * Destroys the object obj immediately.
-         * @param obj	                    Object to be destroyed.
-         * @param allowDestroyingAssets	    Set to true to allow assets to be destoyed.
-         */
-        Object.destroyImmediate = function (obj, allowDestroyingAssets) {
-            if (allowDestroyingAssets === void 0) { allowDestroyingAssets = false; }
-        };
-        /**
-         * Makes the object target not be destroyed automatically when loading a new scene.
-         */
-        Object.dontDestroyOnLoad = function (target) {
-        };
-        /**
-         * Returns the first active loaded object of Type type.
-         */
-        Object.findObjectOfType = function (type) {
-            return null;
-        };
-        /**
-         * Returns a list of all active loaded objects of Type type.
-         */
-        Object.findObjectsOfType = function (type) {
-            return null;
-        };
-        /**
-         * Returns a copy of the object original.
-         * @param original	An existing object that you want to make a copy of.
-         * @param position	Position for the new object(default Vector3.zero).
-         * @param rotation	Orientation of the new object(default Quaternion.identity).
-         * @param parent	The transform the object will be parented to.
-         * @param worldPositionStays	If when assigning the parent the original world position should be maintained.
-         */
-        Object.instantiate = function (original, position, rotation, parent, worldPositionStays) {
-            if (position === void 0) { position = null; }
-            if (rotation === void 0) { rotation = null; }
-            if (parent === void 0) { parent = null; }
-            if (worldPositionStays === void 0) { worldPositionStays = false; }
-            return null;
-        };
-        return Object;
-    }());
-    feng3d.Object = Object;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 类工具
      * @author feng 2017-02-15
      */
@@ -157,13 +31,13 @@ var feng3d;
          * 判断a对象是否为b类型
          */
         ClassUtils.is = function (a, b) {
-            var prototype = a.prototype ? a.prototype : feng3d.Object.getPrototypeOf(a);
+            var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
             while (prototype != null) {
                 //类型==自身原型的构造函数
                 if (prototype.constructor == b)
                     return true;
                 //父类就是原型的原型构造函数
-                prototype = feng3d.Object.getPrototypeOf(prototype);
+                prototype = Object.getPrototypeOf(prototype);
             }
             return false;
         };
@@ -193,7 +67,7 @@ var feng3d;
                 return null;
             }
             var className = null;
-            var prototype = value.prototype ? value.prototype : feng3d.Object.getPrototypeOf(value);
+            var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
             if (prototype.hasOwnProperty(_CLASS_KEY)) {
                 className = prototype[_CLASS_KEY];
             }
@@ -232,8 +106,8 @@ var feng3d;
             if (value == null) {
                 return null;
             }
-            var prototype = value.prototype ? value.prototype : feng3d.Object.getPrototypeOf(value);
-            var superProto = feng3d.Object.getPrototypeOf(prototype);
+            var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
+            var superProto = Object.getPrototypeOf(prototype);
             if (!superProto) {
                 return null;
             }
@@ -274,7 +148,7 @@ var feng3d;
          */
         ClassUtils.registerClass = function (classDefinition, className) {
             var prototype = classDefinition.prototype;
-            feng3d.Object.defineProperty(prototype, _CLASS_KEY, {
+            Object.defineProperty(prototype, _CLASS_KEY, {
                 value: className,
                 enumerable: false,
                 writable: true
@@ -346,7 +220,7 @@ var feng3d;
         ObjectUtils.clone = function (source) {
             if (feng3d.ClassUtils.isBaseType(source))
                 return source;
-            var prototype = source["prototype"] ? source["prototype"] : feng3d.Object.getPrototypeOf(source);
+            var prototype = source["prototype"] ? source["prototype"] : Object.getPrototypeOf(source);
             var target = new prototype.constructor();
             for (var attribute in source) {
                 target[attribute] = source[attribute];
@@ -357,7 +231,7 @@ var feng3d;
          * （浅）拷贝数据
          */
         ObjectUtils.copy = function (target, source) {
-            var keys = feng3d.Object.keys(source);
+            var keys = Object.keys(source);
             keys.forEach(function (element) {
                 target[element] = source[element];
             });
@@ -366,7 +240,7 @@ var feng3d;
          * 深拷贝数据
          */
         ObjectUtils.deepCopy = function (target, source) {
-            var keys = feng3d.Object.keys(source);
+            var keys = Object.keys(source);
             keys.forEach(function (element) {
                 if (!source[element] || feng3d.ClassUtils.isBaseType(source[element])) {
                     target[element] = source[element];
@@ -423,7 +297,7 @@ var feng3d;
         VersionUtils.upgradeVersion = function (object) {
             this.assertObject(object);
             if (!object.hasOwnProperty(_versionKey)) {
-                feng3d.Object.defineProperty(object, _versionKey, {
+                Object.defineProperty(object, _versionKey, {
                     value: 0,
                     enumerable: false,
                     writable: true
@@ -525,11 +399,11 @@ var feng3d;
      * @returns
      */
     function getPropertyDescriptor(host, property) {
-        var data = feng3d.Object.getOwnPropertyDescriptor(host, property);
+        var data = Object.getOwnPropertyDescriptor(host, property);
         if (data) {
             return data;
         }
-        var prototype = feng3d.Object.getPrototypeOf(host);
+        var prototype = Object.getPrototypeOf(host);
         if (prototype) {
             return getPropertyDescriptor(prototype, property);
         }
@@ -677,7 +551,7 @@ var feng3d;
             else {
                 return false;
             }
-            feng3d.Object.defineProperty(host, property, data);
+            Object.defineProperty(host, property, data);
             registerBindable(host, property);
         };
         /**
@@ -3327,7 +3201,7 @@ var feng3d;
             var cls = feng3d.ClassUtils.getDefinitionByName(data.__className__);
             feng3d.debuger && feng3d.assert(cls != null);
             var object = new cls();
-            var keys = feng3d.Object.keys(data);
+            var keys = Object.keys(data);
             for (var i = 0; i < keys.length; i++) {
                 var key = keys[i];
                 var ishandle = this.handle(object, key, data[key]);
@@ -3413,11 +3287,11 @@ var feng3d;
             //保存以字母开头或者纯数字的所有属性
             var filterReg = /([a-zA-Z](\w*)|(\d+))/;
             if (className == "Array" || className == "Object") {
-                var attributeNames = feng3d.Object.keys(object);
+                var attributeNames = Object.keys(object);
             }
             else {
                 //
-                var attributeNames = feng3d.Object.keys(this.getNewObject(className));
+                var attributeNames = Object.keys(this.getNewObject(className));
                 attributeNames = attributeNames.filter(function (value, index, array) {
                     var result = filterReg.exec(value);
                     return result[0] == value;
@@ -4971,10 +4845,10 @@ var feng3d;
             options.preferWebGl2 = false;
             var gl = this.getWebGLContext(canvas, options);
             //
-            feng3d.Object.defineProperty(this, "gl", { value: gl });
-            feng3d.Object.defineProperty(gl, "proxy", { value: this });
-            feng3d.Object.defineProperty(gl, "uuid", { value: Math.generateUUID() });
-            feng3d.Object.defineProperty(gl, "webgl2", { value: !!gl.drawArraysInstanced });
+            Object.defineProperty(this, "gl", { value: gl });
+            Object.defineProperty(gl, "proxy", { value: this });
+            Object.defineProperty(gl, "uuid", { value: Math.generateUUID() });
+            Object.defineProperty(gl, "webgl2", { value: !!gl.drawArraysInstanced });
             gl.programs = {};
             //
             new feng3d.GLExtension(gl);
@@ -5429,8 +5303,8 @@ var feng3d;
              * 渲染参数
              */
             this.shaderParams = {};
-            feng3d.Object.defineProperty(this, "uuid", { value: Math.generateUUID() });
-            feng3d.Object.defineProperty(this, "version", { value: 0, writable: true });
+            Object.defineProperty(this, "uuid", { value: Math.generateUUID() });
+            Object.defineProperty(this, "version", { value: 0, writable: true });
             this.shaderMacro = new feng3d.ShaderMacro();
         }
         Object.defineProperty(ShaderRenderData.prototype, "vertexCode", {
@@ -6176,19 +6050,19 @@ var feng3d;
          */
         ShaderLib.getMacroCode = function (macro) {
             var macroHeader = "";
-            var macroNames = feng3d.Object.keys(macro.valueMacros);
+            var macroNames = Object.keys(macro.valueMacros);
             macroNames = macroNames.sort();
             macroNames.forEach(function (macroName) {
                 var value = macro.valueMacros[macroName];
                 macroHeader += "#define " + macroName + " " + value + "\n";
             });
-            macroNames = feng3d.Object.keys(macro.boolMacros);
+            macroNames = Object.keys(macro.boolMacros);
             macroNames = macroNames.sort();
             macroNames.forEach(function (macroName) {
                 var value = macro.boolMacros[macroName];
                 value && (macroHeader += "#define " + macroName + "\n");
             });
-            macroNames = feng3d.Object.keys(macro.addMacros);
+            macroNames = Object.keys(macro.addMacros);
             macroNames = macroNames.sort();
             macroNames.forEach(function (macroName) {
                 var value = macro.addMacros[macroName];
@@ -6240,6 +6114,134 @@ var feng3d;
         };
         return ShaderLoader;
     }());
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * Bit mask that controls object destruction, saving and visibility in inspectors.
+     */
+    (function (HideFlags) {
+        /**
+         * A normal, visible object. This is the default.
+         */
+        HideFlags[HideFlags["None"] = 0] = "None";
+        /**
+         * The object will not appear in the hierarchy.
+         */
+        HideFlags[HideFlags["HideInHierarchy"] = 1] = "HideInHierarchy";
+        /**
+         * It is not possible to view it in the inspector.
+         */
+        HideFlags[HideFlags["HideInInspector"] = 2] = "HideInInspector";
+        /**
+         * The object will not be saved to the scene in the editor.
+         */
+        HideFlags[HideFlags["DontSaveInEditor"] = 4] = "DontSaveInEditor";
+        /**
+         * The object is not be editable in the inspector.
+         */
+        HideFlags[HideFlags["NotEditable"] = 8] = "NotEditable";
+        /**
+         * The object will not be saved when building a player.
+         */
+        HideFlags[HideFlags["DontSaveInBuild"] = 16] = "DontSaveInBuild";
+        /**
+         * The object will not be unloaded by Resources.UnloadUnusedAssets.
+         */
+        HideFlags[HideFlags["DontUnloadUnusedAsset"] = 32] = "DontUnloadUnusedAsset";
+        /**
+         * The object will not be saved to the scene. It will not be destroyed when a new scene is loaded. It is a shortcut for HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.DontUnloadUnusedAsset.
+         */
+        HideFlags[HideFlags["DontSave"] = 52] = "DontSave";
+        /**
+         * A combination of not shown in the hierarchy, not saved to to scenes and not unloaded by The object will not be unloaded by Resources.UnloadUnusedAssets.
+         */
+        HideFlags[HideFlags["HideAndDontSave"] = 61] = "HideAndDontSave";
+    })(feng3d.HideFlags || (feng3d.HideFlags = {}));
+    var HideFlags = feng3d.HideFlags;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * Base class for all objects feng3d can reference.
+     *
+     * Any public variable you make that derives from Feng3dObject gets shown in the inspector as a drop target, allowing you to set the value from the GUI.
+     */
+    var Feng3dObject = (function (_super) {
+        __extends(Feng3dObject, _super);
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
+        function Feng3dObject() {
+            _super.call(this);
+            this._uuid = Math.generateUUID();
+        }
+        /**
+         * Returns the instance id of the Feng3dObject.
+         */
+        Feng3dObject.prototype.getInstanceID = function () {
+            return this._uuid;
+        };
+        /**
+         * Returns the name of the game Feng3dObject.
+         */
+        Feng3dObject.prototype.toString = function () {
+            return this.name;
+        };
+        //------------------------------------------
+        // Static Functions
+        //------------------------------------------
+        /**
+         * Removes a gameobject, component or asset.
+         * @param obj	The Feng3dObject to destroy.
+         * @param t	    The optional amount of time to delay before destroying the Feng3dObject.
+         */
+        Feng3dObject.destroy = function (obj, t) {
+            if (t === void 0) { t = 0; }
+        };
+        /**
+         * Destroys the Feng3dObject obj immediately.
+         * @param obj	                    Feng3dObject to be destroyed.
+         * @param allowDestroyingAssets	    Set to true to allow assets to be destoyed.
+         */
+        Feng3dObject.destroyImmediate = function (obj, allowDestroyingAssets) {
+            if (allowDestroyingAssets === void 0) { allowDestroyingAssets = false; }
+        };
+        /**
+         * Makes the Feng3dObject target not be destroyed automatically when loading a new scene.
+         */
+        Feng3dObject.dontDestroyOnLoad = function (target) {
+        };
+        /**
+         * Returns the first active loaded Feng3dObject of Type type.
+         */
+        Feng3dObject.findObjectOfType = function (type) {
+            return null;
+        };
+        /**
+         * Returns a list of all active loaded objects of Type type.
+         */
+        Feng3dObject.findObjectsOfType = function (type) {
+            return null;
+        };
+        /**
+         * Returns a copy of the Feng3dObject original.
+         * @param original	An existing Feng3dObject that you want to make a copy of.
+         * @param position	Position for the new Feng3dObject(default Vector3.zero).
+         * @param rotation	Orientation of the new Feng3dObject(default Quaternion.identity).
+         * @param parent	The transform the Feng3dObject will be parented to.
+         * @param worldPositionStays	If when assigning the parent the original world position should be maintained.
+         */
+        Feng3dObject.instantiate = function (original, position, rotation, parent, worldPositionStays) {
+            if (position === void 0) { position = null; }
+            if (rotation === void 0) { rotation = null; }
+            if (parent === void 0) { parent = null; }
+            if (worldPositionStays === void 0) { worldPositionStays = false; }
+            return null;
+        };
+        return Feng3dObject;
+    }(feng3d.RenderDataHolder));
+    feng3d.Feng3dObject = Feng3dObject;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -6330,16 +6332,6 @@ var feng3d;
             this.addEventListener(feng3d.ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
         };
         /**
-         * 获取组件在容器的索引位置
-         * @param component			查询的组件
-         * @return				    组件在容器的索引位置
-         */
-        Component.prototype.getComponentIndex = function (component) {
-            feng3d.debuger && feng3d.assert(this.components_.indexOf(component) != -1, "组件不在容器中");
-            var index = this.components_.indexOf(component);
-            return index;
-        };
-        /**
          * Returns the component of Type type if the game object has one attached, null if it doesn't.
          * @param type				The type of Component to retrieve.
          * @return                  返回指定类型组件
@@ -6357,14 +6349,6 @@ var feng3d;
                 return value instanceof type;
             });
             return filterResult;
-        };
-        /**
-         * 判断是否拥有组件
-         * @param com	被检测的组件
-         * @return		true：拥有该组件；false：不拥有该组件。
-         */
-        Component.prototype.hasComponent = function (com) {
-            return this.components_.indexOf(com) != -1;
         };
         /**
          * 派发子组件事件
@@ -8305,6 +8289,14 @@ var feng3d;
             return component;
         };
         /**
+         * 判断是否拥有组件
+         * @param com	被检测的组件
+         * @return		true：拥有该组件；false：不拥有该组件。
+         */
+        GameObject.prototype.hasComponent = function (com) {
+            return this.components_.indexOf(com) != -1;
+        };
+        /**
          * Returns the component of Type type if the game object has one attached, null if it doesn't.
          * @param type				类定义
          * @return                  返回指定类型组件
@@ -8337,7 +8329,6 @@ var feng3d;
          * @param index			插入的位置
          */
         GameObject.prototype.addComponentAt = function (component, index) {
-            feng3d.debuger && feng3d.assert(component != this, "子项与父项不能相同");
             feng3d.debuger && feng3d.assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
             if (this.hasComponent(component)) {
                 index = Math.min(index, this.components_.length - 1);
@@ -8384,6 +8375,16 @@ var feng3d;
             feng3d.debuger && feng3d.assert(this.hasComponent(component), "只能移除在容器中的组件");
             var index = this.getComponentIndex(component);
             this.removeComponentAt(index);
+        };
+        /**
+         * 获取组件在容器的索引位置
+         * @param component			查询的组件
+         * @return				    组件在容器的索引位置
+         */
+        GameObject.prototype.getComponentIndex = function (component) {
+            feng3d.debuger && feng3d.assert(this.components_.indexOf(component) != -1, "组件不在容器中");
+            var index = this.components_.indexOf(component);
+            return index;
         };
         /**
          * 移除组件
@@ -8448,7 +8449,7 @@ var feng3d;
         };
         GameObject._gameObjects = [];
         return GameObject;
-    }(feng3d.Component));
+    }(feng3d.Feng3dObject));
     feng3d.GameObject = GameObject;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -8737,7 +8738,7 @@ var feng3d;
                 var frustumPlanes = renderContext.camera.frustumPlanes;
                 var gameObject = this.gameObject;
                 var isIn = gameObject.transform.worldBounds.isInFrustum(frustumPlanes, 6);
-                var model = gameObject.getComponentByType(MeshRenderer);
+                var model = gameObject.getComponent(MeshRenderer);
                 if (gameObject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh instanceof feng3d.SkyBoxGeometry) {
                     isIn = true;
                 }
@@ -18400,6 +18401,9 @@ var feng3d;
     feng3d.initEngine = initEngine;
     var isInit = false;
 })(feng3d || (feng3d = {}));
+var defineProperty = Object.defineProperty;
+var getPrototypeOf = Object.getPrototypeOf;
+var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 var feng3d;
 (function (feng3d) {
     var BillboardTest = (function () {
@@ -18634,7 +18638,7 @@ var feng3d;
             material.diffuseMethod.difuseTexture.url = imageUrl;
             for (var i = 0; i < object3D.transform.numChildren; i++) {
                 var child = object3D.transform.getChildAt(i);
-                var model = child.getComponentByType(feng3d.MeshRenderer);
+                var model = child.getComponent(feng3d.MeshRenderer);
                 if (model) {
                     model.material = material;
                 }

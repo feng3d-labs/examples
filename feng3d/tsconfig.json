@@ -12,9 +12,10 @@
         "typings/webglExt.d.ts",
         //基础工具
         "src/debug/assert.ts",
+        "src/core/HideFlags.ts",
+        "src/core/Object.ts",
         "src/utils/ClassUtils.ts",
         "src/utils/ObjectUtils.ts",
-        "src/utils/UIDUtils.ts",
         "src/utils/VersionUtils.ts",
         "src/utils/Watcher.ts",
         "src/utils/Binding.ts",

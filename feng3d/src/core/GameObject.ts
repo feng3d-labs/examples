@@ -2,8 +2,7 @@ namespace feng3d
 {
 
     /**
-     * 3D对象
-     * @author feng 2016-04-26
+     * Base class for all entities in feng3d scenes.
      */
     export class GameObject extends Component
     {
@@ -113,6 +112,38 @@ namespace feng3d
             return component;
         }
 
+        /**
+         * Returns the component of Type type if the game object has one attached, null if it doesn't.
+         * @param type				类定义
+         * @return                  返回指定类型组件
+         */
+        public getComponent<T extends Component>(type: new () => T): T
+        {
+            var component = this.getComponents(type)[0];
+            return component;
+        }
+
+        /**
+         * Returns all components of Type type in the GameObject.
+         * @param type		类定义
+         * @return			返回与给出类定义一致的组件
+         */
+        public getComponents<T extends Component>(type: new () => T = null): T[]
+        {
+            var filterResult: Component[];
+            if(!type)
+            {
+                filterResult = this.components_.concat();
+            }else
+            {
+                filterResult = this.components_.filter(function (value: Component, index: number, array: Component[]): boolean
+                {
+                    return value instanceof type;
+                });
+            }
+            return <T[]>filterResult;
+        }
+
 		/**
 		 * 添加组件到指定位置
 		 * @param component		被添加的组件
@@ -206,7 +237,7 @@ namespace feng3d
          */
         public getOrCreateComponentByClass<T extends Component>(cls: new () => T): T
         {
-            var component = this.getComponentByType(cls);
+            var component = this.getComponent(cls);
             if (component == null)
             {
                 component = new cls();

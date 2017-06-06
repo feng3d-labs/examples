@@ -89,23 +89,21 @@ namespace feng3d
         }
 
         /**
-         * 根据类定义获取组件
-         * <p>如果存在多个则返回第一个</p>
-         * @param type				类定义
+         * Returns the component of Type type if the game object has one attached, null if it doesn't.
+         * @param type				The type of Component to retrieve.
          * @return                  返回指定类型组件
          */
-        public getComponentByType<T extends Component>(type: new () => T): T
+        public getComponent<T extends Component>(type: new () => T): T
         {
-            var component = this.getComponentsByType(type)[0];
-            return component;
+            return this.gameObject.getComponent(type);
         }
 
         /**
-         * 根据类定义查找组件
+         * Returns all components of Type type in the GameObject.
          * @param type		类定义
          * @return			返回与给出类定义一致的组件
          */
-        public getComponentsByType<T extends Component>(type: new () => T): T[]
+        public getComponents<T extends Component>(type: new () => T): T[]
         {
             var filterResult: any = this.components_.filter(function (value: Component, index: number, array: Component[]): boolean
             {

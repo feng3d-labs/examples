@@ -137,7 +137,7 @@ namespace feng3d
             while (i < checkList.length)
             {
                 var checkObject = checkList[i++];
-                if (checkObject.mouseEnabled && checkObject.getComponentsByType(Geometry))
+                if (checkObject.mouseEnabled && checkObject.getComponents(Geometry))
                 {
                     results.push(checkObject.gameObject as GameObject);
                 }

@@ -268,7 +268,7 @@ namespace feng3d
             pickingCollider.setLocalRay(this._pickingCollisionVO.localRay);
             this._pickingCollisionVO.renderable = null;
 
-            var meshFilter = this.gameObject.getComponentByType(MeshFilter);
+            var meshFilter = this.gameObject.getComponent(MeshFilter);
             var model = meshFilter.mesh;
 
             if (pickingCollider.testSubMeshCollision(model, this._pickingCollisionVO, shortestCollisionDistance))

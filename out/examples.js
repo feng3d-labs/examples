@@ -6284,20 +6284,26 @@ var feng3d;
     }());
     feng3d.ComponentMap = ComponentMap;
     /**
-     * 组件容器（集合）
-     * @author feng 2015-5-6
+     * Base class for everything attached to GameObjects.
+     *
+     * Note that your code will never directly create a Component. Instead, you write script code, and attach the script to a GameObject. See Also: ScriptableObject as a way to create scripts that do not attach to any GameObject.
      */
     var Component = (function (_super) {
         __extends(Component, _super);
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
         /**
          * 创建一个组件容器
          */
         function Component() {
             _super.call(this);
-            // public get gameObject()
-            // {
-            //     return this.internalGetGameObject();
-            // }
+            //------------------------------------------
+            // Static Functions
+            //------------------------------------------
+            //------------------------------------------
+            // Protected Properties
+            //------------------------------------------
             /**
              * 组件列表
              */
@@ -6306,11 +6312,50 @@ var feng3d;
             this.initComponent();
             this._type = this.constructor;
         }
+        Object.defineProperty(Component.prototype, "gameObject", {
+            //------------------------------------------
+            // Variables
+            //------------------------------------------
+            /**
+             * The game object this component is attached to. A component is always attached to a game object.
+             */
+            get: function () {
+                return this.internalGetGameObject();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Component.prototype, "tag", {
+            /**
+             * The tag of this game object.
+             */
+            get: function () {
+                return this._tag;
+            },
+            set: function (value) {
+                this._tag = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Component.prototype, "single", {
+            /**
+             * The Transform attached to this GameObject (null if there is none attached).
+             */
+            // public get transform()
+            // {
+            //     if (this._transform == null)
+            //     {
+            //         this._transform = this.internalGetTransform();
+            //     }
+            //     return this._transform;
+            // }
             /**
              * 是否唯一，同类型3D对象组件只允许一个
              */
-            get: function () { return this._single; },
+            get: function () {
+                return this._single;
+            },
             enumerable: true,
             configurable: true
         });
@@ -6318,19 +6363,12 @@ var feng3d;
             /**
              * 组件类型
              */
-            get: function () { return this._type; },
+            get: function () {
+                return this._type;
+            },
             enumerable: true,
             configurable: true
         });
-        /**
-         * 初始化组件
-         */
-        Component.prototype.initComponent = function () {
-            //以最高优先级监听组件被添加，设置父组件
-            this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this._onAddedComponent, this, Number.MAX_VALUE);
-            //以最低优先级监听组件被删除，清空父组件
-            this.addEventListener(feng3d.ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
-        };
         /**
          * Returns the component of Type type if the game object has one attached, null if it doesn't.
          * @param type				The type of Component to retrieve.
@@ -6390,8 +6428,17 @@ var feng3d;
             return result;
         };
         //------------------------------------------
-        //@protected
+        // Protected Functions
         //------------------------------------------
+        /**
+         * 初始化组件
+         */
+        Component.prototype.initComponent = function () {
+            //以最高优先级监听组件被添加，设置父组件
+            this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this._onAddedComponent, this, Number.MAX_VALUE);
+            //以最低优先级监听组件被删除，清空父组件
+            this.addEventListener(feng3d.ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
+        };
         /**
          * 处理被添加组件事件
          */
@@ -6411,8 +6458,9 @@ var feng3d;
             bubbleTargets.push(this.gameObject);
             return bubbleTargets;
         };
+        // private _transform: Transform;
         //------------------------------------------
-        //@private
+        // Private Methods
         //------------------------------------------
         /**
          * 处理添加组件事件，此处为被添加，设置父组件
@@ -6420,7 +6468,7 @@ var feng3d;
         Component.prototype._onAddedComponent = function (event) {
             var data = event.data;
             if (data.child == this) {
-                this.gameObject = data.container;
+                this._gameObject = data.container;
                 this.onBeAddedComponent(event);
             }
         };
@@ -6431,11 +6479,19 @@ var feng3d;
             var data = event.data;
             if (event.data.child == this) {
                 this.onBeRemovedComponent(event);
-                this.gameObject = null;
+                this._gameObject = null;
             }
         };
+        Component.prototype.internalGetTransform = function () {
+            if (this._gameObject)
+                return this._gameObject.transform;
+            return null;
+        };
+        Component.prototype.internalGetGameObject = function () {
+            return this._gameObject;
+        };
         return Component;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.Feng3dObject));
     feng3d.Component = Component;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -7484,6 +7540,16 @@ var feng3d;
             this._listenToSceneChanged = false;
             this._ignoreTransform = false;
         }
+        Object.defineProperty(ObjectContainer3D.prototype, "childCount", {
+            //------------------------------------------
+            // Variables
+            //------------------------------------------
+            get: function () {
+                return this._children.length;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(ObjectContainer3D.prototype, "ignoreTransform", {
             get: function () {
                 return this._ignoreTransform;
@@ -7847,13 +7913,6 @@ var feng3d;
             index = index;
             return this._children[index];
         };
-        Object.defineProperty(ObjectContainer3D.prototype, "numChildren", {
-            get: function () {
-                return this._children.length;
-            },
-            enumerable: true,
-            configurable: true
-        });
         ObjectContainer3D.prototype.lookAt = function (target, upAxis) {
             if (upAxis === void 0) { upAxis = null; }
             _super.prototype.lookAt.call(this, target, upAxis);
@@ -7869,7 +7928,7 @@ var feng3d;
         };
         ObjectContainer3D.prototype.disposeWithChildren = function () {
             this.dispose();
-            while (this.numChildren > 0)
+            while (this.childCount > 0)
                 this.getChildAt(0).dispose();
         };
         ObjectContainer3D.prototype.clone = function () {
@@ -8167,7 +8226,7 @@ var feng3d;
         Transform.prototype.collidesBefore = function (pickingCollider, shortestCollisionDistance, findClosest) {
             pickingCollider.setLocalRay(this._pickingCollisionVO.localRay);
             this._pickingCollisionVO.renderable = null;
-            var meshFilter = this.gameObject.getComponentByType(feng3d.MeshFilter);
+            var meshFilter = this.gameObject.getComponent(feng3d.MeshFilter);
             var model = meshFilter.mesh;
             if (pickingCollider.testSubMeshCollision(model, this._pickingCollisionVO, shortestCollisionDistance)) {
                 shortestCollisionDistance = this._pickingCollisionVO.rayEntryDistance;
@@ -8200,8 +8259,7 @@ var feng3d;
              */
             this.components_ = [];
             this.name = name;
-            this._transform = new feng3d.Transform();
-            this.addComponent(this._transform);
+            this._transform = this.addComponent(feng3d.Transform);
             //
             GameObject._gameObjects.push(this);
         }

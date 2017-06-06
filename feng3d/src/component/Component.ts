@@ -13,47 +13,65 @@ namespace feng3d
     }
 
 	/**
-	 * 组件容器（集合）
-	 * @author feng 2015-5-6
+     * Base class for everything attached to GameObjects.
+     * 
+     * Note that your code will never directly create a Component. Instead, you write script code, and attach the script to a GameObject. See Also: ScriptableObject as a way to create scripts that do not attach to any GameObject.
 	 */
-    export class Component extends RenderDataHolder
+    export class Component extends Feng3dObject
     {
-        // private m_cachedTransform
-        // public get transform()
-        // {
-        //     if (this.m_cachedTransform == null)
-        //     {
-        //         this.m_cachedTransform = this.internalGetTransform();
-        //     }
-        //     return this.m_cachedTransform;
-        // }
+        //------------------------------------------
+        // Variables
+        //------------------------------------------
+        /**
+         * The game object this component is attached to. A component is always attached to a game object.
+         */
+        public get gameObject()
+        {
+            return this.internalGetGameObject();
+        }
 
         /**
-         * 游戏对象
+         * The tag of this game object.
          */
-        public gameObject: GameObject;
-        // public get gameObject()
+        public get tag()
+        {
+            return this._tag;
+        }
+        public set tag(value)
+        {
+            this._tag = value;
+        }
+
+        /**
+         * The Transform attached to this GameObject (null if there is none attached).
+         */
+        // public get transform()
         // {
-        //     return this.internalGetGameObject();
+        //     if (this._transform == null)
+        //     {
+        //         this._transform = this.internalGetTransform();
+        //     }
+        //     return this._transform;
         // }
-
-		/**
-		 * 组件列表
-		 */
-        protected components_: Component[] = [];
-
         /**
          * 是否唯一，同类型3D对象组件只允许一个
          */
-        public get single() { return this._single; }
-        protected _single = false;
+        public get single()
+        {
+            return this._single;
+        }
 
         /**
          * 组件类型
          */
-        public get type() { return this._type; }
-        protected _type: new () => Component;
+        public get type()
+        {
+            return this._type;
+        }
 
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
 		/**
 		 * 创建一个组件容器
 		 */
@@ -62,17 +80,6 @@ namespace feng3d
             super();
             this.initComponent();
             this._type = <any>this.constructor;
-        }
-
-        /**
-         * 初始化组件
-         */
-        protected initComponent(): void
-        {
-            //以最高优先级监听组件被添加，设置父组件
-            this.addEventListener(ComponentEvent.ADDED_COMPONENT, this._onAddedComponent, this, Number.MAX_VALUE);
-            //以最低优先级监听组件被删除，清空父组件
-            this.addEventListener(ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
         }
 
         /**
@@ -148,8 +155,32 @@ namespace feng3d
         }
 
         //------------------------------------------
-        //@protected
+        // Static Functions
         //------------------------------------------
+
+        //------------------------------------------
+        // Protected Properties
+        //------------------------------------------
+		/**
+		 * 组件列表
+		 */
+        protected components_: Component[] = [];
+        protected _single = false;
+        protected _type: new () => Component;
+
+        //------------------------------------------
+        // Protected Functions
+        //------------------------------------------
+        /**
+         * 初始化组件
+         */
+        protected initComponent(): void
+        {
+            //以最高优先级监听组件被添加，设置父组件
+            this.addEventListener(ComponentEvent.ADDED_COMPONENT, this._onAddedComponent, this, Number.MAX_VALUE);
+            //以最低优先级监听组件被删除，清空父组件
+            this.addEventListener(ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
+        }
 
         /**
          * 处理被添加组件事件
@@ -178,9 +209,15 @@ namespace feng3d
         }
 
         //------------------------------------------
-        //@private
+        // Private Properties
         //------------------------------------------
+        private _gameObject: GameObject;
+        private _tag: string;
+        // private _transform: Transform;
 
+        //------------------------------------------
+        // Private Methods
+        //------------------------------------------
         /**
          * 处理添加组件事件，此处为被添加，设置父组件
          */
@@ -189,7 +226,7 @@ namespace feng3d
             var data: { container: GameObject, child: Component } = event.data;
             if (data.child == this)
             {
-                this.gameObject = data.container;
+                this._gameObject = data.container;
                 this.onBeAddedComponent(event);
             }
         }
@@ -203,8 +240,20 @@ namespace feng3d
             if (event.data.child == this)
             {
                 this.onBeRemovedComponent(event);
-                this.gameObject = null;
+                this._gameObject = null;
             }
+        }
+
+        private internalGetTransform()
+        {
+            if (this._gameObject)
+                return this._gameObject.transform;
+            return null;
+        }
+
+        private internalGetGameObject()
+        {
+            return this._gameObject;
         }
     }
 }

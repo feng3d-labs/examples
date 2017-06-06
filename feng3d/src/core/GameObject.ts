@@ -58,8 +58,7 @@ namespace feng3d
         {
             super();
             this.name = name;
-            this._transform = new Transform();
-            this.addComponent(this._transform);
+            this._transform = this.addComponent(Transform);
             //
             GameObject._gameObjects.push(this);
         }
@@ -121,7 +120,7 @@ namespace feng3d
         {
             return this.components_.indexOf(com) != -1;
         }
-        
+
         /**
          * Returns the component of Type type if the game object has one attached, null if it doesn't.
          * @param type				类定义
@@ -141,10 +140,10 @@ namespace feng3d
         public getComponents<T extends Component>(type: new () => T = null): T[]
         {
             var filterResult: Component[];
-            if(!type)
+            if (!type)
             {
                 filterResult = this.components_.concat();
-            }else
+            } else
             {
                 filterResult = this.components_.filter(function (value: Component, index: number, array: Component[]): boolean
                 {
@@ -234,7 +233,7 @@ namespace feng3d
             var index: number = this.components_.indexOf(component);
             return index;
         }
-        
+
         /**
          * 移除组件
          * @param index		要删除的 Component 的子索引。

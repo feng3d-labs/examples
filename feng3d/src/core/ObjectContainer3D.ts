@@ -2,6 +2,15 @@ namespace feng3d
 {
     export class ObjectContainer3D extends Object3D 
     {
+        //------------------------------------------
+        // Variables
+        //------------------------------------------
+        public get childCount(): number
+        {
+            return this._children.length;
+        }
+        
+
         public _ancestorsAllowMouseEnabled: boolean = false;
         public _isRoot: boolean = false;
         protected _scene: Scene3D;
@@ -416,11 +425,6 @@ namespace feng3d
             return this._children[index];
         }
 
-        public get numChildren(): number
-        {
-            return this._children.length;
-        }
-
         public lookAt(target: Vector3D, upAxis: Vector3D = null)
         {
             super.lookAt(target, upAxis);
@@ -442,7 +446,7 @@ namespace feng3d
         public disposeWithChildren()
         {
             this.dispose();
-            while (this.numChildren > 0)
+            while (this.childCount > 0)
                 this.getChildAt(0).dispose();
         }
 

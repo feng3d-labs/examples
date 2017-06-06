@@ -142,10 +142,10 @@ namespace feng3d
             if (this._parent && <any>!this._parent._isRoot)
             {
                 this._sceneTransform.copyFrom(this._parent.sceneTransform);
-                this._sceneTransform.prepend(this.transform);
+                this._sceneTransform.prepend(this.matrix3d);
             }
             else
-                this._sceneTransform.copyFrom(this.transform);
+                this._sceneTransform.copyFrom(this.matrix3d);
             this._sceneTransformDirty = false;
         }
 
@@ -290,7 +290,7 @@ namespace feng3d
         {
             value = value.clone();
             this._parent && value.append(this._parent.inverseSceneTransform);
-            this.transform = value;
+            this.matrix3d = value;
         }
 
         public get scene(): Scene3D
@@ -454,7 +454,7 @@ namespace feng3d
         {
             var clone: ObjectContainer3D = new ObjectContainer3D();
             clone.pivotPoint = this.pivotPoint;
-            clone.transform = this.transform;
+            clone.matrix3d = this.matrix3d;
             clone.name = this.name;
             var len: number = this._children.length;
             for (var i: number = 0; i < len; ++i)

@@ -6338,18 +6338,20 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Component.prototype, "single", {
+        Object.defineProperty(Component.prototype, "transform", {
             /**
              * The Transform attached to this GameObject (null if there is none attached).
              */
-            // public get transform()
-            // {
-            //     if (this._transform == null)
-            //     {
-            //         this._transform = this.internalGetTransform();
-            //     }
-            //     return this._transform;
-            // }
+            get: function () {
+                if (this._transform == null) {
+                    this._transform = this.internalGetTransform();
+                }
+                return this._transform;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Component.prototype, "single", {
             /**
              * 是否唯一，同类型3D对象组件只允许一个
              */
@@ -6458,7 +6460,6 @@ var feng3d;
             bubbleTargets.push(this.gameObject);
             return bubbleTargets;
         };
-        // private _transform: Transform;
         //------------------------------------------
         // Private Methods
         //------------------------------------------
@@ -6897,8 +6898,30 @@ var feng3d;
      */
     var Object3D = (function (_super) {
         __extends(Object3D, _super);
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
         function Object3D() {
             _super.call(this);
+            //------------------------------------------
+            // Protected Properties
+            //------------------------------------------
+            this._matrix3d = new feng3d.Matrix3D();
+            this._scaleX = 1;
+            this._scaleY = 1;
+            this._scaleZ = 1;
+            this._x = 0;
+            this._y = 0;
+            this._z = 0;
+            this._pivotPoint = new feng3d.Vector3D();
+            this._pivotZero = true;
+            this._pos = new feng3d.Vector3D();
+            this._rot = new feng3d.Vector3D();
+            this._sca = new feng3d.Vector3D();
+            this._zOffset = 0;
+            //------------------------------------------
+            // Private Properties
+            //------------------------------------------
             this._smallestNumber = 0.0000000000000000000001;
             this._transformDirty = true;
             this._positionDirty = false;
@@ -6912,19 +6935,6 @@ var feng3d;
             this._listenToPositionChanged = false;
             this._listenToRotationChanged = false;
             this._listenToScaleChanged = false;
-            this._zOffset = 0;
-            this._transform = new feng3d.Matrix3D();
-            this._scaleX = 1;
-            this._scaleY = 1;
-            this._scaleZ = 1;
-            this._x = 0;
-            this._y = 0;
-            this._z = 0;
-            this._pivotPoint = new feng3d.Vector3D();
-            this._pivotZero = true;
-            this._pos = new feng3d.Vector3D();
-            this._rot = new feng3d.Vector3D();
-            this._sca = new feng3d.Vector3D();
             this._position = new feng3d.Vector3D();
             tempAxeX = tempAxeX || new feng3d.Vector3D();
             tempAxeY = tempAxeY || new feng3d.Vector3D();
@@ -6933,88 +6943,13 @@ var feng3d;
             this._transformComponents[0] = this._pos;
             this._transformComponents[1] = this._rot;
             this._transformComponents[2] = this._sca;
-            this._transform.identity();
+            this._matrix3d.identity();
             this._flipY.appendScale(1, -1, 1);
         }
-        Object3D.prototype.invalidatePivot = function () {
-            this._pivotZero = (this._pivotPoint.x == 0) && (this._pivotPoint.y == 0) && (this._pivotPoint.z == 0);
-            this.invalidateTransform();
-        };
-        Object3D.prototype.invalidatePosition = function () {
-            if (this._positionDirty)
-                return;
-            this._positionDirty = true;
-            this.invalidateTransform();
-            if (this._listenToPositionChanged)
-                this.notifyPositionChanged();
-        };
-        Object3D.prototype.notifyPositionChanged = function () {
-            var _self__ = this;
-            if (!this._positionChanged)
-                this._positionChanged = new feng3d.Object3DEvent(feng3d.Object3DEvent.POSITION_CHANGED, this);
-            _self__.dispatchEvent(this._positionChanged);
-        };
-        Object3D.prototype.addEventListener = function (type, listener, thisObject, priority) {
-            if (priority === void 0) { priority = 0; }
-            _super.prototype.addEventListener.call(this, type, listener, thisObject, priority);
-            switch (type) {
-                case feng3d.Object3DEvent.POSITION_CHANGED:
-                    this._listenToPositionChanged = true;
-                    break;
-                case feng3d.Object3DEvent.ROTATION_CHANGED:
-                    this._listenToRotationChanged = true;
-                    break;
-                case feng3d.Object3DEvent.SCALE_CHANGED:
-                    this._listenToRotationChanged = true;
-                    break;
-            }
-        };
-        Object3D.prototype.removeEventListener = function (type, listener, thisObject) {
-            var _self__ = this;
-            _super.prototype.removeEventListener.call(this, type, listener, thisObject);
-            if (_self__.hasEventListener(type))
-                return;
-            switch (type) {
-                case feng3d.Object3DEvent.POSITION_CHANGED:
-                    this._listenToPositionChanged = false;
-                    break;
-                case feng3d.Object3DEvent.ROTATION_CHANGED:
-                    this._listenToRotationChanged = false;
-                    break;
-                case feng3d.Object3DEvent.SCALE_CHANGED:
-                    this._listenToScaleChanged = false;
-                    break;
-            }
-        };
-        Object3D.prototype.invalidateRotation = function () {
-            if (this._rotationDirty)
-                return;
-            this._rotationDirty = true;
-            this.invalidateTransform();
-            if (this._listenToRotationChanged)
-                this.notifyRotationChanged();
-        };
-        Object3D.prototype.notifyRotationChanged = function () {
-            var _self__ = this;
-            if (!this._rotationChanged)
-                this._rotationChanged = new feng3d.Object3DEvent(feng3d.Object3DEvent.ROTATION_CHANGED, this);
-            _self__.dispatchEvent(this._rotationChanged);
-        };
-        Object3D.prototype.invalidateScale = function () {
-            if (this._scaleDirty)
-                return;
-            this._scaleDirty = true;
-            this.invalidateTransform();
-            if (this._listenToScaleChanged)
-                this.notifyScaleChanged();
-        };
-        Object3D.prototype.notifyScaleChanged = function () {
-            var _self__ = this;
-            if (!this._scaleChanged)
-                this._scaleChanged = new feng3d.Object3DEvent(feng3d.Object3DEvent.SCALE_CHANGED, this);
-            _self__.dispatchEvent(this._scaleChanged);
-        };
         Object.defineProperty(Object3D.prototype, "x", {
+            //------------------------------------------
+            // Variables
+            //------------------------------------------
             get: function () {
                 return this._x;
             },
@@ -7147,11 +7082,14 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Object3D.prototype, "transform", {
+        Object.defineProperty(Object3D.prototype, "matrix3d", {
+            /**
+             * @private
+             */
             get: function () {
                 if (this._transformDirty)
-                    this.updateTransform();
-                return this._transform;
+                    this.updateMatrix3D();
+                return this._matrix3d;
             },
             set: function (val) {
                 var raw = feng3d.Matrix3D.RAW_DATA_CONTAINER;
@@ -7202,6 +7140,80 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Object3D.prototype, "position", {
+            get: function () {
+                this._position.setTo(this._x, this._y, this._z);
+                return this._position;
+            },
+            set: function (value) {
+                if (this._x != value.x || this._y != value.y || this._z != value.z) {
+                    this._x = value.x;
+                    this._y = value.y;
+                    this._z = value.z;
+                    this.invalidatePosition();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "forwardVector", {
+            get: function () {
+                return this.matrix3d.forward;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "rightVector", {
+            get: function () {
+                return this.matrix3d.right;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "upVector", {
+            get: function () {
+                return this.matrix3d.up;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "backVector", {
+            get: function () {
+                var director = this.matrix3d.forward;
+                director.negate();
+                return director;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "leftVector", {
+            get: function () {
+                var director = this.matrix3d.left;
+                director.negate();
+                return director;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "downVector", {
+            get: function () {
+                var director = this.matrix3d.up;
+                director.negate();
+                return director;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "zOffset", {
+            get: function () {
+                return this._zOffset;
+            },
+            set: function (value) {
+                this._zOffset = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object3D.prototype.getPosition = function (position) {
             if (position === void 0) { position = null; }
             position = position || new feng3d.Vector3D();
@@ -7219,22 +7231,6 @@ var feng3d;
                 this.invalidatePosition();
             }
         };
-        Object.defineProperty(Object3D.prototype, "position", {
-            get: function () {
-                this._position.setTo(this._x, this._y, this._z);
-                return this._position;
-            },
-            set: function (value) {
-                if (this._x != value.x || this._y != value.y || this._z != value.z) {
-                    this._x = value.x;
-                    this._y = value.y;
-                    this._z = value.z;
-                    this.invalidatePosition();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object3D.prototype.getRotation = function (rotation) {
             if (rotation === void 0) { rotation = null; }
             rotation = rotation || new feng3d.Vector3D();
@@ -7273,54 +7269,6 @@ var feng3d;
                 this.invalidateScale();
             }
         };
-        Object.defineProperty(Object3D.prototype, "forwardVector", {
-            get: function () {
-                return this.transform.forward;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Object3D.prototype, "rightVector", {
-            get: function () {
-                return this.transform.right;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Object3D.prototype, "upVector", {
-            get: function () {
-                return this.transform.up;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Object3D.prototype, "backVector", {
-            get: function () {
-                var director = this.transform.forward;
-                director.negate();
-                return director;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Object3D.prototype, "leftVector", {
-            get: function () {
-                var director = this.transform.left;
-                director.negate();
-                return director;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Object3D.prototype, "downVector", {
-            get: function () {
-                var director = this.transform.up;
-                director.negate();
-                return director;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object3D.prototype.scale = function (value) {
             this._scaleX *= value;
             this._scaleY *= value;
@@ -7372,8 +7320,8 @@ var feng3d;
         Object3D.prototype.translateLocal = function (axis, distance) {
             var x = axis.x, y = axis.y, z = axis.z;
             var len = distance / Math.sqrt(x * x + y * y + z * z);
-            this.transform.prependTranslation(x * len, y * len, z * len);
-            this._transform.copyColumnTo(3, this._pos);
+            this.matrix3d.prependTranslation(x * len, y * len, z * len);
+            this._matrix3d.copyColumnTo(3, this._pos);
             this._x = this._pos.x;
             this._y = this._pos.y;
             this._z = this._pos.z;
@@ -7391,7 +7339,7 @@ var feng3d;
         Object3D.prototype.clone = function () {
             var clone = new Object3D();
             clone.pivotPoint = this.pivotPoint;
-            clone.transform = this.transform;
+            clone.matrix3d = this.matrix3d;
             clone.name = this.name;
             return clone;
         };
@@ -7418,7 +7366,7 @@ var feng3d;
             var raw;
             upAxis = upAxis || feng3d.Vector3D.Y_AXIS;
             if (this._transformDirty) {
-                this.updateTransform();
+                this.updateMatrix3D();
             }
             zAxis.x = target.x - this._x;
             zAxis.y = target.y - this._y;
@@ -7454,8 +7402,8 @@ var feng3d;
             raw[13] = this._y;
             raw[14] = this._z;
             raw[15] = 1;
-            this._transform.copyRawDataFrom(raw);
-            this.transform = this.transform;
+            this._matrix3d.copyRawDataFrom(raw);
+            this.matrix3d = this.matrix3d;
             if (zAxis.z < 0) {
                 this.rotationY = (180 - this.rotationY);
                 this.rotationX -= 180;
@@ -7470,7 +7418,42 @@ var feng3d;
         Object3D.prototype.invalidateTransform = function () {
             this._transformDirty = true;
         };
-        Object3D.prototype.updateTransform = function () {
+        Object3D.prototype.addEventListener = function (type, listener, thisObject, priority) {
+            if (priority === void 0) { priority = 0; }
+            _super.prototype.addEventListener.call(this, type, listener, thisObject, priority);
+            switch (type) {
+                case feng3d.Object3DEvent.POSITION_CHANGED:
+                    this._listenToPositionChanged = true;
+                    break;
+                case feng3d.Object3DEvent.ROTATION_CHANGED:
+                    this._listenToRotationChanged = true;
+                    break;
+                case feng3d.Object3DEvent.SCALE_CHANGED:
+                    this._listenToRotationChanged = true;
+                    break;
+            }
+        };
+        Object3D.prototype.removeEventListener = function (type, listener, thisObject) {
+            var _self__ = this;
+            _super.prototype.removeEventListener.call(this, type, listener, thisObject);
+            if (_self__.hasEventListener(type))
+                return;
+            switch (type) {
+                case feng3d.Object3DEvent.POSITION_CHANGED:
+                    this._listenToPositionChanged = false;
+                    break;
+                case feng3d.Object3DEvent.ROTATION_CHANGED:
+                    this._listenToRotationChanged = false;
+                    break;
+                case feng3d.Object3DEvent.SCALE_CHANGED:
+                    this._listenToScaleChanged = false;
+                    break;
+            }
+        };
+        //------------------------------------------
+        // Protected Functions
+        //------------------------------------------
+        Object3D.prototype.updateMatrix3D = function () {
             this._pos.x = this._x;
             this._pos.y = this._y;
             this._pos.z = this._z;
@@ -7481,10 +7464,10 @@ var feng3d;
                 this._sca.x = 1;
                 this._sca.y = 1;
                 this._sca.z = 1;
-                this._transform.recompose(this._transformComponents);
-                this._transform.appendTranslation(this._pivotPoint.x, this._pivotPoint.y, this._pivotPoint.z);
-                this._transform.prependTranslation(-this._pivotPoint.x, -this._pivotPoint.y, -this._pivotPoint.z);
-                this._transform.prependScale(this._scaleX, this._scaleY, this._scaleZ);
+                this._matrix3d.recompose(this._transformComponents);
+                this._matrix3d.appendTranslation(this._pivotPoint.x, this._pivotPoint.y, this._pivotPoint.z);
+                this._matrix3d.prependTranslation(-this._pivotPoint.x, -this._pivotPoint.y, -this._pivotPoint.z);
+                this._matrix3d.prependScale(this._scaleX, this._scaleY, this._scaleZ);
                 this._sca.x = this._scaleX;
                 this._sca.y = this._scaleY;
                 this._sca.z = this._scaleZ;
@@ -7493,23 +7476,62 @@ var feng3d;
                 this._sca.x = this._scaleX;
                 this._sca.y = this._scaleY;
                 this._sca.z = this._scaleZ;
-                this._transform.recompose(this._transformComponents);
+                this._matrix3d.recompose(this._transformComponents);
             }
             this._transformDirty = false;
             this._positionDirty = false;
             this._rotationDirty = false;
             this._scaleDirty = false;
         };
-        Object.defineProperty(Object3D.prototype, "zOffset", {
-            get: function () {
-                return this._zOffset;
-            },
-            set: function (value) {
-                this._zOffset = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        //------------------------------------------
+        // Private Methods
+        //------------------------------------------
+        Object3D.prototype.invalidateRotation = function () {
+            if (this._rotationDirty)
+                return;
+            this._rotationDirty = true;
+            this.invalidateTransform();
+            if (this._listenToRotationChanged)
+                this.notifyRotationChanged();
+        };
+        Object3D.prototype.notifyRotationChanged = function () {
+            var _self__ = this;
+            if (!this._rotationChanged)
+                this._rotationChanged = new feng3d.Object3DEvent(feng3d.Object3DEvent.ROTATION_CHANGED, this);
+            _self__.dispatchEvent(this._rotationChanged);
+        };
+        Object3D.prototype.invalidateScale = function () {
+            if (this._scaleDirty)
+                return;
+            this._scaleDirty = true;
+            this.invalidateTransform();
+            if (this._listenToScaleChanged)
+                this.notifyScaleChanged();
+        };
+        Object3D.prototype.notifyScaleChanged = function () {
+            var _self__ = this;
+            if (!this._scaleChanged)
+                this._scaleChanged = new feng3d.Object3DEvent(feng3d.Object3DEvent.SCALE_CHANGED, this);
+            _self__.dispatchEvent(this._scaleChanged);
+        };
+        Object3D.prototype.invalidatePivot = function () {
+            this._pivotZero = (this._pivotPoint.x == 0) && (this._pivotPoint.y == 0) && (this._pivotPoint.z == 0);
+            this.invalidateTransform();
+        };
+        Object3D.prototype.invalidatePosition = function () {
+            if (this._positionDirty)
+                return;
+            this._positionDirty = true;
+            this.invalidateTransform();
+            if (this._listenToPositionChanged)
+                this.notifyPositionChanged();
+        };
+        Object3D.prototype.notifyPositionChanged = function () {
+            var _self__ = this;
+            if (!this._positionChanged)
+                this._positionChanged = new feng3d.Object3DEvent(feng3d.Object3DEvent.POSITION_CHANGED, this);
+            _self__.dispatchEvent(this._positionChanged);
+        };
         return Object3D;
     }(feng3d.Component));
     feng3d.Object3D = Object3D;
@@ -7643,10 +7665,10 @@ var feng3d;
         ObjectContainer3D.prototype.updateSceneTransform = function () {
             if (this._parent && !this._parent._isRoot) {
                 this._sceneTransform.copyFrom(this._parent.sceneTransform);
-                this._sceneTransform.prepend(this.transform);
+                this._sceneTransform.prepend(this.matrix3d);
             }
             else
-                this._sceneTransform.copyFrom(this.transform);
+                this._sceneTransform.copyFrom(this.matrix3d);
             this._sceneTransformDirty = false;
         };
         Object.defineProperty(ObjectContainer3D.prototype, "mouseChildren", {
@@ -7795,7 +7817,7 @@ var feng3d;
             set: function (value) {
                 value = value.clone();
                 this._parent && value.append(this._parent.inverseSceneTransform);
-                this.transform = value;
+                this.matrix3d = value;
             },
             enumerable: true,
             configurable: true
@@ -7934,7 +7956,7 @@ var feng3d;
         ObjectContainer3D.prototype.clone = function () {
             var clone = new ObjectContainer3D();
             clone.pivotPoint = this.pivotPoint;
-            clone.transform = this.transform;
+            clone.matrix3d = this.matrix3d;
             clone.name = this.name;
             var len = this._children.length;
             for (var i = 0; i < len; ++i)

@@ -45,14 +45,14 @@ namespace feng3d
         /**
          * The Transform attached to this GameObject (null if there is none attached).
          */
-        // public get transform()
-        // {
-        //     if (this._transform == null)
-        //     {
-        //         this._transform = this.internalGetTransform();
-        //     }
-        //     return this._transform;
-        // }
+        public get transform()
+        {
+            if (this._transform == null)
+            {
+                this._transform = this.internalGetTransform();
+            }
+            return this._transform;
+        }
         /**
          * 是否唯一，同类型3D对象组件只允许一个
          */
@@ -213,7 +213,7 @@ namespace feng3d
         //------------------------------------------
         private _gameObject: GameObject;
         private _tag: string;
-        // private _transform: Transform;
+        private _transform: Transform;
 
         //------------------------------------------
         // Private Methods

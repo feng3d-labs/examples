@@ -3443,13 +3443,18 @@ var feng3d;
      * @author feng 2016-3-22
      */
     var EventDispatcher = (function () {
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
         /**
          * 构建事件适配器
          * @param target		事件适配主体
          */
         function EventDispatcher(target) {
             if (target === void 0) { target = null; }
-            this._listenermap = {};
+            //------------------------------------------
+            // Protected Properties
+            //------------------------------------------
             /**
              * 冒泡属性名称为“parent”
              */
@@ -3462,10 +3467,21 @@ var feng3d;
              * 被延迟的事件列表
              */
             this._delayEvents = [];
+            this._listenermap = {};
             this._target = target;
             if (this._target == null)
                 this._target = this;
         }
+        Object.defineProperty(EventDispatcher.prototype, "isLockEvent", {
+            /**
+             * 事件是否被锁住
+             */
+            get: function () {
+                return this._delaycount > 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 监听一次事件后将会被移除
          * @param type						事件的类型。
@@ -3559,16 +3575,6 @@ var feng3d;
                 this._delayEvents.length = 0;
             }
         };
-        Object.defineProperty(EventDispatcher.prototype, "isLockEvent", {
-            /**
-             * 事件是否被锁住
-             */
-            get: function () {
-                return this._delaycount > 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
         /**
          * 检查 EventDispatcher 对象是否为特定事件类型注册了任何侦听器.
          *
@@ -3578,16 +3584,9 @@ var feng3d;
         EventDispatcher.prototype.hasEventListener = function (type) {
             return !!(this._listenermap[type] && this._listenermap[type].length);
         };
-        /**
-         * 派发冒泡事件
-         * @param event						调度到事件流中的 Event 对象。
-         */
-        EventDispatcher.prototype.dispatchBubbleEvent = function (event) {
-            var bubbleTargets = this.getBubbleTargets(event);
-            bubbleTargets && bubbleTargets.forEach(function (element) {
-                element && element.dispatchEvent(event);
-            });
-        };
+        //------------------------------------------
+        // Protected Functions
+        //------------------------------------------
         /**
          * 获取冒泡对象
          * @param event						调度到事件流中的 Event 对象。
@@ -3595,6 +3594,9 @@ var feng3d;
         EventDispatcher.prototype.getBubbleTargets = function (event) {
             return [this._target[this._bubbleAttribute]];
         };
+        //------------------------------------------
+        // Private Methods
+        //------------------------------------------
         /**
          * 添加监听
          * @param dispatcher 派发器
@@ -3638,6 +3640,16 @@ var feng3d;
                     delete this._listenermap[type];
                 }
             }
+        };
+        /**
+         * 派发冒泡事件
+         * @param event						调度到事件流中的 Event 对象。
+         */
+        EventDispatcher.prototype.dispatchBubbleEvent = function (event) {
+            var bubbleTargets = this.getBubbleTargets(event);
+            bubbleTargets && bubbleTargets.forEach(function (element) {
+                element && element.dispatchEvent(event);
+            });
         };
         return EventDispatcher;
     }());

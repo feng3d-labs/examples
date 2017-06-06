@@ -5210,87 +5210,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    /**
-     * Uniform渲染数据
-     */
-    var UniformRenderData = (function () {
-        function UniformRenderData() {
-        }
-        /**
-         * 激活常量
-         */
-        UniformRenderData.prototype.activeUniforms = function (gl, uniformInfos) {
-            for (var o = 0; o < uniformInfos.length; o++) {
-                var activeInfo = uniformInfos[o];
-                if (activeInfo.uniformBaseName) {
-                    var baseName = activeInfo.uniformBaseName;
-                    var uniformData = this[baseName];
-                    if (uniformData instanceof Function) {
-                        uniformData = uniformData();
-                    }
-                    if (uniformData instanceof feng3d.UniformData) {
-                        uniformData = uniformData.data;
-                    }
-                    //处理数组
-                    for (var j = 0; j < activeInfo.size; j++) {
-                        this.setContext3DUniform(gl, { name: baseName + ("[" + j + "]"), type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j], textureID: activeInfo.textureID }, uniformData[j]);
-                    }
-                }
-                else {
-                    var uniformData = this[activeInfo.name];
-                    if (uniformData instanceof Function) {
-                        uniformData = uniformData();
-                    }
-                    if (uniformData instanceof feng3d.UniformData) {
-                        uniformData = uniformData.data;
-                    }
-                    this.setContext3DUniform(gl, activeInfo, uniformData);
-                }
-            }
-        };
-        /**
-         * 设置环境Uniform数据
-         */
-        UniformRenderData.prototype.setContext3DUniform = function (gl, activeInfo, data) {
-            var location = activeInfo.uniformLocation;
-            switch (activeInfo.type) {
-                case feng3d.GL.INT:
-                    gl.uniform1i(location, data);
-                    break;
-                case feng3d.GL.FLOAT_MAT4:
-                    gl.uniformMatrix4fv(location, false, data.rawData);
-                    break;
-                case feng3d.GL.FLOAT:
-                    gl.uniform1f(location, data);
-                    break;
-                case feng3d.GL.FLOAT_VEC2:
-                    gl.uniform2f(location, data.x, data.y);
-                    break;
-                case feng3d.GL.FLOAT_VEC3:
-                    gl.uniform3f(location, data.x, data.y, data.z);
-                    break;
-                case feng3d.GL.FLOAT_VEC4:
-                    gl.uniform4f(location, data.x, data.y, data.z, data.w);
-                    break;
-                case feng3d.GL.SAMPLER_2D:
-                case feng3d.GL.SAMPLER_CUBE:
-                    var textureInfo = data;
-                    //激活纹理编号
-                    gl.activeTexture(feng3d.GL["TEXTURE" + activeInfo.textureID]);
-                    textureInfo.active(gl);
-                    //设置纹理所在采样编号
-                    gl.uniform1i(location, activeInfo.textureID);
-                    break;
-                default:
-                    throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + activeInfo.name + " " + data;
-            }
-        };
-        return UniformRenderData;
-    }());
-    feng3d.UniformRenderData = UniformRenderData;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
     var ShaderRenderData = (function () {
         function ShaderRenderData() {
             //
@@ -5466,14 +5385,107 @@ var feng3d;
             /**
              * 属性数据列表
              */
-            this.attributes = new feng3d.AttributeRenderDataStuct();
+            this.attributes = {};
             /**
              * Uniform渲染数据
              */
-            this.uniforms = new feng3d.UniformRenderData();
+            this.uniforms = {};
         }
+        RenderAtomic.prototype.addUniform = function (name, uniformData) {
+            this.uniforms[name] = uniformData;
+        };
+        RenderAtomic.prototype.removeUniform = function (name) {
+            var uniformData = this.uniforms[name];
+            return uniformData;
+        };
+        RenderAtomic.prototype.addAttribute = function (name, attributeData) {
+            this.attributes[name] = attributeData;
+        };
+        RenderAtomic.prototype.removeAttribute = function (name) {
+            var uniformData = this.attributes[name];
+            return uniformData;
+        };
         RenderAtomic.prototype.invalidateShader = function () {
             this.shader.invalidate();
+        };
+        /**
+         * 激活属性
+         */
+        RenderAtomic.prototype.activeAttributes = function (gl, attributeInfos) {
+            for (var i = 0; i < attributeInfos.length; i++) {
+                var activeInfo = attributeInfos[i];
+                var buffer = this.attributes[activeInfo.name];
+                buffer.active(gl, activeInfo.location);
+            }
+        };
+        /**
+         * 激活常量
+         */
+        RenderAtomic.prototype.activeUniforms = function (gl, uniformInfos) {
+            for (var o = 0; o < uniformInfos.length; o++) {
+                var activeInfo = uniformInfos[o];
+                if (activeInfo.uniformBaseName) {
+                    var baseName = activeInfo.uniformBaseName;
+                    var uniformData = this.uniforms[baseName];
+                    if (uniformData instanceof Function) {
+                        uniformData = uniformData();
+                    }
+                    if (uniformData instanceof feng3d.UniformData) {
+                        uniformData = uniformData.data;
+                    }
+                    //处理数组
+                    for (var j = 0; j < activeInfo.size; j++) {
+                        this.setContext3DUniform(gl, { name: baseName + ("[" + j + "]"), type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j], textureID: activeInfo.textureID }, uniformData[j]);
+                    }
+                }
+                else {
+                    var uniformData = this.uniforms[activeInfo.name];
+                    if (uniformData instanceof Function) {
+                        uniformData = uniformData();
+                    }
+                    if (uniformData instanceof feng3d.UniformData) {
+                        uniformData = uniformData.data;
+                    }
+                    this.setContext3DUniform(gl, activeInfo, uniformData);
+                }
+            }
+        };
+        /**
+         * 设置环境Uniform数据
+         */
+        RenderAtomic.prototype.setContext3DUniform = function (gl, activeInfo, data) {
+            var location = activeInfo.uniformLocation;
+            switch (activeInfo.type) {
+                case feng3d.GL.INT:
+                    gl.uniform1i(location, data);
+                    break;
+                case feng3d.GL.FLOAT_MAT4:
+                    gl.uniformMatrix4fv(location, false, data.rawData);
+                    break;
+                case feng3d.GL.FLOAT:
+                    gl.uniform1f(location, data);
+                    break;
+                case feng3d.GL.FLOAT_VEC2:
+                    gl.uniform2f(location, data.x, data.y);
+                    break;
+                case feng3d.GL.FLOAT_VEC3:
+                    gl.uniform3f(location, data.x, data.y, data.z);
+                    break;
+                case feng3d.GL.FLOAT_VEC4:
+                    gl.uniform4f(location, data.x, data.y, data.z, data.w);
+                    break;
+                case feng3d.GL.SAMPLER_2D:
+                case feng3d.GL.SAMPLER_CUBE:
+                    var textureInfo = data;
+                    //激活纹理编号
+                    gl.activeTexture(feng3d.GL["TEXTURE" + activeInfo.textureID]);
+                    textureInfo.active(gl);
+                    //设置纹理所在采样编号
+                    gl.uniform1i(location, activeInfo.textureID);
+                    break;
+                default:
+                    throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + activeInfo.name + " " + data;
+            }
         };
         return RenderAtomic;
     }());
@@ -5672,22 +5684,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var AttributeRenderDataStuct = (function () {
-        function AttributeRenderDataStuct() {
-        }
-        /**
-         * 激活属性
-         */
-        AttributeRenderDataStuct.prototype.activeAttributes = function (gl, attributeInfos) {
-            for (var i = 0; i < attributeInfos.length; i++) {
-                var activeInfo = attributeInfos[i];
-                var buffer = this[activeInfo.name];
-                buffer.active(gl, activeInfo.location);
-            }
-        };
-        return AttributeRenderDataStuct;
-    }());
-    feng3d.AttributeRenderDataStuct = AttributeRenderDataStuct;
     /**
      * 属性渲染数据
      * @author feng 2014-8-14
@@ -6659,8 +6655,8 @@ var feng3d;
             if (!shaderProgram)
                 return;
             //
-            renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
-            renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
+            renderAtomic.activeAttributes(gl, shaderProgram.attributes);
+            renderAtomic.activeUniforms(gl, shaderProgram.uniforms);
             dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
         };
         /**

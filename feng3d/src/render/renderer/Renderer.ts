@@ -83,8 +83,8 @@ namespace feng3d
             if (!shaderProgram)
                 return;
             //
-            renderAtomic.attributes.activeAttributes(gl, shaderProgram.attributes);
-            renderAtomic.uniforms.activeUniforms(gl, shaderProgram.uniforms);
+            renderAtomic.activeAttributes(gl, shaderProgram.attributes);
+            renderAtomic.activeUniforms(gl, shaderProgram.uniforms);
             dodraw(gl, renderAtomic.shader.shaderParams, renderAtomic.indexBuffer, renderAtomic.instanceCount);
         }
 

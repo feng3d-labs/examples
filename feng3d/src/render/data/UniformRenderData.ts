@@ -1,9 +1,6 @@
 namespace feng3d
 {
-    /**
-     * Uniform渲染数据
-     */
-    export class UniformRenderData
+    export interface UniformRenderData
     {
         /**
          * 模型矩阵
@@ -229,86 +226,5 @@ namespace feng3d
          * 单位深度映射到屏幕像素值
          */
         u_scaleByDepth: UniformData<number>;
-
-        /**
-         * 激活常量
-         */
-        public activeUniforms(gl: GL, uniformInfos: WebGLActiveInfo[])
-        {
-            for (var o = 0; o < uniformInfos.length; o++)
-            {
-                var activeInfo = uniformInfos[o];
-                if (activeInfo.uniformBaseName)
-                {
-                    var baseName = activeInfo.uniformBaseName;
-                    var uniformData = this[baseName];
-                    if (uniformData instanceof Function)
-                    {
-                        uniformData = uniformData();
-                    }
-                    if (uniformData instanceof UniformData)
-                    {
-                        uniformData = uniformData.data;
-                    }
-                    //处理数组
-                    for (var j = 0; j < activeInfo.size; j++)
-                    {
-                        this.setContext3DUniform(gl, { name: baseName + `[${j}]`, type: activeInfo.type, uniformLocation: activeInfo.uniformLocation[j], textureID: activeInfo.textureID }, uniformData[j]);
-                    }
-                } else
-                {
-                    var uniformData = this[activeInfo.name];
-                    if (uniformData instanceof Function)
-                    {
-                        uniformData = uniformData();
-                    }
-                    if (uniformData instanceof UniformData)
-                    {
-                        uniformData = uniformData.data;
-                    }
-                    this.setContext3DUniform(gl, activeInfo, uniformData);
-                }
-            }
-        }
-
-        /**
-         * 设置环境Uniform数据
-         */
-        private setContext3DUniform(gl: GL, activeInfo: { name: string; uniformLocation: WebGLUniformLocation, type: number; textureID: number }, data)
-        {
-            var location = activeInfo.uniformLocation;
-            switch (activeInfo.type)
-            {
-                case GL.INT:
-                    gl.uniform1i(location, data);
-                    break;
-                case GL.FLOAT_MAT4:
-                    gl.uniformMatrix4fv(location, false, data.rawData);
-                    break;
-                case GL.FLOAT:
-                    gl.uniform1f(location, data);
-                    break;
-                case GL.FLOAT_VEC2:
-                    gl.uniform2f(location, data.x, data.y);
-                    break;
-                case GL.FLOAT_VEC3:
-                    gl.uniform3f(location, data.x, data.y, data.z);
-                    break;
-                case GL.FLOAT_VEC4:
-                    gl.uniform4f(location, data.x, data.y, data.z, data.w);
-                    break;
-                case GL.SAMPLER_2D:
-                case GL.SAMPLER_CUBE:
-                    var textureInfo = <TextureInfo>data;
-                    //激活纹理编号
-                    gl.activeTexture(GL["TEXTURE" + activeInfo.textureID]);
-                    textureInfo.active(gl);
-                    //设置纹理所在采样编号
-                    gl.uniform1i(location, activeInfo.textureID);
-                    break;
-                default:
-                    throw `无法识别的uniform类型 ${activeInfo.name} ${data}`;
-            }
-        }
     }
 }

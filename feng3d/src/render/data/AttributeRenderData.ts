@@ -1,6 +1,6 @@
 namespace feng3d
 {
-    export class AttributeRenderDataStuct
+    export interface AttributeRenderDataStuct
     {
         /**
          * 坐标
@@ -46,19 +46,6 @@ namespace feng3d
          * 关节权重
          */
         a_jointweight1: AttributeRenderData;
-
-        /**
-         * 激活属性
-         */
-        public activeAttributes(gl: GL, attributeInfos: WebGLActiveInfo[])
-        {
-            for (var i = 0; i < attributeInfos.length; i++)
-            {
-                var activeInfo = attributeInfos[i];
-                var buffer: AttributeRenderData = this[activeInfo.name];
-                buffer.active(gl, activeInfo.location);
-            }
-        }
     }
 
 	/**

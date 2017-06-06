@@ -41,7 +41,7 @@ namespace feng3d
         /**
          * 属性数据列表
          */
-        public attributes: AttributeRenderDataStuct = <any>{};
+        private attributes: AttributeRenderDataStuct = <any>{};
 
         /**
          * Uniform渲染数据

@@ -90,7 +90,7 @@ namespace feng3d
             renderData.indexBuffer = this._indexBuffer;
             for (var attributeName in this._attributes)
             {
-                renderData.attributes[attributeName] = this._attributes[attributeName];
+                renderData.addAttribute(attributeName, this._attributes[attributeName]);
             }
             super.updateRenderData(renderContext, renderData);
         }

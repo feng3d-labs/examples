@@ -2,6 +2,8 @@ namespace feng3d
 {
     export interface AttributeRenderDataStuct
     {
+        [name: string]: AttributeRenderData;
+
         /**
          * 坐标
          */

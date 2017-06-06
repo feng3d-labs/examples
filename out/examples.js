@@ -9022,7 +9022,7 @@ var feng3d;
             this.updateGrometry();
             renderData.indexBuffer = this._indexBuffer;
             for (var attributeName in this._attributes) {
-                renderData.attributes[attributeName] = this._attributes[attributeName];
+                renderData.addAttribute(attributeName, this._attributes[attributeName]);
             }
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -16010,7 +16010,7 @@ var feng3d;
             renderData.uniforms.u_particleTime = feng3d.UniformData.getUniformData(function () { return _this.time; });
             renderData.instanceCount = this.numParticles;
             for (var attributeName in this._attributes) {
-                renderData.attributes[attributeName] = this._attributes[attributeName];
+                renderData.addAttribute(attributeName, this._attributes[attributeName]);
             }
             var components = this._animations;
             components.forEach(function (element) {
@@ -16035,7 +16035,7 @@ var feng3d;
             }
             //更新宏定义
             var boolMacros = renderData.shader.shaderMacro.boolMacros;
-            for (var attribute in renderData.attributes) {
+            for (var attribute in this._attributes) {
                 boolMacros["D_" + attribute] = true;
             }
             for (var uniform in particleGlobal) {

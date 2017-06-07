@@ -36,6 +36,36 @@ namespace feng3d
         private _fragmentCode: string;
     }
 
+    export enum MacroType
+    {
+        value,
+        bool,
+        add
+    }
+
+    export class Macro
+    {
+        public static getValueMacro(name: string, value: number)
+        {
+            return new Macro(MacroType.value, name, value);
+        }
+
+        public static getBoolMacro(name: string, value: boolean)
+        {
+            return new Macro(MacroType.bool, name, value);
+        }
+
+        public static getAddMacro(name: string, value: number)
+        {
+            return new Macro(MacroType.bool, name, value);
+        }
+
+        constructor(public type: MacroType, public name: string, public value: number | boolean)
+        {
+
+        }
+    }
+
     export class ShaderRenderData
     {
         public uuid: string;
@@ -45,42 +75,35 @@ namespace feng3d
         private _resultVertexCode: string;
         private _resultFragmentCode: string;
 
-        /**
-         * 顶点渲染程序代码
-         */
-        public get vertexCode()
+        public setShaderCode(shaderCode: ShaderCode)
         {
-            return this._vertexCode;
+            this.shaderCode = shaderCode;
         }
-        public set vertexCode(value)
-        {
-            if (this._vertexCode == value)
-                return;
-            this._vertexCode = value;
-            this.invalidate();
-        }
-        private _vertexCode: string;
-
-        /**
-         * 片段渲染程序代码
-         */
-        public get fragmentCode()
-        {
-            return this._fragmentCode;
-        }
-        public set fragmentCode(value)
-        {
-            if (this._fragmentCode == value)
-                return;
-            this._fragmentCode = value;
-            this.invalidate();
-        }
-        private _fragmentCode: string;
+        private shaderCode: ShaderCode;
 
         /**
          * 渲染参数
          */
         public shaderParams: ShaderParams = <any>{};
+
+        public setMacro(macro: Macro)
+        {
+            var index = this.macros.indexOf(macro);
+            if (index != - 1)
+            {
+                this.macros.push(macro);
+            }
+        }
+
+        public removeMacro(macro: Macro)
+        {
+            var index = this.macros.indexOf(macro);
+            if (index != - 1)
+            {
+                this.macros.splice(index, 1);
+            }
+        }
+        private macros: Macro[] = [];
 
         /**
          * 着色器宏定义
@@ -99,12 +122,16 @@ namespace feng3d
          */
         public activeShaderProgram(gl: GL)
         {
-            if (!this.vertexCode || !this.fragmentCode)
+            if (!this.shaderCode || !this.shaderCode.vertexCode || !this.shaderCode.fragmentCode)
                 return null;
 
             if (this._invalid)
             {
-                this.update();
+                //应用宏
+                var shaderMacroStr = ShaderLib.getMacroCode(this.shaderMacro);
+                this._resultVertexCode = this.shaderCode.vertexCode.replace(/#define\s+macros/, shaderMacroStr);
+                this._resultFragmentCode = this.shaderCode.fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
+                this.version++;
             }
 
             //渲染程序
@@ -128,15 +155,6 @@ namespace feng3d
             }
             gl.useProgram(shaderProgram);
             return shaderProgram;
-        }
-
-        private update()
-        {
-            //应用宏
-            var shaderMacroStr = ShaderLib.getMacroCode(this.shaderMacro);
-            this._resultVertexCode = this.vertexCode.replace(/#define\s+macros/, shaderMacroStr);
-            this._resultFragmentCode = this.fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
-            this.version++;
         }
 
         public invalidate()

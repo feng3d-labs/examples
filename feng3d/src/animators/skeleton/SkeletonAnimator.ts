@@ -80,7 +80,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform("u_skeletonGlobalMatriices", UniformData.getUniformData(() => this.globalMatrices));
+            renderData.addUniform(UniformData.getUniformData("u_skeletonGlobalMatriices",() => this.globalMatrices));
             super.updateRenderData(renderContext, renderData);
         }
 

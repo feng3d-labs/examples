@@ -74,9 +74,9 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform("u_diffuse", UniformData.getUniformData(this.color));
-            renderData.addUniform("s_diffuse", UniformData.getUniformData(this.difuseTexture));
-            renderData.addUniform("u_alphaThreshold", UniformData.getUniformData(this.alphaThreshold));
+            renderData.addUniform(UniformData.getUniformData("u_diffuse",this.color));
+            renderData.addUniform(UniformData.getUniformData("s_diffuse",this.difuseTexture));
+            renderData.addUniform(UniformData.getUniformData("u_alphaThreshold",this.alphaThreshold));
             //
             super.updateRenderData(renderContext, renderData);
         }

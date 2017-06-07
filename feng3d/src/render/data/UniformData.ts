@@ -1,24 +1,19 @@
 namespace feng3d
 {
-    export class UniformData<T>
+    export class UniformData<K extends keyof UniformRenderData>
     {
-        public get data()
+        public name: K;
+        public data: UniformRenderData[K];
+
+        constructor(name: K, data: UniformRenderData[K])
         {
-            if (this._data instanceof Function)
-                return this._data();
-            return this._data;
+            this.name = name;
+            this.data = data;
         }
 
-        private _data: T | (() => T);
-
-        constructor(data: T | (() => T))
+        public static getUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
         {
-            this._data = data;
-        }
-
-        public static getUniformData<T>(data: T | (() => T))
-        {
-            return new UniformData(data);
+            return new UniformData(name, data);
         }
     }
 }

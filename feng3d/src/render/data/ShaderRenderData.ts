@@ -52,6 +52,10 @@ namespace feng3d
 
     export class Macro
     {
+        type: MacroType;
+        name: string;
+        value: number | boolean;
+
         public static getValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
         {
             return { type: MacroType.value, name: name, value: value };
@@ -68,28 +72,21 @@ namespace feng3d
         }
     }
 
-    export interface Macro
-    {
-        type: MacroType;
-        name: string;
-        value: number | boolean;
-    }
-
-    export interface ValueMacro extends Macro
+    export class ValueMacro extends Macro
     {
         type: MacroType.value;
         name: string;
         value: number;
     }
 
-    export interface BoolMacro extends Macro
+    export class BoolMacro extends Macro
     {
         type: MacroType.bool;
         name: string;
         value: boolean;
     }
 
-    export interface AddMacro extends Macro
+    export class AddMacro extends Macro
     {
         type: MacroType.add;
         name: string;

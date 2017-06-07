@@ -112,12 +112,12 @@ namespace feng3d
             }
 
             this.time = ((getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.addUniform("u_particleTime", UniformData.getUniformData(() => this.time));
+            renderData.addUniform(UniformData.getUniformData("u_particleTime", () => this.time));
             renderData.instanceCount = this.numParticles;
 
             for (var attributeName in this._attributes)
             {
-                renderData.addAttribute(attributeName, this._attributes[attributeName]);
+                renderData.addAttribute(<any>attributeName, this._attributes[attributeName]);
             }
 
             var components = this._animations;
@@ -147,7 +147,7 @@ namespace feng3d
             //更新常量数据
             for (var uniform in particleGlobal)
             {
-                renderData.addUniform(<any>("u_particle_" + uniform), particleGlobal[uniform]);
+                renderData.addUniform(UniformData.getUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]));
             }
 
             //更新宏定义

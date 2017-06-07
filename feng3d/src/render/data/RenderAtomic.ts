@@ -6,9 +6,9 @@ namespace feng3d
      */
     export class RenderAtomic
     {
-        public addUniform<K extends keyof UniformRenderData>(name: K, uniformData: UniformRenderData[K])
+        public addUniform(uniformData: UniformData<any>)
         {
-            this.uniforms[name] = uniformData;
+            this.uniforms[uniformData.name] = uniformData;
         }
 
         public removeUniform<K extends keyof UniformRenderData>(name: K)
@@ -90,13 +90,13 @@ namespace feng3d
                 {
                     var baseName = activeInfo.uniformBaseName;
                     var uniformData = this.uniforms[baseName];
-                    if (uniformData instanceof Function)
-                    {
-                        uniformData = uniformData();
-                    }
                     if (uniformData instanceof UniformData)
                     {
                         uniformData = uniformData.data;
+                    }
+                    if (uniformData instanceof Function)
+                    {
+                        uniformData = uniformData();
                     }
                     //处理数组
                     for (var j = 0; j < activeInfo.size; j++)
@@ -106,13 +106,13 @@ namespace feng3d
                 } else
                 {
                     var uniformData = this.uniforms[activeInfo.name];
-                    if (uniformData instanceof Function)
-                    {
-                        uniformData = uniformData();
-                    }
                     if (uniformData instanceof UniformData)
                     {
                         uniformData = uniformData.data;
+                    }
+                    if (uniformData instanceof Function)
+                    {
+                        uniformData = uniformData();
                     }
                     this.setContext3DUniform(gl, activeInfo, uniformData);
                 }

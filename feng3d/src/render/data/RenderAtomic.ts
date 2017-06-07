@@ -2,6 +2,11 @@ namespace feng3d
 {
     export class RenderData
     {
+        public static getIndexBuffer(indices: Uint16Array)
+        {
+            return new IndexRenderData(indices);
+        }
+
         public static getUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
         {
             return new UniformData(name, data);
@@ -10,6 +15,26 @@ namespace feng3d
         public static getAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
         {
             return new AttributeRenderData(name, data, stride);
+        }
+
+        public static getShaderCode(vertexCode: string, fragmentCode: string)
+        {
+            return new ShaderCode(vertexCode, fragmentCode);
+        }
+        
+        public static getValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
+        {
+            return { type: MacroType.value, name: name, value: value };
+        }
+
+        public static getBoolMacro<K extends keyof BoolMacros>(name: K, value: boolean): BoolMacro
+        {
+            return { type: MacroType.bool, name: name, value: value };
+        }
+
+        public static getAddMacro<K extends keyof IAddMacros>(name: K, value: number): AddMacro
+        {
+            return { type: MacroType.add, name: name, value: value };
         }
     }
 

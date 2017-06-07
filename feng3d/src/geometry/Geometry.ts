@@ -137,9 +137,7 @@ namespace feng3d
 		 */
         public setIndices(indices: Uint16Array)
         {
-            this._indexBuffer = new IndexRenderData();
-            this._indexBuffer.indices = indices;
-            this._indexBuffer.count = indices.length;
+            this._indexBuffer = RenderData.getIndexBuffer(indices);
             this.invalidateRenderData();
             this.dispatchEvent(new GeometryEvent(GeometryEvent.CHANGED_INDEX_DATA));
         }

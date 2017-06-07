@@ -55,21 +55,6 @@ namespace feng3d
         type: MacroType;
         name: string;
         value: number | boolean;
-
-        public static getValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
-        {
-            return { type: MacroType.value, name: name, value: value };
-        }
-
-        public static getBoolMacro<K extends keyof BoolMacros>(name: K, value: boolean): BoolMacro
-        {
-            return { type: MacroType.bool, name: name, value: value };
-        }
-
-        public static getAddMacro<K extends keyof IAddMacros>(name: K, value: number): AddMacro
-        {
-            return { type: MacroType.add, name: name, value: value };
-        }
     }
 
     export class ValueMacro extends Macro

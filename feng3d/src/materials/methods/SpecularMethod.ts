@@ -76,7 +76,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(Macro.getBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData()));
+            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData()));
         }
     }
 }

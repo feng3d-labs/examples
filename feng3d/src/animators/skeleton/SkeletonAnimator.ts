@@ -89,8 +89,8 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(Macro.getValueMacro("NUM_SKELETONJOINT", this._skeleton.numJoints));
-            renderData.shader.addMacro(Macro.getBoolMacro("HAS_SKELETON_ANIMATION", !!this._activeSkeletonState));
+            renderData.shader.addMacro(RenderData.getValueMacro("NUM_SKELETONJOINT", this._skeleton.numJoints));
+            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_SKELETON_ANIMATION", !!this._activeSkeletonState));
         }
 
 		/**

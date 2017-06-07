@@ -16,7 +16,7 @@ namespace feng3d
         }
         public set indices(value)
         {
-            if(this._indices == value)
+            if (this._indices == value)
                 return;
             this._indices = value;
             this.invalidate();
@@ -46,8 +46,10 @@ namespace feng3d
          */
         private _invalid = true;
 
-        constructor()
+        constructor(indices: Uint16Array)
         {
+            this._indices = indices;
+            this.count = indices.length;
         }
 
         /**

@@ -137,7 +137,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(Macro.getBoolMacro("HAS_TERRAIN_METHOD", true));
+            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_TERRAIN_METHOD", true));
         }
     }
 }

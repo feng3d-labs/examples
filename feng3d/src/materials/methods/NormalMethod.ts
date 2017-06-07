@@ -48,7 +48,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(RenderData.getUniformData("s_normal",this.normalTexture));
+            renderData.addUniform(RenderData.createUniformData("s_normal",this.normalTexture));
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -58,7 +58,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData()));
+            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData()));
         }
     }
 }

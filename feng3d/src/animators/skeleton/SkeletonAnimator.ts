@@ -80,7 +80,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(RenderData.getUniformData("u_skeletonGlobalMatriices",() => this.globalMatrices));
+            renderData.addUniform(RenderData.createUniformData("u_skeletonGlobalMatriices",() => this.globalMatrices));
             super.updateRenderData(renderContext, renderData);
         }
 
@@ -89,8 +89,8 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.getValueMacro("NUM_SKELETONJOINT", this._skeleton.numJoints));
-            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_SKELETON_ANIMATION", !!this._activeSkeletonState));
+            renderData.shader.addMacro(RenderData.createValueMacro("NUM_SKELETONJOINT", this._skeleton.numJoints));
+            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_SKELETON_ANIMATION", !!this._activeSkeletonState));
         }
 
 		/**

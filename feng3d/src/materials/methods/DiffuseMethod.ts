@@ -74,9 +74,9 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(RenderData.getUniformData("u_diffuse",this.color));
-            renderData.addUniform(RenderData.getUniformData("s_diffuse",this.difuseTexture));
-            renderData.addUniform(RenderData.getUniformData("u_alphaThreshold",this.alphaThreshold));
+            renderData.addUniform(RenderData.createUniformData("u_diffuse",this.color));
+            renderData.addUniform(RenderData.createUniformData("s_diffuse",this.difuseTexture));
+            renderData.addUniform(RenderData.createUniformData("u_alphaThreshold",this.alphaThreshold));
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -86,7 +86,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_DIFFUSE_SAMPLER", this.difuseTexture.checkRenderData()));
+            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_DIFFUSE_SAMPLER", this.difuseTexture.checkRenderData()));
         }
     }
 }

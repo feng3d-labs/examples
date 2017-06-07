@@ -123,11 +123,11 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(RenderData.getUniformData("s_blendTexture",this.blendTexture));
-            renderData.addUniform(RenderData.getUniformData("s_splatTexture1",this.splatTexture1));
-            renderData.addUniform(RenderData.getUniformData("s_splatTexture2",this.splatTexture2));
-            renderData.addUniform(RenderData.getUniformData("s_splatTexture3",this.splatTexture3));
-            renderData.addUniform(RenderData.getUniformData("u_splatRepeats",this.splatRepeats));
+            renderData.addUniform(RenderData.createUniformData("s_blendTexture",this.blendTexture));
+            renderData.addUniform(RenderData.createUniformData("s_splatTexture1",this.splatTexture1));
+            renderData.addUniform(RenderData.createUniformData("s_splatTexture2",this.splatTexture2));
+            renderData.addUniform(RenderData.createUniformData("s_splatTexture3",this.splatTexture3));
+            renderData.addUniform(RenderData.createUniformData("u_splatRepeats",this.splatRepeats));
 
             super.updateRenderData(renderContext, renderData);
         }
@@ -137,7 +137,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_TERRAIN_METHOD", true));
+            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_TERRAIN_METHOD", true));
         }
     }
 }

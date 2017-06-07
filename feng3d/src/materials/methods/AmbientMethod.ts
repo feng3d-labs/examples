@@ -54,8 +54,8 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(RenderData.getUniformData("u_ambient",this._color));
-            renderData.addUniform(RenderData.getUniformData("s_ambient",this._ambientTexture));
+            renderData.addUniform(RenderData.createUniformData("u_ambient",this._color));
+            renderData.addUniform(RenderData.createUniformData("s_ambient",this._ambientTexture));
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -65,7 +65,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_AMBIENT_SAMPLER", this.ambientTexture.checkRenderData()));
+            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_AMBIENT_SAMPLER", this.ambientTexture.checkRenderData()));
         }
     }
 }

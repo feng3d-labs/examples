@@ -87,11 +87,11 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             renderData.addUniform
-            renderData.addUniform(RenderData.getUniformData("u_fogColor",this._fogColor));
-            renderData.addUniform(RenderData.getUniformData("u_fogMinDistance",this._minDistance));
-            renderData.addUniform(RenderData.getUniformData("u_fogMaxDistance",this._maxDistance));
-            renderData.addUniform(RenderData.getUniformData("u_fogDensity",this._density));
-            renderData.addUniform(RenderData.getUniformData("u_fogMode",this._mode));
+            renderData.addUniform(RenderData.createUniformData("u_fogColor",this._fogColor));
+            renderData.addUniform(RenderData.createUniformData("u_fogMinDistance",this._minDistance));
+            renderData.addUniform(RenderData.createUniformData("u_fogMaxDistance",this._maxDistance));
+            renderData.addUniform(RenderData.createUniformData("u_fogDensity",this._density));
+            renderData.addUniform(RenderData.createUniformData("u_fogMode",this._mode));
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -102,8 +102,8 @@ namespace feng3d
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.shader.addMacro(RenderData.getBoolMacro("HAS_FOG_METHOD", true));
-            renderData.shader.addMacro(RenderData.getAddMacro("V_GLOBAL_POSITION_NEED", 1));
+            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_FOG_METHOD", true));
+            renderData.shader.addMacro(RenderData.createAddMacro("V_GLOBAL_POSITION_NEED", 1));
         }
     }
 

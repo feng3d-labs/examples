@@ -36,7 +36,7 @@ namespace feng3d
             var directionalLights = DirectionalLight.directionalLights;
             this.camera.updateRenderData(this, renderAtomic);
 
-            renderAtomic.shader.shaderMacro.valueMacros.NUM_LIGHT = Light.lights.length;
+            renderAtomic.shader.addMacro(Macro.getValueMacro("NUM_LIGHT", Light.lights.length));
             //收集点光源数据
             var pointLightPositions: Vector3D[] = [];
             var pointLightColors: Vector3D[] = [];
@@ -51,13 +51,13 @@ namespace feng3d
                 pointLightRanges.push(pointLight.range);
             }
             //设置点光源数据
-            renderAtomic.shader.shaderMacro.valueMacros.NUM_POINTLIGHT = pointLights.length;
+            renderAtomic.shader.addMacro(Macro.getValueMacro("NUM_POINTLIGHT", pointLights.length));
             if (pointLights.length > 0)
             {
-                renderAtomic.shader.shaderMacro.addMacros.A_NORMAL_NEED = 1;
-                renderAtomic.shader.shaderMacro.addMacros.V_NORMAL_NEED = 1;
-                renderAtomic.shader.shaderMacro.addMacros.V_GLOBAL_POSITION_NEED = 1;
-                renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
+                renderAtomic.shader.addMacro(Macro.getAddMacro("A_NORMAL_NEED", 1));
+                renderAtomic.shader.addMacro(Macro.getAddMacro("V_NORMAL_NEED", 1));
+                renderAtomic.shader.addMacro(Macro.getAddMacro("V_GLOBAL_POSITION_NEED", 1));
+                renderAtomic.shader.addMacro(Macro.getAddMacro("U_CAMERAMATRIX_NEED", 1));
                 //
                 renderAtomic.addUniform("u_pointLightPositions", UniformData.getUniformData(pointLightPositions));
                 renderAtomic.addUniform("u_pointLightColors", UniformData.getUniformData(pointLightColors));
@@ -74,12 +74,12 @@ namespace feng3d
                 directionalLightColors.push(directionalLight.color);
                 directionalLightIntensitys.push(directionalLight.intensity);
             }
-            renderAtomic.shader.shaderMacro.valueMacros.NUM_DIRECTIONALLIGHT = directionalLights.length;
+            renderAtomic.shader.addMacro(Macro.getValueMacro("NUM_DIRECTIONALLIGHT", directionalLights.length));
             if (directionalLights.length > 0)
             {
-                renderAtomic.shader.shaderMacro.addMacros.A_NORMAL_NEED = 1;
-                renderAtomic.shader.shaderMacro.addMacros.V_NORMAL_NEED = 1;
-                renderAtomic.shader.shaderMacro.addMacros.U_CAMERAMATRIX_NEED = 1;
+                renderAtomic.shader.addMacro(Macro.getAddMacro("A_NORMAL_NEED", 1));
+                renderAtomic.shader.addMacro(Macro.getAddMacro("V_NORMAL_NEED", 1));
+                renderAtomic.shader.addMacro(Macro.getAddMacro("U_CAMERAMATRIX_NEED", 1));
                 //
                 renderAtomic.addUniform("u_directionalLightDirections", UniformData.getUniformData(directionalLightDirections));
                 renderAtomic.addUniform("u_directionalLightColors", UniformData.getUniformData(directionalLightColors));

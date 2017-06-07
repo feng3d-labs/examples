@@ -65,7 +65,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.shaderMacro.boolMacros.HAS_AMBIENT_SAMPLER = this.ambientTexture.checkRenderData();
+            renderData.shader.addMacro(Macro.getBoolMacro("HAS_AMBIENT_SAMPLER", this.ambientTexture.checkRenderData()));
         }
     }
 }

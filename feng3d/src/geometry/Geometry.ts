@@ -87,7 +87,7 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             this.updateGrometry();
-            renderData.indexBuffer = this._indexBuffer;
+            renderData.setIndexBuffer(this._indexBuffer);
             for (var attributeName in this._attributes)
             {
                 renderData.addAttribute(attributeName, this._attributes[attributeName]);

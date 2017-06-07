@@ -86,7 +86,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.shaderMacro.boolMacros.HAS_DIFFUSE_SAMPLER = this.difuseTexture.checkRenderData();
+            renderData.shader.addMacro(Macro.getBoolMacro("HAS_DIFFUSE_SAMPLER", this.difuseTexture.checkRenderData()));
         }
     }
 }

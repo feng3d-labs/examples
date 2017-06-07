@@ -34,6 +34,13 @@ namespace feng3d
             this.dispatchEvent(new Event(Event.CHANGE));
         }
         private _fragmentCode: string;
+
+        constructor(vertexCode: string, fragmentCode: string)
+        {
+            super();
+            this._vertexCode = vertexCode;
+            this._fragmentCode = fragmentCode;
+        }
     }
 
     export enum MacroType
@@ -45,25 +52,48 @@ namespace feng3d
 
     export class Macro
     {
-        public static getValueMacro(name: string, value: number)
+        public static getValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
         {
-            return new Macro(MacroType.value, name, value);
+            return { type: MacroType.value, name: name, value: value };
         }
 
-        public static getBoolMacro(name: string, value: boolean)
+        public static getBoolMacro<K extends keyof BoolMacros>(name: K, value: boolean): BoolMacro
         {
-            return new Macro(MacroType.bool, name, value);
+            return { type: MacroType.bool, name: name, value: value };
         }
 
-        public static getAddMacro(name: string, value: number)
+        public static getAddMacro<K extends keyof IAddMacros>(name: K, value: number): AddMacro
         {
-            return new Macro(MacroType.bool, name, value);
+            return { type: MacroType.add, name: name, value: value };
         }
+    }
 
-        constructor(public type: MacroType, public name: string, public value: number | boolean)
-        {
+    export interface Macro
+    {
+        type: MacroType;
+        name: string;
+        value: number | boolean;
+    }
 
-        }
+    export interface ValueMacro extends Macro
+    {
+        type: MacroType.value;
+        name: string;
+        value: number;
+    }
+
+    export interface BoolMacro extends Macro
+    {
+        type: MacroType.bool;
+        name: string;
+        value: boolean;
+    }
+
+    export interface AddMacro extends Macro
+    {
+        type: MacroType.add;
+        name: string;
+        value: number;
     }
 
     export class ShaderRenderData
@@ -86,10 +116,10 @@ namespace feng3d
          */
         public shaderParams: ShaderParams = <any>{};
 
-        public setMacro(macro: Macro)
+        public addMacro(macro: Macro)
         {
             var index = this.macros.indexOf(macro);
-            if (index != - 1)
+            if (index == - 1)
             {
                 this.macros.push(macro);
             }
@@ -105,16 +135,10 @@ namespace feng3d
         }
         private macros: Macro[] = [];
 
-        /**
-         * 着色器宏定义
-         */
-        public shaderMacro: ShaderMacro;
-
         constructor()
         {
             Object.defineProperty(this, "uuid", { value: Math.generateUUID() });
             Object.defineProperty(this, "version", { value: 0, writable: true });
-            this.shaderMacro = new ShaderMacro();
         }
 
         /**
@@ -128,7 +152,7 @@ namespace feng3d
             if (this._invalid)
             {
                 //应用宏
-                var shaderMacroStr = ShaderLib.getMacroCode(this.shaderMacro);
+                var shaderMacroStr = this.getMacroCode(this.macros);
                 this._resultVertexCode = this.shaderCode.vertexCode.replace(/#define\s+macros/, shaderMacroStr);
                 this._resultFragmentCode = this.shaderCode.fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
                 this.version++;
@@ -160,6 +184,53 @@ namespace feng3d
         public invalidate()
         {
             this._invalid = true;
+        }
+
+        private getMacroCode(macros: Macro[])
+        {
+            var macro = { valueMacros: {}, boolMacros: {}, addMacros: {} };
+
+            for (var i = 0; i < macros.length; i++)
+            {
+                var element = macros[i];
+                switch (element.type)
+                {
+                    case MacroType.value:
+                        macro.valueMacros[element.name] = element.value;
+                        break;
+                    case MacroType.bool:
+                        macro.boolMacros[element.name] = macro.boolMacros[element.name] || element.value;
+                        break;
+                    case MacroType.add:
+                        macro.boolMacros[element.name] = ~~macro.boolMacros[element.name] + <number>element.value;
+                        break;
+                }
+            }
+
+            var macroHeader = "";
+            var macroNames = Object.keys(macro.valueMacros);
+            macroNames = macroNames.sort();
+            macroNames.forEach(macroName =>
+            {
+                var value = macro.valueMacros[macroName];
+                macroHeader += `#define ${macroName} ${value}\n`;
+            });
+            macroNames = Object.keys(macro.boolMacros);
+            macroNames = macroNames.sort();
+            macroNames.forEach(macroName =>
+            {
+                var value = macro.boolMacros[macroName];
+                value && (macroHeader += `#define ${macroName}\n`);
+            });
+
+            macroNames = Object.keys(macro.addMacros);
+            macroNames = macroNames.sort();
+            macroNames.forEach(macroName =>
+            {
+                var value = macro.addMacros[macroName];
+                macroHeader += `#define ${macroName} ${value}\n`;
+            });
+            return macroHeader;
         }
     }
 }

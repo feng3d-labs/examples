@@ -180,9 +180,9 @@ namespace feng3d
         {
             //
             renderData.shader.shaderParams.renderMode = this.renderMode;
-            renderData.shader.vertexCode = this.vertexCode;
-            renderData.shader.fragmentCode = this.fragmentCode;
-            renderData.shader.shaderMacro.boolMacros.IS_POINTS_MODE = this.renderMode == RenderMode.POINTS;
+
+            renderData.shader.setShaderCode(new ShaderCode(this.vertexCode, this.fragmentCode));
+            renderData.shader.addMacro(Macro.getBoolMacro("IS_POINTS_MODE", this.renderMode == RenderMode.POINTS));
         }
     }
 }

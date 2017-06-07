@@ -103,7 +103,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.shaderMacro.boolMacros.HAS_PARTICLE_ANIMATOR = true;
+            renderData.shader.addMacro(Macro.getBoolMacro("HAS_PARTICLE_ANIMATOR", true))
             if (this._isDirty)
             {
                 this.startTime = getTimer();
@@ -151,14 +151,13 @@ namespace feng3d
             }
 
             //更新宏定义
-            var boolMacros = renderData.shader.shaderMacro.boolMacros;
             for (var attribute in this._attributes)
             {
-                boolMacros["D_" + attribute] = true;
+                renderData.shader.addMacro(Macro.getBoolMacro(<any>("D_" + attribute), true));
             }
             for (var uniform in particleGlobal)
             {
-                boolMacros["D_u_particle_" + uniform] = true;
+                renderData.shader.addMacro(Macro.getBoolMacro(<any>("D_u_particle_" + uniform), true));
             }
         }
 

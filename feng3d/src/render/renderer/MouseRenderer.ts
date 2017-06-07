@@ -60,8 +60,7 @@ namespace feng3d
             var vertexCode = ShaderLib.getShaderCode(this._shaderName + ".vertex");
             var fragmentCode = ShaderLib.getShaderCode(this._shaderName + ".fragment");
             var shader = new ShaderRenderData();
-            shader.vertexCode = vertexCode;
-            shader.fragmentCode = fragmentCode;
+            shader.setShaderCode(new ShaderCode(vertexCode, fragmentCode));
             // super.drawObject3D(gl, renderAtomic, shader);
         }
     }

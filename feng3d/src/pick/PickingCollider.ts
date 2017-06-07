@@ -22,8 +22,8 @@ namespace feng3d
         public testSubMeshCollision(geometry: Geometry, pickingCollisionVO: PickingCollisionVO, shortestCollisionDistance = 0, bothSides: boolean = true): boolean
         {
             var indexData = geometry.getIndexData().indices;
-            var vertexData = geometry.getVAData(GLAttribute.a_position).data;
-            var uvData = geometry.getVAData(GLAttribute.a_uv).data;
+            var vertexData = geometry.getVAData("a_position").data;
+            var uvData = geometry.getVAData("a_uv").data;
 
             var t = 0;
             var i0 = 0, i1 = 0, i2 = 0;

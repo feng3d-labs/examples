@@ -221,8 +221,8 @@ namespace feng3d
                 }
             }
             var uvs = this.buildUVs();
-            this.setVAData(GLAttribute.a_position, vertices, 3)
-            this.setVAData(GLAttribute.a_uv, uvs, 2);
+            this.setVAData("a_position", vertices, 3)
+            this.setVAData("a_uv", uvs, 2);
             this.setIndices(indices);
             var normals = GeometryUtils.createVertexNormals(indices, vertices);
             this.normals = new Float32Array(normals);

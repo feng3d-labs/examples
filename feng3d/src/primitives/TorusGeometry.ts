@@ -230,9 +230,9 @@ namespace feng3d
 				}
 			}
 
-			this.setVAData(GLAttribute.a_position, this._vertexPositionData, 3);
-			this.setVAData(GLAttribute.a_normal, this._vertexNormalData, 3);
-			this.setVAData(GLAttribute.a_tangent, this._vertexTangentData, 3);
+			this.setVAData("a_position", this._vertexPositionData, 3);
+			this.setVAData("a_normal", this._vertexNormalData, 3);
+			this.setVAData("a_tangent", this._vertexTangentData, 3);
 			this.setIndices(this._rawIndices);
 		}
 
@@ -265,7 +265,7 @@ namespace feng3d
 			}
 
 			// build real data from raw data
-			this.setVAData(GLAttribute.a_uv, data, 2);
+			this.setVAData("a_uv", data, 2);
 
 		}
 	}

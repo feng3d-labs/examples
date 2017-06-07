@@ -48,7 +48,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(UniformData.getUniformData("s_normal",this.normalTexture));
+            renderData.addUniform(RenderData.getUniformData("s_normal",this.normalTexture));
             //
             super.updateRenderData(renderContext, renderData);
         }

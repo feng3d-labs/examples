@@ -112,12 +112,12 @@ namespace feng3d
             }
 
             this.time = ((getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.addUniform(UniformData.getUniformData("u_particleTime", () => this.time));
+            renderData.addUniform(RenderData.getUniformData("u_particleTime", () => this.time));
             renderData.instanceCount = this.numParticles;
 
             for (var attributeName in this._attributes)
             {
-                renderData.addAttribute(<any>attributeName, this._attributes[attributeName]);
+                renderData.addAttribute(this._attributes[attributeName]);
             }
 
             var components = this._animations;
@@ -147,7 +147,7 @@ namespace feng3d
             //更新常量数据
             for (var uniform in particleGlobal)
             {
-                renderData.addUniform(UniformData.getUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]));
+                renderData.addUniform(RenderData.getUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]));
             }
 
             //更新宏定义
@@ -180,7 +180,7 @@ namespace feng3d
             {
                 if (!attributeRenderData)
                 {
-                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(new Float32Array(numParticles), 1, 1)
+                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(attributeID, new Float32Array(numParticles), 1, 1)
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index] = data;
@@ -188,7 +188,7 @@ namespace feng3d
             {
                 if (!attributeRenderData)
                 {
-                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(new Float32Array(numParticles * 3), 3, 1)
+                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(attributeID, new Float32Array(numParticles * 3), 3, 1)
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index * 3] = data.x;
@@ -198,7 +198,7 @@ namespace feng3d
             {
                 if (!attributeRenderData)
                 {
-                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(new Float32Array(numParticles * 4), 4, 1)
+                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(attributeID, new Float32Array(numParticles * 4), 4, 1)
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index * 4] = data.r;

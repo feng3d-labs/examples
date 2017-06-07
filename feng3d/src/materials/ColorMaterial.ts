@@ -39,7 +39,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(UniformData.getUniformData("u_diffuseInput",this.color));
+            renderData.addUniform(RenderData.getUniformData("u_diffuseInput",this.color));
             super.updateRenderData(renderContext, renderData);
         }
     }

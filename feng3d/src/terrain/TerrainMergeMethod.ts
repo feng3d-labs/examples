@@ -81,21 +81,21 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(UniformData.getUniformData("s_blendTexture",this.blendTexture));
-            renderData.addUniform(UniformData.getUniformData("s_splatMergeTexture",this.splatMergeTexture));
-            renderData.addUniform(UniformData.getUniformData("u_splatMergeTextureSize",this.splatMergeTexture.size));
-            renderData.addUniform(UniformData.getUniformData("u_splatRepeats",this.splatRepeats));
+            renderData.addUniform(RenderData.getUniformData("s_blendTexture",this.blendTexture));
+            renderData.addUniform(RenderData.getUniformData("s_splatMergeTexture",this.splatMergeTexture));
+            renderData.addUniform(RenderData.getUniformData("u_splatMergeTextureSize",this.splatMergeTexture.size));
+            renderData.addUniform(RenderData.getUniformData("u_splatRepeats",this.splatRepeats));
             //
-            renderData.addUniform(UniformData.getUniformData("u_imageSize",new Point(2048.0, 1024.0)));
-            renderData.addUniform(UniformData.getUniformData("u_tileSize",new Point(512.0, 512.0)));
-            renderData.addUniform(UniformData.getUniformData("u_maxLod",7));
-            renderData.addUniform(UniformData.getUniformData("u_uvPositionScale",0.001));
-            renderData.addUniform(UniformData.getUniformData("u_tileOffset",[
+            renderData.addUniform(RenderData.getUniformData("u_imageSize",new Point(2048.0, 1024.0)));
+            renderData.addUniform(RenderData.getUniformData("u_tileSize",new Point(512.0, 512.0)));
+            renderData.addUniform(RenderData.getUniformData("u_maxLod",7));
+            renderData.addUniform(RenderData.getUniformData("u_uvPositionScale",0.001));
+            renderData.addUniform(RenderData.getUniformData("u_tileOffset",[
                 new Vector3D(0.5, 0.5, 0.0, 0.0),
                 new Vector3D(0.5, 0.5, 0.5, 0.0),
                 new Vector3D(0.5, 0.5, 0.0, 0.5),
             ]));
-            renderData.addUniform(UniformData.getUniformData("u_lod0vec",new Vector3D(0.5, 1, 0, 0)));
+            renderData.addUniform(RenderData.getUniformData("u_lod0vec",new Vector3D(0.5, 1, 0, 0)));
 
             super.updateRenderData(renderContext, renderData);
         }

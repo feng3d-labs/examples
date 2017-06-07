@@ -114,9 +114,9 @@ namespace feng3d
                 }
             }
             geometry.setIndices(new Uint16Array(indices));
-            geometry.setVAData(GLAttribute.a_position, new Float32Array(vertices), 3);
-            geometry.setVAData(GLAttribute.a_normal, new Float32Array(normals), 3);
-            geometry.setVAData(GLAttribute.a_uv, new Float32Array(uvs), 2);
+            geometry.setVAData("a_position", new Float32Array(vertices), 3);
+            geometry.setVAData("a_normal", new Float32Array(normals), 3);
+            geometry.setVAData("a_uv", new Float32Array(uvs), 2);
             geometry.createVertexTangents();
 
             if (this._mtlData && this._mtlData[subObj.material])

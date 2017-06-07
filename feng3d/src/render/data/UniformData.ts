@@ -10,10 +10,5 @@ namespace feng3d
             this.name = name;
             this.data = data;
         }
-
-        public static getUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
-        {
-            return new UniformData(name, data);
-        }
     }
 }

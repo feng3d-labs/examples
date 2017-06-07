@@ -360,9 +360,9 @@ namespace feng3d
                 }
             }
 
-            this.setVAData(GLAttribute.a_position, vertexPositionData, 3);
-            this.setVAData(GLAttribute.a_normal, vertexNormalData, 3);
-            this.setVAData(GLAttribute.a_tangent, vertexTangentData, 3);
+            this.setVAData("a_position", vertexPositionData, 3);
+            this.setVAData("a_normal", vertexNormalData, 3);
+            this.setVAData("a_tangent", vertexTangentData, 3);
 
             function addVertex(px: number, py: number, pz: number, nx: number, ny: number, nz: number, tx: number, ty: number, tz: number)
             {
@@ -383,7 +383,7 @@ namespace feng3d
 
             //
             var uvData = this.buildUVs();
-            this.setVAData(GLAttribute.a_uv, uvData, 2);
+            this.setVAData("a_uv", uvData, 2);
 
             var indices = this.buildIndices();
             this.setIndices(indices);

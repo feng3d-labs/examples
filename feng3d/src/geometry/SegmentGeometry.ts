@@ -56,8 +56,8 @@ namespace feng3d
                 colorData.set(element.colorData, i * segmentColorStep);
             }
 
-            this.setVAData(GLAttribute.a_position, positionData, 3);
-            this.setVAData(GLAttribute.a_color, colorData, 4);
+            this.setVAData("a_position", positionData, 3);
+            this.setVAData("a_color", colorData, 4);
             this.setIndices(indices);
         }
 

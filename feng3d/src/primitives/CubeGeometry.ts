@@ -124,13 +124,13 @@ namespace feng3d
         protected buildGeometry()
         {
             var vertexPositionData = this.buildPosition();
-            this.setVAData(GLAttribute.a_position, vertexPositionData, 3);
+            this.setVAData("a_position", vertexPositionData, 3);
             var vertexNormalData = this.buildNormal();
-            this.setVAData(GLAttribute.a_normal, vertexNormalData, 3);
+            this.setVAData("a_normal", vertexNormalData, 3);
             var vertexTangentData = this.buildTangent();
-            this.setVAData(GLAttribute.a_tangent, vertexTangentData, 3);
+            this.setVAData("a_tangent", vertexTangentData, 3);
             var uvData = this.buildUVs();
-            this.setVAData(GLAttribute.a_uv, uvData, 2);
+            this.setVAData("a_uv", uvData, 2);
             var indices = this.buildIndices();
             this.setIndices(indices);
         }

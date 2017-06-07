@@ -1,5 +1,18 @@
 namespace feng3d
 {
+    export class RenderData
+    {
+        public static getUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
+        {
+            return new UniformData(name, data);
+        }
+
+        public static getAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
+        {
+            return new AttributeRenderData(name, data, stride);
+        }
+    }
+
     /**
      * 渲染原子（该对象会收集一切渲染所需数据以及参数）
      * @author feng 2016-06-20
@@ -11,21 +24,19 @@ namespace feng3d
             this.uniforms[uniformData.name] = uniformData;
         }
 
-        public removeUniform<K extends keyof UniformRenderData>(name: K)
+        public removeUniform(uniformData: UniformData<any>)
         {
-            var uniformData = this.uniforms[name];
-            return uniformData;
+            delete this.uniforms[uniformData.name];
         }
 
-        public addAttribute<K extends keyof AttributeRenderDataStuct>(name: K, attributeData: AttributeRenderDataStuct[K])
+        public addAttribute(attributeData: AttributeRenderData)
         {
-            this.attributes[name] = attributeData;
+            this.attributes[attributeData.name] = attributeData;
         }
 
-        public removeAttribute<K extends keyof AttributeRenderDataStuct>(name: K)
+        public removeAttribute(attributeData: AttributeRenderData)
         {
-            var uniformData = this.attributes[name];
-            return uniformData;
+            delete this.attributes[attributeData.name];
         }
 
         public setIndexBuffer(indexBuffer: IndexRenderData)

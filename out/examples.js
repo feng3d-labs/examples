@@ -5193,9 +5193,6 @@ var feng3d;
             this.name = name;
             this.data = data;
         }
-        UniformData.getUniformData = function (name, data) {
-            return new UniformData(name, data);
-        };
         return UniformData;
     }());
     feng3d.UniformData = UniformData;
@@ -5461,6 +5458,21 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var RenderData = (function () {
+        function RenderData() {
+        }
+        RenderData.getUniformData = function (name, data) {
+            return new feng3d.UniformData(name, data);
+        };
+        RenderData.getAttributeRenderData = function (name, data, stride, divisor) {
+            if (data === void 0) { data = null; }
+            if (stride === void 0) { stride = 3; }
+            if (divisor === void 0) { divisor = 0; }
+            return new feng3d.AttributeRenderData(name, data, stride);
+        };
+        return RenderData;
+    }());
+    feng3d.RenderData = RenderData;
     /**
      * 渲染原子（该对象会收集一切渲染所需数据以及参数）
      * @author feng 2016-06-20
@@ -5483,16 +5495,14 @@ var feng3d;
         RenderAtomic.prototype.addUniform = function (uniformData) {
             this.uniforms[uniformData.name] = uniformData;
         };
-        RenderAtomic.prototype.removeUniform = function (name) {
-            var uniformData = this.uniforms[name];
-            return uniformData;
+        RenderAtomic.prototype.removeUniform = function (uniformData) {
+            delete this.uniforms[uniformData.name];
         };
-        RenderAtomic.prototype.addAttribute = function (name, attributeData) {
-            this.attributes[name] = attributeData;
+        RenderAtomic.prototype.addAttribute = function (attributeData) {
+            this.attributes[attributeData.name] = attributeData;
         };
-        RenderAtomic.prototype.removeAttribute = function (name) {
-            var uniformData = this.attributes[name];
-            return uniformData;
+        RenderAtomic.prototype.removeAttribute = function (attributeData) {
+            delete this.attributes[attributeData.name];
         };
         RenderAtomic.prototype.setIndexBuffer = function (indexBuffer) {
             this.indexBuffer = indexBuffer;
@@ -5797,7 +5807,7 @@ var feng3d;
      * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer}
      */
     var AttributeRenderData = (function () {
-        function AttributeRenderData(data, stride, divisor) {
+        function AttributeRenderData(name, data, stride, divisor) {
             if (data === void 0) { data = null; }
             if (stride === void 0) { stride = 3; }
             if (divisor === void 0) { divisor = 0; }
@@ -5837,6 +5847,7 @@ var feng3d;
              * 是否失效
              */
             this._invalid = true;
+            this.name = name;
             this._data = data;
             this._size = stride;
             this._divisor = divisor;
@@ -5941,54 +5952,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * opengl顶点属性名称
-     */
-    var GLAttribute = (function () {
-        function GLAttribute() {
-        }
-        return GLAttribute;
-    }());
-    /**
-     * 坐标
-     */
-    GLAttribute.a_position = "a_position";
-    /**
-     * 颜色
-     */
-    GLAttribute.a_color = "a_color";
-    /**
-     * 法线
-     */
-    GLAttribute.a_normal = "a_normal";
-    /**
-     * 切线
-     */
-    GLAttribute.a_tangent = "a_tangent";
-    /**
-     * uv（纹理坐标）
-     */
-    GLAttribute.a_uv = "a_uv";
-    /**
-     * 关节索引
-     */
-    GLAttribute.a_jointindex0 = "a_jointindex0";
-    /**
-     * 关节权重
-     */
-    GLAttribute.a_jointweight0 = "a_jointweight0";
-    /**
-     * 关节索引
-     */
-    GLAttribute.a_jointindex1 = "a_jointindex1";
-    /**
-     * 关节权重
-     */
-    GLAttribute.a_jointweight1 = "a_jointweight1";
-    feng3d.GLAttribute = GLAttribute;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 渲染环境
      * @author feng 2017-01-04
      */
@@ -6023,10 +5986,10 @@ var feng3d;
                 renderAtomic.shader.addMacro(feng3d.Macro.getAddMacro("V_GLOBAL_POSITION_NEED", 1));
                 renderAtomic.shader.addMacro(feng3d.Macro.getAddMacro("U_CAMERAMATRIX_NEED", 1));
                 //
-                renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_pointLightPositions", pointLightPositions));
-                renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_pointLightColors", pointLightColors));
-                renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_pointLightIntensitys", pointLightIntensitys));
-                renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_pointLightRanges", pointLightRanges));
+                renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_pointLightPositions", pointLightPositions));
+                renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_pointLightColors", pointLightColors));
+                renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_pointLightIntensitys", pointLightIntensitys));
+                renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_pointLightRanges", pointLightRanges));
             }
             var directionalLightDirections = [];
             var directionalLightColors = [];
@@ -6043,12 +6006,12 @@ var feng3d;
                 renderAtomic.shader.addMacro(feng3d.Macro.getAddMacro("V_NORMAL_NEED", 1));
                 renderAtomic.shader.addMacro(feng3d.Macro.getAddMacro("U_CAMERAMATRIX_NEED", 1));
                 //
-                renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_directionalLightDirections", directionalLightDirections));
-                renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_directionalLightColors", directionalLightColors));
-                renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_directionalLightIntensitys", directionalLightIntensitys));
+                renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_directionalLightDirections", directionalLightDirections));
+                renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_directionalLightColors", directionalLightColors));
+                renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_directionalLightIntensitys", directionalLightIntensitys));
             }
-            renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_sceneAmbientColor", this.scene3d.ambientColor));
-            renderAtomic.addUniform(feng3d.UniformData.getUniformData("u_scaleByDepth", this.view3D.getScaleByDepth(1)));
+            renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_sceneAmbientColor", this.scene3d.ambientColor));
+            renderAtomic.addUniform(feng3d.RenderData.getUniformData("u_scaleByDepth", this.view3D.getScaleByDepth(1)));
         };
         return RenderContext;
     }());
@@ -6753,7 +6716,7 @@ var feng3d;
             if (meshRenderer.gameObject.transform.mouseEnabled) {
                 var object = meshRenderer.gameObject;
                 this.objects.push(object);
-                object.renderData.addUniform(feng3d.UniformData.getUniformData("u_objectID", this.objects.length - 1));
+                object.renderData.addUniform(feng3d.RenderData.getUniformData("u_objectID", this.objects.length - 1));
                 // super.drawRenderables(renderContext, meshRenderer);
             }
         };
@@ -8067,7 +8030,7 @@ var feng3d;
                 this.localToWorldMatrix.recompose(vec);
             }
             //
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_modelMatrix", this.localToWorldMatrix));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_modelMatrix", this.localToWorldMatrix));
         };
         Transform.prototype.getDepthScale = function (renderContext) {
             var cameraTranform = renderContext.camera.sceneTransform;
@@ -8953,10 +8916,10 @@ var feng3d;
              * 坐标数据
              */
             get: function () {
-                return this.getVAData1(feng3d.GLAttribute.a_position);
+                return this.getVAData1("a_position");
             },
             set: function (value) {
-                this.setVAData(feng3d.GLAttribute.a_position, value, 3);
+                this.setVAData("a_position", value, 3);
             },
             enumerable: true,
             configurable: true
@@ -8966,10 +8929,10 @@ var feng3d;
              * uv数据
              */
             get: function () {
-                return this.getVAData1(feng3d.GLAttribute.a_uv);
+                return this.getVAData1("a_uv");
             },
             set: function (value) {
-                this.setVAData(feng3d.GLAttribute.a_uv, value, 2);
+                this.setVAData("a_uv", value, 2);
             },
             enumerable: true,
             configurable: true
@@ -8979,10 +8942,10 @@ var feng3d;
              * 法线数据
              */
             get: function () {
-                return this.getVAData1(feng3d.GLAttribute.a_normal);
+                return this.getVAData1("a_normal");
             },
             set: function (value) {
-                this.setVAData(feng3d.GLAttribute.a_normal, value, 3);
+                this.setVAData("a_normal", value, 3);
             },
             enumerable: true,
             configurable: true
@@ -8992,10 +8955,10 @@ var feng3d;
              * 切线数据
              */
             get: function () {
-                return this.getVAData1(feng3d.GLAttribute.a_tangent);
+                return this.getVAData1("a_tangent");
             },
             set: function (value) {
-                this.setVAData(feng3d.GLAttribute.a_tangent, value, 3);
+                this.setVAData("a_tangent", value, 3);
             },
             enumerable: true,
             configurable: true
@@ -9007,7 +8970,7 @@ var feng3d;
             this.updateGrometry();
             renderData.setIndexBuffer(this._indexBuffer);
             for (var attributeName in this._attributes) {
-                renderData.addAttribute(attributeName, this._attributes[attributeName]);
+                renderData.addAttribute(this._attributes[attributeName]);
             }
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -9068,7 +9031,7 @@ var feng3d;
         Geometry.prototype.setVAData = function (vaId, data, stride) {
             if (data) {
                 if (!this._attributes[vaId])
-                    this._attributes[vaId] = new feng3d.AttributeRenderData(data, stride);
+                    this._attributes[vaId] = feng3d.RenderData.getAttributeRenderData(vaId, data, stride);
                 this._attributes[vaId].data = data;
             }
             else {
@@ -9163,9 +9126,9 @@ var feng3d;
          */
         Geometry.prototype.applyTransformation = function (transform) {
             this.updateGrometry();
-            var positionRenderData = this.getVAData(feng3d.GLAttribute.a_position);
-            var normalRenderData = this.getVAData(feng3d.GLAttribute.a_normal);
-            var tangentRenderData = this.getVAData(feng3d.GLAttribute.a_tangent);
+            var positionRenderData = this.getVAData("a_position");
+            var normalRenderData = this.getVAData("a_normal");
+            var tangentRenderData = this.getVAData("a_tangent");
             var vertices = positionRenderData.data;
             var normals = normalRenderData.data;
             var tangents = tangentRenderData.data;
@@ -9260,7 +9223,7 @@ var feng3d;
             if (scaleU === void 0) { scaleU = 1; }
             if (scaleV === void 0) { scaleV = 1; }
             this.updateGrometry();
-            var uvVaData = this.getVAData(feng3d.GLAttribute.a_uv);
+            var uvVaData = this.getVAData("a_uv");
             var uvs = uvVaData.data;
             var len = uvs.length;
             var ratioU = scaleU / this._scaleU;
@@ -9732,8 +9695,8 @@ var feng3d;
                 positionData.set(element.positionData, i * segmentPositionStep);
                 colorData.set(element.colorData, i * segmentColorStep);
             }
-            this.setVAData(feng3d.GLAttribute.a_position, positionData, 3);
-            this.setVAData(feng3d.GLAttribute.a_color, colorData, 4);
+            this.setVAData("a_position", positionData, 3);
+            this.setVAData("a_color", colorData, 4);
             this.setIndices(indices);
         };
         /**
@@ -10353,11 +10316,11 @@ var feng3d;
         Camera.prototype.updateRenderData = function (renderContext, renderData) {
             var _this = this;
             //
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_viewProjection", this.viewProjection));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_cameraMatrix", function () {
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_viewProjection", this.viewProjection));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_cameraMatrix", function () {
                 return _this.gameObject ? _this.gameObject.transform.localToWorldMatrix : new feng3d.Matrix3D();
             }));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_skyBoxSize", function () { return _this._lens.far / Math.sqrt(3); }));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_skyBoxSize", function () { return _this._lens.far / Math.sqrt(3); }));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -10962,13 +10925,13 @@ var feng3d;
          */
         PlaneGeometry.prototype.buildGeometry = function () {
             var vertexPositionData = this.buildPosition();
-            this.setVAData(feng3d.GLAttribute.a_position, vertexPositionData, 3);
+            this.setVAData("a_position", vertexPositionData, 3);
             var vertexNormalData = this.buildNormal();
-            this.setVAData(feng3d.GLAttribute.a_normal, vertexNormalData, 3);
+            this.setVAData("a_normal", vertexNormalData, 3);
             var vertexTangentData = this.buildTangent();
-            this.setVAData(feng3d.GLAttribute.a_tangent, vertexTangentData, 3);
+            this.setVAData("a_tangent", vertexTangentData, 3);
             var uvData = this.buildUVs();
-            this.setVAData(feng3d.GLAttribute.a_uv, uvData, 2);
+            this.setVAData("a_uv", uvData, 2);
             var indices = this.buildIndices();
             this.setIndices(indices);
         };
@@ -11228,13 +11191,13 @@ var feng3d;
         });
         CubeGeometry.prototype.buildGeometry = function () {
             var vertexPositionData = this.buildPosition();
-            this.setVAData(feng3d.GLAttribute.a_position, vertexPositionData, 3);
+            this.setVAData("a_position", vertexPositionData, 3);
             var vertexNormalData = this.buildNormal();
-            this.setVAData(feng3d.GLAttribute.a_normal, vertexNormalData, 3);
+            this.setVAData("a_normal", vertexNormalData, 3);
             var vertexTangentData = this.buildTangent();
-            this.setVAData(feng3d.GLAttribute.a_tangent, vertexTangentData, 3);
+            this.setVAData("a_tangent", vertexTangentData, 3);
             var uvData = this.buildUVs();
-            this.setVAData(feng3d.GLAttribute.a_uv, uvData, 2);
+            this.setVAData("a_uv", uvData, 2);
             var indices = this.buildIndices();
             this.setIndices(indices);
         };
@@ -11726,11 +11689,11 @@ var feng3d;
                     index += 3;
                 }
             }
-            this.setVAData(feng3d.GLAttribute.a_position, vertexPositionData, 3);
-            this.setVAData(feng3d.GLAttribute.a_normal, vertexNormalData, 3);
-            this.setVAData(feng3d.GLAttribute.a_tangent, vertexTangentData, 3);
+            this.setVAData("a_position", vertexPositionData, 3);
+            this.setVAData("a_normal", vertexNormalData, 3);
+            this.setVAData("a_tangent", vertexTangentData, 3);
             var uvData = this.buildUVs();
-            this.setVAData(feng3d.GLAttribute.a_uv, uvData, 2);
+            this.setVAData("a_uv", uvData, 2);
             var indices = this.buildIndices();
             this.setIndices(indices);
         };
@@ -11964,11 +11927,11 @@ var feng3d;
                     index += 3;
                 }
             }
-            this.setVAData(feng3d.GLAttribute.a_position, vertexPositionData, 3);
-            this.setVAData(feng3d.GLAttribute.a_normal, vertexNormalData, 3);
-            this.setVAData(feng3d.GLAttribute.a_tangent, vertexTangentData, 3);
+            this.setVAData("a_position", vertexPositionData, 3);
+            this.setVAData("a_normal", vertexNormalData, 3);
+            this.setVAData("a_tangent", vertexTangentData, 3);
             var uvData = this.buildUVs();
-            this.setVAData(feng3d.GLAttribute.a_uv, uvData, 2);
+            this.setVAData("a_uv", uvData, 2);
             this.buildIndices();
         };
         /**
@@ -12349,9 +12312,9 @@ var feng3d;
                     }
                 }
             }
-            this.setVAData(feng3d.GLAttribute.a_position, vertexPositionData, 3);
-            this.setVAData(feng3d.GLAttribute.a_normal, vertexNormalData, 3);
-            this.setVAData(feng3d.GLAttribute.a_tangent, vertexTangentData, 3);
+            this.setVAData("a_position", vertexPositionData, 3);
+            this.setVAData("a_normal", vertexNormalData, 3);
+            this.setVAData("a_tangent", vertexTangentData, 3);
             function addVertex(px, py, pz, nx, ny, nz, tx, ty, tz) {
                 vertexPositionData[index] = px;
                 vertexPositionData[index + 1] = py;
@@ -12366,7 +12329,7 @@ var feng3d;
             }
             //
             var uvData = this.buildUVs();
-            this.setVAData(feng3d.GLAttribute.a_uv, uvData, 2);
+            this.setVAData("a_uv", uvData, 2);
             var indices = this.buildIndices();
             this.setIndices(indices);
         };
@@ -12712,9 +12675,9 @@ var feng3d;
                     }
                 }
             }
-            this.setVAData(feng3d.GLAttribute.a_position, this._vertexPositionData, 3);
-            this.setVAData(feng3d.GLAttribute.a_normal, this._vertexNormalData, 3);
-            this.setVAData(feng3d.GLAttribute.a_tangent, this._vertexTangentData, 3);
+            this.setVAData("a_position", this._vertexPositionData, 3);
+            this.setVAData("a_normal", this._vertexNormalData, 3);
+            this.setVAData("a_tangent", this._vertexTangentData, 3);
             this.setIndices(this._rawIndices);
         };
         /**
@@ -12739,7 +12702,7 @@ var feng3d;
                 }
             }
             // build real data from raw data
-            this.setVAData(feng3d.GLAttribute.a_uv, data, 2);
+            this.setVAData("a_uv", data, 2);
         };
         return TorusGeometry;
     }(feng3d.Geometry));
@@ -12769,7 +12732,7 @@ var feng3d;
                 1, -1, 1,
                 -1, -1, 1 //
             ]);
-            _this.setVAData(feng3d.GLAttribute.a_position, vertexPositionData, 3);
+            _this.setVAData("a_position", vertexPositionData, 3);
             //6个面，12个三角形，36个顶点索引
             var indices = new Uint16Array([
                 0, 1, 2, 2, 3, 0,
@@ -13290,7 +13253,7 @@ var feng3d;
          */
         Material.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_PointSize", this.pointSize));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_PointSize", this.pointSize));
         };
         /**
          * 更新渲染数据
@@ -13366,7 +13329,7 @@ var feng3d;
          * 更新渲染数据
          */
         ColorMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_diffuseInput", this.color));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_diffuseInput", this.color));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return ColorMaterial;
@@ -13454,7 +13417,7 @@ var feng3d;
          * 更新渲染数据
          */
         TextureMaterial.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_texture", this.texture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_texture", this.texture));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return TextureMaterial;
@@ -13496,7 +13459,7 @@ var feng3d;
          */
         SkyBoxMaterial.prototype.updateRenderData = function (renderContext, renderData) {
             //
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_skyboxTexture", this.texture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_skyboxTexture", this.texture));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         return SkyBoxMaterial;
@@ -13705,9 +13668,9 @@ var feng3d;
          * 更新渲染数据
          */
         DiffuseMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_diffuse", this.color));
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_diffuse", this.difuseTexture));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_alphaThreshold", this.alphaThreshold));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_diffuse", this.color));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_diffuse", this.difuseTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_alphaThreshold", this.alphaThreshold));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13768,7 +13731,7 @@ var feng3d;
          * 更新渲染数据
          */
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_normal", this.normalTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_normal", this.normalTexture));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13847,9 +13810,9 @@ var feng3d;
          * 更新渲染数据
          */
         SpecularMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_specular", this.specularTexture));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_specular", this.specularColor));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_glossiness", this.glossiness));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_specular", this.specularTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_specular", this.specularColor));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_glossiness", this.glossiness));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13919,8 +13882,8 @@ var feng3d;
          * 更新渲染数据
          */
         AmbientMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_ambient", this._color));
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_ambient", this._ambientTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_ambient", this._color));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_ambient", this._ambientTexture));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14032,11 +13995,11 @@ var feng3d;
          */
         FogMethod.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.addUniform;
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_fogColor", this._fogColor));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_fogMinDistance", this._minDistance));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_fogMaxDistance", this._maxDistance));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_fogDensity", this._density));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_fogMode", this._mode));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_fogColor", this._fogColor));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_fogMinDistance", this._minDistance));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_fogMaxDistance", this._maxDistance));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_fogDensity", this._density));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_fogMode", this._mode));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14118,8 +14081,8 @@ var feng3d;
          * 更新渲染数据
          */
         EnvMapMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_envMap", this._cubeTexture));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_reflectivity", this._reflectivity));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_envMap", this._cubeTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_reflectivity", this._reflectivity));
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14896,8 +14859,8 @@ var feng3d;
             if (shortestCollisionDistance === void 0) { shortestCollisionDistance = 0; }
             if (bothSides === void 0) { bothSides = true; }
             var indexData = geometry.getIndexData().indices;
-            var vertexData = geometry.getVAData(feng3d.GLAttribute.a_position).data;
-            var uvData = geometry.getVAData(feng3d.GLAttribute.a_uv).data;
+            var vertexData = geometry.getVAData("a_position").data;
+            var uvData = geometry.getVAData("a_uv").data;
             var t = 0;
             var i0 = 0, i1 = 0, i2 = 0;
             var rx = 0, ry = 0, rz = 0;
@@ -15378,8 +15341,8 @@ var feng3d;
                 }
             }
             var uvs = this.buildUVs();
-            this.setVAData(feng3d.GLAttribute.a_position, vertices, 3);
-            this.setVAData(feng3d.GLAttribute.a_uv, uvs, 2);
+            this.setVAData("a_position", vertices, 3);
+            this.setVAData("a_uv", uvs, 2);
             this.setIndices(indices);
             var normals = feng3d.GeometryUtils.createVertexNormals(indices, vertices);
             this.normals = new Float32Array(normals);
@@ -15561,11 +15524,11 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_blendTexture", this.blendTexture));
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_splatTexture1", this.splatTexture1));
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_splatTexture2", this.splatTexture2));
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_splatTexture3", this.splatTexture3));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_splatRepeats", this.splatRepeats));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_blendTexture", this.blendTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_splatTexture1", this.splatTexture1));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_splatTexture2", this.splatTexture2));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_splatTexture3", this.splatTexture3));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_splatRepeats", this.splatRepeats));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**
@@ -15654,21 +15617,21 @@ var feng3d;
          * 更新渲染数据
          */
         TerrainMergeMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_blendTexture", this.blendTexture));
-            renderData.addUniform(feng3d.UniformData.getUniformData("s_splatMergeTexture", this.splatMergeTexture));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_splatMergeTextureSize", this.splatMergeTexture.size));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_splatRepeats", this.splatRepeats));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_blendTexture", this.blendTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("s_splatMergeTexture", this.splatMergeTexture));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_splatMergeTextureSize", this.splatMergeTexture.size));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_splatRepeats", this.splatRepeats));
             //
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_imageSize", new feng3d.Point(2048.0, 1024.0)));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_tileSize", new feng3d.Point(512.0, 512.0)));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_maxLod", 7));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_uvPositionScale", 0.001));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_tileOffset", [
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_imageSize", new feng3d.Point(2048.0, 1024.0)));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_tileSize", new feng3d.Point(512.0, 512.0)));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_maxLod", 7));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_uvPositionScale", 0.001));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_tileOffset", [
                 new feng3d.Vector3D(0.5, 0.5, 0.0, 0.0),
                 new feng3d.Vector3D(0.5, 0.5, 0.5, 0.0),
                 new feng3d.Vector3D(0.5, 0.5, 0.0, 0.5),
             ]));
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_lod0vec", new feng3d.Vector3D(0.5, 1, 0, 0)));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_lod0vec", new feng3d.Vector3D(0.5, 1, 0, 0)));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**
@@ -15989,10 +15952,10 @@ var feng3d;
                 this._isDirty = false;
             }
             this.time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_particleTime", function () { return _this.time; }));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_particleTime", function () { return _this.time; }));
             renderData.instanceCount = this.numParticles;
             for (var attributeName in this._attributes) {
-                renderData.addAttribute(attributeName, this._attributes[attributeName]);
+                renderData.addAttribute(this._attributes[attributeName]);
             }
             var components = this._animations;
             components.forEach(function (element) {
@@ -16013,7 +15976,7 @@ var feng3d;
         ParticleAnimator.prototype.update = function (particleGlobal, renderData) {
             //更新常量数据
             for (var uniform in particleGlobal) {
-                renderData.addUniform(feng3d.UniformData.getUniformData(("u_particle_" + uniform), particleGlobal[uniform]));
+                renderData.addUniform(feng3d.RenderData.getUniformData(("u_particle_" + uniform), particleGlobal[uniform]));
             }
             //更新宏定义
             for (var attribute in this._attributes) {
@@ -16039,14 +16002,14 @@ var feng3d;
             var vector3DData;
             if (typeof data == "number") {
                 if (!attributeRenderData) {
-                    attributeRenderData = this._attributes[attributeID] = new feng3d.AttributeRenderData(new Float32Array(numParticles), 1, 1);
+                    attributeRenderData = this._attributes[attributeID] = new feng3d.AttributeRenderData(attributeID, new Float32Array(numParticles), 1, 1);
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index] = data;
             }
             else if (data instanceof feng3d.Vector3D) {
                 if (!attributeRenderData) {
-                    attributeRenderData = this._attributes[attributeID] = new feng3d.AttributeRenderData(new Float32Array(numParticles * 3), 3, 1);
+                    attributeRenderData = this._attributes[attributeID] = new feng3d.AttributeRenderData(attributeID, new Float32Array(numParticles * 3), 3, 1);
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index * 3] = data.x;
@@ -16055,7 +16018,7 @@ var feng3d;
             }
             else if (data instanceof feng3d.Color) {
                 if (!attributeRenderData) {
-                    attributeRenderData = this._attributes[attributeID] = new feng3d.AttributeRenderData(new Float32Array(numParticles * 4), 4, 1);
+                    attributeRenderData = this._attributes[attributeID] = new feng3d.AttributeRenderData(attributeID, new Float32Array(numParticles * 4), 4, 1);
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index * 4] = data.r;
@@ -16789,7 +16752,7 @@ var feng3d;
          */
         SkeletonAnimator.prototype.updateRenderData = function (renderContext, renderData) {
             var _this = this;
-            renderData.addUniform(feng3d.UniformData.getUniformData("u_skeletonGlobalMatriices", function () { return _this.globalMatrices; }));
+            renderData.addUniform(feng3d.RenderData.getUniformData("u_skeletonGlobalMatriices", function () { return _this.globalMatrices; }));
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**
@@ -17811,9 +17774,9 @@ var feng3d;
                 }
             }
             geometry.setIndices(new Uint16Array(indices));
-            geometry.setVAData(feng3d.GLAttribute.a_position, new Float32Array(vertices), 3);
-            geometry.setVAData(feng3d.GLAttribute.a_normal, new Float32Array(normals), 3);
-            geometry.setVAData(feng3d.GLAttribute.a_uv, new Float32Array(uvs), 2);
+            geometry.setVAData("a_position", new Float32Array(vertices), 3);
+            geometry.setVAData("a_normal", new Float32Array(normals), 3);
+            geometry.setVAData("a_uv", new Float32Array(uvs), 2);
             geometry.createVertexTangents();
             if (this._mtlData && this._mtlData[subObj.material]) {
                 var materialInfo = this._mtlData[subObj.material];
@@ -18064,17 +18027,17 @@ var feng3d;
             //更新索引数据
             geometry.setIndices(new Uint16Array(indices));
             //更新顶点坐标与uv数据
-            geometry.setVAData(feng3d.GLAttribute.a_position, new Float32Array(vertices), 3);
-            geometry.setVAData(feng3d.GLAttribute.a_uv, new Float32Array(uvs), 2);
+            geometry.setVAData("a_position", new Float32Array(vertices), 3);
+            geometry.setVAData("a_uv", new Float32Array(uvs), 2);
             geometry.createVertexNormals();
             //
             var tangents = feng3d.GeometryUtils.createVertexTangents(indices, vertices, uvs);
-            geometry.setVAData(feng3d.GLAttribute.a_tangent, new Float32Array(tangents), 3);
+            geometry.setVAData("a_tangent", new Float32Array(tangents), 3);
             //更新关节索引与权重索引
-            geometry.setVAData(feng3d.GLAttribute.a_jointindex0, new Float32Array(jointIndices0), 4);
-            geometry.setVAData(feng3d.GLAttribute.a_jointweight0, new Float32Array(jointWeights0), 4);
-            geometry.setVAData(feng3d.GLAttribute.a_jointindex1, new Float32Array(jointIndices1), 4);
-            geometry.setVAData(feng3d.GLAttribute.a_jointweight1, new Float32Array(jointWeights1), 4);
+            geometry.setVAData("a_jointindex0", new Float32Array(jointIndices0), 4);
+            geometry.setVAData("a_jointweight0", new Float32Array(jointWeights0), 4);
+            geometry.setVAData("a_jointindex1", new Float32Array(jointIndices1), 4);
+            geometry.setVAData("a_jointweight1", new Float32Array(jointWeights1), 4);
             return geometry;
         };
         MD5Loader.prototype.createAnimator = function (md5AnimData) {

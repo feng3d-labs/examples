@@ -19,7 +19,6 @@ namespace feng3d
 
         init()
         {
-            
             this.view3D = new View3D();
 
             var scene = this.view3D.scene;
@@ -50,7 +49,7 @@ namespace feng3d
             particleAnimator.addAnimation(emission);
             particleAnimator.addAnimation(new ParticlePosition());
             particleAnimator.addAnimation(new ParticleVelocity());
-            particleAnimator.particleGlobal.acceleration = new Vector3D(0, -9.8, 0);
+            particleAnimator.setGlobal("acceleration", () => acceleration);
             //通过函数来创建粒子初始状态
             particleAnimator.generateFunctions.push({
                 generate: (particle) =>
@@ -58,6 +57,8 @@ namespace feng3d
                     particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
                 }, priority: 0
             });
+            particleAnimator.play();
         }
     }
+    export var acceleration = new feng3d.Vector3D(0, -9.8, 0);
 }

@@ -2,14 +2,19 @@ namespace feng3d
 {
     export class UniformData extends RenderElement
     {
-        public name: string;
-        public data: any;
-
-        constructor(name: string, data: any)
+        constructor(public name: string,public  data: any)
         {
             super();
-            this.name = name;
-            this.data = data;
+        }
+    }
+
+    export class RenderInstanceCount extends RenderElement
+    {
+        public name = "instanceCount";
+        public  data: number|(()=>number);
+        constructor()
+        {
+            super();
         }
     }
 }

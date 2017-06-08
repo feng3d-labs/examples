@@ -22,7 +22,7 @@ namespace feng3d
 
         }
 
-        public setRenderState(particleGlobal: ParticleGlobal, gameObject: GameObject, renderContext: RenderContext)
+        public setRenderState(particleAnimator: ParticleAnimator)
         {
 
         }

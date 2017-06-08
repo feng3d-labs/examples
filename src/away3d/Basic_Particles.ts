@@ -45,9 +45,9 @@ namespace feng3d
                     particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                 }, priority: 0
             });
-            particleAnimator.addAnimation(new ParticleBillboard());
+            particleAnimator.addAnimation(new ParticleBillboard(this._view.camera.getComponent(Camera)));
             this._particleMesh.addComponent(particleAnimator);
-            // this._particleAnimator.start();
+            particleAnimator.play();
             this._view.scene.addChild(this._particleMesh.transform);
 
             ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);

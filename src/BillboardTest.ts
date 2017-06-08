@@ -13,7 +13,6 @@ namespace feng3d
 
         init()
         {
-            
             this.view3D = new View3D();
             var scene = this.view3D.scene;
             scene.background.setTo(0.3, 0.3, 0.3);

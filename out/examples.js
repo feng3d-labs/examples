@@ -5271,6 +5271,15 @@ var feng3d;
             renderData.value = value;
             return renderData;
         };
+        RenderData.prototype.createInstanceCount = function (instanceCount) {
+            var renderData = this._elementMap["instanceCount"];
+            if (!renderData) {
+                this._elementMap["instanceCount"] = renderData = new feng3d.RenderInstanceCount();
+                this._elements.push(renderData);
+            }
+            renderData.data = instanceCount;
+            return renderData;
+        };
         RenderData.prototype.addRenderElement = function (element) {
             if (element instanceof RenderElement) {
                 this._elements.push(element);
@@ -5339,6 +5348,16 @@ var feng3d;
         return UniformData;
     }(feng3d.RenderElement));
     feng3d.UniformData = UniformData;
+    var RenderInstanceCount = (function (_super) {
+        __extends(RenderInstanceCount, _super);
+        function RenderInstanceCount() {
+            var _this = _super.call(this) || this;
+            _this.name = "instanceCount";
+            return _this;
+        }
+        return RenderInstanceCount;
+    }(feng3d.RenderElement));
+    feng3d.RenderInstanceCount = RenderInstanceCount;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -5637,6 +5656,9 @@ var feng3d;
                 else if (element instanceof feng3d.ShaderCode) {
                     this.shader.setShaderCode(element);
                 }
+                else if (element instanceof feng3d.RenderInstanceCount) {
+                    this.instanceCount = element.data;
+                }
                 else {
                     throw "未知RenderElement！";
                 }
@@ -5747,7 +5769,11 @@ var feng3d;
         /**
          */
         RenderAtomic.prototype.dodraw = function (gl) {
-            var instanceCount = ~~this.instanceCount;
+            var instanceCount = this.instanceCount;
+            if (instanceCount instanceof Function) {
+                instanceCount = instanceCount();
+            }
+            instanceCount = ~~instanceCount;
             var indexBuffer = this.indexBuffer;
             var shaderParams = this.shader.shaderParams;
             indexBuffer.active(gl);
@@ -15898,7 +15924,10 @@ var feng3d;
              * 属性数据列表
              */
             _this._attributes = {};
-            _this._time = 0;
+            /**
+             * 粒子时间
+             */
+            _this.time = 0;
             /**
              * 起始时间
              */
@@ -15920,9 +15949,6 @@ var feng3d;
              * 生成粒子函数列表，优先级越高先执行
              */
             _this.generateFunctions = [];
-            /**
-             * 粒子全局属性，作用于所有粒子元素
-             */
             _this.particleGlobal = {};
             _this._animations = [];
             _this._single = true;
@@ -15930,19 +15956,20 @@ var feng3d;
             //
             _this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
             _this.createUniformData("u_particleTime", function () { return _this.time; });
+            _this.createInstanceCount(function () { return _this.numParticles; });
             return _this;
         }
-        Object.defineProperty(ParticleAnimator.prototype, "time", {
-            /**
-             * 粒子时间
-             */
-            get: function () {
-                this._time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
-                return this._time;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+         * 粒子全局属性，作用于所有粒子元素
+         */
+        ParticleAnimator.prototype.setGlobal = function (property, value) {
+            this.particleGlobal[property] = value;
+            this.createUniformData(("u_particle_" + property), value);
+            this.createBoolMacro(("D_u_particle_" + property), true);
+        };
+        ParticleAnimator.prototype.play = function () {
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.update, this);
+        };
         ParticleAnimator.prototype.addAnimation = function (animation) {
             if (this._animations.indexOf(animation) == -1)
                 this._animations.push(animation);
@@ -15973,23 +16000,17 @@ var feng3d;
                 this.createBoolMacro(("D_" + attribute), true);
             }
         };
-        /**
-         * 更新渲染数据
-         */
-        ParticleAnimator.prototype.updateRenderData = function (renderContext, renderData) {
+        ParticleAnimator.prototype.update = function () {
             var _this = this;
             if (this._isDirty) {
                 this.startTime = feng3d.getTimer();
                 this.generateParticles();
                 this._isDirty = false;
             }
-            renderData.instanceCount = this.numParticles;
-            var components = this._animations;
-            components.forEach(function (element) {
-                element.setRenderState(_this.particleGlobal, _this.gameObject, renderContext);
+            this.time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
+            this._animations.forEach(function (element) {
+                element.setRenderState(_this);
             });
-            this.update(this.particleGlobal, renderData);
-            _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
         /**
          * 收集粒子数据
@@ -15998,15 +16019,6 @@ var feng3d;
         ParticleAnimator.prototype.collectionParticle = function (particle) {
             for (var attribute in particle) {
                 this.collectionParticleAttribute(attribute, particle);
-            }
-        };
-        ParticleAnimator.prototype.update = function (particleGlobal, renderData) {
-            //更新常量数据
-            for (var uniform in particleGlobal) {
-                this.createUniformData(("u_particle_" + uniform), particleGlobal[uniform]);
-            }
-            for (var uniform in particleGlobal) {
-                this.createBoolMacro(("D_u_particle_" + uniform), true);
             }
         };
         /**
@@ -16079,7 +16091,7 @@ var feng3d;
          */
         ParticleComponent.prototype.generateParticle = function (particle) {
         };
-        ParticleComponent.prototype.setRenderState = function (particleGlobal, gameObject, renderContext) {
+        ParticleComponent.prototype.setRenderState = function (particleAnimator) {
         };
         return ParticleComponent;
     }(feng3d.RenderDataHolder));
@@ -16232,18 +16244,20 @@ var feng3d;
          * 创建一个广告牌节点
          * @param billboardAxis
          */
-        function ParticleBillboard(billboardAxis) {
+        function ParticleBillboard(camera, billboardAxis) {
             if (billboardAxis === void 0) { billboardAxis = null; }
             var _this = _super.call(this) || this;
             _this._matrix = new feng3d.Matrix3D;
             _this.billboardAxis = billboardAxis;
+            _this._camera = camera;
             return _this;
         }
-        ParticleBillboard.prototype.setRenderState = function (particleGlobal, gameObject, renderContext) {
+        ParticleBillboard.prototype.setRenderState = function (particleAnimator) {
+            var gameObject = particleAnimator.gameObject;
             var comps;
             if (this._billboardAxis) {
                 var pos = gameObject.transform.localToWorldMatrix.position;
-                var look = renderContext.camera.sceneTransform.position.subtract(pos);
+                var look = this._camera.sceneTransform.position.subtract(pos);
                 var right = look.crossProduct(this._billboardAxis);
                 right.normalize();
                 look = this._billboardAxis.crossProduct(right);
@@ -16260,14 +16274,14 @@ var feng3d;
             else {
                 //create a quick inverse projection matrix
                 this._matrix.copyFrom(gameObject.transform.localToWorldMatrix);
-                this._matrix.append(renderContext.camera.inverseSceneTransform);
+                this._matrix.append(this._camera.inverseSceneTransform);
                 //decompose using axis angle rotations
                 comps = this._matrix.decompose(feng3d.Orientation3D.AXIS_ANGLE);
                 //recreate the matrix with just the rotation data
                 this._matrix.identity();
                 this._matrix.appendRotation(-comps[1].w * Math.RAD2DEG, comps[1]);
             }
-            particleGlobal.billboardMatrix = this._matrix;
+            particleAnimator.setGlobal("billboardMatrix", this._matrix);
         };
         Object.defineProperty(ParticleBillboard.prototype, "billboardAxis", {
             /**
@@ -18457,12 +18471,12 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     feng3d.shaderFileMap = {
-        "shaders/color.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform vec4 u_diffuseInput; \r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = u_diffuseInput;\r\n}\r\n",
+        "shaders/color.fragment.glsl": "\r\n\r\nprecision mediump float;\r\n\r\nuniform vec4 u_diffuseInput;\r\n\r\n\r\n\r\nvoid main(void) {\r\n   \r\n    gl_FragColor = u_diffuseInput;\r\n}\r\n",
         "shaders/color.vertex.glsl": "\r\n\r\nattribute vec3 a_position;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 globalPosition = u_modelMatrix * vec4(a_position, 1.0);\r\n    gl_Position = u_viewProjection * globalPosition;\r\n}",
         "shaders/modules/envmap.fragment.glsl": "uniform samplerCube s_envMap;\r\nuniform float u_reflectivity;\r\n\r\nvec4 envmapMethod(vec4 finalColor)\r\n{\r\n    vec3 cameraToVertex = normalize( v_globalPosition - u_cameraMatrix[3].xyz );\r\n    vec3 reflectVec = reflect( cameraToVertex, v_normal );\r\n    vec4 envColor = textureCube( s_envMap, reflectVec );\r\n    finalColor.xyz *= envColor.xyz * u_reflectivity;\r\n    return finalColor;\r\n}",
         "shaders/modules/fog.fragment.glsl": "#define FOGMODE_NONE    0.\r\n#define FOGMODE_EXP     1.\r\n#define FOGMODE_EXP2    2.\r\n#define FOGMODE_LINEAR  3.\r\n#define E 2.71828\r\n\r\nuniform float u_fogMode;\r\nuniform float u_fogMinDistance;\r\nuniform float u_fogMaxDistance;\r\nuniform float u_fogDensity;\r\nuniform vec3 u_fogColor;\r\n\r\nfloat CalcFogFactor(float fogDistance)\r\n{\r\n\tfloat fogCoeff = 1.0;\r\n\tif (FOGMODE_LINEAR == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = (u_fogMaxDistance - fogDistance) / (u_fogMaxDistance - u_fogMinDistance);\r\n\t}\r\n\telse if (FOGMODE_EXP == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = 1.0 / pow(E, fogDistance * u_fogDensity);\r\n\t}\r\n\telse if (FOGMODE_EXP2 == u_fogMode)\r\n\t{\r\n\t\tfogCoeff = 1.0 / pow(E, fogDistance * fogDistance * u_fogDensity * u_fogDensity);\r\n\t}\r\n\r\n\treturn clamp(fogCoeff, 0.0, 1.0);\r\n}\r\n\r\nvec4 fogMethod(vec4 color)\r\n{\r\n    vec3 fogDistance = u_cameraMatrix[3].xyz - v_globalPosition.xyz;\r\n\tfloat fog = CalcFogFactor(length(fogDistance));\r\n\tcolor.rgb = fog * color.rgb + (1.0 - fog) * u_fogColor;\r\n    return color;\r\n}",
         "shaders/modules/particle.fragment.glsl": "#ifdef D_a_particle_color\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nvec4 particleAnimation(vec4 color) {\r\n\r\n    #ifdef D_a_particle_color\r\n        color = color * v_particle_color;\r\n    #endif\r\n    return color;\r\n}",
-        "shaders/modules/particle.vertex.glsl": "//根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)\r\n\r\nattribute float a_particle_birthTime;\r\n\r\n#ifdef D_a_particle_position\r\n    attribute vec3 a_particle_position;\r\n#endif\r\n\r\n#ifdef D_a_particle_velocity\r\n    attribute vec3 a_particle_velocity;\r\n#endif\r\n\r\n#ifdef D_a_particle_lifetime\r\n    attribute float a_particle_lifetime;\r\n#endif\r\n\r\n#ifdef D_a_particle_color\r\n    attribute vec4 a_particle_color;\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nuniform float u_particleTime;\r\n\r\n#ifdef D_u_particle_acceleration\r\n    uniform vec3 u_particle_acceleration;\r\n#endif\r\n\r\n#ifdef D_u_particle_billboardMatrix\r\n    uniform mat4 u_particle_billboardMatrix;\r\n#endif\r\n\r\nvec4 particleAnimation(vec4 position) {\r\n\r\n    float pTime = u_particleTime - a_particle_birthTime;\r\n    if(pTime > 0.0){\r\n\r\n        #ifdef D_a_particle_lifetime\r\n            pTime = mod(pTime,a_particle_lifetime);\r\n        #endif\r\n\r\n        vec3 pVelocity = vec3(0.0,0.0,0.0);\r\n\r\n        #ifdef D_u_particle_billboardMatrix\r\n            position = u_particle_billboardMatrix * position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_position\r\n            position.xyz = position.xyz + a_particle_position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_velocity\r\n            pVelocity = pVelocity + a_particle_velocity;\r\n        #endif\r\n\r\n        #ifdef D_u_particle_acceleration\r\n            pVelocity = pVelocity + u_particle_acceleration * pTime;\r\n        #endif\r\n        \r\n        #ifdef D_a_particle_color\r\n            v_particle_color = a_particle_color;\r\n        #endif\r\n\r\n        position.xyz = position.xyz + pVelocity * pTime;\r\n    }\r\n    \r\n    return position;\r\n}",
+        "shaders/modules/particle.vertex.glsl": "//根据是否提供(a_particle_position)数据自动定义 #define D_(a_particle_position)\r\n\r\n#ifdef D_a_particle_birthTime\r\n    attribute float a_particle_birthTime;\r\n#endif\r\n\r\n#ifdef D_a_particle_position\r\n    attribute vec3 a_particle_position;\r\n#endif\r\n\r\n#ifdef D_a_particle_velocity\r\n    attribute vec3 a_particle_velocity;\r\n#endif\r\n\r\n#ifdef D_a_particle_lifetime\r\n    attribute float a_particle_lifetime;\r\n#endif\r\n\r\n#ifdef D_a_particle_color\r\n    attribute vec4 a_particle_color;\r\n    varying vec4 v_particle_color;\r\n#endif\r\n\r\nuniform float u_particleTime;\r\n\r\n#ifdef D_u_particle_acceleration\r\n    uniform vec3 u_particle_acceleration;\r\n#endif\r\n\r\n#ifdef D_u_particle_billboardMatrix\r\n    uniform mat4 u_particle_billboardMatrix;\r\n#endif\r\n\r\nvec4 particleAnimation(vec4 position) {\r\n\r\n    #ifdef D_a_particle_birthTime\r\n    float pTime = u_particleTime - a_particle_birthTime;\r\n    if(pTime > 0.0){\r\n\r\n        #ifdef D_a_particle_lifetime\r\n            pTime = mod(pTime,a_particle_lifetime);\r\n        #endif\r\n\r\n        vec3 pVelocity = vec3(0.0,0.0,0.0);\r\n\r\n        #ifdef D_u_particle_billboardMatrix\r\n            position = u_particle_billboardMatrix * position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_position\r\n            position.xyz = position.xyz + a_particle_position;\r\n        #endif\r\n\r\n        #ifdef D_a_particle_velocity\r\n            pVelocity = pVelocity + a_particle_velocity;\r\n        #endif\r\n\r\n        #ifdef D_u_particle_acceleration\r\n            pVelocity = pVelocity + u_particle_acceleration * pTime;\r\n        #endif\r\n        \r\n        #ifdef D_a_particle_color\r\n            v_particle_color = a_particle_color;\r\n        #endif\r\n\r\n        position.xyz = position.xyz + pVelocity * pTime;\r\n    }\r\n    #endif\r\n    \r\n    return position;\r\n}",
         "shaders/modules/pointLightShading.declare.glsl.bak": "//参考资料\r\n//http://blog.csdn.net/leonwei/article/details/44539217\r\n//https://github.com/mcleary/pbr/blob/master/shaders/phong_pbr_frag.glsl\r\n\r\n#if NUM_POINTLIGHT > 0\r\n    //点光源位置列表\r\n    uniform vec3 u_pointLightPositions[NUM_POINTLIGHT];\r\n    //点光源漫反射颜色\r\n    uniform vec3 u_pointLightColors[NUM_POINTLIGHT];\r\n    //点光源镜面反射颜色\r\n    uniform float u_pointLightIntensitys[NUM_POINTLIGHT];\r\n    //反射率\r\n    uniform float u_reflectance;\r\n    //粗糙度\r\n    uniform float u_roughness;\r\n    //金属度\r\n    uniform float u_metalic;\r\n\r\n    vec3 fresnelSchlick(float VdotH,vec3 reflectance){\r\n\r\n        return reflectance + (1.0 - reflectance) * pow(clamp(1.0 - VdotH, 0.0, 1.0), 5.0);\r\n        // return reflectance;\r\n    }\r\n\r\n    float normalDistributionGGX(float NdotH,float alphaG){\r\n\r\n        float alphaG2 = alphaG * alphaG;\r\n        float d = NdotH * NdotH * (alphaG2 - 1.0) + 1.0; \r\n        return alphaG2 / (3.1415926 * d * d);\r\n    }\r\n\r\n    float smithVisibility(float dot,float alphaG){\r\n\r\n        float tanSquared = (1.0 - dot * dot) / (dot * dot);\r\n        return 2.0 / (1.0 + sqrt(1.0 + alphaG * alphaG * tanSquared));\r\n    }\r\n\r\n    vec3 calculateLight(vec3 normal,vec3 viewDir,vec3 lightDir,vec3 lightColor,float lightIntensity,vec3 baseColor,vec3 reflectance,float roughness){\r\n\r\n        //BRDF = D(h) * F(1, h) * V(l, v, h) / (4 * dot(n, l) * dot(n, v));\r\n\r\n        vec3 halfVec = normalize(lightDir + viewDir);\r\n        float NdotL = clamp(dot(normal,lightDir),0.0,1.0);\r\n        float NdotH = clamp(dot(normal,halfVec),0.0,1.0);\r\n        float NdotV = max(abs(dot(normal,viewDir)),0.000001);\r\n        float VdotH = clamp(dot(viewDir, halfVec),0.0,1.0);\r\n        \r\n        float alphaG = max(roughness * roughness,0.0005);\r\n\r\n        //F(v,h)\r\n        vec3 F = fresnelSchlick(VdotH, reflectance);\r\n\r\n        //D(h)\r\n        float D = normalDistributionGGX(NdotH,alphaG);\r\n\r\n        //V(l,h)\r\n        float V = smithVisibility(NdotL,alphaG) * smithVisibility(NdotV,alphaG) / (4.0 * NdotL * NdotV);\r\n\r\n        vec3 specular = max(0.0, D * V) * 3.1415926 * F;\r\n        \r\n        return (baseColor + specular) * NdotL * lightColor * lightIntensity;\r\n    }\r\n\r\n    //渲染点光源\r\n    vec3 pointLightShading(vec3 normal,vec3 baseColor){\r\n\r\n        float reflectance = u_reflectance;\r\n        float roughness = u_roughness;\r\n        float metalic = u_metalic;\r\n\r\n        reflectance = mix(0.0,0.5,reflectance);\r\n        vec3 realBaseColor = (1.0 - metalic) * baseColor;\r\n        vec3 realReflectance = mix(vec3(reflectance),baseColor,metalic);\r\n\r\n        vec3 totalLightColor = vec3(0.0,0.0,0.0);\r\n        for(int i = 0;i<NUM_POINTLIGHT;i++){\r\n            //光照方向\r\n            vec3 lightDir = normalize(u_pointLightPositions[i] - v_globalPosition);\r\n            //视线方向\r\n            vec3 viewDir = normalize(u_cameraMatrix[3].xyz - v_globalPosition);\r\n            //灯光颜色\r\n            vec3 lightColor = u_pointLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_pointLightIntensitys[i];\r\n\r\n            totalLightColor = totalLightColor + calculateLight(normal,viewDir,lightDir,lightColor,lightIntensity,realBaseColor,realReflectance,roughness);\r\n        }\r\n        \r\n        return totalLightColor;\r\n    }\r\n#endif",
         "shaders/modules/pointLightShading.fragment.glsl": "#if NUM_POINTLIGHT > 0\r\n    //点光源位置数组\r\n    uniform vec3 u_pointLightPositions[NUM_POINTLIGHT];\r\n    //点光源颜色数组\r\n    uniform vec3 u_pointLightColors[NUM_POINTLIGHT];\r\n    //点光源光照强度数组\r\n    uniform float u_pointLightIntensitys[NUM_POINTLIGHT];\r\n    //点光源光照范围数组\r\n    uniform float u_pointLightRanges[NUM_POINTLIGHT];\r\n#endif\r\n#if NUM_DIRECTIONALLIGHT > 0\r\n    //方向光源方向数组\r\n    uniform vec3 u_directionalLightDirections[NUM_DIRECTIONALLIGHT];\r\n    //方向光源颜色数组\r\n    uniform vec3 u_directionalLightColors[NUM_DIRECTIONALLIGHT];\r\n    //方向光源光照强度数组\r\n    uniform float u_directionalLightIntensitys[NUM_DIRECTIONALLIGHT];\r\n#endif\r\n\r\n//计算光照漫反射系数\r\nvec3 calculateLightDiffuse(vec3 normal,vec3 lightDir,vec3 lightColor,float lightIntensity){\r\n\r\n    vec3 diffuse = lightColor * lightIntensity * clamp(dot(normal,lightDir),0.0,1.0);\r\n    return diffuse;\r\n}\r\n\r\n//计算光照镜面反射系数\r\nvec3 calculateLightSpecular(vec3 normal,vec3 lightDir,vec3 lightColor,float lightIntensity,vec3 viewDir,float glossiness){\r\n\r\n    vec3 halfVec = normalize(lightDir + viewDir);\r\n    float specComp = clamp(dot(normal,halfVec),0.0,1.0);\r\n    specComp = pow(specComp, max(1., glossiness));\r\n\r\n    vec3 diffuse = lightColor * lightIntensity * specComp;\r\n    return diffuse;\r\n}\r\n\r\n//根据距离计算衰减\r\nfloat computeDistanceLightFalloff(float lightDistance, float range)\r\n{\r\n    #ifdef USEPHYSICALLIGHTFALLOFF\r\n        float lightDistanceFalloff = 1.0 / ((lightDistance * lightDistance + 0.0001));\r\n    #else\r\n        float lightDistanceFalloff = max(0., 1.0 - lightDistance / range);\r\n    #endif\r\n    \r\n    return lightDistanceFalloff;\r\n}\r\n\r\n//渲染点光源\r\nvec3 pointLightShading(vec3 normal,vec3 diffuseColor,vec3 specularColor,vec3 ambientColor,float glossiness){\r\n\r\n    //视线方向\r\n    vec3 viewDir = normalize(u_cameraMatrix[3].xyz - v_globalPosition);\r\n\r\n    vec3 totalDiffuseLightColor = vec3(0.0,0.0,0.0);\r\n    vec3 totalSpecularLightColor = vec3(0.0,0.0,0.0);\r\n    #if NUM_POINTLIGHT > 0\r\n        for(int i = 0;i<NUM_POINTLIGHT;i++){\r\n            //\r\n            vec3 lightOffset = u_pointLightPositions[i] - v_globalPosition;\r\n            float lightDistance = length(lightOffset);\r\n            //光照方向\r\n            vec3 lightDir = normalize(lightOffset);\r\n            //灯光颜色\r\n            vec3 lightColor = u_pointLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_pointLightIntensitys[i];\r\n            //光照范围\r\n            float range = u_pointLightRanges[i];\r\n            float attenuation = computeDistanceLightFalloff(lightDistance,range);\r\n            lightIntensity = lightIntensity * attenuation;\r\n            //\r\n            totalDiffuseLightColor = totalDiffuseLightColor +  calculateLightDiffuse(normal,lightDir,lightColor,lightIntensity);\r\n            totalSpecularLightColor = totalSpecularLightColor +  calculateLightSpecular(normal,lightDir,lightColor,lightIntensity,viewDir,glossiness);\r\n        }\r\n    #endif\r\n    #if NUM_DIRECTIONALLIGHT > 0\r\n        for(int i = 0;i<NUM_DIRECTIONALLIGHT;i++){\r\n            //光照方向\r\n            vec3 lightDir = normalize(-u_directionalLightDirections[i]);\r\n            //灯光颜色\r\n            vec3 lightColor = u_directionalLightColors[i];\r\n            //灯光强度\r\n            float lightIntensity = u_directionalLightIntensitys[i];\r\n            //\r\n            totalDiffuseLightColor = totalDiffuseLightColor +  calculateLightDiffuse(normal,lightDir,lightColor,lightIntensity);\r\n            totalSpecularLightColor = totalSpecularLightColor +  calculateLightSpecular(normal,lightDir,lightColor,lightIntensity,viewDir,glossiness);\r\n        }\r\n    #endif\r\n\r\n    vec3 resultColor = vec3(0.0,0.0,0.0);\r\n    resultColor = resultColor + totalDiffuseLightColor * diffuseColor;\r\n    resultColor = resultColor + totalSpecularLightColor * specularColor;\r\n    resultColor = resultColor + ambientColor * diffuseColor;\r\n    return resultColor;\r\n}",
         "shaders/modules/pointLightShading.main.glsl.bak": "#if NUM_POINTLIGHT > 0\r\n    // finalColor = finalColor * 0.5 +  pointLightShading(v_normal,u_baseColor) * 0.5;\r\n    finalColor.xyz = pointLightShading(v_normal,finalColor.xyz);\r\n#endif",
@@ -18898,17 +18912,19 @@ var feng3d;
             particleAnimator.addAnimation(emission);
             particleAnimator.addAnimation(new feng3d.ParticlePosition());
             particleAnimator.addAnimation(new feng3d.ParticleVelocity());
-            particleAnimator.particleGlobal.acceleration = new feng3d.Vector3D(0, -9.8, 0);
+            particleAnimator.setGlobal("acceleration", function () { return feng3d.acceleration; });
             //通过函数来创建粒子初始状态
             particleAnimator.generateFunctions.push({
                 generate: function (particle) {
                     particle.color = new feng3d.Color(1, 0, 0, 1).mix(new feng3d.Color(0, 1, 0, 1), particle.index / particle.total);
                 }, priority: 0
             });
+            particleAnimator.play();
         };
         return ParticleAnimatorTest;
     }());
     feng3d.ParticleAnimatorTest = ParticleAnimatorTest;
+    feng3d.acceleration = new feng3d.Vector3D(0, -9.8, 0);
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -19564,9 +19580,9 @@ var feng3d;
                     particle.velocity = new feng3d.Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                 }, priority: 0
             });
-            particleAnimator.addAnimation(new feng3d.ParticleBillboard());
+            particleAnimator.addAnimation(new feng3d.ParticleBillboard(this._view.camera.getComponent(feng3d.Camera)));
             this._particleMesh.addComponent(particleAnimator);
-            // this._particleAnimator.start();
+            particleAnimator.play();
             this._view.scene.addChild(this._particleMesh.transform);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
             feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
@@ -19641,7 +19657,7 @@ var feng3d;
         };
         Basic_Fire.prototype.initParticles = function () {
             this.fireAnimationSet = new feng3d.ParticleAnimator();
-            this.fireAnimationSet.addAnimation(new feng3d.ParticleBillboard());
+            this.fireAnimationSet.addAnimation(new feng3d.ParticleBillboard(this.camera.getComponent(feng3d.Camera)));
             // this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
             // this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
@@ -19660,6 +19676,7 @@ var feng3d;
                 }, priority: 0
             });
             this.particleGeometry = new feng3d.PlaneGeometry(10, 10, 1, 1, false);
+            this.fireAnimationSet.play();
         };
         Basic_Fire.prototype.initObjects = function () {
             this.plane = new feng3d.GameObject();

@@ -97,6 +97,18 @@ namespace feng3d
             return renderData;
         }
 
+        public createInstanceCount(instanceCount:number|(()=>number))
+        {
+            var renderData: RenderInstanceCount = this._elementMap["instanceCount"];
+            if (!renderData)
+            {
+                this._elementMap["instanceCount"] = renderData = new RenderInstanceCount();
+                this._elements.push(renderData);
+            }
+            renderData.data = instanceCount;
+            return renderData;
+        }
+
         public addRenderElement(element: RenderElement | RenderElement[])
         {
             if (element instanceof RenderElement)

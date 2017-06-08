@@ -25,6 +25,9 @@ namespace feng3d
                 } else if (element instanceof ShaderCode)
                 {
                     this.shader.setShaderCode(element);
+                } else if (element instanceof RenderInstanceCount)
+                {
+                    this.instanceCount = element.data;
                 } else
                 {
                     throw "未知RenderElement！";
@@ -86,7 +89,7 @@ namespace feng3d
         /**
          * 渲染实例数量
          */
-        public instanceCount: number;
+        public instanceCount: number|(()=>number);
 
         constructor() { }
 
@@ -193,7 +196,12 @@ namespace feng3d
          */
         public dodraw(gl: GL)
         {
-            var instanceCount = ~~this.instanceCount;
+            var instanceCount = this.instanceCount;
+            if(instanceCount instanceof Function)
+            {
+                instanceCount = instanceCount();
+            }
+            instanceCount = ~~instanceCount;
             var indexBuffer = this.indexBuffer;
             var shaderParams = this.shader.shaderParams;
 

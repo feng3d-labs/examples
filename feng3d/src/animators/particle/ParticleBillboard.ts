@@ -2,6 +2,7 @@ namespace feng3d
 {
     export class ParticleBillboard extends ParticleComponent
     {
+        private _camera:Camera;
 
         private _matrix: Matrix3D = new Matrix3D;
 
@@ -12,19 +13,21 @@ namespace feng3d
 		 * 创建一个广告牌节点
 		 * @param billboardAxis
 		 */
-        constructor(billboardAxis: Vector3D = null)
+        constructor(camera:Camera,billboardAxis: Vector3D = null)
         {
             super();
             this.billboardAxis = billboardAxis;
+            this._camera = camera;
         }
 
-        public setRenderState(particleGlobal: ParticleGlobal, gameObject: GameObject, renderContext: RenderContext)
+        public setRenderState(particleAnimator: ParticleAnimator)
         {
+            var gameObject = particleAnimator.gameObject;
             var comps: Vector3D[];
             if (this._billboardAxis)
             {
                 var pos: Vector3D = gameObject.transform.localToWorldMatrix.position;
-                var look: Vector3D = renderContext.camera.sceneTransform.position.subtract(pos);
+                var look: Vector3D = this._camera.sceneTransform.position.subtract(pos);
                 var right: Vector3D = look.crossProduct(this._billboardAxis);
                 right.normalize();
                 look = this._billboardAxis.crossProduct(right);
@@ -43,7 +46,7 @@ namespace feng3d
             {
                 //create a quick inverse projection matrix
                 this._matrix.copyFrom(gameObject.transform.localToWorldMatrix);
-                this._matrix.append(renderContext.camera.inverseSceneTransform);
+                this._matrix.append(this._camera.inverseSceneTransform);
 
                 //decompose using axis angle rotations
                 comps = this._matrix.decompose(Orientation3D.AXIS_ANGLE);
@@ -52,7 +55,7 @@ namespace feng3d
                 this._matrix.identity();
                 this._matrix.appendRotation(-comps[1].w * Math.RAD2DEG, comps[1]);
             }
-            particleGlobal.billboardMatrix = this._matrix;
+            particleAnimator.setGlobal("billboardMatrix",this._matrix);
         }
 
 		/**

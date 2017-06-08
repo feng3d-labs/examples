@@ -74,7 +74,7 @@ namespace feng3d
         private initParticles()
         {
             this.fireAnimationSet = new ParticleAnimator();
-            this.fireAnimationSet.addAnimation(new ParticleBillboard());
+            this.fireAnimationSet.addAnimation(new ParticleBillboard(this.camera.getComponent(Camera)));
             // this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
             // this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
@@ -95,6 +95,7 @@ namespace feng3d
                 }, priority: 0
             });
             this.particleGeometry = new PlaneGeometry(10, 10, 1, 1, false);
+            this.fireAnimationSet.play();
         }
 
         private initObjects()

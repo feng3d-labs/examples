@@ -20,12 +20,7 @@ namespace feng3d
         /**
          * 粒子时间
          */
-        public get time()
-        {
-            this._time = ((getTimer() - this.startTime) / 1000) % this.cycle;
-            return this._time;
-        }
-        private _time: number = 0;
+        public time: number = 0;
 
         /**
          * 起始时间
@@ -54,10 +49,17 @@ namespace feng3d
          */
         public generateFunctions: ({ generate: (particle: Particle) => void, priority: number })[] = [];
 
+        private particleGlobal: ParticleGlobal = <any>{};
+
         /**
          * 粒子全局属性，作用于所有粒子元素
          */
-        public particleGlobal: ParticleGlobal = <any>{};
+        public setGlobal<K extends keyof ParticleGlobal>(property: K, value: ParticleGlobal[K])
+        {
+            this.particleGlobal[property] = value;
+            this.createUniformData(<any>("u_particle_" + property), value);
+            this.createBoolMacro(<any>("D_u_particle_" + property), true);
+        }
 
         constructor()
         {
@@ -68,6 +70,12 @@ namespace feng3d
             //
             this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
             this.createUniformData("u_particleTime", () => this.time);
+            this.createInstanceCount(()=>this.numParticles);
+        }
+
+        public play()
+        {
+            ticker.addEventListener(Event.ENTER_FRAME,this.update,this);
         }
 
         private _animations: ParticleComponent[] = [];
@@ -111,10 +119,7 @@ namespace feng3d
             }
         }
 
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
+        private update()
         {
             if (this._isDirty)
             {
@@ -122,17 +127,11 @@ namespace feng3d
                 this.generateParticles();
                 this._isDirty = false;
             }
-
-            renderData.instanceCount = this.numParticles;
-
-            var components = this._animations;
-            components.forEach(element =>
+            this.time = ((getTimer() - this.startTime) / 1000) % this.cycle;
+            this._animations.forEach(element =>
             {
-                element.setRenderState(this.particleGlobal, this.gameObject, renderContext);
+                element.setRenderState(this);
             });
-
-            this.update(this.particleGlobal, renderData);
-            super.updateRenderData(renderContext, renderData);
         }
 
         /**
@@ -144,20 +143,6 @@ namespace feng3d
             for (var attribute in particle)
             {
                 this.collectionParticleAttribute(attribute, particle);
-            }
-        }
-
-        private update(particleGlobal: ParticleGlobal, renderData: RenderAtomic)
-        {
-            //更新常量数据
-            for (var uniform in particleGlobal)
-            {
-                this.createUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]);
-            }
-
-            for (var uniform in particleGlobal)
-            {
-                this.createBoolMacro(<any>("D_u_particle_" + uniform), true);
             }
         }
 

@@ -8,7 +8,6 @@
         "outFile": "out/feng3d.js"
     },
     "files": [ //注：如果有继承关系的，父类必须排在子类前面
-        "typings/feng3dExt.d.ts",
         "typings/webgl2.d.ts",
         "typings/webglExt.d.ts",
         //基础工具

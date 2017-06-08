@@ -11,12 +11,12 @@ namespace feng3d
             return new IndexRenderData(indices);
         }
 
-        public createUniformData(name: string, data: any)
+        public createUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
         {
             return new UniformData(name, data);
         }
 
-        public createAttributeRenderData(name: string, data: Float32Array = null, stride: number = 3, divisor: number = 0)
+        public createAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
         {
             return new AttributeRenderData(name, data, stride);
         }
@@ -26,17 +26,17 @@ namespace feng3d
             return new ShaderCode(vertexCode, fragmentCode);
         }
 
-        public createValueMacro(name: string, value: number): ValueMacro
+        public createValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
         {
             return { type: MacroType.value, name: name, value: value };
         }
 
-        public createBoolMacro(name: string, value: boolean): BoolMacro
+        public createBoolMacro<K extends keyof BoolMacros>(name: K, value: boolean): BoolMacro
         {
             return { type: MacroType.bool, name: name, value: value };
         }
 
-        public createAddMacro(name: string, value: number): AddMacro
+        public createAddMacro<K extends keyof IAddMacros>(name: K, value: number): AddMacro
         {
             return { type: MacroType.add, name: name, value: value };
         }

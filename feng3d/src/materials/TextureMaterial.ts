@@ -27,15 +27,8 @@ namespace feng3d
         {
             super();
             this.setShader("texture");
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("s_texture",this.texture);
-            super.updateRenderData(renderContext, renderData);
+            //
+            this.createUniformData("s_texture", () => this.texture);
         }
     }
 }

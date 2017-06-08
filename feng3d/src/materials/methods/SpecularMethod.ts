@@ -51,32 +51,17 @@ namespace feng3d
         {
             super();
             this.specularTexture = new Texture2D(specularUrl);
+            //
+            this.createUniformData("s_specular", () => this.specularTexture);
+            this.createUniformData("u_specular", () => this.specularColor);
+            this.createUniformData("u_glossiness", () => this.glossiness);
+            this.createBoolMacro("HAS_SPECULAR_SAMPLER", () => this.specularTexture.checkRenderData());
         }
 
         private onLoaded()
         {
             this.invalidateRenderData();
             this.invalidateShader();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("s_specular",this.specularTexture);
-            this.createUniformData("u_specular",this.specularColor);
-            this.createUniformData("u_glossiness",this.glossiness);
-            this.createBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData());
-            //
-            super.updateRenderData(renderContext, renderData);
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
         }
     }
 }

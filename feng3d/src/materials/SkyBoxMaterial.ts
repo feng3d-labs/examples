@@ -28,16 +28,8 @@ namespace feng3d
             {
                 this.texture = new TextureCube(images);
             }
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
             //
-            this.createUniformData("s_skyboxTexture",this.texture);
-            super.updateRenderData(renderContext, renderData);
+            this.createUniformData("s_skyboxTexture", () => this.texture);
         }
     }
 }

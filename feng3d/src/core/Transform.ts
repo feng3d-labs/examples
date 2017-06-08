@@ -36,6 +36,8 @@ namespace feng3d
             this._bounds = this.getDefaultBoundingVolume();
             this._worldBounds = this.getDefaultBoundingVolume();
             this._bounds.addEventListener(Event.CHANGE, this.onBoundsChange, this);
+            //
+            this.createUniformData("u_modelMatrix", () => this.localToWorldMatrix);
         }
 
         /**
@@ -57,8 +59,6 @@ namespace feng3d
                 vec[2].setTo(depthScale, depthScale, depthScale);
                 this.localToWorldMatrix.recompose(vec);
             }
-            //
-            this.createUniformData("u_modelMatrix", this.localToWorldMatrix);
             super.updateRenderData(renderContext, renderData);
         }
 

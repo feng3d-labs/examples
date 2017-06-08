@@ -64,6 +64,24 @@ namespace feng3d
             this.splatMergeTexture.wrapT = GL.REPEAT;
 
             this.splatRepeats = splatRepeats;
+            //
+            this.createUniformData("s_blendTexture", this.blendTexture);
+            this.createUniformData("s_splatMergeTexture", this.splatMergeTexture);
+            this.createUniformData("u_splatMergeTextureSize", this.splatMergeTexture.size);
+            this.createUniformData("u_splatRepeats", this.splatRepeats);
+            //
+            this.createUniformData("u_imageSize", new Point(2048.0, 1024.0));
+            this.createUniformData("u_tileSize", new Point(512.0, 512.0));
+            this.createUniformData("u_maxLod", 7);
+            this.createUniformData("u_uvPositionScale", 0.001);
+            this.createUniformData("u_tileOffset", [
+                new Vector3D(0.5, 0.5, 0.0, 0.0),
+                new Vector3D(0.5, 0.5, 0.5, 0.0),
+                new Vector3D(0.5, 0.5, 0.0, 0.5),
+            ]);
+            this.createUniformData("u_lod0vec", new Vector3D(0.5, 1, 0, 0));
+            this.createBoolMacro("HAS_TERRAIN_METHOD", true);
+            this.createBoolMacro("USE_TERRAIN_MERGE", true);
         }
 
         private onSplatTextureLoaded()
@@ -74,39 +92,6 @@ namespace feng3d
         private onBlendTextureLoaded()
         {
             this.invalidateRenderData();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("s_blendTexture",this.blendTexture);
-            this.createUniformData("s_splatMergeTexture",this.splatMergeTexture);
-            this.createUniformData("u_splatMergeTextureSize",this.splatMergeTexture.size);
-            this.createUniformData("u_splatRepeats",this.splatRepeats);
-            //
-            this.createUniformData("u_imageSize",new Point(2048.0, 1024.0));
-            this.createUniformData("u_tileSize",new Point(512.0, 512.0));
-            this.createUniformData("u_maxLod",7);
-            this.createUniformData("u_uvPositionScale",0.001);
-            this.createUniformData("u_tileOffset",[
-                new Vector3D(0.5, 0.5, 0.0, 0.0),
-                new Vector3D(0.5, 0.5, 0.5, 0.0),
-                new Vector3D(0.5, 0.5, 0.0, 0.5),
-            ]);
-            this.createUniformData("u_lod0vec",new Vector3D(0.5, 1, 0, 0));
-
-            super.updateRenderData(renderContext, renderData);
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createBoolMacro("HAS_TERRAIN_METHOD", true);
-            this.createBoolMacro("USE_TERRAIN_MERGE", true);
         }
     }
 }

@@ -49,6 +49,10 @@ namespace feng3d
             super();
 
             this.skeleton = skeleton;
+            //
+            this.createUniformData("u_skeletonGlobalMatriices", () => this.globalMatrices);
+            this.createValueMacro("NUM_SKELETONJOINT", () => this._skeleton.numJoints);
+            this.createBoolMacro("HAS_SKELETON_ANIMATION", () => !!this._activeSkeletonState);
         }
 
 		/**
@@ -73,24 +77,6 @@ namespace feng3d
             this.invalidateShader();
 
             this.start();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("u_skeletonGlobalMatriices",() => this.globalMatrices);
-            super.updateRenderData(renderContext, renderData);
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createValueMacro("NUM_SKELETONJOINT", this._skeleton.numJoints);
-            this.createBoolMacro("HAS_SKELETON_ANIMATION", !!this._activeSkeletonState);
         }
 
 		/**

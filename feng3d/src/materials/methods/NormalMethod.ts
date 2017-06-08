@@ -32,6 +32,9 @@ namespace feng3d
         {
             super();
             this.normalTexture = new Texture2D(normalUrl);
+            //
+            this.createUniformData("s_normal", () => this.normalTexture);
+            this.createBoolMacro("HAS_NORMAL_SAMPLER", () => this.normalTexture.checkRenderData());
         }
 
         /**
@@ -41,24 +44,6 @@ namespace feng3d
         {
             this.invalidateRenderData();
             this.invalidateShader();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("s_normal",this.normalTexture);
-            this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData());
-            //
-            super.updateRenderData(renderContext, renderData);
-        }
-
-		/**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
         }
     }
 }

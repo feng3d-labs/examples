@@ -52,22 +52,5 @@ namespace feng3d
             this.createUniformData("s_ambient", () => this._ambientTexture);
             this.createBoolMacro("HAS_AMBIENT_SAMPLER", () => this.ambientTexture.checkRenderData());
         }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            //
-            super.updateRenderData(renderContext, renderData);
-        }
-
-		/**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-
-        }
     }
 }

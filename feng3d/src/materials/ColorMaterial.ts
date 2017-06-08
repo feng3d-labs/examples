@@ -32,15 +32,8 @@ namespace feng3d
             super();
             this.setShader("color");
             this.color = color || new Color();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("u_diffuseInput",this.color);
-            super.updateRenderData(renderContext, renderData);
+            //
+            this.createUniformData("u_diffuseInput", () => this.color);
         }
     }
 }

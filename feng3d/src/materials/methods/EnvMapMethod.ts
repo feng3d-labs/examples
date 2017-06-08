@@ -18,6 +18,10 @@ namespace feng3d
             super();
             this._cubeTexture = envMap;
             this.reflectivity = reflectivity;
+            //
+            this.createUniformData("s_envMap", () => this._cubeTexture);
+            this.createUniformData("u_reflectivity", () => this._reflectivity);
+            this.createBoolMacro("HAS_ENV_METHOD", true);
         }
 
         /**
@@ -51,26 +55,6 @@ namespace feng3d
                 return;
             this._reflectivity = value;
             this.invalidateRenderData();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("s_envMap",this._cubeTexture);
-            this.createUniformData("u_reflectivity",this._reflectivity);
-            this.createBoolMacro("HAS_ENV_METHOD", true);
-
-            //
-            super.updateRenderData(renderContext, renderData);
-        }
-
-		/**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
         }
     }
 }

@@ -107,23 +107,6 @@ namespace feng3d
             this.normalMethod = new NormalMethod(normalUrl);
             this.specularMethod = new SpecularMethod(specularUrl);
             this.ambientMethod = new AmbientMethod(ambientUrl);
-
-            // Watcher.watch(this, ["ambientColor"], this.invalidateRenderData, this);
-            // Watcher.watch(this, ["reflectance"], this.invalidateRenderData, this);
-            // Watcher.watch(this, ["roughness"], this.invalidateRenderData, this);
-            // Watcher.watch(this, ["metalic"], this.invalidateRenderData, this);
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            // renderData.uniforms.u_reflectance = this.reflectance;
-            // renderData.uniforms.u_roughness = this.roughness;
-            // renderData.uniforms.u_metalic = this.metalic;
-            //
-            super.updateRenderData(renderContext, renderData);
         }
     }
 }

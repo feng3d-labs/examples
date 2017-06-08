@@ -106,6 +106,20 @@ namespace feng3d
             this.splatTexture3.wrapT = GL.REPEAT;
 
             this.splatRepeats = splatRepeats;
+
+            //
+            this.createUniformData("s_blendTexture", () => this.blendTexture);
+            this.createUniformData("s_splatTexture1", () => this.splatTexture1);
+            this.createUniformData("s_splatTexture2", () => this.splatTexture2);
+            this.createUniformData("s_splatTexture3", () => this.splatTexture3);
+            this.createUniformData("u_splatRepeats", () => this.splatRepeats);
+            this.createBoolMacro("HAS_TERRAIN_METHOD", () =>
+            {
+                return this.blendTexture.checkRenderData()
+                    && this.splatTexture1.checkRenderData()
+                    && this.splatTexture2.checkRenderData()
+                    && this.splatTexture3.checkRenderData();
+            });
         }
 
         private onSplatTextureLoaded()
@@ -116,28 +130,6 @@ namespace feng3d
         private onBlendTextureLoaded()
         {
             this.invalidateRenderData();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("s_blendTexture",this.blendTexture);
-            this.createUniformData("s_splatTexture1",this.splatTexture1);
-            this.createUniformData("s_splatTexture2",this.splatTexture2);
-            this.createUniformData("s_splatTexture3",this.splatTexture3);
-            this.createUniformData("u_splatRepeats",this.splatRepeats);
-
-            super.updateRenderData(renderContext, renderData);
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createBoolMacro("HAS_TERRAIN_METHOD", true);
         }
     }
 }

@@ -61,7 +61,7 @@ namespace feng3d
             return renderData;
         }
 
-        public createValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
+        public createValueMacro<K extends keyof ValueMacros>(name: K, value: number | (() => number)): ValueMacro
         {
             var renderData: ValueMacro = this._elementMap[<any>name];
             if (!renderData)

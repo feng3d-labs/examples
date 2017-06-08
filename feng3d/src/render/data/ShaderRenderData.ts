@@ -36,49 +36,33 @@ namespace feng3d
     {
         type: MacroType;
         name: string;
-        value: number | boolean | (() => boolean);
+        value: number | boolean | (() => boolean) | (() => number);
     }
 
     export class ValueMacro extends Macro
     {
-        type: MacroType.value;
-        name: string;
-        value: number;
-        constructor(name: string, value: number)
+        constructor(public name: string, public value: number | (() => number))
         {
             super();
             this.type = MacroType.value;
-            this.name = name;
-            this.value = value;
         }
     }
 
     export class BoolMacro extends Macro
     {
-        type: MacroType.bool;
-        name: string;
-        value: boolean | (() => boolean);
-        constructor(name: string, value: boolean | (() => boolean))
+        constructor(public name: string, public value: boolean | (() => boolean))
         {
             super();
             this.type = MacroType.bool;
-            this.name = name;
-            this.value = value;
         }
     }
 
     export class AddMacro extends Macro
     {
-        type: MacroType.add;
-        name: string;
-        value: number;
-
-        constructor(name: string, value: number)
+        constructor(public name: string, public value: number | (() => number))
         {
             super();
             this.type = MacroType.add;
-            this.name = name;
-            this.value = value;
         }
     }
 

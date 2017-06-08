@@ -65,6 +65,9 @@ namespace feng3d
             this._single = true;
 
             this._updateEverytime = true;
+            //
+            this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
+            this.createUniformData("u_particleTime", () => this.time);
         }
 
         private _animations: ParticleComponent[] = [];
@@ -101,6 +104,11 @@ namespace feng3d
                 });
                 this.collectionParticle(particle);
             }
+            //更新宏定义
+            for (var attribute in this._attributes)
+            {
+                this.createBoolMacro(<any>("D_" + attribute), true);
+            }
         }
 
         /**
@@ -108,7 +116,6 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
             if (this._isDirty)
             {
                 this.startTime = getTimer();
@@ -116,13 +123,7 @@ namespace feng3d
                 this._isDirty = false;
             }
 
-            this.createUniformData("u_particleTime", () => this.time);
             renderData.instanceCount = this.numParticles;
-
-            for (var attributeName in this._attributes)
-            {
-                renderData.addAttribute(this._attributes[attributeName]);
-            }
 
             var components = this._animations;
             components.forEach(element =>
@@ -154,11 +155,6 @@ namespace feng3d
                 this.createUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]);
             }
 
-            //更新宏定义
-            for (var attribute in this._attributes)
-            {
-                this.createBoolMacro(<any>("D_" + attribute), true);
-            }
             for (var uniform in particleGlobal)
             {
                 this.createBoolMacro(<any>("D_u_particle_" + uniform), true);
@@ -178,13 +174,13 @@ namespace feng3d
             var index = particle.index;
             var numParticles = particle.total;
             //
-            var attributeRenderData = this._attributes[attributeID];
+            var attributeRenderData: AttributeRenderData = this._attributes[attributeID];
             var vector3DData: Float32Array;
             if (typeof data == "number")
             {
                 if (!attributeRenderData)
                 {
-                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(attributeID, new Float32Array(numParticles), 1, 1)
+                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(<any>attributeID, new Float32Array(numParticles), 1, 1);
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index] = data;
@@ -192,7 +188,7 @@ namespace feng3d
             {
                 if (!attributeRenderData)
                 {
-                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(attributeID, new Float32Array(numParticles * 3), 3, 1)
+                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(<any>attributeID, new Float32Array(numParticles * 3), 3, 1);
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index * 3] = data.x;
@@ -202,7 +198,7 @@ namespace feng3d
             {
                 if (!attributeRenderData)
                 {
-                    attributeRenderData = this._attributes[attributeID] = new AttributeRenderData(attributeID, new Float32Array(numParticles * 4), 4, 1)
+                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(<any>attributeID, new Float32Array(numParticles * 4), 4, 1);
                 }
                 vector3DData = attributeRenderData.data;
                 vector3DData[index * 4] = data.r;

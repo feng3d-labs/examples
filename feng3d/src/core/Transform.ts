@@ -58,7 +58,8 @@ namespace feng3d
                 this.localToWorldMatrix.recompose(vec);
             }
             //
-            renderData.addUniform(this.createUniformData("u_modelMatrix",this.localToWorldMatrix));
+            this.createUniformData("u_modelMatrix", this.localToWorldMatrix);
+            super.updateRenderData(renderContext, renderData);
         }
 
         private getDepthScale(renderContext: RenderContext)

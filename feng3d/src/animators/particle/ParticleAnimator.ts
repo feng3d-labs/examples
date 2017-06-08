@@ -112,7 +112,7 @@ namespace feng3d
             }
 
             this.time = ((getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.addUniform(this.createUniformData("u_particleTime", () => this.time));
+            this.createUniformData("u_particleTime", () => this.time);
             renderData.instanceCount = this.numParticles;
 
             for (var attributeName in this._attributes)
@@ -147,7 +147,7 @@ namespace feng3d
             //更新常量数据
             for (var uniform in particleGlobal)
             {
-                renderData.addUniform(this.createUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]));
+                this.createUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]);
             }
 
             //更新宏定义

@@ -123,11 +123,11 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(this.createUniformData("s_blendTexture",this.blendTexture));
-            renderData.addUniform(this.createUniformData("s_splatTexture1",this.splatTexture1));
-            renderData.addUniform(this.createUniformData("s_splatTexture2",this.splatTexture2));
-            renderData.addUniform(this.createUniformData("s_splatTexture3",this.splatTexture3));
-            renderData.addUniform(this.createUniformData("u_splatRepeats",this.splatRepeats));
+            this.createUniformData("s_blendTexture",this.blendTexture);
+            this.createUniformData("s_splatTexture1",this.splatTexture1);
+            this.createUniformData("s_splatTexture2",this.splatTexture2);
+            this.createUniformData("s_splatTexture3",this.splatTexture3);
+            this.createUniformData("u_splatRepeats",this.splatRepeats);
 
             super.updateRenderData(renderContext, renderData);
         }

@@ -58,8 +58,8 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(this.createUniformData("s_envMap",this._cubeTexture));
-            renderData.addUniform(this.createUniformData("u_reflectivity",this._reflectivity));
+            this.createUniformData("s_envMap",this._cubeTexture);
+            this.createUniformData("u_reflectivity",this._reflectivity);
 
             //
             super.updateRenderData(renderContext, renderData);

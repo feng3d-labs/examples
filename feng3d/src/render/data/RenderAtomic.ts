@@ -22,6 +22,9 @@ namespace feng3d
                 } else if (element instanceof Macro)
                 {
                     this.shader.addMacro(element);
+                } else if (element instanceof ShaderCode)
+                {
+                    this.shader.setShaderCode(element);
                 } else
                 {
                     throw "未知RenderElement！";

@@ -5,7 +5,7 @@ namespace feng3d
 	 * 索引渲染数据
      * @author feng 2017-01-04
 	 */
-    export class IndexRenderData
+    export class IndexRenderData extends RenderElement
     {
         /**
          * 索引数据
@@ -48,6 +48,7 @@ namespace feng3d
 
         constructor(indices: Uint16Array)
         {
+            super();
             this._indices = indices;
             this.count = indices.length;
         }

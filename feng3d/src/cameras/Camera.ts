@@ -149,7 +149,7 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.addUniform(this.createUniformData("u_viewProjection",this.viewProjection));
+            this.createUniformData("u_viewProjection",this.viewProjection);
             renderData.addUniform(this.createUniformData("u_cameraMatrix",() =>
             {
                 return this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();

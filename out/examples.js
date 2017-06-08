@@ -5188,13 +5188,125 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var UniformData = (function () {
+    var RenderData = (function (_super) {
+        __extends(RenderData, _super);
+        function RenderData() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._elements = [];
+            return _this;
+        }
+        Object.defineProperty(RenderData.prototype, "elements", {
+            get: function () {
+                return this._elements.concat();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        RenderData.prototype.createIndexBuffer = function (indices) {
+            var renderData = new feng3d.IndexRenderData(indices);
+            this._elements.push(renderData);
+            return renderData;
+        };
+        RenderData.prototype.createUniformData = function (name, data) {
+            var renderData = new feng3d.UniformData(name, data);
+            this._elements.push(renderData);
+            return renderData;
+        };
+        RenderData.prototype.createAttributeRenderData = function (name, data, stride, divisor) {
+            if (data === void 0) { data = null; }
+            if (stride === void 0) { stride = 3; }
+            if (divisor === void 0) { divisor = 0; }
+            var renderData = new feng3d.AttributeRenderData(name, data, stride);
+            this._elements.push(renderData);
+            return renderData;
+        };
+        RenderData.prototype.createShaderCode = function (vertexCode, fragmentCode) {
+            var renderData = new feng3d.ShaderCode(vertexCode, fragmentCode);
+            this._elements.push(renderData);
+            return renderData;
+        };
+        RenderData.prototype.createValueMacro = function (name, value) {
+            var renderData = new feng3d.ValueMacro(name, value);
+            this._elements.push(renderData);
+            return renderData;
+        };
+        RenderData.prototype.createBoolMacro = function (name, value) {
+            var renderData = new feng3d.BoolMacro(name, value);
+            this._elements.push(renderData);
+            return renderData;
+        };
+        RenderData.prototype.createAddMacro = function (name, value) {
+            var renderData = new feng3d.AddMacro(name, value);
+            this._elements.push(renderData);
+            return renderData;
+        };
+        RenderData.prototype.addRenderElement = function (element) {
+            if (element instanceof RenderElement) {
+                this._elements.push(element);
+            }
+            else {
+                for (var i = 0; i < element.length; i++) {
+                    this.addRenderElement(element[i]);
+                }
+            }
+        };
+        RenderData.prototype.removeRenderElement = function (element) {
+            if (element instanceof RenderElement) {
+                var index = this._elements.indexOf(element);
+                if (index != -1) {
+                    this._elements.splice(i, 1);
+                }
+            }
+            else {
+                for (var i = 0; i < element.length; i++) {
+                    this.removeRenderElement(element[i]);
+                }
+            }
+        };
+        RenderData.prototype.addRenderData = function (renderData) {
+            if (renderData instanceof RenderData) {
+                this.addRenderElement(renderData.elements);
+            }
+            else {
+                for (var i = 0; i < renderData.length; i++) {
+                    this.addRenderData(renderData[i]);
+                }
+            }
+        };
+        RenderData.prototype.removeRenderData = function (renderData) {
+            if (renderData instanceof RenderData) {
+                this.removeRenderElement(renderData.elements);
+            }
+            else {
+                for (var i = 0; i < renderData.length; i++) {
+                    this.removeRenderData(renderData[i]);
+                }
+            }
+        };
+        return RenderData;
+    }(feng3d.EventDispatcher));
+    feng3d.RenderData = RenderData;
+    var RenderElement = (function (_super) {
+        __extends(RenderElement, _super);
+        function RenderElement() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return RenderElement;
+    }(feng3d.EventDispatcher));
+    feng3d.RenderElement = RenderElement;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var UniformData = (function (_super) {
+        __extends(UniformData, _super);
         function UniformData(name, data) {
-            this.name = name;
-            this.data = data;
+            var _this = _super.call(this) || this;
+            _this.name = name;
+            _this.data = data;
+            return _this;
         }
         return UniformData;
-    }());
+    }(feng3d.RenderElement));
     feng3d.UniformData = UniformData;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -5240,7 +5352,7 @@ var feng3d;
             configurable: true
         });
         return ShaderCode;
-    }(feng3d.EventDispatcher));
+    }(feng3d.RenderElement));
     feng3d.ShaderCode = ShaderCode;
     var MacroType;
     (function (MacroType) {
@@ -5248,32 +5360,46 @@ var feng3d;
         MacroType[MacroType["bool"] = 1] = "bool";
         MacroType[MacroType["add"] = 2] = "add";
     })(MacroType = feng3d.MacroType || (feng3d.MacroType = {}));
-    var Macro = (function () {
+    var Macro = (function (_super) {
+        __extends(Macro, _super);
         function Macro() {
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         return Macro;
-    }());
+    }(feng3d.RenderElement));
     feng3d.Macro = Macro;
     var ValueMacro = (function (_super) {
         __extends(ValueMacro, _super);
-        function ValueMacro() {
-            return _super !== null && _super.apply(this, arguments) || this;
+        function ValueMacro(name, value) {
+            var _this = _super.call(this) || this;
+            _this.type = MacroType.value;
+            _this.name = name;
+            _this.value = value;
+            return _this;
         }
         return ValueMacro;
     }(Macro));
     feng3d.ValueMacro = ValueMacro;
     var BoolMacro = (function (_super) {
         __extends(BoolMacro, _super);
-        function BoolMacro() {
-            return _super !== null && _super.apply(this, arguments) || this;
+        function BoolMacro(name, value) {
+            var _this = _super.call(this) || this;
+            _this.type = MacroType.bool;
+            _this.name = name;
+            _this.value = value;
+            return _this;
         }
         return BoolMacro;
     }(Macro));
     feng3d.BoolMacro = BoolMacro;
     var AddMacro = (function (_super) {
         __extends(AddMacro, _super);
-        function AddMacro() {
-            return _super !== null && _super.apply(this, arguments) || this;
+        function AddMacro(name, value) {
+            var _this = _super.call(this) || this;
+            _this.type = MacroType.add;
+            _this.name = name;
+            _this.value = value;
+            return _this;
         }
         return AddMacro;
     }(Macro));
@@ -5399,30 +5525,6 @@ var feng3d;
             _this.childrenRenderDataHolder = [];
             return _this;
         }
-        RenderDataHolder.prototype.createIndexBuffer = function (indices) {
-            return new feng3d.IndexRenderData(indices);
-        };
-        RenderDataHolder.prototype.createUniformData = function (name, data) {
-            return new feng3d.UniformData(name, data);
-        };
-        RenderDataHolder.prototype.createAttributeRenderData = function (name, data, stride, divisor) {
-            if (data === void 0) { data = null; }
-            if (stride === void 0) { stride = 3; }
-            if (divisor === void 0) { divisor = 0; }
-            return new feng3d.AttributeRenderData(name, data, stride);
-        };
-        RenderDataHolder.prototype.createShaderCode = function (vertexCode, fragmentCode) {
-            return new feng3d.ShaderCode(vertexCode, fragmentCode);
-        };
-        RenderDataHolder.prototype.createValueMacro = function (name, value) {
-            return { type: feng3d.MacroType.value, name: name, value: value };
-        };
-        RenderDataHolder.prototype.createBoolMacro = function (name, value) {
-            return { type: feng3d.MacroType.bool, name: name, value: value };
-        };
-        RenderDataHolder.prototype.createAddMacro = function (name, value) {
-            return { type: feng3d.MacroType.add, name: name, value: value };
-        };
         Object.defineProperty(RenderDataHolder.prototype, "updateEverytime", {
             /**
              * 是否每次必须更新
@@ -5452,6 +5554,7 @@ var feng3d;
          * 更新渲染数据
          */
         RenderDataHolder.prototype.updateRenderData = function (renderContext, renderData) {
+            renderData.addRenderElement(this.elements);
         };
         /**
          * 更新渲染数据
@@ -5468,17 +5571,11 @@ var feng3d;
             this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE_RENDERHOLDER));
         };
         return RenderDataHolder;
-    }(feng3d.EventDispatcher));
+    }(feng3d.RenderData));
     feng3d.RenderDataHolder = RenderDataHolder;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var RenderData = (function () {
-        function RenderData() {
-        }
-        return RenderData;
-    }());
-    feng3d.RenderData = RenderData;
     /**
      * 渲染原子（该对象会收集一切渲染所需数据以及参数）
      * @author feng 2016-06-20
@@ -5498,6 +5595,30 @@ var feng3d;
              */
             this.uniforms = {};
         }
+        RenderAtomic.prototype.addRenderElement = function (element) {
+            if (element instanceof feng3d.RenderElement) {
+                if (element instanceof feng3d.UniformData) {
+                    this.addUniform(element);
+                }
+                else if (element instanceof feng3d.AttributeRenderData) {
+                    this.addAttribute(element);
+                }
+                else if (element instanceof feng3d.IndexRenderData) {
+                    this.indexBuffer = element;
+                }
+                else if (element instanceof feng3d.Macro) {
+                    this.shader.addMacro(element);
+                }
+                else {
+                    throw "未知RenderElement！";
+                }
+            }
+            else {
+                for (var i = 0; i < element.length; i++) {
+                    this.addRenderElement(element[i]);
+                }
+            }
+        };
         RenderAtomic.prototype.addUniform = function (uniformData) {
             this.uniforms[uniformData.name] = uniformData;
         };
@@ -5711,26 +5832,29 @@ var feng3d;
      * 索引渲染数据
      * @author feng 2017-01-04
      */
-    var IndexRenderData = (function () {
+    var IndexRenderData = (function (_super) {
+        __extends(IndexRenderData, _super);
         function IndexRenderData(indices) {
+            var _this = _super.call(this) || this;
             /**
              * 数据类型，gl.UNSIGNED_BYTE、gl.UNSIGNED_SHORT
              */
-            this.type = feng3d.GL.UNSIGNED_SHORT;
+            _this.type = feng3d.GL.UNSIGNED_SHORT;
             /**
              * 索引偏移
              */
-            this.offset = 0;
+            _this.offset = 0;
             /**
              * 缓冲
              */
-            this._indexBufferMap = new feng3d.Map();
+            _this._indexBufferMap = new feng3d.Map();
             /**
              * 是否失效
              */
-            this._invalid = true;
-            this._indices = indices;
-            this.count = indices.length;
+            _this._invalid = true;
+            _this._indices = indices;
+            _this.count = indices.length;
+            return _this;
         }
         Object.defineProperty(IndexRenderData.prototype, "indices", {
             /**
@@ -5804,7 +5928,7 @@ var feng3d;
             return ins;
         };
         return IndexRenderData;
-    }());
+    }(feng3d.RenderElement));
     feng3d.IndexRenderData = IndexRenderData;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -5814,12 +5938,14 @@ var feng3d;
      * @author feng 2014-8-14
      * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer}
      */
-    var AttributeRenderData = (function () {
+    var AttributeRenderData = (function (_super) {
+        __extends(AttributeRenderData, _super);
         function AttributeRenderData(name, data, stride, divisor) {
             if (data === void 0) { data = null; }
             if (stride === void 0) { stride = 3; }
             if (divisor === void 0) { divisor = 0; }
-            this._size = 3;
+            var _this = _super.call(this) || this;
+            _this._size = 3;
             /**
              *  A GLenum specifying the data type of each component in the array. Possible values:
                     - gl.BYTE: signed 8-bit integer, with values in [-128, 127]
@@ -5830,36 +5956,37 @@ var feng3d;
                 When using a WebGL 2 context, the following values are available additionally:
                    - gl.HALF_FLOAT: 16-bit floating point number
              */
-            this.type = feng3d.GL.FLOAT;
+            _this.type = feng3d.GL.FLOAT;
             /**
              * A GLboolean specifying whether integer data values should be normalized when being casted to a float.
                   -  If true, signed integers are normalized to [-1, 1].
                   -  If true, unsigned integers are normalized to [0, 1].
                   -  For types gl.FLOAT and gl.HALF_FLOAT, this parameter has no effect.
              */
-            this.normalized = false;
+            _this.normalized = false;
             /**
              * A GLsizei specifying the offset in bytes between the beginning of consecutive vertex attributes. Cannot be larger than 255.
              */
-            this.stride = 0;
+            _this.stride = 0;
             /**
              * A GLintptr specifying an offset in bytes of the first component in the vertex attribute array. Must be a multiple of type.
              */
-            this.offset = 0;
-            this._divisor = 0;
+            _this.offset = 0;
+            _this._divisor = 0;
             /**
              * 顶点数据缓冲
              */
-            this._indexBufferMap = new feng3d.Map();
+            _this._indexBufferMap = new feng3d.Map();
             /**
              * 是否失效
              */
-            this._invalid = true;
-            this.name = name;
-            this._data = data;
-            this._size = stride;
-            this._divisor = divisor;
-            this._invalid = true;
+            _this._invalid = true;
+            _this.name = name;
+            _this._data = data;
+            _this._size = stride;
+            _this._divisor = divisor;
+            _this._invalid = true;
+            return _this;
         }
         Object.defineProperty(AttributeRenderData.prototype, "data", {
             /**
@@ -5955,7 +6082,7 @@ var feng3d;
             return ins;
         };
         return AttributeRenderData;
-    }());
+    }(feng3d.RenderElement));
     feng3d.AttributeRenderData = AttributeRenderData;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -10309,7 +10436,7 @@ var feng3d;
         Camera.prototype.updateRenderData = function (renderContext, renderData) {
             var _this = this;
             //
-            renderData.addUniform(this.createUniformData("u_viewProjection", this.viewProjection));
+            this.createUniformData("u_viewProjection", this.viewProjection);
             renderData.addUniform(this.createUniformData("u_cameraMatrix", function () {
                 return _this.gameObject ? _this.gameObject.transform.localToWorldMatrix : new feng3d.Matrix3D();
             }));

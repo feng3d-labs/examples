@@ -53,7 +53,7 @@ namespace feng3d
 	 * @author feng 2014-8-14
      * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer}
 	 */
-    export class AttributeRenderData
+    export class AttributeRenderData extends RenderElement
     {
         public name: string;
 
@@ -122,6 +122,7 @@ namespace feng3d
 
         constructor(name: string, data: Float32Array = null, stride: number = 3, divisor: number = 0)
         {
+            super();
             this.name = name;
             this._data = data;
             this._size = stride;

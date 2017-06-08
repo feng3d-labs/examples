@@ -1,7 +1,7 @@
 namespace feng3d
 {
 
-    export class ShaderCode extends EventDispatcher
+    export class ShaderCode extends RenderElement
     {
         /**
          * 顶点渲染程序代码
@@ -50,7 +50,7 @@ namespace feng3d
         add
     }
 
-    export class Macro
+    export class Macro extends RenderElement
     {
         type: MacroType;
         name: string;
@@ -62,6 +62,13 @@ namespace feng3d
         type: MacroType.value;
         name: string;
         value: number;
+        constructor(name: string, value: number)
+        {
+            super();
+            this.type = MacroType.value;
+            this.name = name;
+            this.value = value;
+        }
     }
 
     export class BoolMacro extends Macro
@@ -69,6 +76,13 @@ namespace feng3d
         type: MacroType.bool;
         name: string;
         value: boolean;
+        constructor(name: string, value: boolean)
+        {
+            super();
+            this.type = MacroType.bool;
+            this.name = name;
+            this.value = value;
+        }
     }
 
     export class AddMacro extends Macro
@@ -76,6 +90,14 @@ namespace feng3d
         type: MacroType.add;
         name: string;
         value: number;
+
+        constructor(name: string, value: number)
+        {
+            super();
+            this.type = MacroType.add;
+            this.name = name;
+            this.value = value;
+        }
     }
 
     export class ShaderRenderData

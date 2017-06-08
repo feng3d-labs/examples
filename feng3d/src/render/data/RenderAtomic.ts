@@ -1,49 +1,40 @@
 namespace feng3d
 {
-    export class RenderData
-    {
-        // public static createIndexBuffer(indices: Uint16Array)
-        // {
-        //     return new IndexRenderData(indices);
-        // }
-
-        // public static createUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
-        // {
-        //     return new UniformData(name, data);
-        // }
-
-        // public static createAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
-        // {
-        //     return new AttributeRenderData(name, data, stride);
-        // }
-
-        // public static createShaderCode(vertexCode: string, fragmentCode: string)
-        // {
-        //     return new ShaderCode(vertexCode, fragmentCode);
-        // }
-
-        // public static createValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
-        // {
-        //     return { type: MacroType.value, name: name, value: value };
-        // }
-
-        // public static createBoolMacro<K extends keyof BoolMacros>(name: K, value: boolean): BoolMacro
-        // {
-        //     return { type: MacroType.bool, name: name, value: value };
-        // }
-
-        // public static createAddMacro<K extends keyof IAddMacros>(name: K, value: number): AddMacro
-        // {
-        //     return { type: MacroType.add, name: name, value: value };
-        // }
-    }
-
     /**
      * 渲染原子（该对象会收集一切渲染所需数据以及参数）
      * @author feng 2016-06-20
      */
     export class RenderAtomic
     {
+        public addRenderElement(element: RenderElement | RenderElement[])
+        {
+            if (element instanceof RenderElement)
+            {
+                if (element instanceof UniformData)
+                {
+                    this.addUniform(element);
+                } else if (element instanceof AttributeRenderData)
+                {
+                    this.addAttribute(element);
+                } else if (element instanceof IndexRenderData)
+                {
+                    this.indexBuffer = element;
+                } else if (element instanceof Macro)
+                {
+                    this.shader.addMacro(element);
+                } else
+                {
+                    throw "未知RenderElement！";
+                }
+            } else
+            {
+                for (var i = 0; i < element.length; i++)
+                {
+                    this.addRenderElement(element[i]);
+                }
+            }
+        }
+
         public addUniform(uniformData: UniformData)
         {
             this.uniforms[uniformData.name] = uniformData;

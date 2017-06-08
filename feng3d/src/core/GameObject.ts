@@ -1,6 +1,5 @@
 namespace feng3d
 {
-
     /**
      * Base class for all entities in feng3d scenes.
      */
@@ -87,16 +86,12 @@ namespace feng3d
          * Adds a component class named className to the game object.
 		 * @param param 被添加组件
 		 */
-        public addComponent<T extends Component, K extends keyof ComponentMap>(param: T | (new () => T) | K): T
+        public addComponent<T extends Component>(param: T | (new () => T)): T
         {
             var component: T;
             if (param instanceof Component)
             {
                 component = param;
-            } else if (param instanceof String)
-            {
-                var cls = ComponentMap.instance[param];
-                component = <any>(new cls());
             }
             else
             {

@@ -5377,89 +5377,85 @@ var feng3d;
      */
     var RenderDataHolder = (function (_super) {
         __extends(RenderDataHolder, _super);
+        /**
+         * 创建GL数据缓冲
+         */
         function RenderDataHolder() {
-            _super.apply(this, arguments);
+            _super.call(this);
+            this._updateEverytime = false;
+            this.childrenRenderDataHolder = [];
         }
         RenderDataHolder.prototype.createIndexBuffer = function (indices) {
             return new feng3d.IndexRenderData(indices);
         };
-        RenderDataHolder.prototype.createUniformData = ;
+        RenderDataHolder.prototype.createUniformData = function (name, data) {
+            return new feng3d.UniformData(name, data);
+        };
+        RenderDataHolder.prototype.createAttributeRenderData = function (name, data, stride, divisor) {
+            if (data === void 0) { data = null; }
+            if (stride === void 0) { stride = 3; }
+            if (divisor === void 0) { divisor = 0; }
+            return new feng3d.AttributeRenderData(name, data, stride);
+        };
+        RenderDataHolder.prototype.createShaderCode = function (vertexCode, fragmentCode) {
+            return new feng3d.ShaderCode(vertexCode, fragmentCode);
+        };
+        RenderDataHolder.prototype.createValueMacro = function (name, value) {
+            return { type: feng3d.MacroType.value, name: name, value: value };
+        };
+        RenderDataHolder.prototype.createBoolMacro = function (name, value) {
+            return { type: feng3d.MacroType.bool, name: name, value: value };
+        };
+        RenderDataHolder.prototype.createAddMacro = function (name, value) {
+            return { type: feng3d.MacroType.add, name: name, value: value };
+        };
+        Object.defineProperty(RenderDataHolder.prototype, "updateEverytime", {
+            /**
+             * 是否每次必须更新
+             */
+            get: function () { return this._updateEverytime; },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 收集渲染数据拥有者
+         * @param renderAtomic 渲染原子
+         */
+        RenderDataHolder.prototype.collectRenderDataHolder = function (renderAtomic) {
+            if (renderAtomic === void 0) { renderAtomic = null; }
+            renderAtomic.addRenderDataHolder(this);
+        };
+        RenderDataHolder.prototype.addRenderDataHolder = function (renderDataHolder) {
+            if (this.childrenRenderDataHolder.indexOf(renderDataHolder) == -1)
+                this.childrenRenderDataHolder.push(renderDataHolder);
+        };
+        RenderDataHolder.prototype.removeRenderDataHolder = function (renderDataHolder) {
+            var index = this.childrenRenderDataHolder.indexOf(renderDataHolder);
+            if (index != -1)
+                this.childrenRenderDataHolder.splice(index, 1);
+        };
+        /**
+         * 更新渲染数据
+         */
+        RenderDataHolder.prototype.updateRenderData = function (renderContext, renderData) {
+        };
+        /**
+         * 更新渲染数据
+         */
+        RenderDataHolder.prototype.updateRenderShader = function (renderContext, renderData) {
+        };
+        RenderDataHolder.prototype.invalidateRenderData = function () {
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE));
+        };
+        RenderDataHolder.prototype.invalidateShader = function () {
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE_SHADER));
+        };
+        RenderDataHolder.prototype.invalidateRenderHolder = function () {
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE_RENDERHOLDER));
+        };
         return RenderDataHolder;
     }(feng3d.EventDispatcher));
     feng3d.RenderDataHolder = RenderDataHolder;
-    {
-        return new feng3d.UniformData(name, data);
-    }
-    createAttributeRenderData(name, K, data, Float32Array = null, stride, number = 3, divisor, number = 0);
-    {
-        return new feng3d.AttributeRenderData(name, data, stride);
-    }
-    createShaderCode(vertexCode, string, fragmentCode, string);
-    {
-        return new feng3d.ShaderCode(vertexCode, fragmentCode);
-    }
-    createValueMacro(name, K, value, number);
-    feng3d.ValueMacro;
-    {
-        return { type: feng3d.MacroType.value, name: name, value: value };
-    }
-    createBoolMacro(name, K, value, boolean);
-    feng3d.BoolMacro;
-    {
-        return { type: feng3d.MacroType.bool, name: name, value: value };
-    }
-    createAddMacro(name, K, value, number);
-    feng3d.AddMacro;
-    {
-        return { type: feng3d.MacroType.add, name: name, value: value };
-    }
-    get;
-    updateEverytime();
-    {
-        return this._updateEverytime;
-    }
-    _updateEverytime = false;
-    childrenRenderDataHolder: RenderDataHolder[] = [];
-    /**
-     * 创建GL数据缓冲
-     */
-    constructor();
-    {
-        _super.call(this);
-    }
-    collectRenderDataHolder(renderAtomic, feng3d.Object3DRenderAtomic = null);
-    {
-        renderAtomic.addRenderDataHolder(this);
-    }
-    addRenderDataHolder(renderDataHolder, RenderDataHolder);
-    {
-        if (this.childrenRenderDataHolder.indexOf(renderDataHolder) == -1)
-            this.childrenRenderDataHolder.push(renderDataHolder);
-    }
-    removeRenderDataHolder(renderDataHolder, RenderDataHolder);
-    {
-        var index = this.childrenRenderDataHolder.indexOf(renderDataHolder);
-        if (index != -1)
-            this.childrenRenderDataHolder.splice(index, 1);
-    }
-    updateRenderData(renderContext, feng3d.RenderContext, renderData, feng3d.RenderAtomic);
-    {
-    }
-    updateRenderShader(renderContext, feng3d.RenderContext, renderData, feng3d.RenderAtomic);
-    {
-    }
-    invalidateRenderData();
-    {
-        this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE));
-    }
-    invalidateShader();
-    {
-        this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE_SHADER));
-    }
-    invalidateRenderHolder();
-    {
-        this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE_RENDERHOLDER));
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -5784,9 +5780,9 @@ var feng3d;
          */
         IndexRenderData.prototype.clone = function () {
             var cls = this.constructor;
-            var ins = new cls();
-            var indices = ins.indices = new Uint16Array(this.indices.length);
+            var indices = new Uint16Array(this.indices.length);
             indices.set(this.indices, 0);
+            var ins = new cls(indices);
             ins.count = this.count;
             ins.type = this.type;
             ins.offset = this.offset;
@@ -5936,6 +5932,7 @@ var feng3d;
         AttributeRenderData.prototype.clone = function () {
             var cls = this.constructor;
             var ins = new cls();
+            ins.name = this.name;
             ins.data = new Float32Array(this.data.length);
             ins.data.set(this.data, 0);
             ins.size = this.size;
@@ -6235,21 +6232,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var ComponentMap = (function () {
-        function ComponentMap() {
-            this["camera"] = feng3d.Camera;
-            this["meshFilter"] = feng3d.MeshFilter;
-        }
-        Object.defineProperty(ComponentMap, "instance", {
-            get: function () {
-                return this._instance = this._instance || new ComponentMap();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return ComponentMap;
-    }());
-    feng3d.ComponentMap = ComponentMap;
     /**
      * Base class for everything attached to GameObjects.
      *
@@ -8319,10 +8301,6 @@ var feng3d;
             var component;
             if (param instanceof feng3d.Component) {
                 component = param;
-            }
-            else if (param instanceof String) {
-                var cls = feng3d.ComponentMap.instance[param];
-                component = (new cls());
             }
             else {
                 component = new param();

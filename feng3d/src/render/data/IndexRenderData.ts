@@ -111,9 +111,9 @@ namespace feng3d
         public clone()
         {
             var cls = <any>this.constructor;
-            var ins: this = new cls();
-            var indices = ins.indices = new Uint16Array(this.indices.length);
+            var indices = new Uint16Array(this.indices.length);
             indices.set(this.indices, 0);
+            var ins: this = new cls(indices);
             ins.count = this.count;
             ins.type = this.type;
             ins.offset = this.offset;

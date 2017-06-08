@@ -1,53 +1,5 @@
 namespace feng3d
 {
-    export interface AttributeRenderDataStuct
-    {
-        /**
-         * 坐标
-         */
-        a_position: AttributeRenderData;
-
-        /**
-         * 颜色
-         */
-        a_color: AttributeRenderData;
-
-        /**
-         * 法线
-         */
-        a_normal: AttributeRenderData;
-
-        /**
-         * 切线
-         */
-        a_tangent: AttributeRenderData;
-
-        /**
-         * uv（纹理坐标）
-         */
-        a_uv: AttributeRenderData;
-
-        /**
-         * 关节索引
-         */
-        a_jointindex0: AttributeRenderData;
-
-        /**
-         * 关节权重
-         */
-        a_jointweight0: AttributeRenderData;
-
-        /**
-         * 关节索引
-         */
-        a_jointindex1: AttributeRenderData;
-
-        /**
-         * 关节权重
-         */
-        a_jointweight1: AttributeRenderData;
-    }
-
 	/**
 	 * 属性渲染数据
 	 * @author feng 2014-8-14
@@ -197,6 +149,7 @@ namespace feng3d
         {
             var cls = <any>this.constructor;
             var ins: this = new cls();
+            ins.name = this.name;
             ins.data = new Float32Array(this.data.length);
             ins.data.set(this.data, 0);
             ins.size = this.size;

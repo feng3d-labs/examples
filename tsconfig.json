@@ -4,9 +4,11 @@
 		"target": "es5",
 		"noImplicitAny": false,
 		"sourceMap": true,
+		"declaration": true,
 		"outFile": "out/examples.js"
 	},
 	"files": [
+		"feng3d/typings/feng3dExt.d.ts",
 		"feng3d/typings/webgl2.d.ts",
 		"feng3d/typings/webglExt.d.ts",
 		"feng3d/src/debug/assert.ts",

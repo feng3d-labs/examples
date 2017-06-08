@@ -5795,9 +5795,9 @@ var feng3d;
          */
         IndexRenderData.prototype.clone = function () {
             var cls = this.constructor;
-            var ins = new cls();
-            var indices = ins.indices = new Uint16Array(this.indices.length);
+            var indices = new Uint16Array(this.indices.length);
             indices.set(this.indices, 0);
+            var ins = new cls(indices);
             ins.count = this.count;
             ins.type = this.type;
             ins.offset = this.offset;
@@ -5947,6 +5947,7 @@ var feng3d;
         AttributeRenderData.prototype.clone = function () {
             var cls = this.constructor;
             var ins = new cls();
+            ins.name = this.name;
             ins.data = new Float32Array(this.data.length);
             ins.data.set(this.data, 0);
             ins.size = this.size;
@@ -6247,21 +6248,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var ComponentMap = (function () {
-        function ComponentMap() {
-            this["camera"] = feng3d.Camera;
-            this["meshFilter"] = feng3d.MeshFilter;
-        }
-        Object.defineProperty(ComponentMap, "instance", {
-            get: function () {
-                return this._instance = this._instance || new ComponentMap();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return ComponentMap;
-    }());
-    feng3d.ComponentMap = ComponentMap;
     /**
      * Base class for everything attached to GameObjects.
      *
@@ -8339,10 +8325,6 @@ var feng3d;
             var component;
             if (param instanceof feng3d.Component) {
                 component = param;
-            }
-            else if (param instanceof String) {
-                var cls = feng3d.ComponentMap.instance[param];
-                component = (new cls());
             }
             else {
                 component = new param();

@@ -1,17 +1,5 @@
 namespace feng3d
 {
-    export class ComponentMap
-    {
-        private static _instance: ComponentMap;
-        public static get instance()
-        {
-            return this._instance = this._instance || new ComponentMap();
-        }
-
-        "camera" = Camera;
-        "meshFilter" = MeshFilter;
-    }
-
 	/**
      * Base class for everything attached to GameObjects.
      * 

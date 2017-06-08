@@ -1,6 +1,5 @@
 namespace feng3d
 {
-
     /**
      * 几何体
      * @author feng 2016-04-28
@@ -156,7 +155,7 @@ namespace feng3d
 		 * @param data          顶点属性数据
          * @param stride        顶点数据步长
 		 */
-        public setVAData<K extends keyof AttributeRenderDataStuct>(vaId: K, data: Float32Array, stride: number)
+        public setVAData(vaId: string, data: Float32Array, stride: number)
         {
             if (data)
             {

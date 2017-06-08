@@ -67,6 +67,7 @@ namespace feng3d
             this.createUniformData("s_specular",this.specularTexture);
             this.createUniformData("u_specular",this.specularColor);
             this.createUniformData("u_glossiness",this.glossiness);
+            this.createBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData());
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -76,7 +77,6 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            this.createBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData());
         }
     }
 }

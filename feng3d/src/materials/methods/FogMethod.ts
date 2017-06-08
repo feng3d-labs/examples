@@ -92,6 +92,8 @@ namespace feng3d
             this.createUniformData("u_fogMaxDistance",this._maxDistance);
             this.createUniformData("u_fogDensity",this._density);
             this.createUniformData("u_fogMode",this._mode);
+            this.createBoolMacro("HAS_FOG_METHOD", true);
+            this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -102,8 +104,6 @@ namespace feng3d
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            this.createBoolMacro("HAS_FOG_METHOD", true);
-            this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
         }
     }
 

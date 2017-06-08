@@ -60,6 +60,7 @@ namespace feng3d
         {
             this.createUniformData("s_envMap",this._cubeTexture);
             this.createUniformData("u_reflectivity",this._reflectivity);
+            this.createBoolMacro("HAS_ENV_METHOD", true);
 
             //
             super.updateRenderData(renderContext, renderData);
@@ -70,7 +71,6 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            this.createBoolMacro("HAS_ENV_METHOD", true);
         }
     }
 }

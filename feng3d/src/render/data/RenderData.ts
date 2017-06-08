@@ -35,10 +35,17 @@ namespace feng3d
             return renderData;
         }
 
-        public createAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
+        public createAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, size: number = 3, divisor: number = 0)
         {
-            var renderData = new AttributeRenderData(name, data, stride);
-            this._elements.push(renderData);
+            var renderData: AttributeRenderData = this._elementMap[<any>name];
+            if (!renderData)
+            {
+                this._elementMap[<any>name] = renderData = new AttributeRenderData(name, data, size, divisor);
+                this._elements.push(renderData);
+            }
+            renderData.data = data;
+            renderData.size = size;
+            renderData.divisor = divisor;
             return renderData;
         }
 

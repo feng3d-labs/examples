@@ -190,16 +190,21 @@ namespace feng3d
             for (var i = 0; i < macros.length; i++)
             {
                 var element = macros[i];
+                var value = element.value;
+                if (value instanceof Function)
+                {
+                    value = value();
+                }
                 switch (element.type)
                 {
                     case MacroType.value:
-                        macro.valueMacros[element.name] = element.value;
+                        macro.valueMacros[element.name] = value;
                         break;
                     case MacroType.bool:
-                        macro.boolMacros[element.name] = macro.boolMacros[element.name] || element.value;
+                        macro.boolMacros[element.name] = macro.boolMacros[element.name] || value;
                         break;
                     case MacroType.add:
-                        macro.boolMacros[element.name] = ~~macro.boolMacros[element.name] + <number>element.value;
+                        macro.boolMacros[element.name] = ~~macro.boolMacros[element.name] + <number>value;
                         break;
                 }
             }

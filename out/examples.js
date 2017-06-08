@@ -5221,12 +5221,18 @@ var feng3d;
             renderData.data = data;
             return renderData;
         };
-        RenderData.prototype.createAttributeRenderData = function (name, data, stride, divisor) {
+        RenderData.prototype.createAttributeRenderData = function (name, data, size, divisor) {
             if (data === void 0) { data = null; }
-            if (stride === void 0) { stride = 3; }
+            if (size === void 0) { size = 3; }
             if (divisor === void 0) { divisor = 0; }
-            var renderData = new feng3d.AttributeRenderData(name, data, stride);
-            this._elements.push(renderData);
+            var renderData = this._elementMap[name];
+            if (!renderData) {
+                this._elementMap[name] = renderData = new feng3d.AttributeRenderData(name, data, size, divisor);
+                this._elements.push(renderData);
+            }
+            renderData.data = data;
+            renderData.size = size;
+            renderData.divisor = divisor;
             return renderData;
         };
         RenderData.prototype.createShaderCode = function (code) {
@@ -5486,15 +5492,19 @@ var feng3d;
             var macro = { valueMacros: {}, boolMacros: {}, addMacros: {} };
             for (var i = 0; i < macros.length; i++) {
                 var element = macros[i];
+                var value = element.value;
+                if (value instanceof Function) {
+                    value = value();
+                }
                 switch (element.type) {
                     case MacroType.value:
-                        macro.valueMacros[element.name] = element.value;
+                        macro.valueMacros[element.name] = value;
                         break;
                     case MacroType.bool:
-                        macro.boolMacros[element.name] = macro.boolMacros[element.name] || element.value;
+                        macro.boolMacros[element.name] = macro.boolMacros[element.name] || value;
                         break;
                     case MacroType.add:
-                        macro.boolMacros[element.name] = ~~macro.boolMacros[element.name] + element.value;
+                        macro.boolMacros[element.name] = ~~macro.boolMacros[element.name] + value;
                         break;
                 }
             }
@@ -5957,9 +5967,9 @@ var feng3d;
      */
     var AttributeRenderData = (function (_super) {
         __extends(AttributeRenderData, _super);
-        function AttributeRenderData(name, data, stride, divisor) {
+        function AttributeRenderData(name, data, size, divisor) {
             if (data === void 0) { data = null; }
-            if (stride === void 0) { stride = 3; }
+            if (size === void 0) { size = 3; }
             if (divisor === void 0) { divisor = 0; }
             var _this = _super.call(this) || this;
             _this._size = 3;
@@ -6000,7 +6010,7 @@ var feng3d;
             _this._invalid = true;
             _this.name = name;
             _this._data = data;
-            _this._size = stride;
+            _this._size = size;
             _this._divisor = divisor;
             _this._invalid = true;
             return _this;
@@ -9165,12 +9175,12 @@ var feng3d;
          * 设置顶点属性数据
          * @param vaId          顶点属性编号
          * @param data          顶点属性数据
-         * @param stride        顶点数据步长
+         * @param size          顶点数据尺寸
          */
-        Geometry.prototype.setVAData = function (vaId, data, stride) {
+        Geometry.prototype.setVAData = function (vaId, data, size) {
             if (data) {
                 if (!this._attributes[vaId])
-                    this._attributes[vaId] = this.createAttributeRenderData(vaId, data, stride);
+                    this._attributes[vaId] = this.createAttributeRenderData(vaId, data, size);
                 this._attributes[vaId].data = data;
             }
             else {
@@ -13846,6 +13856,7 @@ var feng3d;
          */
         NormalMethod.prototype.updateRenderData = function (renderContext, renderData) {
             this.createUniformData("s_normal", this.normalTexture);
+            this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData());
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13853,7 +13864,6 @@ var feng3d;
          * 更新渲染数据
          */
         NormalMethod.prototype.updateRenderShader = function (renderContext, renderData) {
-            this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData());
         };
         return NormalMethod;
     }(feng3d.RenderDataHolder));
@@ -13927,6 +13937,7 @@ var feng3d;
             this.createUniformData("s_specular", this.specularTexture);
             this.createUniformData("u_specular", this.specularColor);
             this.createUniformData("u_glossiness", this.glossiness);
+            this.createBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData());
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -13934,7 +13945,6 @@ var feng3d;
          * 更新渲染数据
          */
         SpecularMethod.prototype.updateRenderShader = function (renderContext, renderData) {
-            this.createBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData());
         };
         return SpecularMethod;
     }(feng3d.RenderDataHolder));
@@ -13957,6 +13967,10 @@ var feng3d;
             var _this = _super.call(this) || this;
             _this.ambientTexture = new feng3d.Texture2D(ambientUrl);
             _this.color = color || new feng3d.Color();
+            //
+            _this.createUniformData("u_ambient", function () { return _this._color; });
+            _this.createUniformData("s_ambient", function () { return _this._ambientTexture; });
+            _this.createBoolMacro("HAS_AMBIENT_SAMPLER", function () { return _this.ambientTexture.checkRenderData(); });
             return _this;
         }
         Object.defineProperty(AmbientMethod.prototype, "ambientTexture", {
@@ -13996,8 +14010,6 @@ var feng3d;
          * 更新渲染数据
          */
         AmbientMethod.prototype.updateRenderData = function (renderContext, renderData) {
-            this.createUniformData("u_ambient", this._color);
-            this.createUniformData("s_ambient", this._ambientTexture);
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14005,7 +14017,6 @@ var feng3d;
          * 更新渲染数据
          */
         AmbientMethod.prototype.updateRenderShader = function (renderContext, renderData) {
-            this.createBoolMacro("HAS_AMBIENT_SAMPLER", this.ambientTexture.checkRenderData());
         };
         return AmbientMethod;
     }(feng3d.RenderDataHolder));
@@ -14114,6 +14125,8 @@ var feng3d;
             this.createUniformData("u_fogMaxDistance", this._maxDistance);
             this.createUniformData("u_fogDensity", this._density);
             this.createUniformData("u_fogMode", this._mode);
+            this.createBoolMacro("HAS_FOG_METHOD", true);
+            this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14122,8 +14135,6 @@ var feng3d;
          */
         FogMethod.prototype.updateRenderShader = function (renderContext, renderData) {
             //
-            this.createBoolMacro("HAS_FOG_METHOD", true);
-            this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
         };
         return FogMethod;
     }(feng3d.RenderDataHolder));
@@ -14197,6 +14208,7 @@ var feng3d;
         EnvMapMethod.prototype.updateRenderData = function (renderContext, renderData) {
             this.createUniformData("s_envMap", this._cubeTexture);
             this.createUniformData("u_reflectivity", this._reflectivity);
+            this.createBoolMacro("HAS_ENV_METHOD", true);
             //
             _super.prototype.updateRenderData.call(this, renderContext, renderData);
         };
@@ -14204,7 +14216,6 @@ var feng3d;
          * 更新渲染数据
          */
         EnvMapMethod.prototype.updateRenderShader = function (renderContext, renderData) {
-            this.createBoolMacro("HAS_ENV_METHOD", true);
         };
         return EnvMapMethod;
     }(feng3d.RenderDataHolder));

@@ -49,6 +49,7 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             this.createUniformData("s_normal",this.normalTexture);
+            this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData());
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -58,7 +59,6 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData());
         }
     }
 }

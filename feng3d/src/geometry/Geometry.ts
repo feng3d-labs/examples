@@ -153,14 +153,14 @@ namespace feng3d
 		 * 设置顶点属性数据
 		 * @param vaId          顶点属性编号
 		 * @param data          顶点属性数据
-         * @param stride        顶点数据步长
+         * @param size          顶点数据尺寸
 		 */
-        public setVAData<K extends keyof AttributeRenderDataStuct>(vaId: K, data: Float32Array, stride: number)
+        public setVAData<K extends keyof AttributeRenderDataStuct>(vaId: K, data: Float32Array, size: number)
         {
             if (data)
             {
                 if (!this._attributes[vaId])
-                    this._attributes[vaId] = this.createAttributeRenderData(vaId, data, stride);
+                    this._attributes[vaId] = this.createAttributeRenderData(vaId, data, size);
                 this._attributes[vaId].data = data;
             } else
             {

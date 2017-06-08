@@ -120,12 +120,12 @@ namespace feng3d
          */
         private _invalid = true;
 
-        constructor(name: string, data: Float32Array = null, stride: number = 3, divisor: number = 0)
+        constructor(name: string, data: Float32Array = null, size: number = 3, divisor: number = 0)
         {
             super();
             this.name = name;
             this._data = data;
-            this._size = stride;
+            this._size = size;
             this._divisor = divisor;
             this._invalid = true;
         }

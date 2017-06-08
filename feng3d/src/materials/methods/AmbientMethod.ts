@@ -47,6 +47,10 @@ namespace feng3d
             super();
             this.ambientTexture = new Texture2D(ambientUrl);
             this.color = color || new Color();
+            //
+            this.createUniformData("u_ambient", () => this._color);
+            this.createUniformData("s_ambient", () => this._ambientTexture);
+            this.createBoolMacro("HAS_AMBIENT_SAMPLER", () => this.ambientTexture.checkRenderData());
         }
 
         /**
@@ -54,8 +58,6 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            this.createUniformData("u_ambient",this._color);
-            this.createUniformData("s_ambient",this._ambientTexture);
             //
             super.updateRenderData(renderContext, renderData);
         }
@@ -65,7 +67,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            this.createBoolMacro("HAS_AMBIENT_SAMPLER", this.ambientTexture.checkRenderData());
+
         }
     }
 }

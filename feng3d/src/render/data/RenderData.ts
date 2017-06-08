@@ -37,15 +37,8 @@ namespace feng3d
 
         public createAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
         {
-            var renderData: AttributeRenderData = this._elementMap[<any>name];
-            if (!renderData)
-            {
-                this._elementMap[<any>name] = renderData = new AttributeRenderData(name, data, stride, divisor);
-                this._elements.push(renderData);
-            }
-            renderData.data = data;
-            renderData.stride = stride;
-            renderData.divisor;
+            var renderData = new AttributeRenderData(name, data, stride);
+            this._elements.push(renderData);
             return renderData;
         }
 

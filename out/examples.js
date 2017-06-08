@@ -5225,14 +5225,8 @@ var feng3d;
             if (data === void 0) { data = null; }
             if (stride === void 0) { stride = 3; }
             if (divisor === void 0) { divisor = 0; }
-            var renderData = this._elementMap[name];
-            if (!renderData) {
-                this._elementMap[name] = renderData = new feng3d.AttributeRenderData(name, data, stride, divisor);
-                this._elements.push(renderData);
-            }
-            renderData.data = data;
-            renderData.stride = stride;
-            renderData.divisor;
+            var renderData = new feng3d.AttributeRenderData(name, data, stride);
+            this._elements.push(renderData);
             return renderData;
         };
         RenderData.prototype.createShaderCode = function (code) {
@@ -16000,10 +15994,7 @@ var feng3d;
              * 属性数据列表
              */
             _this._attributes = {};
-            /**
-             * 粒子时间
-             */
-            _this.time = 0;
+            _this._time = 0;
             /**
              * 起始时间
              */
@@ -16034,6 +16025,17 @@ var feng3d;
             _this._updateEverytime = true;
             return _this;
         }
+        Object.defineProperty(ParticleAnimator.prototype, "time", {
+            /**
+             * 粒子时间
+             */
+            get: function () {
+                this._time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
+                return this._time;
+            },
+            enumerable: true,
+            configurable: true
+        });
         ParticleAnimator.prototype.addAnimation = function (animation) {
             if (this._animations.indexOf(animation) == -1)
                 this._animations.push(animation);
@@ -16071,7 +16073,6 @@ var feng3d;
                 this.generateParticles();
                 this._isDirty = false;
             }
-            this.time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
             this.createUniformData("u_particleTime", function () { return _this.time; });
             renderData.instanceCount = this.numParticles;
             for (var attributeName in this._attributes) {

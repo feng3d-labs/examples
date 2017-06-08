@@ -20,7 +20,12 @@ namespace feng3d
         /**
          * 粒子时间
          */
-        public time: number = 0;
+        public get time()
+        {
+            this._time = ((getTimer() - this.startTime) / 1000) % this.cycle;
+            return this._time;
+        }
+        private _time: number = 0;
 
         /**
          * 起始时间
@@ -111,7 +116,6 @@ namespace feng3d
                 this._isDirty = false;
             }
 
-            this.time = ((getTimer() - this.startTime) / 1000) % this.cycle;
             this.createUniformData("u_particleTime", () => this.time);
             renderData.instanceCount = this.numParticles;
 

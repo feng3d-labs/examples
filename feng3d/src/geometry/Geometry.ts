@@ -137,7 +137,7 @@ namespace feng3d
 		 */
         public setIndices(indices: Uint16Array)
         {
-            this._indexBuffer = RenderData.createIndexBuffer(indices);
+            this._indexBuffer = this.createIndexBuffer(indices);
             this.invalidateRenderData();
             this.dispatchEvent(new GeometryEvent(GeometryEvent.CHANGED_INDEX_DATA));
         }
@@ -161,7 +161,7 @@ namespace feng3d
             if (data)
             {
                 if (!this._attributes[vaId])
-                    this._attributes[vaId] = RenderData.createAttributeRenderData(vaId, data, stride);
+                    this._attributes[vaId] = this.createAttributeRenderData(vaId, data, stride);
                 this._attributes[vaId].data = data;
             } else
             {

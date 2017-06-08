@@ -2,40 +2,40 @@ namespace feng3d
 {
     export class RenderData
     {
-        public static createIndexBuffer(indices: Uint16Array)
-        {
-            return new IndexRenderData(indices);
-        }
+        // public static createIndexBuffer(indices: Uint16Array)
+        // {
+        //     return new IndexRenderData(indices);
+        // }
 
-        public static createUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
-        {
-            return new UniformData(name, data);
-        }
+        // public static createUniformData<K extends keyof UniformRenderData>(name: K, data: UniformRenderData[K])
+        // {
+        //     return new UniformData(name, data);
+        // }
 
-        public static createAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
-        {
-            return new AttributeRenderData(name, data, stride);
-        }
+        // public static createAttributeRenderData<K extends keyof AttributeRenderDataStuct>(name: K, data: Float32Array = null, stride: number = 3, divisor: number = 0)
+        // {
+        //     return new AttributeRenderData(name, data, stride);
+        // }
 
-        public static createShaderCode(vertexCode: string, fragmentCode: string)
-        {
-            return new ShaderCode(vertexCode, fragmentCode);
-        }
+        // public static createShaderCode(vertexCode: string, fragmentCode: string)
+        // {
+        //     return new ShaderCode(vertexCode, fragmentCode);
+        // }
 
-        public static createValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
-        {
-            return { type: MacroType.value, name: name, value: value };
-        }
+        // public static createValueMacro<K extends keyof ValueMacros>(name: K, value: number): ValueMacro
+        // {
+        //     return { type: MacroType.value, name: name, value: value };
+        // }
 
-        public static createBoolMacro<K extends keyof BoolMacros>(name: K, value: boolean): BoolMacro
-        {
-            return { type: MacroType.bool, name: name, value: value };
-        }
+        // public static createBoolMacro<K extends keyof BoolMacros>(name: K, value: boolean): BoolMacro
+        // {
+        //     return { type: MacroType.bool, name: name, value: value };
+        // }
 
-        public static createAddMacro<K extends keyof IAddMacros>(name: K, value: number): AddMacro
-        {
-            return { type: MacroType.add, name: name, value: value };
-        }
+        // public static createAddMacro<K extends keyof IAddMacros>(name: K, value: number): AddMacro
+        // {
+        //     return { type: MacroType.add, name: name, value: value };
+        // }
     }
 
     /**
@@ -44,12 +44,12 @@ namespace feng3d
      */
     export class RenderAtomic
     {
-        public addUniform(uniformData: UniformData<any>)
+        public addUniform(uniformData: UniformData)
         {
             this.uniforms[uniformData.name] = uniformData;
         }
 
-        public removeUniform(uniformData: UniformData<any>)
+        public removeUniform(uniformData: UniformData)
         {
             delete this.uniforms[uniformData.name];
         }
@@ -288,7 +288,7 @@ namespace feng3d
 
         public update(renderContext: RenderContext)
         {
-            renderContext.updateRenderData(this);
+            renderContext.updateRenderData1(this);
             if (this.updateEverytimeList.length > 0)
             {
                 this.updateEverytimeList.forEach(element =>

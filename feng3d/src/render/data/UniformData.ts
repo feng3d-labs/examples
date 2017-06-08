@@ -1,11 +1,11 @@
 namespace feng3d
 {
-    export class UniformData<K extends keyof UniformRenderData>
+    export class UniformData
     {
-        public name: K;
-        public data: UniformRenderData[K];
+        public name: string;
+        public data: any;
 
-        constructor(name: K, data: UniformRenderData[K])
+        constructor(name: string, data: any)
         {
             this.name = name;
             this.data = data;

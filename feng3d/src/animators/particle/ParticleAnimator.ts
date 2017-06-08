@@ -103,7 +103,7 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_PARTICLE_ANIMATOR", true))
+            renderData.shader.addMacro(this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true))
             if (this._isDirty)
             {
                 this.startTime = getTimer();
@@ -112,7 +112,7 @@ namespace feng3d
             }
 
             this.time = ((getTimer() - this.startTime) / 1000) % this.cycle;
-            renderData.addUniform(RenderData.createUniformData("u_particleTime", () => this.time));
+            renderData.addUniform(this.createUniformData("u_particleTime", () => this.time));
             renderData.instanceCount = this.numParticles;
 
             for (var attributeName in this._attributes)
@@ -147,17 +147,17 @@ namespace feng3d
             //更新常量数据
             for (var uniform in particleGlobal)
             {
-                renderData.addUniform(RenderData.createUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]));
+                renderData.addUniform(this.createUniformData(<any>("u_particle_" + uniform), particleGlobal[uniform]));
             }
 
             //更新宏定义
             for (var attribute in this._attributes)
             {
-                renderData.shader.addMacro(RenderData.createBoolMacro(<any>("D_" + attribute), true));
+                renderData.shader.addMacro(this.createBoolMacro(<any>("D_" + attribute), true));
             }
             for (var uniform in particleGlobal)
             {
-                renderData.shader.addMacro(RenderData.createBoolMacro(<any>("D_u_particle_" + uniform), true));
+                renderData.shader.addMacro(this.createBoolMacro(<any>("D_u_particle_" + uniform), true));
             }
         }
 

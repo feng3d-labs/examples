@@ -58,7 +58,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData()));
+            this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData());
         }
     }
 }

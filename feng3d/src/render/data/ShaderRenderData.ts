@@ -4,42 +4,24 @@ namespace feng3d
     export class ShaderCode extends RenderElement
     {
         /**
-         * 顶点渲染程序代码
+         * 渲染程序代码
          */
-        public get vertexCode()
+        public get code()
         {
-            return this._vertexCode;
+            return this._code;
         }
-        public set vertexCode(value)
+        public set code(value)
         {
-            if (this._vertexCode == value)
-                return;
-            this._vertexCode = value;
+            this._code = value;
             this.dispatchEvent(new Event(Event.CHANGE));
         }
-        private _vertexCode: string;
 
-        /**
-         * 片段渲染程序代码
-         */
-        public get fragmentCode()
-        {
-            return this._fragmentCode;
-        }
-        public set fragmentCode(value)
-        {
-            if (this._fragmentCode == value)
-                return;
-            this._fragmentCode = value;
-            this.dispatchEvent(new Event(Event.CHANGE));
-        }
-        private _fragmentCode: string;
+        private _code: { vertexCode: string, fragmentCode: string } | (() => { vertexCode: string, fragmentCode: string });
 
-        constructor(vertexCode: string, fragmentCode: string)
+        constructor(code: { vertexCode: string, fragmentCode: string } | (() => { vertexCode: string, fragmentCode: string }))
         {
             super();
-            this._vertexCode = vertexCode;
-            this._fragmentCode = fragmentCode;
+            this.code = code;
         }
     }
 
@@ -54,7 +36,7 @@ namespace feng3d
     {
         type: MacroType;
         name: string;
-        value: number | boolean;
+        value: number | boolean | (() => boolean);
     }
 
     export class ValueMacro extends Macro
@@ -75,8 +57,8 @@ namespace feng3d
     {
         type: MacroType.bool;
         name: string;
-        value: boolean;
-        constructor(name: string, value: boolean)
+        value: boolean | (() => boolean);
+        constructor(name: string, value: boolean | (() => boolean))
         {
             super();
             this.type = MacroType.bool;
@@ -150,15 +132,26 @@ namespace feng3d
          */
         public activeShaderProgram(gl: GL)
         {
-            if (!this.shaderCode || !this.shaderCode.vertexCode || !this.shaderCode.fragmentCode)
+            if (!this.shaderCode || !this.shaderCode.code)
                 return null;
 
             if (this._invalid)
             {
                 //应用宏
                 var shaderMacroStr = this.getMacroCode(this.macros);
-                this._resultVertexCode = this.shaderCode.vertexCode.replace(/#define\s+macros/, shaderMacroStr);
-                this._resultFragmentCode = this.shaderCode.fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
+                if (this.shaderCode.code instanceof Function)
+                {
+                    var code = this.shaderCode.code();
+                    var vertexCode = code.vertexCode;
+                    var fragmentCode = code.fragmentCode;
+                } else
+                {
+                    var vertexCode = this.shaderCode.code.vertexCode;
+                    var fragmentCode = this.shaderCode.code.fragmentCode;
+                }
+
+                this._resultVertexCode = vertexCode.replace(/#define\s+macros/, shaderMacroStr);
+                this._resultFragmentCode = fragmentCode.replace(/#define\s+macros/, shaderMacroStr);
                 this.version++;
             }
 

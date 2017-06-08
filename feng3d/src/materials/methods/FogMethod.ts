@@ -102,8 +102,8 @@ namespace feng3d
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.shader.addMacro(this.createBoolMacro("HAS_FOG_METHOD", true));
-            renderData.shader.addMacro(this.createAddMacro("V_GLOBAL_POSITION_NEED", 1));
+            this.createBoolMacro("HAS_FOG_METHOD", true);
+            this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
         }
     }
 

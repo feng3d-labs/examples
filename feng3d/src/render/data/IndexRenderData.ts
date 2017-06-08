@@ -46,11 +46,9 @@ namespace feng3d
          */
         private _invalid = true;
 
-        constructor(indices: Uint16Array)
+        constructor()
         {
             super();
-            this._indices = indices;
-            this.count = indices.length;
         }
 
         /**
@@ -112,9 +110,10 @@ namespace feng3d
         public clone()
         {
             var cls = <any>this.constructor;
+            var ins: this = new cls();
             var indices = new Uint16Array(this.indices.length);
             indices.set(this.indices, 0);
-            var ins: this = new cls(indices);
+            ins.indices = indices;
             ins.count = this.count;
             ins.type = this.type;
             ins.offset = this.offset;

@@ -48,7 +48,7 @@ namespace feng3d
             {
                 var object = meshRenderer.gameObject;
                 this.objects.push(object);
-                object.renderData.addUniform(this.createUniformData("u_objectID",this.objects.length - 1));
+                object.renderData.addUniform(this.createUniformData("u_objectID", this.objects.length - 1));
                 // super.drawRenderables(renderContext, meshRenderer);
             }
         }
@@ -61,7 +61,7 @@ namespace feng3d
             var vertexCode = ShaderLib.getShaderCode(this._shaderName + ".vertex");
             var fragmentCode = ShaderLib.getShaderCode(this._shaderName + ".fragment");
             var shader = new ShaderRenderData();
-            shader.setShaderCode(this.createShaderCode(vertexCode, fragmentCode));
+            shader.setShaderCode(this.createShaderCode({ vertexCode: vertexCode, fragmentCode: fragmentCode }));
             // super.drawObject3D(gl, renderAtomic, shader);
         }
     }

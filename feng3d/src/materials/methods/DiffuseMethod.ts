@@ -61,32 +61,17 @@ namespace feng3d
             super();
             this.difuseTexture = new Texture2D(diffuseUrl);
             this.color = new Color(1, 1, 1, 1);
+            //
+            this.createUniformData("u_diffuse", () => this.color);
+            this.createUniformData("s_diffuse", () => this.difuseTexture);
+            this.createUniformData("u_alphaThreshold", () => this.alphaThreshold);
+            this.createBoolMacro("HAS_DIFFUSE_SAMPLER", () => this.difuseTexture.checkRenderData());
         }
 
         private onLoaded()
         {
             this.invalidateRenderData();
             this.invalidateShader();
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            this.createUniformData("u_diffuse",this.color);
-            this.createUniformData("s_diffuse",this.difuseTexture);
-            this.createUniformData("u_alphaThreshold",this.alphaThreshold);
-            //
-            super.updateRenderData(renderContext, renderData);
-        }
-
-		/**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            renderData.shader.addMacro(this.createBoolMacro("HAS_DIFFUSE_SAMPLER", this.difuseTexture.checkRenderData()));
         }
     }
 }

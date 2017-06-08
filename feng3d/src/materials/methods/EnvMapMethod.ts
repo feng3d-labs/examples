@@ -70,7 +70,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(this.createBoolMacro("HAS_ENV_METHOD", true));
+            this.createBoolMacro("HAS_ENV_METHOD", true);
         }
     }
 }

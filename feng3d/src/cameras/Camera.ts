@@ -27,6 +27,14 @@ namespace feng3d
 
             for (var i: number = 0; i < 6; ++i)
                 this._frustumPlanes[i] = new Plane3D();
+
+            //
+            this.createUniformData("u_viewProjection", () => this.viewProjection);
+            this.createUniformData("u_cameraMatrix", () =>
+            {
+                return this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();
+            });
+            this.createUniformData("u_skyBoxSize", () => { return this._lens.far / Math.sqrt(3); });
         }
 
 		/**
@@ -141,22 +149,6 @@ namespace feng3d
         {
             this._viewProjectionDirty = true;
             this._frustumPlanesDirty = true;
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            //
-            this.createUniformData("u_viewProjection",this.viewProjection);
-            this.createUniformData("u_cameraMatrix",() =>
-            {
-                return this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();
-            });
-            this.createUniformData("u_skyBoxSize",() => { return this._lens.far / Math.sqrt(3); });
-            //
-            super.updateRenderData(renderContext, renderData);
         }
 
 		/**

@@ -81,21 +81,21 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(RenderData.createUniformData("s_blendTexture",this.blendTexture));
-            renderData.addUniform(RenderData.createUniformData("s_splatMergeTexture",this.splatMergeTexture));
-            renderData.addUniform(RenderData.createUniformData("u_splatMergeTextureSize",this.splatMergeTexture.size));
-            renderData.addUniform(RenderData.createUniformData("u_splatRepeats",this.splatRepeats));
+            renderData.addUniform(this.createUniformData("s_blendTexture",this.blendTexture));
+            renderData.addUniform(this.createUniformData("s_splatMergeTexture",this.splatMergeTexture));
+            renderData.addUniform(this.createUniformData("u_splatMergeTextureSize",this.splatMergeTexture.size));
+            renderData.addUniform(this.createUniformData("u_splatRepeats",this.splatRepeats));
             //
-            renderData.addUniform(RenderData.createUniformData("u_imageSize",new Point(2048.0, 1024.0)));
-            renderData.addUniform(RenderData.createUniformData("u_tileSize",new Point(512.0, 512.0)));
-            renderData.addUniform(RenderData.createUniformData("u_maxLod",7));
-            renderData.addUniform(RenderData.createUniformData("u_uvPositionScale",0.001));
-            renderData.addUniform(RenderData.createUniformData("u_tileOffset",[
+            renderData.addUniform(this.createUniformData("u_imageSize",new Point(2048.0, 1024.0)));
+            renderData.addUniform(this.createUniformData("u_tileSize",new Point(512.0, 512.0)));
+            renderData.addUniform(this.createUniformData("u_maxLod",7));
+            renderData.addUniform(this.createUniformData("u_uvPositionScale",0.001));
+            renderData.addUniform(this.createUniformData("u_tileOffset",[
                 new Vector3D(0.5, 0.5, 0.0, 0.0),
                 new Vector3D(0.5, 0.5, 0.5, 0.0),
                 new Vector3D(0.5, 0.5, 0.0, 0.5),
             ]));
-            renderData.addUniform(RenderData.createUniformData("u_lod0vec",new Vector3D(0.5, 1, 0, 0)));
+            renderData.addUniform(this.createUniformData("u_lod0vec",new Vector3D(0.5, 1, 0, 0)));
 
             super.updateRenderData(renderContext, renderData);
         }
@@ -105,8 +105,8 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_TERRAIN_METHOD", true));
-            renderData.shader.addMacro(RenderData.createBoolMacro("USE_TERRAIN_MERGE", true));
+            renderData.shader.addMacro(this.createBoolMacro("HAS_TERRAIN_METHOD", true));
+            renderData.shader.addMacro(this.createBoolMacro("USE_TERRAIN_MERGE", true));
         }
     }
 }

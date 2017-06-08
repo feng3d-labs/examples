@@ -58,8 +58,8 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addUniform(RenderData.createUniformData("s_envMap",this._cubeTexture));
-            renderData.addUniform(RenderData.createUniformData("u_reflectivity",this._reflectivity));
+            renderData.addUniform(this.createUniformData("s_envMap",this._cubeTexture));
+            renderData.addUniform(this.createUniformData("u_reflectivity",this._reflectivity));
 
             //
             super.updateRenderData(renderContext, renderData);
@@ -70,7 +70,7 @@ namespace feng3d
 		 */
         public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.shader.addMacro(RenderData.createBoolMacro("HAS_ENV_METHOD", true));
+            renderData.shader.addMacro(this.createBoolMacro("HAS_ENV_METHOD", true));
         }
     }
 }

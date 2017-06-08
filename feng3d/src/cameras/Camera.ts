@@ -149,12 +149,12 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
             //
-            renderData.addUniform(RenderData.createUniformData("u_viewProjection",this.viewProjection));
-            renderData.addUniform(RenderData.createUniformData("u_cameraMatrix",() =>
+            renderData.addUniform(this.createUniformData("u_viewProjection",this.viewProjection));
+            renderData.addUniform(this.createUniformData("u_cameraMatrix",() =>
             {
                 return this.gameObject ? this.gameObject.transform.localToWorldMatrix : new Matrix3D();
             }));
-            renderData.addUniform(RenderData.createUniformData("u_skyBoxSize",() => { return this._lens.far / Math.sqrt(3); }));
+            renderData.addUniform(this.createUniformData("u_skyBoxSize",() => { return this._lens.far / Math.sqrt(3); }));
             //
             super.updateRenderData(renderContext, renderData);
         }

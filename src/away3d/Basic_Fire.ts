@@ -38,7 +38,7 @@ namespace feng3d
 
         private initEngine()
         {
-            
+
             var view3D = this.view = new View3D();
 
             this.camera = view3D.camera;
@@ -53,12 +53,12 @@ namespace feng3d
 
         private initLights()
         {
-            this.directionalLight = new DirectionalLight(0, -1, 0);
+            this.directionalLight = gameObject.addComponent(DirectionalLight);
+            this.directionalLight.direction = new Vector3D(0, -1, 0);
             this.directionalLight.castsShadows = false;
             this.directionalLight.color.fromUnit(0xeedddd);
             this.directionalLight.intensity = .5;
             var gameObject = new GameObject();
-            gameObject.addComponent(this.directionalLight);
             this.scene.addChild(gameObject.transform);
         }
 
@@ -101,17 +101,17 @@ namespace feng3d
         private initObjects()
         {
             this.plane = new GameObject();
-            var model = this.plane.getOrCreateComponentByClass(MeshRenderer);
-            this.plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
-            this.plane.getOrCreateComponentByClass(MeshFilter).mesh.scaleUV(2, 2);
+            var model = this.plane.addComponent(MeshRenderer);
+            this.plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
+            this.plane.getComponent(MeshFilter).mesh.scaleUV(2, 2);
             model.material = this.planeMaterial;
             this.plane.transform.y = -20;
             this.scene.addChild(this.plane.transform);
             for (var i: number = 0; i < Basic_Fire.NUM_FIRES; i++)
             {
                 var particleMesh = new GameObject();
-                var model = particleMesh.getOrCreateComponentByClass(MeshRenderer);
-                particleMesh.getOrCreateComponentByClass(MeshFilter).mesh = this.particleGeometry;
+                var model = particleMesh.addComponent(MeshRenderer);
+                particleMesh.addComponent(MeshFilter).mesh = this.particleGeometry;
                 model.material = this.particleMaterial;
                 particleMesh.addComponent(this.fireAnimationSet);
                 var degree: number = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
@@ -150,11 +150,11 @@ namespace feng3d
         {
             var fireObject: FireVO = this.fireObjects[this.timer.currentCount - 1];
             // fireObject.animator["start"]();
-            var light: PointLight = <any>new PointLight();
+            var lightObject = new GameObject();
+            var light: PointLight = lightObject.addComponent(PointLight);
             light.color.fromUnit(0xFF3301);
             light.intensity = 0;
-            var lightObject = new GameObject();
-            lightObject.addComponent(light);
+
             lightObject.transform.position = fireObject.mesh.transform.position;
             fireObject.light = light;
         }

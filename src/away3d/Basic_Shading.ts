@@ -39,7 +39,7 @@ namespace feng3d
 
         private initEngine()
         {
-            
+
             var view3D = this.view = new View3D();
 
             this.scene = view3D.scene;
@@ -64,19 +64,17 @@ namespace feng3d
         private initLights()
         {
             this.scene.ambientColor.a = 0.2;
-            
+
             this.light1 = new GameObject();
-            var directionalLight = new DirectionalLight();
+            var directionalLight = this.light1.addComponent(DirectionalLight);
             directionalLight.intensity = 0.7;
-            this.light1.addComponent(directionalLight);
             this.light1.transform.rotationX = 90;
             this.scene.addChild(this.light1.transform);
 
             this.light2 = new GameObject();
-            var directionalLight = new DirectionalLight();
+            var directionalLight = this.light2.addComponent(DirectionalLight);
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
-            this.light2.addComponent(directionalLight);
             this.light2.transform.rotationX = 90;
             this.scene.addChild(this.light2.transform);
         }
@@ -84,31 +82,31 @@ namespace feng3d
         private initObjects()
         {
             this.plane = new GameObject();
-            var model = this.plane.getOrCreateComponentByClass(MeshRenderer);
-            var geometry: Geometry = this.plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
+            var model = this.plane.addComponent(MeshRenderer);
+            var geometry: Geometry = this.plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             model.material = this.planeMaterial;
             geometry.scaleUV(2, 2);
             this.plane.transform.y = -20;
             this.scene.addChild(this.plane.transform);
             this.sphere = new GameObject();
-            var model = this.sphere.getOrCreateComponentByClass(MeshRenderer);
-            this.sphere.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry(150, 40, 20)
+            var model = this.sphere.addComponent(MeshRenderer);
+            this.sphere.addComponent(MeshFilter).mesh = new SphereGeometry(150, 40, 20)
             model.material = this.sphereMaterial;
             this.sphere.transform.x = 300;
             this.sphere.transform.y = 160;
             this.sphere.transform.z = 300;
             this.scene.addChild(this.sphere.transform);
             this.cube = new GameObject();
-            var model = this.cube.getOrCreateComponentByClass(MeshRenderer);
-            this.cube.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
+            var model = this.cube.addComponent(MeshRenderer);
+            this.cube.addComponent(MeshFilter).mesh = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
             model.material = this.cubeMaterial;
             this.cube.transform.x = 300;
             this.cube.transform.y = 160;
             this.cube.transform.z = -250;
             this.scene.addChild(this.cube.transform);
             this.torus = new GameObject();
-            var model = this.torus.getOrCreateComponentByClass(MeshRenderer);
-            geometry = this.torus.getOrCreateComponentByClass(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
+            var model = this.torus.addComponent(MeshRenderer);
+            geometry = this.torus.addComponent(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = this.torusMaterial;
             geometry.scaleUV(10, 5);
             this.torus.transform.x = -250;

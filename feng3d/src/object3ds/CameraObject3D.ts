@@ -11,8 +11,7 @@ namespace feng3d
         constructor(name = "camera")
         {
             super(name);
-            this.camera = new Camera();
-            this.addComponent(this.camera);
+            this.camera = this.addComponent(Camera);
         }
     }
 }

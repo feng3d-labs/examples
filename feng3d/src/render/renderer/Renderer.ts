@@ -50,8 +50,8 @@ namespace feng3d
             //更新数据
             object3D.updateRender(renderContext);
             var gl = renderContext.gl;
-            // try
-            // {
+            try
+            {
                 //绘制
                 var material = this.material;
                 if (material.enableBlend)
@@ -67,10 +67,10 @@ namespace feng3d
                     gl.depthMask(true);
                 }
                 this.drawObject3D(gl, object3D.renderData);            //
-            // } catch (error)
-            // {
-            //     console.log(error);
-            // }
+            } catch (error)
+            {
+                console.log(error);
+            }
         }
 
         /**

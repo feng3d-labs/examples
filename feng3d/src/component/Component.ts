@@ -49,14 +49,6 @@ namespace feng3d
             return this._single;
         }
 
-        /**
-         * 组件类型
-         */
-        public get type()
-        {
-            return this._type;
-        }
-
         //------------------------------------------
         // Public Functions
         //------------------------------------------
@@ -67,7 +59,6 @@ namespace feng3d
         {
             super();
             this.initComponent();
-            this._type = <any>this.constructor;
         }
 
         /**
@@ -154,7 +145,6 @@ namespace feng3d
 		 */
         protected components_: Component[] = [];
         protected _single = false;
-        protected _type: new () => Component;
 
         //------------------------------------------
         // Protected Functions

@@ -35,21 +35,20 @@ namespace feng3d
             var root = 'resources/terrain/';
             //
             var terrain = new GameObject("terrain");
-            terrain.getOrCreateComponentByClass(MeshFilter).mesh = new TerrainGeometry(root + 'terrain_heights.jpg');
+            terrain.addComponent(MeshFilter).mesh = new TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new StandardMaterial(root + 'terrain_diffuse.jpg',root + "terrain_normals.jpg");
 
             // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3D(50, 50, 50));
             var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test1.jpg',new Vector3D(50, 50, 50));
             material.addMethod(terrainMethod);
-            terrain.getOrCreateComponentByClass(MeshRenderer).material = material;
+            terrain.addComponent(MeshRenderer).material = material;
             scene.addChild(terrain.transform);
 
             //初始化光源
             var light1 = this.light1 = new GameObject();
-            var pointLight1 = new PointLight();
+            var pointLight1 = light1.addComponent(PointLight);
             // pointLight1.range = 1000;
             pointLight1.color = new Color(1, 1, 0, 1);
-            light1.addComponent(pointLight1);
             light1.transform.y = 300;
             // scene.addChild(light1);
         }

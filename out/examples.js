@@ -6463,7 +6463,6 @@ var feng3d;
             _this.components_ = [];
             _this._single = false;
             _this.initComponent();
-            _this._type = _this.constructor;
             return _this;
         }
         Object.defineProperty(Component.prototype, "gameObject", {
@@ -6511,16 +6510,6 @@ var feng3d;
              */
             get: function () {
                 return this._single;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Component.prototype, "type", {
-            /**
-             * 组件类型
-             */
-            get: function () {
-                return this._type;
             },
             enumerable: true,
             configurable: true
@@ -6774,26 +6763,25 @@ var feng3d;
             //更新数据
             object3D.updateRender(renderContext);
             var gl = renderContext.gl;
-            // try
-            // {
-            //绘制
-            var material = this.material;
-            if (material.enableBlend) {
-                //
-                gl.enable(feng3d.GL.BLEND);
-                gl.blendEquation(material.blendEquation);
-                gl.depthMask(false);
-                gl.blendFunc(material.sfactor, material.dfactor);
+            try {
+                //绘制
+                var material = this.material;
+                if (material.enableBlend) {
+                    //
+                    gl.enable(feng3d.GL.BLEND);
+                    gl.blendEquation(material.blendEquation);
+                    gl.depthMask(false);
+                    gl.blendFunc(material.sfactor, material.dfactor);
+                }
+                else {
+                    gl.disable(feng3d.GL.BLEND);
+                    gl.depthMask(true);
+                }
+                this.drawObject3D(gl, object3D.renderData); //
             }
-            else {
-                gl.disable(feng3d.GL.BLEND);
-                gl.depthMask(true);
+            catch (error) {
+                console.log(error);
             }
-            this.drawObject3D(gl, object3D.renderData); //
-            // } catch (error)
-            // {
-            //     console.log(error);
-            // }
         };
         /**
          * 绘制3D对象
@@ -8395,7 +8383,7 @@ var feng3d;
          * @inheritDoc
          */
         Transform.prototype.updateBounds = function () {
-            var meshFilter = this.gameObject.getOrCreateComponentByClass(feng3d.MeshFilter);
+            var meshFilter = this.gameObject.getComponent(feng3d.MeshFilter);
             this._bounds.geometry = meshFilter.mesh;
             this._bounds.fromGeometry(meshFilter.mesh);
             this._boundsInvalid = false;
@@ -8513,16 +8501,11 @@ var feng3d;
          */
         GameObject.prototype.addComponent = function (param) {
             var component;
-            if (param instanceof feng3d.Component) {
-                component = param;
-            }
-            else {
-                component = new param();
-            }
-            if (this.hasComponent(component)) {
-                this.setComponentIndex(component, this.components_.length - 1);
+            if (this.getComponent(param)) {
+                alert("The compnent " + component.constructor["name"] + " can't be added because " + this.name + " already contains the same component.");
                 return;
             }
+            component = new param();
             this.addComponentAt(component, this.components_.length);
             return component;
         };
@@ -8575,7 +8558,7 @@ var feng3d;
             }
             //组件唯一时移除同类型的组件
             if (component.single)
-                this.removeComponentsByType(component.type);
+                this.removeComponentsByType(component.constructor);
             this.components_.splice(index, 0, component);
             //派发添加组件事件
             component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
@@ -8638,20 +8621,6 @@ var feng3d;
             return component;
         };
         /**
-         * 根据类定义获取或创建组件
-         * <p>当不存在该类型对象时创建一个该组件并且添加到容器中</p>
-         * @param cls       类定义
-         * @return          返回与给出类定义一致的组件
-         */
-        GameObject.prototype.getOrCreateComponentByClass = function (cls) {
-            var component = this.getComponent(cls);
-            if (component == null) {
-                component = new cls();
-                this.addComponent(component);
-            }
-            return component;
-        };
-        /**
          * 交换子组件位置
          * @param index1		第一个子组件的索引位置
          * @param index2		第二个子组件的索引位置
@@ -8680,7 +8649,7 @@ var feng3d;
         GameObject.prototype.removeComponentsByType = function (type) {
             var removeComponents = [];
             for (var i = this.components_.length - 1; i >= 0; i--) {
-                if (this.components_[i].type == type)
+                if (this.components_[i].constructor == type)
                     removeComponents.push(this.removeComponentAt(i));
             }
             return removeComponents;
@@ -8979,7 +8948,7 @@ var feng3d;
                 var gameObject = this.gameObject;
                 var isIn = gameObject.transform.worldBounds.isInFrustum(frustumPlanes, 6);
                 var model = gameObject.getComponent(MeshRenderer);
-                if (gameObject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh instanceof feng3d.SkyBoxGeometry) {
+                if (gameObject.getComponent(feng3d.MeshFilter).mesh instanceof feng3d.SkyBoxGeometry) {
                     isIn = true;
                 }
                 if (isIn) {
@@ -9453,7 +9422,8 @@ var feng3d;
             this._indexBuffer = geometry._indexBuffer.clone();
             this._attributes = {};
             for (var key in geometry._attributes) {
-                this._attributes[key] = geometry._attributes[key].clone();
+                var attributeRenderData = geometry._attributes[key];
+                this.setVAData(key, attributeRenderData.data, attributeRenderData.size);
             }
         };
         return Geometry;
@@ -9838,7 +9808,6 @@ var feng3d;
         function SegmentGeometry() {
             var _this = _super.call(this) || this;
             _this.segments_ = [];
-            _this._type = feng3d.Geometry;
             return _this;
         }
         /**
@@ -14235,12 +14204,10 @@ var feng3d;
         /**
          * 构建
          */
-        function DirectionalLight(xDir, yDir, zDir) {
-            if (xDir === void 0) { xDir = 0; }
-            if (yDir === void 0) { yDir = -1; }
-            if (zDir === void 0) { zDir = 1; }
+        function DirectionalLight() {
             var _this = _super.call(this) || this;
             _this.lightType = feng3d.LightType.Directional;
+            var xDir = 0, yDir = -1, zDir = 1;
             _this.direction = new feng3d.Vector3D(xDir, yDir, zDir);
             _this._sceneDirection = new feng3d.Vector3D(xDir, yDir, zDir);
             _this._sceneDirection.normalize();
@@ -16722,109 +16689,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * 骨骼动画
-     * @author feng 2014-5-27
-     */
-    var SkeletonAnimator = (function (_super) {
-        __extends(SkeletonAnimator, _super);
-        /**
-         * 创建一个骨骼动画类
-         */
-        function SkeletonAnimator(skeleton) {
-            var _this = _super.call(this) || this;
-            /** 动画节点列表 */
-            _this.animations = [];
-            _this._globalMatrices = [];
-            _this._globalPropertiesDirty = true;
-            _this.skeleton = skeleton;
-            //
-            _this.createUniformData("u_skeletonGlobalMatriices", function () { return _this.globalMatrices; });
-            _this.createValueMacro("NUM_SKELETONJOINT", function () { return _this._skeleton.numJoints; });
-            _this.createBoolMacro("HAS_SKELETON_ANIMATION", function () { return !!_this._activeSkeletonState; });
-            return _this;
-        }
-        Object.defineProperty(SkeletonAnimator.prototype, "skeleton", {
-            /**
-             * 骨骼
-             */
-            get: function () {
-                return this._skeleton;
-            },
-            set: function (value) {
-                if (this._skeleton == value)
-                    return;
-                this._skeleton = value;
-                this.invalidateShader();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(SkeletonAnimator.prototype, "globalMatrices", {
-            /**
-             * 当前骨骼姿势的全局矩阵
-             * @see #globalPose
-             */
-            get: function () {
-                if (this._globalPropertiesDirty)
-                    this.updateGlobalProperties();
-                return this._globalMatrices;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * 播放动画
-         * @param name 动作名称
-         */
-        SkeletonAnimator.prototype.play = function () {
-            if (!this._activeNode)
-                this._activeNode = this.animations[0];
-            this._activeState = this.getAnimationState(this._activeNode);
-            if (this.updatePosition) {
-                //this.update straight away to this.reset position deltas
-                this._activeState.update(this._absoluteTime);
-                this._activeState.positionDelta;
-            }
-            this._activeSkeletonState = this._activeState;
-            this.invalidateRenderData();
-            this.invalidateShader();
-            this.start();
-        };
-        /**
-         * @inheritDoc
-         */
-        SkeletonAnimator.prototype.updateDeltaTime = function (dt) {
-            _super.prototype.updateDeltaTime.call(this, dt);
-            this._globalPropertiesDirty = true;
-            this.invalidateRenderData();
-        };
-        /**
-         * 更新骨骼全局变换矩阵
-         */
-        SkeletonAnimator.prototype.updateGlobalProperties = function () {
-            if (!this._activeSkeletonState)
-                return;
-            this._globalPropertiesDirty = false;
-            //获取全局骨骼姿势
-            var currentSkeletonPose = this._activeSkeletonState.getSkeletonPose();
-            var globalMatrix3Ds = currentSkeletonPose.globalMatrix3Ds;
-            //姿势变换矩阵
-            var joints = this._skeleton.joints;
-            //遍历每个关节
-            for (var i = 0; i < this._skeleton.numJoints; ++i) {
-                var inverseMatrix3D = joints[i].invertMatrix3D;
-                var matrix3D = globalMatrix3Ds[i].clone();
-                matrix3D.prepend(inverseMatrix3D);
-                this._globalMatrices[i] = matrix3D;
-            }
-        };
-        return SkeletonAnimator;
-    }(feng3d.AnimatorBase));
-    feng3d.SkeletonAnimator = SkeletonAnimator;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 关节pose
      * @author feng 2014-5-20
      */
@@ -17256,6 +17120,118 @@ var feng3d;
         return SkeletonClipState;
     }(feng3d.AnimationClipState));
     feng3d.SkeletonClipState = SkeletonClipState;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var SkeletonAnimationSet = (function () {
+        function SkeletonAnimationSet() {
+        }
+        return SkeletonAnimationSet;
+    }());
+    feng3d.SkeletonAnimationSet = SkeletonAnimationSet;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 骨骼动画
+     * @author feng 2014-5-27
+     */
+    var SkeletonAnimator = (function (_super) {
+        __extends(SkeletonAnimator, _super);
+        /**
+         * 创建一个骨骼动画类
+         */
+        function SkeletonAnimator(skeleton) {
+            var _this = _super.call(this) || this;
+            /** 动画节点列表 */
+            _this.animations = [];
+            _this._globalMatrices = [];
+            _this._globalPropertiesDirty = true;
+            _this.skeleton = skeleton;
+            //
+            _this.createUniformData("u_skeletonGlobalMatriices", function () { return _this.globalMatrices; });
+            _this.createValueMacro("NUM_SKELETONJOINT", function () { return _this._skeleton.numJoints; });
+            _this.createBoolMacro("HAS_SKELETON_ANIMATION", function () { return !!_this._activeSkeletonState; });
+            return _this;
+        }
+        Object.defineProperty(SkeletonAnimator.prototype, "skeleton", {
+            /**
+             * 骨骼
+             */
+            get: function () {
+                return this._skeleton;
+            },
+            set: function (value) {
+                if (this._skeleton == value)
+                    return;
+                this._skeleton = value;
+                this.invalidateShader();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SkeletonAnimator.prototype, "globalMatrices", {
+            /**
+             * 当前骨骼姿势的全局矩阵
+             * @see #globalPose
+             */
+            get: function () {
+                if (this._globalPropertiesDirty)
+                    this.updateGlobalProperties();
+                return this._globalMatrices;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 播放动画
+         * @param name 动作名称
+         */
+        SkeletonAnimator.prototype.play = function () {
+            if (!this._activeNode)
+                this._activeNode = this.animations[0];
+            this._activeState = this.getAnimationState(this._activeNode);
+            if (this.updatePosition) {
+                //this.update straight away to this.reset position deltas
+                this._activeState.update(this._absoluteTime);
+                this._activeState.positionDelta;
+            }
+            this._activeSkeletonState = this._activeState;
+            this.invalidateRenderData();
+            this.invalidateShader();
+            this.start();
+        };
+        /**
+         * @inheritDoc
+         */
+        SkeletonAnimator.prototype.updateDeltaTime = function (dt) {
+            _super.prototype.updateDeltaTime.call(this, dt);
+            this._globalPropertiesDirty = true;
+            this.invalidateRenderData();
+        };
+        /**
+         * 更新骨骼全局变换矩阵
+         */
+        SkeletonAnimator.prototype.updateGlobalProperties = function () {
+            if (!this._activeSkeletonState)
+                return;
+            this._globalPropertiesDirty = false;
+            //获取全局骨骼姿势
+            var currentSkeletonPose = this._activeSkeletonState.getSkeletonPose();
+            var globalMatrix3Ds = currentSkeletonPose.globalMatrix3Ds;
+            //姿势变换矩阵
+            var joints = this._skeleton.joints;
+            //遍历每个关节
+            for (var i = 0; i < this._skeleton.numJoints; ++i) {
+                var inverseMatrix3D = joints[i].invertMatrix3D;
+                var matrix3D = globalMatrix3Ds[i].clone();
+                matrix3D.prepend(inverseMatrix3D);
+                this._globalMatrices[i] = matrix3D;
+            }
+        };
+        return SkeletonAnimator;
+    }(feng3d.AnimatorBase));
+    feng3d.SkeletonAnimator = SkeletonAnimator;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -17778,12 +17754,12 @@ var feng3d;
         };
         ObjLoader.prototype.createMaterialObj = function (obj, subObj, material) {
             var gameObject = new feng3d.GameObject();
-            var model = gameObject.getOrCreateComponentByClass(feng3d.MeshRenderer);
+            var model = gameObject.addComponent(feng3d.MeshRenderer);
             model.material = material || new feng3d.ColorMaterial();
             this._vertices = obj.vertex;
             this._vertexNormals = obj.vn;
             this._uvs = obj.vt;
-            var meshFilter = gameObject.getOrCreateComponentByClass(feng3d.MeshFilter);
+            var meshFilter = gameObject.addComponent(feng3d.MeshFilter);
             var geometry = meshFilter.mesh = new feng3d.Geometry();
             var vertices = [];
             var normals = [];
@@ -17905,8 +17881,8 @@ var feng3d;
             for (var i = 0; i < md5MeshData.meshs.length; i++) {
                 var geometry = this.createGeometry(md5MeshData.meshs[i]);
                 var skeletonObject3D = new feng3d.GameObject();
-                skeletonObject3D.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.StandardMaterial();
-                skeletonObject3D.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = geometry;
+                skeletonObject3D.addComponent(feng3d.MeshRenderer).material = new feng3d.StandardMaterial();
+                skeletonObject3D.addComponent(feng3d.MeshFilter).mesh = geometry;
                 skeletonObject3D.addComponent(skeletonAnimator);
                 object3D.transform.addChild(skeletonObject3D.transform);
             }
@@ -18165,45 +18141,45 @@ var feng3d;
             this._xLine = new feng3d.GameObject();
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(length, 0, 0), 0xff0000, 0xff0000));
-            this._xLine.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = segmentGeometry;
-            this._xLine.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
+            this._xLine.addComponent(feng3d.MeshFilter).mesh = segmentGeometry;
+            this._xLine.addComponent(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
             this.transform.addChild(this._xLine.transform);
             //
             this._yLine = new feng3d.GameObject();
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(0, length, 0), 0x00ff00, 0x00ff00));
-            this._yLine.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = segmentGeometry;
-            this._yLine.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
+            this._yLine.addComponent(feng3d.MeshFilter).mesh = segmentGeometry;
+            this._yLine.addComponent(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
             this.transform.addChild(this._yLine.transform);
             //
             this._zLine = new feng3d.GameObject();
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3D(), new feng3d.Vector3D(0, 0, length), 0x0000ff, 0x0000ff));
-            this._zLine.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = segmentGeometry;
-            this._zLine.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
+            this._zLine.addComponent(feng3d.MeshFilter).mesh = segmentGeometry;
+            this._zLine.addComponent(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
             this.transform.addChild(this._zLine.transform);
             //
             this._xArrow = new feng3d.GameObject();
             this._xArrow.transform.x = length;
             this._xArrow.transform.rotationZ = -90;
-            this._xArrow.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
+            this._xArrow.addComponent(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
             ;
-            var material = this._xArrow.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
+            var material = this._xArrow.addComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(1, 0, 0);
             this.transform.addChild(this._xArrow.transform);
             //
             this._yArrow = new feng3d.GameObject();
             this._yArrow.transform.y = length;
-            this._yArrow.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
-            var material = this._yArrow.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
+            this._yArrow.addComponent(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
+            var material = this._yArrow.addComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(0, 1, 0);
             this.transform.addChild(this._yArrow.transform);
             //
             this._zArrow = new feng3d.GameObject();
             this._zArrow.transform.z = length;
             this._zArrow.transform.rotationX = 90;
-            this._zArrow.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
-            var material = this._zArrow.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
+            this._zArrow.addComponent(feng3d.MeshFilter).mesh = new feng3d.ConeGeometry(5, 18);
+            var material = this._zArrow.addComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             material.color = new feng3d.Color(0, 0, 1);
             this.transform.addChild(this._zArrow.transform);
         };
@@ -18222,8 +18198,7 @@ var feng3d;
         function CameraObject3D(name) {
             if (name === void 0) { name = "camera"; }
             var _this = _super.call(this, name) || this;
-            _this.camera = new feng3d.Camera();
-            _this.addComponent(_this.camera);
+            _this.camera = _this.addComponent(feng3d.Camera);
             return _this;
         }
         return CameraObject3D;
@@ -18238,40 +18213,40 @@ var feng3d;
         GameObjectFactory.createCube = function (name) {
             if (name === void 0) { name = "cube"; }
             var gameobject = new feng3d.GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            gameobject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry();
+            var model = gameobject.addComponent(feng3d.MeshRenderer);
+            gameobject.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry();
             model.material = new feng3d.StandardMaterial();
             return gameobject;
         };
         GameObjectFactory.createPlane = function (name) {
             if (name === void 0) { name = "plane"; }
             var gameobject = new feng3d.GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            gameobject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry();
+            var model = gameobject.addComponent(feng3d.MeshRenderer);
+            gameobject.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry();
             model.material = new feng3d.StandardMaterial();
             return gameobject;
         };
         GameObjectFactory.createCylinder = function (name) {
             if (name === void 0) { name = "cylinder"; }
             var gameobject = new feng3d.GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            gameobject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CylinderGeometry();
+            var model = gameobject.addComponent(feng3d.MeshRenderer);
+            gameobject.addComponent(feng3d.MeshFilter).mesh = new feng3d.CylinderGeometry();
             model.material = new feng3d.StandardMaterial();
             return gameobject;
         };
         GameObjectFactory.createSphere = function (name) {
             if (name === void 0) { name = "sphere"; }
             var gameobject = new feng3d.GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            gameobject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry();
+            var model = gameobject.addComponent(feng3d.MeshRenderer);
+            gameobject.addComponent(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry();
             model.material = new feng3d.StandardMaterial();
             return gameobject;
         };
         GameObjectFactory.createCapsule = function (name) {
             if (name === void 0) { name = "capsule"; }
             var gameobject = new feng3d.GameObject(name);
-            var model = gameobject.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            gameobject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CapsuleGeometry();
+            var model = gameobject.addComponent(feng3d.MeshRenderer);
+            gameobject.addComponent(feng3d.MeshFilter).mesh = new feng3d.CapsuleGeometry();
             model.material = new feng3d.StandardMaterial();
             return gameobject;
         };
@@ -18566,8 +18541,8 @@ var feng3d;
             gameObject.transform.holdSize = 1;
             cube.transform.addChild(gameObject.transform);
             //材质
-            var model = gameObject.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            gameObject.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(100, 100, 1, 1, false);
+            var model = gameObject.getComponent(feng3d.MeshRenderer);
+            gameObject.getComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(100, 100, 1, 1, false);
             var textureMaterial = model.material = new feng3d.TextureMaterial();
             //
             // var texture = textureMaterial.texture = new Texture2D('resources/m.png');
@@ -18603,7 +18578,7 @@ var feng3d;
             cube.transform.z = 300;
             this.view3D.scene.addChild(cube.transform);
             //初始化颜色材质
-            var colorMaterial = cube.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
+            var colorMaterial = cube.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             //变化旋转与颜色
             setInterval(function () {
                 cube.transform.rotationY += 1;
@@ -18631,7 +18606,7 @@ var feng3d;
             var cube = feng3d.GameObjectFactory.createCube();
             cube.transform.z = 500;
             this.view3D.scene.addChild(cube.transform);
-            var colorMaterial = cube.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
+            var colorMaterial = cube.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
             var cylinder = feng3d.GameObjectFactory.createCylinder();
             cylinder.transform.x = 200;
             cube.transform.addChild(cylinder.transform);
@@ -18701,8 +18676,8 @@ var feng3d;
         GeometryTest.prototype.init = function () {
             this.view3D = new feng3d.View3D();
             var object3d = new feng3d.GameObject();
-            var model = object3d.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            var geometry = object3d.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.Geometry();
+            var model = object3d.addComponent(feng3d.MeshRenderer);
+            var geometry = object3d.addComponent(feng3d.MeshFilter).mesh = new feng3d.Geometry();
             geometry.addGeometry(new feng3d.PlaneGeometry());
             var matrix3D = new feng3d.Matrix3D();
             matrix3D.appendTranslation(0, 50, 0);
@@ -18769,9 +18744,8 @@ var feng3d;
             });
             //初始化光源
             var light1 = new feng3d.GameObject();
-            var pointLight1 = new feng3d.PointLight();
+            var pointLight1 = light1.addComponent(feng3d.PointLight);
             pointLight1.color = new feng3d.Color(0, 1, 0, 1);
-            light1.addComponent(pointLight1);
             scene.addChild(light1.transform);
         };
         MD5LoaderTest.prototype.useMatrial = function (object3D, imageUrl) {
@@ -18871,9 +18845,8 @@ var feng3d;
             });
             //初始化光源
             var light1 = new feng3d.GameObject();
-            var pointLight1 = new feng3d.PointLight();
+            var pointLight1 = light1.addComponent(feng3d.PointLight);
             pointLight1.color = new feng3d.Color(0, 1, 0, 1);
-            light1.addComponent(pointLight1);
             scene.addChild(light1.transform);
         };
         return OBJParserTest;
@@ -18896,12 +18869,12 @@ var feng3d;
             this.view3D = new feng3d.View3D();
             var scene = this.view3D.scene;
             var particle = new feng3d.GameObject("particle");
-            particle.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PointGeometry();
-            var material = particle.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.StandardMaterial();
+            particle.addComponent(feng3d.MeshFilter).mesh = new feng3d.PointGeometry();
+            var material = particle.addComponent(feng3d.MeshRenderer).material = new feng3d.StandardMaterial();
             material.renderMode = feng3d.RenderMode.POINTS;
             particle.transform.y = -100;
             scene.addChild(particle.transform);
-            var particleAnimator = particle.getOrCreateComponentByClass(feng3d.ParticleAnimator);
+            var particleAnimator = particle.addComponent(feng3d.ParticleAnimator);
             particleAnimator.cycle = 10;
             particleAnimator.numParticles = 1000;
             //发射组件
@@ -18977,16 +18950,16 @@ var feng3d;
             //初始化立方体
             var plane = new feng3d.GameObject();
             plane.transform.y = -100;
-            var model = plane.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            var geometry = plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
+            var model = plane.addComponent(feng3d.MeshRenderer);
+            var geometry = plane.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
             model.material = material;
             this.scene.addChild(plane.transform);
             var cube = new feng3d.GameObject();
-            var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
+            var model = cube.addComponent(feng3d.MeshRenderer);
             model.material = material;
-            cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
-            cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh.scaleUV(2, 2);
+            cube.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            cube.getComponent(feng3d.MeshFilter).mesh.scaleUV(2, 2);
             this.scene.addChild(cube.transform);
         };
         PointLightTest.prototype.clearObjects = function () {
@@ -18997,23 +18970,19 @@ var feng3d;
         PointLightTest.prototype.initLights = function () {
             //
             var lightColor0 = new feng3d.Color(1, 0, 0, 1);
-            this.light0.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(5);
-            this.light0.getOrCreateComponentByClass(feng3d.MeshRenderer);
+            this.light0.addComponent(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(5);
             //初始化点光源
-            var pointLight0 = new feng3d.PointLight();
+            var pointLight0 = this.light0.addComponent(feng3d.PointLight);
             pointLight0.color = lightColor0;
-            this.light0.addComponent(pointLight0);
-            this.light0.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor0);
+            this.light0.addComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor0);
             this.scene.addChild(this.light0.transform);
             //
             var lightColor1 = new feng3d.Color(0, 1, 0, 1);
-            this.light1.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(5);
-            this.light1.getOrCreateComponentByClass(feng3d.MeshRenderer);
+            this.light1.addComponent(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(5);
             //初始化点光源
-            var pointLight1 = new feng3d.DirectionalLight();
+            var pointLight1 = this.light1.addComponent(feng3d.DirectionalLight);
             pointLight1.color = lightColor1;
-            this.light1.addComponent(pointLight1);
-            this.light1.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor1);
+            this.light1.addComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor1);
             this.scene.addChild(this.light1.transform);
         };
         PointLightTest.prototype.setPointLightPosition = function () {
@@ -19043,8 +19012,8 @@ var feng3d;
             var pointGeometry = new feng3d.PointGeometry();
             var pointMaterial = new feng3d.PointMaterial();
             var object3D = new feng3d.GameObject("plane");
-            object3D.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = pointGeometry;
-            object3D.getOrCreateComponentByClass(feng3d.MeshRenderer).material = pointMaterial;
+            object3D.addComponent(feng3d.MeshFilter).mesh = pointGeometry;
+            object3D.addComponent(feng3d.MeshRenderer).material = pointMaterial;
             object3D.transform.z = 300;
             this.view3D.scene.addChild(object3D.transform);
             var length = 200;
@@ -19146,8 +19115,8 @@ var feng3d;
             segment.transform.z = 300;
             this.view3D.scene.addChild(segment.transform);
             //初始化材质
-            segment.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
-            var segmentGeometry = segment.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SegmentGeometry();
+            segment.addComponent(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
+            var segmentGeometry = segment.addComponent(feng3d.MeshFilter).mesh = new feng3d.SegmentGeometry();
             var length = 200;
             var height = 200 / Math.PI;
             var preVec;
@@ -19186,8 +19155,8 @@ var feng3d;
             this.view3D = new feng3d.View3D();
             var scene = this.view3D.scene;
             var skybox = new feng3d.GameObject("skybox");
-            var model = skybox.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            skybox.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SkyBoxGeometry();
+            var model = skybox.addComponent(feng3d.MeshRenderer);
+            skybox.addComponent(feng3d.MeshFilter).mesh = new feng3d.SkyBoxGeometry();
             model.material = new feng3d.SkyBoxMaterial([
                 'resources/skybox/px.jpg',
                 'resources/skybox/py.jpg',
@@ -19218,8 +19187,8 @@ var feng3d;
             setInterval(function () {
                 cube.transform.rotationY += 1;
             }, 15);
-            var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            var model = cube.addComponent(feng3d.MeshRenderer);
+            cube.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
             // model.geometry = new PlaneGeometry();
             //材质
             var textureMaterial = model.material = new feng3d.StandardMaterial();
@@ -19260,18 +19229,17 @@ var feng3d;
             var root = 'resources/terrain/';
             //
             var terrain = new feng3d.GameObject("terrain");
-            terrain.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
+            terrain.addComponent(feng3d.MeshFilter).mesh = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new feng3d.StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
             var terrainMethod = new feng3d.TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new feng3d.Vector3D(1, 50, 50, 50));
             material.addMethod(terrainMethod);
-            terrain.getOrCreateComponentByClass(feng3d.MeshRenderer).material = material;
+            terrain.addComponent(feng3d.MeshRenderer).material = material;
             scene.addChild(terrain.transform);
             //初始化光源
             var light1 = this.light1 = new feng3d.GameObject();
-            var pointLight1 = new feng3d.PointLight();
+            var pointLight1 = light1.addComponent(feng3d.PointLight);
             // pointLight1.range = 1000;
             pointLight1.color = new feng3d.Color(1, 1, 0, 1);
-            light1.addComponent(pointLight1);
             light1.transform.y = 300;
             // scene.addChild(light1);
         };
@@ -19304,19 +19272,18 @@ var feng3d;
             var root = 'resources/terrain/';
             //
             var terrain = new feng3d.GameObject("terrain");
-            terrain.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
+            terrain.addComponent(feng3d.MeshFilter).mesh = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
             var material = new feng3d.StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
             // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3D(50, 50, 50));
             var terrainMethod = new feng3d.TerrainMergeMethod(root + 'terrain_splats.png', root + 'test1.jpg', new feng3d.Vector3D(50, 50, 50));
             material.addMethod(terrainMethod);
-            terrain.getOrCreateComponentByClass(feng3d.MeshRenderer).material = material;
+            terrain.addComponent(feng3d.MeshRenderer).material = material;
             scene.addChild(terrain.transform);
             //初始化光源
             var light1 = this.light1 = new feng3d.GameObject();
-            var pointLight1 = new feng3d.PointLight();
+            var pointLight1 = light1.addComponent(feng3d.PointLight);
             // pointLight1.range = 1000;
             pointLight1.color = new feng3d.Color(1, 1, 0, 1);
-            light1.addComponent(pointLight1);
             light1.transform.y = 300;
             // scene.addChild(light1);
         };
@@ -19340,8 +19307,8 @@ var feng3d;
             setInterval(function () {
                 cube.transform.rotationY += 1;
             }, 15);
-            var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            var model = cube.addComponent(feng3d.MeshRenderer);
+            cube.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
             // model.geometry = new PlaneGeometry();
             //材质
             var textureMaterial = model.material = new feng3d.TextureMaterial();
@@ -19370,8 +19337,8 @@ var feng3d;
             setInterval(function () {
                 cube.transform.rotationY += 1;
             }, 15);
-            var model = cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            var model = cube.addComponent(feng3d.MeshRenderer);
+            cube.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
             //材质
             var material = model.material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/m.png';
@@ -19403,8 +19370,8 @@ var feng3d;
                 'resources/skybox/snow_negative_z.jpg',
             ]);
             var skybox = new feng3d.GameObject("skybox");
-            var model = skybox.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            skybox.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SkyBoxGeometry();
+            var model = skybox.addComponent(feng3d.MeshRenderer);
+            skybox.addComponent(feng3d.MeshFilter).mesh = new feng3d.SkyBoxGeometry();
             var material = model.material = new feng3d.SkyBoxMaterial();
             material.texture = cubeTexture;
             scene.addChild(skybox.transform);
@@ -19418,8 +19385,8 @@ var feng3d;
             torusMaterial.ambientMethod.color.a = 0.25;
             torusMaterial.addMethod(new feng3d.EnvMapMethod(cubeTexture, 1));
             var torus = this._torus = new feng3d.GameObject("torus");
-            var model = torus.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            torus.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.TorusGeometry(150, 60, 40, 20);
+            var model = torus.addComponent(feng3d.MeshRenderer);
+            torus.addComponent(feng3d.MeshFilter).mesh = new feng3d.TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;
             scene.addChild(torus.transform);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
@@ -19473,46 +19440,44 @@ var feng3d;
         Basic_Shading.prototype.initLights = function () {
             this.scene.ambientColor.a = 0.2;
             this.light1 = new feng3d.GameObject();
-            var directionalLight = new feng3d.DirectionalLight();
+            var directionalLight = this.light1.addComponent(feng3d.DirectionalLight);
             directionalLight.intensity = 0.7;
-            this.light1.addComponent(directionalLight);
             this.light1.transform.rotationX = 90;
             this.scene.addChild(this.light1.transform);
             this.light2 = new feng3d.GameObject();
-            var directionalLight = new feng3d.DirectionalLight();
+            var directionalLight = this.light2.addComponent(feng3d.DirectionalLight);
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
-            this.light2.addComponent(directionalLight);
             this.light2.transform.rotationX = 90;
             this.scene.addChild(this.light2.transform);
         };
         Basic_Shading.prototype.initObjects = function () {
             this.plane = new feng3d.GameObject();
-            var model = this.plane.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            var geometry = this.plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
+            var model = this.plane.addComponent(feng3d.MeshRenderer);
+            var geometry = this.plane.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
             model.material = this.planeMaterial;
             geometry.scaleUV(2, 2);
             this.plane.transform.y = -20;
             this.scene.addChild(this.plane.transform);
             this.sphere = new feng3d.GameObject();
-            var model = this.sphere.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            this.sphere.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(150, 40, 20);
+            var model = this.sphere.addComponent(feng3d.MeshRenderer);
+            this.sphere.addComponent(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(150, 40, 20);
             model.material = this.sphereMaterial;
             this.sphere.transform.x = 300;
             this.sphere.transform.y = 160;
             this.sphere.transform.z = 300;
             this.scene.addChild(this.sphere.transform);
             this.cube = new feng3d.GameObject();
-            var model = this.cube.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            this.cube.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(200, 200, 200, 1, 1, 1, false);
+            var model = this.cube.addComponent(feng3d.MeshRenderer);
+            this.cube.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(200, 200, 200, 1, 1, 1, false);
             model.material = this.cubeMaterial;
             this.cube.transform.x = 300;
             this.cube.transform.y = 160;
             this.cube.transform.z = -250;
             this.scene.addChild(this.cube.transform);
             this.torus = new feng3d.GameObject();
-            var model = this.torus.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            geometry = this.torus.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.TorusGeometry(150, 60, 40, 20);
+            var model = this.torus.addComponent(feng3d.MeshRenderer);
+            geometry = this.torus.addComponent(feng3d.MeshFilter).mesh = new feng3d.TorusGeometry(150, 60, 40, 20);
             model.material = this.torusMaterial;
             geometry.scaleUV(10, 5);
             this.torus.transform.x = -250;
@@ -19564,8 +19529,8 @@ var feng3d;
             // this._particleAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
             this._particleMesh = new feng3d.GameObject("particle");
             // this._particleMesh.geometry = new PointGeometry();
-            this._particleMesh.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(10, 10, 1, 1, false);
-            var material = this._particleMesh.getOrCreateComponentByClass(feng3d.MeshRenderer).material = new feng3d.StandardMaterial("resources/blue.png");
+            this._particleMesh.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(10, 10, 1, 1, false);
+            var material = this._particleMesh.addComponent(feng3d.MeshRenderer).material = new feng3d.StandardMaterial("resources/blue.png");
             material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             material.enableBlend = true;
             var particleAnimator = new feng3d.ParticleAnimator();
@@ -19642,12 +19607,12 @@ var feng3d;
             this.cameraController.tiltAngle = 20;
         };
         Basic_Fire.prototype.initLights = function () {
-            this.directionalLight = new feng3d.DirectionalLight(0, -1, 0);
+            this.directionalLight = gameObject.addComponent(feng3d.DirectionalLight);
+            this.directionalLight.direction = new feng3d.Vector3D(0, -1, 0);
             this.directionalLight.castsShadows = false;
             this.directionalLight.color.fromUnit(0xeedddd);
             this.directionalLight.intensity = .5;
             var gameObject = new feng3d.GameObject();
-            gameObject.addComponent(this.directionalLight);
             this.scene.addChild(gameObject.transform);
         };
         Basic_Fire.prototype.initMaterials = function () {
@@ -19682,16 +19647,16 @@ var feng3d;
         };
         Basic_Fire.prototype.initObjects = function () {
             this.plane = new feng3d.GameObject();
-            var model = this.plane.getOrCreateComponentByClass(feng3d.MeshRenderer);
-            this.plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
-            this.plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh.scaleUV(2, 2);
+            var model = this.plane.addComponent(feng3d.MeshRenderer);
+            this.plane.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
+            this.plane.getComponent(feng3d.MeshFilter).mesh.scaleUV(2, 2);
             model.material = this.planeMaterial;
             this.plane.transform.y = -20;
             this.scene.addChild(this.plane.transform);
             for (var i = 0; i < Basic_Fire.NUM_FIRES; i++) {
                 var particleMesh = new feng3d.GameObject();
-                var model = particleMesh.getOrCreateComponentByClass(feng3d.MeshRenderer);
-                particleMesh.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = this.particleGeometry;
+                var model = particleMesh.addComponent(feng3d.MeshRenderer);
+                particleMesh.addComponent(feng3d.MeshFilter).mesh = this.particleGeometry;
                 model.material = this.particleMaterial;
                 particleMesh.addComponent(this.fireAnimationSet);
                 var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
@@ -19723,11 +19688,10 @@ var feng3d;
         Basic_Fire.prototype.onTimer = function (e) {
             var fireObject = this.fireObjects[this.timer.currentCount - 1];
             // fireObject.animator["start"]();
-            var light = new feng3d.PointLight();
+            var lightObject = new feng3d.GameObject();
+            var light = lightObject.addComponent(feng3d.PointLight);
             light.color.fromUnit(0xFF3301);
             light.intensity = 0;
-            var lightObject = new feng3d.GameObject();
-            lightObject.addComponent(light);
             lightObject.transform.position = fireObject.mesh.transform.position;
             fireObject.light = light;
         };
@@ -19785,8 +19749,8 @@ var feng3d;
             this._view.camera.transform.y = 500;
             this._view.camera.transform.lookAt(new feng3d.Vector3D());
             this._plane = new feng3d.GameObject();
-            this._plane.getOrCreateComponentByClass(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(700, 700);
-            var model = this._plane.getOrCreateComponentByClass(feng3d.MeshRenderer);
+            this._plane.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(700, 700);
+            var model = this._plane.addComponent(feng3d.MeshRenderer);
             var material = model.material = new feng3d.StandardMaterial("resources/floor_diffuse.jpg");
             scene.addChild(this._plane.transform);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);

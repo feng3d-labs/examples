@@ -15,7 +15,7 @@ namespace feng3d
 
         init()
         {
-            
+
             this.view3D = new View3D();
 
             //初始化颜色材质
@@ -23,7 +23,7 @@ namespace feng3d
             cube.transform.z = 500;
             this.view3D.scene.addChild(cube.transform);
 
-            var colorMaterial = cube.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial();
+            var colorMaterial = cube.getComponent(MeshRenderer).material = new ColorMaterial();
 
             var cylinder = GameObjectFactory.createCylinder();
             cylinder.transform.x = 200;

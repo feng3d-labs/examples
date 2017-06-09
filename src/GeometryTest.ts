@@ -15,10 +15,10 @@ namespace feng3d
             this.view3D = new View3D();
 
             var object3d = new GameObject();
-            var model = object3d.getOrCreateComponentByClass(MeshRenderer);
+            var model = object3d.addComponent(MeshRenderer);
 
 
-            var geometry = object3d.getOrCreateComponentByClass(MeshFilter).mesh = new Geometry();
+            var geometry = object3d.addComponent(MeshFilter).mesh = new Geometry();
             geometry.addGeometry(new PlaneGeometry());
             var matrix3D = new Matrix3D();
             matrix3D.appendTranslation(0, 50, 0);

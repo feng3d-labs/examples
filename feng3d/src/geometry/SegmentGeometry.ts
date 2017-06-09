@@ -12,7 +12,6 @@ namespace feng3d
         constructor()
         {
             super();
-            this._type = Geometry;
         }
 
         /**

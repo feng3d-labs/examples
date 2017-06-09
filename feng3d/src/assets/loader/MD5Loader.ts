@@ -60,8 +60,8 @@ namespace feng3d
                 var geometry = this.createGeometry(md5MeshData.meshs[i]);
 
                 var skeletonObject3D = new GameObject();
-                skeletonObject3D.getOrCreateComponentByClass(MeshRenderer).material = new StandardMaterial();
-                skeletonObject3D.getOrCreateComponentByClass(MeshFilter).mesh = geometry;
+                skeletonObject3D.addComponent(MeshRenderer).material = new StandardMaterial();
+                skeletonObject3D.addComponent(MeshFilter).mesh = geometry;
                 skeletonObject3D.addComponent(skeletonAnimator);
 
                 object3D.transform.addChild(skeletonObject3D.transform);

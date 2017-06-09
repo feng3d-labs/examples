@@ -69,17 +69,17 @@ namespace feng3d
             //初始化立方体
             var plane = new GameObject();
             plane.transform.y = -100;
-            var model = plane.getOrCreateComponentByClass(MeshRenderer);
-            var geometry = plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
+            var model = plane.addComponent(MeshRenderer);
+            var geometry = plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
             model.material = material;
             this.scene.addChild(plane.transform);
 
             var cube = new GameObject();
-            var model = cube.getOrCreateComponentByClass(MeshRenderer);
+            var model = cube.addComponent(MeshRenderer);
             model.material = material;
-            cube.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
-            cube.getOrCreateComponentByClass(MeshFilter).mesh.scaleUV(2, 2);
+            cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            cube.getComponent(MeshFilter).mesh.scaleUV(2, 2);
             this.scene.addChild(cube.transform);
         }
 
@@ -95,24 +95,20 @@ namespace feng3d
         {
             //
             var lightColor0 = new Color(1, 0, 0, 1);
-            this.light0.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry(5);
-            this.light0.getOrCreateComponentByClass(MeshRenderer);
+            this.light0.addComponent(MeshFilter).mesh = new SphereGeometry(5);
             //初始化点光源
-            var pointLight0 = new PointLight();
+            var pointLight0 = this.light0.addComponent(PointLight);
             pointLight0.color = lightColor0;
-            this.light0.addComponent(pointLight0);
-            this.light0.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial(lightColor0);
+            this.light0.addComponent(MeshRenderer).material = new ColorMaterial(lightColor0);
             this.scene.addChild(this.light0.transform);
 
             //
             var lightColor1 = new Color(0, 1, 0, 1);
-            this.light1.getOrCreateComponentByClass(MeshFilter).mesh = new SphereGeometry(5);
-            this.light1.getOrCreateComponentByClass(MeshRenderer);
+            this.light1.addComponent(MeshFilter).mesh = new SphereGeometry(5);
             //初始化点光源
-            var pointLight1 = new DirectionalLight();
+            var pointLight1 = this.light1.addComponent(DirectionalLight);
             pointLight1.color = lightColor1;
-            this.light1.addComponent(pointLight1);
-            this.light1.getOrCreateComponentByClass(MeshRenderer).material = new ColorMaterial(lightColor1);
+            this.light1.addComponent(MeshRenderer).material = new ColorMaterial(lightColor1);
             this.scene.addChild(this.light1.transform);
         }
         

@@ -29,8 +29,8 @@ namespace feng3d
             ]);
 
             var skybox = new GameObject("skybox");
-            var model = skybox.getOrCreateComponentByClass(MeshRenderer);
-            skybox.getOrCreateComponentByClass(MeshFilter).mesh = new SkyBoxGeometry();
+            var model = skybox.addComponent(MeshRenderer);
+            skybox.addComponent(MeshFilter).mesh = new SkyBoxGeometry();
             var material = model.material = new SkyBoxMaterial();
             material.texture = cubeTexture;
             scene.addChild(skybox.transform);
@@ -47,8 +47,8 @@ namespace feng3d
             torusMaterial.addMethod(new EnvMapMethod(cubeTexture, 1));
 
             var torus = this._torus = new GameObject("torus");
-            var model = torus.getOrCreateComponentByClass(MeshRenderer);
-            torus.getOrCreateComponentByClass(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
+            var model = torus.addComponent(MeshRenderer);
+            torus.addComponent(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;
             scene.addChild(torus.transform);
 

@@ -247,7 +247,7 @@ namespace feng3d
 		 */
         protected updateBounds()
         {
-            var meshFilter = this.gameObject.getOrCreateComponentByClass(MeshFilter);
+            var meshFilter = this.gameObject.getComponent(MeshFilter);
             this._bounds.geometry = meshFilter.mesh;
             this._bounds.fromGeometry(meshFilter.mesh);
             this._boundsInvalid = false;

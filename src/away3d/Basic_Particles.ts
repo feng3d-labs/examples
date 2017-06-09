@@ -13,7 +13,7 @@ namespace feng3d
 
         public constructor()
         {
-            
+
             var view3D = this._view = new View3D();
 
             this._cameraController = new HoverController(this._view.camera, null, 45, 20, 1000);
@@ -25,8 +25,8 @@ namespace feng3d
 
             this._particleMesh = new GameObject("particle");
             // this._particleMesh.geometry = new PointGeometry();
-            this._particleMesh.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(10, 10, 1, 1, false);
-            var material = this._particleMesh.getOrCreateComponentByClass(MeshRenderer).material = new StandardMaterial("resources/blue.png");
+            this._particleMesh.addComponent(MeshFilter).mesh = new PlaneGeometry(10, 10, 1, 1, false);
+            var material = this._particleMesh.addComponent(MeshRenderer).material = new StandardMaterial("resources/blue.png");
             material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             material.enableBlend = true;
 

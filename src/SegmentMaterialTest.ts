@@ -19,8 +19,8 @@ namespace feng3d
             this.view3D.scene.addChild(segment.transform);
 
             //初始化材质
-            segment.getOrCreateComponentByClass(MeshRenderer).material = new SegmentMaterial();
-            var segmentGeometry = segment.getOrCreateComponentByClass(MeshFilter).mesh = new SegmentGeometry();
+            segment.addComponent(MeshRenderer).material = new SegmentMaterial();
+            var segmentGeometry = segment.addComponent(MeshFilter).mesh = new SegmentGeometry();
 
             var length = 200;
             var height = 200 / Math.PI;

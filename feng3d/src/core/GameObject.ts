@@ -1,5 +1,10 @@
 namespace feng3d
 {
+    export interface ComponentMap
+    {
+        camera: new () => Camera;
+    }
+
     /**
      * Base class for all entities in feng3d scenes.
      */
@@ -86,22 +91,15 @@ namespace feng3d
          * Adds a component class named className to the game object.
 		 * @param param 被添加组件
 		 */
-        public addComponent<T extends Component>(param: T | (new () => T)): T
+        public addComponent<T extends Component>(param: (new () => T)): T
         {
             var component: T;
-            if (param instanceof Component)
+            if (this.getComponent(param))
             {
-                component = param;
-            }
-            else
-            {
-                component = new param();
-            }
-            if (this.hasComponent(component))
-            {
-                this.setComponentIndex(component, this.components_.length - 1);
+                alert(`The compnent ${component.constructor["name"]} can't be added because ${this.name} already contains the same component.`);
                 return;
             }
+            component = new param();
             this.addComponentAt(component, this.components_.length);
             return component;
         }
@@ -111,7 +109,7 @@ namespace feng3d
          * @param com	被检测的组件
          * @return		true：拥有该组件；false：不拥有该组件。
          */
-        public hasComponent(com: Component): boolean
+        private hasComponent(com: Component): boolean
         {
             return this.components_.indexOf(com) != -1;
         }
@@ -165,7 +163,7 @@ namespace feng3d
             }
             //组件唯一时移除同类型的组件
             if (component.single)
-                this.removeComponentsByType(component.type);
+                this.removeComponentsByType(<new () => Component>component.constructor);
 
             this.components_.splice(index, 0, component);
             //派发添加组件事件
@@ -246,23 +244,6 @@ namespace feng3d
         }
 
         /**
-         * 根据类定义获取或创建组件
-         * <p>当不存在该类型对象时创建一个该组件并且添加到容器中</p>
-         * @param cls       类定义
-         * @return          返回与给出类定义一致的组件
-         */
-        public getOrCreateComponentByClass<T extends Component>(cls: new () => T): T
-        {
-            var component = this.getComponent(cls);
-            if (component == null)
-            {
-                component = new cls();
-                this.addComponent(component);
-            }
-            return component;
-        }
-
-        /**
          * 交换子组件位置
          * @param index1		第一个子组件的索引位置
          * @param index2		第二个子组件的索引位置
@@ -299,7 +280,7 @@ namespace feng3d
             var removeComponents = [];
             for (var i = this.components_.length - 1; i >= 0; i--)
             {
-                if (this.components_[i].type == type)
+                if (this.components_[i].constructor == type)
                     removeComponents.push(this.removeComponentAt(i));
             }
             return removeComponents;

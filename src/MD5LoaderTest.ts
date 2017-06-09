@@ -11,7 +11,7 @@ namespace feng3d
 
         init()
         {
-            
+
             this.view3D = new View3D();
 
             // //变化旋转
@@ -55,9 +55,8 @@ namespace feng3d
 
             //初始化光源
             var light1 = new GameObject();
-            var pointLight1 = new PointLight();
+            var pointLight1 = light1.addComponent(PointLight);
             pointLight1.color = new Color(0, 1, 0, 1);
-            light1.addComponent(pointLight1);
             scene.addChild(light1.transform);
         }
 

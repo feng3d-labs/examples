@@ -24,8 +24,8 @@ namespace feng3d
                 cube.transform.rotationY += 1;
             }, 15);
 
-            var model = cube.getOrCreateComponentByClass(MeshRenderer);
-            cube.getOrCreateComponentByClass(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            var model = cube.addComponent(MeshRenderer);
+            cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
             //材质
             var material = model.material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/m.png';

@@ -86,14 +86,14 @@ namespace feng3d
         private createMaterialObj(obj: OBJ_OBJ, subObj: OBJ_SubOBJ, material: Material)
         {
             var gameObject = new GameObject();
-            var model = gameObject.getOrCreateComponentByClass(MeshRenderer);
+            var model = gameObject.addComponent(MeshRenderer);
             model.material = material || new ColorMaterial();
 
             this._vertices = obj.vertex;
             this._vertexNormals = obj.vn;
             this._uvs = obj.vt;
 
-            var meshFilter = gameObject.getOrCreateComponentByClass(MeshFilter);
+            var meshFilter = gameObject.addComponent(MeshFilter);
             var geometry = meshFilter.mesh = new Geometry();
             var vertices: number[] = [];
             var normals: number[] = [];

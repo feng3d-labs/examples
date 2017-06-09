@@ -24,13 +24,13 @@ namespace feng3d
             var scene = this.view3D.scene;
 
             var particle = new GameObject("particle");
-            particle.getOrCreateComponentByClass(MeshFilter).mesh = new PointGeometry();
-            var material = particle.getOrCreateComponentByClass(MeshRenderer).material = new StandardMaterial();
+            particle.addComponent(MeshFilter).mesh = new PointGeometry();
+            var material = particle.addComponent(MeshRenderer).material = new StandardMaterial();
             material.renderMode = RenderMode.POINTS;
             particle.transform.y = -100;
             scene.addChild(particle.transform);
 
-            var particleAnimator = particle.getOrCreateComponentByClass(ParticleAnimator);
+            var particleAnimator = particle.addComponent(ParticleAnimator);
             particleAnimator.cycle = 10;
             particleAnimator.numParticles = 1000;
             //发射组件

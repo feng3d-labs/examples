@@ -21,15 +21,15 @@ namespace feng3d
             cube.transform.z = 300;
             scene.addChild(cube.transform);
 
-           var gameObject =  GameObjectFactory.createPlane();
+            var gameObject = GameObjectFactory.createPlane();
             gameObject.transform.y = 150;
             gameObject.transform.isBillboard = true;
             gameObject.transform.holdSize = 1;
             cube.transform.addChild(gameObject.transform);
 
             //材质
-            var model = gameObject.getOrCreateComponentByClass(MeshRenderer);
-            gameObject.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(100, 100, 1, 1, false);
+            var model = gameObject.getComponent(MeshRenderer);
+            gameObject.getComponent(MeshFilter).mesh = new PlaneGeometry(100, 100, 1, 1, false);
             var textureMaterial = model.material = new TextureMaterial();
             //
             // var texture = textureMaterial.texture = new Texture2D('resources/m.png');

@@ -16,8 +16,8 @@ namespace feng3d
             this._view.camera.transform.lookAt(new Vector3D());
 
             this._plane = new GameObject();
-            this._plane.getOrCreateComponentByClass(MeshFilter).mesh = new PlaneGeometry(700, 700);
-            var model = this._plane.getOrCreateComponentByClass(MeshRenderer);
+            this._plane.addComponent(MeshFilter).mesh = new PlaneGeometry(700, 700);
+            var model = this._plane.addComponent(MeshRenderer);
             var material = model.material = new StandardMaterial("resources/floor_diffuse.jpg");
             scene.addChild(this._plane.transform);
 

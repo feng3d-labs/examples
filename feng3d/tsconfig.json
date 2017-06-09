@@ -200,12 +200,13 @@
         //骨骼动画
         "src/animators/skeleton/SkeletonJoint.ts",
         "src/animators/skeleton/Skeleton.ts",
-        "src/animators/skeleton/SkeletonAnimator.ts",
         "src/animators/skeleton/JointPose.ts",
         "src/animators/skeleton/SkeletonPose.ts",
         "src/animators/skeleton/AnimationClipNodeBase.ts",
         "src/animators/skeleton/SkeletonClipNode.ts",
         "src/animators/skeleton/SkeletonClipState.ts",
+        "src/animators/skeleton/SkeletonAnimationSet.ts",
+        "src/animators/skeleton/SkeletonAnimator.ts",
         //
         "src/animators/transform/TransformAnimator.ts",
         //解析

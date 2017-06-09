@@ -11,6 +11,6 @@ namespace feng3d
         /**
          * 渲染模式
          */
-        renderMode: number;
+        renderMode: number|(()=>number);
     }
 }

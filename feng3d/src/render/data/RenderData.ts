@@ -97,7 +97,7 @@ namespace feng3d
             return renderData;
         }
 
-        public createInstanceCount(instanceCount:number|(()=>number))
+        public createInstanceCount(value:number|(()=>number))
         {
             var renderData: RenderInstanceCount = this._elementMap["instanceCount"];
             if (!renderData)
@@ -105,7 +105,19 @@ namespace feng3d
                 this._elementMap["instanceCount"] = renderData = new RenderInstanceCount();
                 this._elements.push(renderData);
             }
-            renderData.data = instanceCount;
+            renderData.data = value;
+            return renderData;
+        }
+
+        public createShaderParam<K extends keyof ShaderParams>(name:K,value:ShaderParams[K])
+        {
+            var renderData: ShaderParam = this._elementMap[<any>name];
+            if (!renderData)
+            {
+                this._elementMap["instanceCount"] = renderData = new ShaderParam(name);
+                this._elements.push(renderData);
+            }
+            renderData.value = value;
             return renderData;
         }
 

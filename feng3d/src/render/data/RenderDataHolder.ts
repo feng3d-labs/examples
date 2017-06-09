@@ -52,14 +52,6 @@ namespace feng3d
             renderData.addRenderElement(this.elements);
         }
 
-		/**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-
-        }
-
         protected invalidateRenderData()
         {
             this.dispatchEvent(new Event(Object3DRenderAtomic.INVALIDATE));

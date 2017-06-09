@@ -5271,13 +5271,22 @@ var feng3d;
             renderData.value = value;
             return renderData;
         };
-        RenderData.prototype.createInstanceCount = function (instanceCount) {
+        RenderData.prototype.createInstanceCount = function (value) {
             var renderData = this._elementMap["instanceCount"];
             if (!renderData) {
                 this._elementMap["instanceCount"] = renderData = new feng3d.RenderInstanceCount();
                 this._elements.push(renderData);
             }
-            renderData.data = instanceCount;
+            renderData.data = value;
+            return renderData;
+        };
+        RenderData.prototype.createShaderParam = function (name, value) {
+            var renderData = this._elementMap[name];
+            if (!renderData) {
+                this._elementMap["instanceCount"] = renderData = new feng3d.ShaderParam(name);
+                this._elements.push(renderData);
+            }
+            renderData.value = value;
             return renderData;
         };
         RenderData.prototype.addRenderElement = function (element) {
@@ -5435,6 +5444,16 @@ var feng3d;
         return AddMacro;
     }(Macro));
     feng3d.AddMacro = AddMacro;
+    var ShaderParam = (function (_super) {
+        __extends(ShaderParam, _super);
+        function ShaderParam(name) {
+            var _this = _super.call(this) || this;
+            _this.name = name;
+            return _this;
+        }
+        return ShaderParam;
+    }(feng3d.RenderElement));
+    feng3d.ShaderParam = ShaderParam;
     var ShaderRenderData = (function () {
         function ShaderRenderData() {
             //
@@ -5600,11 +5619,6 @@ var feng3d;
         RenderDataHolder.prototype.updateRenderData = function (renderContext, renderData) {
             renderData.addRenderElement(this.elements);
         };
-        /**
-         * 更新渲染数据
-         */
-        RenderDataHolder.prototype.updateRenderShader = function (renderContext, renderData) {
-        };
         RenderDataHolder.prototype.invalidateRenderData = function () {
             this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE));
         };
@@ -5658,6 +5672,9 @@ var feng3d;
                 }
                 else if (element instanceof feng3d.RenderInstanceCount) {
                     this.instanceCount = element.data;
+                }
+                else if (element instanceof feng3d.ShaderParam) {
+                    this.shader.shaderParams[element.name] = element.value;
                 }
                 else {
                     throw "未知RenderElement！";
@@ -5778,6 +5795,8 @@ var feng3d;
             var shaderParams = this.shader.shaderParams;
             indexBuffer.active(gl);
             var renderMode = shaderParams.renderMode;
+            if (renderMode instanceof Function)
+                renderMode = renderMode();
             if (instanceCount > 1) {
                 gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
             }
@@ -5793,7 +5812,6 @@ var feng3d;
         function Object3DRenderAtomic() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
             _this._invalidateRenderDataHolderList = [];
-            _this._invalidateShaderList = [];
             _this.renderHolderInvalid = true;
             _this.renderDataHolders = [];
             _this.updateEverytimeList = [];
@@ -5816,9 +5834,7 @@ var feng3d;
             }
         };
         Object3DRenderAtomic.prototype.addInvalidateShader = function (renderDataHolder) {
-            if (this._invalidateShaderList.indexOf(renderDataHolder) == -1) {
-                this._invalidateShaderList.push(renderDataHolder);
-            }
+            this.invalidateShader();
         };
         Object3DRenderAtomic.prototype.addRenderDataHolder = function (renderDataHolder) {
             this.renderDataHolders.push(renderDataHolder);
@@ -5844,14 +5860,6 @@ var feng3d;
                     element.updateRenderData(renderContext, _this);
                 });
                 this._invalidateRenderDataHolderList.length = 0;
-            }
-            //
-            if (this._invalidateShaderList.length > 0) {
-                this._invalidateShaderList.forEach(function (element) {
-                    element.updateRenderShader(renderContext, _this);
-                });
-                this.invalidateShader();
-                this._invalidateShaderList.length = 0;
             }
         };
         Object3DRenderAtomic.prototype.clear = function () {
@@ -13297,6 +13305,7 @@ var feng3d;
             _this.createShaderCode(function () { return { vertexCode: _this.vertexCode, fragmentCode: _this.fragmentCode }; });
             _this.createBoolMacro("IS_POINTS_MODE", function () { return _this.renderMode == feng3d.RenderMode.POINTS; });
             _this.createUniformData("u_PointSize", function () { return _this.pointSize; });
+            _this.createShaderParam("renderMode", function () { return _this.renderMode; });
             return _this;
         }
         Object.defineProperty(Material.prototype, "renderMode", {
@@ -13413,13 +13422,6 @@ var feng3d;
                 this._methods[i].collectRenderDataHolder(renderAtomic);
             }
             _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
-        };
-        /**
-         * 更新渲染数据
-         */
-        Material.prototype.updateRenderShader = function (renderContext, renderData) {
-            //
-            renderData.shader.shaderParams.renderMode = this.renderMode;
         };
         return Material;
     }(feng3d.RenderDataHolder));

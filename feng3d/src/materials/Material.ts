@@ -115,6 +115,7 @@ namespace feng3d
             this.createShaderCode(() => { return { vertexCode: this.vertexCode, fragmentCode: this.fragmentCode } });
             this.createBoolMacro("IS_POINTS_MODE", () => this.renderMode == RenderMode.POINTS);
             this.createUniformData("u_PointSize", () => this.pointSize);
+            this.createShaderParam("renderMode",() => this.renderMode);
         }
 
         /**
@@ -165,15 +166,6 @@ namespace feng3d
                 this._methods[i].collectRenderDataHolder(renderAtomic);
             }
             super.collectRenderDataHolder(renderAtomic);
-        }
-
-        /**
-		 * 更新渲染数据
-		 */
-        public updateRenderShader(renderContext: RenderContext, renderData: RenderAtomic)
-        {
-            //
-            renderData.shader.shaderParams.renderMode = this.renderMode;
         }
     }
 }

@@ -28,6 +28,9 @@ namespace feng3d
                 } else if (element instanceof RenderInstanceCount)
                 {
                     this.instanceCount = element.data;
+                } else if (element instanceof ShaderParam)
+                {
+                    this.shader.shaderParams[element.name] = element.value;
                 } else
                 {
                     throw "未知RenderElement！";
@@ -208,6 +211,8 @@ namespace feng3d
             indexBuffer.active(gl);
 
             var renderMode = shaderParams.renderMode;
+            if(renderMode instanceof Function)
+                renderMode = renderMode();
             if (instanceCount > 1)
             {
                 gl.drawElementsInstanced(renderMode, indexBuffer.count, indexBuffer.type, indexBuffer.offset, instanceCount);
@@ -235,7 +240,6 @@ namespace feng3d
         public static INVALIDATE_SHADER = "invalidateShader";
 
         private _invalidateRenderDataHolderList: RenderDataHolder[] = [];
-        private _invalidateShaderList: RenderDataHolder[] = [];
         public renderHolderInvalid = true;
 
         private onInvalidate(event: Event)
@@ -265,10 +269,7 @@ namespace feng3d
 
         private addInvalidateShader(renderDataHolder: RenderDataHolder)
         {
-            if (this._invalidateShaderList.indexOf(renderDataHolder) == -1)
-            {
-                this._invalidateShaderList.push(renderDataHolder)
-            }
+            this.invalidateShader();
         }
 
         private renderDataHolders: RenderDataHolder[] = [];
@@ -305,16 +306,6 @@ namespace feng3d
                     element.updateRenderData(renderContext, this);
                 });
                 this._invalidateRenderDataHolderList.length = 0;
-            }
-            //
-            if (this._invalidateShaderList.length > 0)
-            {
-                this._invalidateShaderList.forEach(element =>
-                {
-                    element.updateRenderShader(renderContext, this);
-                });
-                this.invalidateShader();
-                this._invalidateShaderList.length = 0;
             }
         }
 

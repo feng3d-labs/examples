@@ -66,6 +66,15 @@ namespace feng3d
         }
     }
 
+    export class ShaderParam extends RenderElement
+    {
+        public value:any;
+        constructor(public name:string)
+        {
+            super();
+        }
+    }
+
     export class ShaderRenderData
     {
         public uuid: string;

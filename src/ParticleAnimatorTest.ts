@@ -32,7 +32,8 @@ namespace feng3d
 
             var particleAnimator = particle.addComponent(ParticleAnimator);
             particleAnimator.cycle = 10;
-            particleAnimator.numParticles = 1000;
+            var particleAnimatorSet = particleAnimator.animatorSet = new ParticleAnimationSet();
+            particleAnimatorSet.numParticles = 1000;
             //发射组件
             var emission = new ParticleEmission();
             //每秒发射数量
@@ -46,12 +47,12 @@ namespace feng3d
                 { time: 5, particles: 100 },
             );
             //通过组件来创建粒子初始状态
-            particleAnimator.addAnimation(emission);
-            particleAnimator.addAnimation(new ParticlePosition());
-            particleAnimator.addAnimation(new ParticleVelocity());
-            particleAnimator.setGlobal("acceleration", () => acceleration);
+            particleAnimatorSet.addAnimation(emission);
+            particleAnimatorSet.addAnimation(new ParticlePosition());
+            particleAnimatorSet.addAnimation(new ParticleVelocity());
+            particleAnimatorSet.setGlobal("acceleration", () => acceleration);
             //通过函数来创建粒子初始状态
-            particleAnimator.generateFunctions.push({
+            particleAnimatorSet.generateFunctions.push({
                 generate: (particle) =>
                 {
                     particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);

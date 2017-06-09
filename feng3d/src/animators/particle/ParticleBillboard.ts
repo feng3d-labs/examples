@@ -55,7 +55,7 @@ namespace feng3d
                 this._matrix.identity();
                 this._matrix.appendRotation(-comps[1].w * Math.RAD2DEG, comps[1]);
             }
-            particleAnimator.setGlobal("billboardMatrix",this._matrix);
+            particleAnimator.animatorSet.setGlobal("billboardMatrix",this._matrix);
         }
 
 		/**

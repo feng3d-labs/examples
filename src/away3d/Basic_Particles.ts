@@ -30,11 +30,10 @@ namespace feng3d
             material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             material.enableBlend = true;
 
-            var particleAnimator = new ParticleAnimator();
-            particleAnimator.cycle = 10;
-            particleAnimator.numParticles = 20000;
+            var particleAnimationSet = new ParticleAnimationSet();
+            particleAnimationSet.numParticles = 20000;
             //通过函数来创建粒子初始状态
-            particleAnimator.generateFunctions.push({
+            particleAnimationSet.generateFunctions.push({
                 generate: (particle) =>
                 {
                     particle.birthTime = Math.random() * 5 - 5;
@@ -45,8 +44,10 @@ namespace feng3d
                     particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                 }, priority: 0
             });
-            particleAnimator.addAnimation(new ParticleBillboard(this._view.camera.getComponent(Camera)));
-            this._particleMesh.addComponent(particleAnimator);
+            particleAnimationSet.addAnimation(new ParticleBillboard(this._view.camera.getComponent(Camera)));
+            var particleAnimator = this._particleMesh.addComponent(ParticleAnimator);
+            particleAnimator.animatorSet = particleAnimationSet;
+            particleAnimator.cycle = 10;
             particleAnimator.play();
             this._view.scene.addChild(this._particleMesh.transform);
 

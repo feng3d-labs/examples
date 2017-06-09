@@ -10,7 +10,7 @@ namespace feng3d
         private planeMaterial: StandardMaterial;
         private particleMaterial: StandardMaterial;
         private directionalLight: DirectionalLight;
-        private fireAnimationSet: ParticleAnimator;
+        private fireAnimationSet: ParticleAnimationSet;
         private particleGeometry: Geometry;
         private timer: Timer;
         private plane: GameObject;
@@ -53,12 +53,12 @@ namespace feng3d
 
         private initLights()
         {
+            var gameObject = new GameObject();
             this.directionalLight = gameObject.addComponent(DirectionalLight);
             this.directionalLight.direction = new Vector3D(0, -1, 0);
             this.directionalLight.castsShadows = false;
             this.directionalLight.color.fromUnit(0xeedddd);
             this.directionalLight.intensity = .5;
-            var gameObject = new GameObject();
             this.scene.addChild(gameObject.transform);
         }
 
@@ -73,7 +73,7 @@ namespace feng3d
 
         private initParticles()
         {
-            this.fireAnimationSet = new ParticleAnimator();
+            this.fireAnimationSet = new ParticleAnimationSet();
             this.fireAnimationSet.addAnimation(new ParticleBillboard(this.camera.getComponent(Camera)));
             // this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
@@ -95,7 +95,6 @@ namespace feng3d
                 }, priority: 0
             });
             this.particleGeometry = new PlaneGeometry(10, 10, 1, 1, false);
-            this.fireAnimationSet.play();
         }
 
         private initObjects()
@@ -113,12 +112,13 @@ namespace feng3d
                 var model = particleMesh.addComponent(MeshRenderer);
                 particleMesh.addComponent(MeshFilter).mesh = this.particleGeometry;
                 model.material = this.particleMaterial;
-                particleMesh.addComponent(this.fireAnimationSet);
+                var particleAnimator = particleMesh.addComponent(ParticleAnimator);
+                particleAnimator.animatorSet = this.fireAnimationSet;
                 var degree: number = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
                 particleMesh.transform.x = Math.sin(degree) * 400;
                 particleMesh.transform.z = Math.cos(degree) * 400;
                 particleMesh.transform.y = 5;
-                this.fireObjects.push(new FireVO(particleMesh));
+                this.fireObjects.push(new FireVO(particleMesh,particleAnimator));
                 this.view.scene.addChild(particleMesh.transform);
             }
             this.timer = new Timer(1000, this.fireObjects.length);
@@ -149,7 +149,7 @@ namespace feng3d
         private onTimer(e: TimerEvent)
         {
             var fireObject: FireVO = this.fireObjects[this.timer.currentCount - 1];
-            // fireObject.animator["start"]();
+            fireObject.animator.play();
             var lightObject = new GameObject();
             var light: PointLight = lightObject.addComponent(PointLight);
             light.color.fromUnit(0xFF3301);
@@ -205,7 +205,7 @@ namespace feng3d
         public light: PointLight;
         public strength: number = 0;
 
-        public constructor(mesh: GameObject, animator: ParticleAnimator = null)
+        public constructor(mesh: GameObject, animator: ParticleAnimator)
         {
             this.mesh = mesh;
             this.animator = animator;

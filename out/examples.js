@@ -15882,165 +15882,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * 粒子动画
-     * @author feng 2017-01-09
-     */
-    var ParticleAnimator = (function (_super) {
-        __extends(ParticleAnimator, _super);
-        function ParticleAnimator() {
-            var _this = _super.call(this) || this;
-            /**
-             * 属性数据列表
-             */
-            _this._attributes = {};
-            /**
-             * 粒子时间
-             */
-            _this.time = 0;
-            /**
-             * 起始时间
-             */
-            _this.startTime = 0;
-            /**
-             * 播放速度
-             */
-            _this.playbackSpeed = 1;
-            /**
-             * 粒子数量
-             */
-            _this.numParticles = 1000;
-            /**
-             * 周期
-             */
-            _this.cycle = 10000;
-            _this._isDirty = true;
-            /**
-             * 生成粒子函数列表，优先级越高先执行
-             */
-            _this.generateFunctions = [];
-            _this.particleGlobal = {};
-            _this._animations = [];
-            _this._single = true;
-            _this._updateEverytime = true;
-            //
-            _this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
-            _this.createUniformData("u_particleTime", function () { return _this.time; });
-            _this.createInstanceCount(function () { return _this.numParticles; });
-            return _this;
-        }
-        /**
-         * 粒子全局属性，作用于所有粒子元素
-         */
-        ParticleAnimator.prototype.setGlobal = function (property, value) {
-            this.particleGlobal[property] = value;
-            this.createUniformData(("u_particle_" + property), value);
-            this.createBoolMacro(("D_u_particle_" + property), true);
-        };
-        ParticleAnimator.prototype.play = function () {
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.update, this);
-        };
-        ParticleAnimator.prototype.addAnimation = function (animation) {
-            if (this._animations.indexOf(animation) == -1)
-                this._animations.push(animation);
-        };
-        /**
-         * 生成粒子
-         */
-        ParticleAnimator.prototype.generateParticles = function () {
-            var generateFunctions = this.generateFunctions.concat();
-            var components = this._animations;
-            components.forEach(function (element) {
-                generateFunctions.push({ generate: element.generateParticle.bind(element), priority: element.priority });
-            });
-            //按优先级排序，优先级越高先执行
-            generateFunctions.sort(function (a, b) { return b.priority - a.priority; });
-            //
-            for (var i = 0; i < this.numParticles; i++) {
-                var particle = {};
-                particle.index = i;
-                particle.total = this.numParticles;
-                generateFunctions.forEach(function (element) {
-                    element.generate(particle);
-                });
-                this.collectionParticle(particle);
-            }
-            //更新宏定义
-            for (var attribute in this._attributes) {
-                this.createBoolMacro(("D_" + attribute), true);
-            }
-        };
-        ParticleAnimator.prototype.update = function () {
-            var _this = this;
-            if (this._isDirty) {
-                this.startTime = feng3d.getTimer();
-                this.generateParticles();
-                this._isDirty = false;
-            }
-            this.time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
-            this._animations.forEach(function (element) {
-                element.setRenderState(_this);
-            });
-        };
-        /**
-         * 收集粒子数据
-         * @param particle      粒子
-         */
-        ParticleAnimator.prototype.collectionParticle = function (particle) {
-            for (var attribute in particle) {
-                this.collectionParticleAttribute(attribute, particle);
-            }
-        };
-        /**
-         * 收集粒子属性数据
-         * @param attributeID       属性编号
-         * @param index             粒子编号
-         * @param data              属性数据
-         */
-        ParticleAnimator.prototype.collectionParticleAttribute = function (attribute, particle) {
-            var attributeID = "a_particle_" + attribute;
-            var data = particle[attribute];
-            var index = particle.index;
-            var numParticles = particle.total;
-            //
-            var attributeRenderData = this._attributes[attributeID];
-            var vector3DData;
-            if (typeof data == "number") {
-                if (!attributeRenderData) {
-                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(attributeID, new Float32Array(numParticles), 1, 1);
-                }
-                vector3DData = attributeRenderData.data;
-                vector3DData[index] = data;
-            }
-            else if (data instanceof feng3d.Vector3D) {
-                if (!attributeRenderData) {
-                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(attributeID, new Float32Array(numParticles * 3), 3, 1);
-                }
-                vector3DData = attributeRenderData.data;
-                vector3DData[index * 3] = data.x;
-                vector3DData[index * 3 + 1] = data.y;
-                vector3DData[index * 3 + 2] = data.z;
-            }
-            else if (data instanceof feng3d.Color) {
-                if (!attributeRenderData) {
-                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(attributeID, new Float32Array(numParticles * 4), 4, 1);
-                }
-                vector3DData = attributeRenderData.data;
-                vector3DData[index * 4] = data.r;
-                vector3DData[index * 4 + 1] = data.g;
-                vector3DData[index * 4 + 2] = data.b;
-                vector3DData[index * 4 + 3] = data.a;
-            }
-            else {
-                throw new Error("\u65E0\u6CD5\u5904\u7406" + feng3d.ClassUtils.getQualifiedClassName(data) + "\u7C92\u5B50\u5C5E\u6027");
-            }
-        };
-        return ParticleAnimator;
-    }(feng3d.Component));
-    feng3d.ParticleAnimator = ParticleAnimator;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 粒子动画组件
      * @author feng 2017-01-09
      */
@@ -16250,7 +16091,7 @@ var feng3d;
                 this._matrix.identity();
                 this._matrix.appendRotation(-comps[1].w * Math.RAD2DEG, comps[1]);
             }
-            particleAnimator.setGlobal("billboardMatrix", this._matrix);
+            particleAnimator.animatorSet.setGlobal("billboardMatrix", this._matrix);
         };
         Object.defineProperty(ParticleBillboard.prototype, "billboardAxis", {
             /**
@@ -16270,6 +16111,214 @@ var feng3d;
         return ParticleBillboard;
     }(feng3d.ParticleComponent));
     feng3d.ParticleBillboard = ParticleBillboard;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var ParticleAnimationSet = (function (_super) {
+        __extends(ParticleAnimationSet, _super);
+        function ParticleAnimationSet() {
+            var _this = _super.call(this) || this;
+            /**
+             * 属性数据列表
+             */
+            _this._attributes = {};
+            _this._animations = [];
+            /**
+             * 生成粒子函数列表，优先级越高先执行
+             */
+            _this.generateFunctions = [];
+            _this.particleGlobal = {};
+            /**
+             * 粒子数量
+             */
+            _this.numParticles = 1000;
+            _this._isDirty = true;
+            _this.createInstanceCount(function () { return _this.numParticles; });
+            return _this;
+        }
+        /**
+         * 粒子全局属性，作用于所有粒子元素
+         */
+        ParticleAnimationSet.prototype.setGlobal = function (property, value) {
+            this.particleGlobal[property] = value;
+            this.createUniformData(("u_particle_" + property), value);
+            this.createBoolMacro(("D_u_particle_" + property), true);
+            this.invalidateRenderData();
+        };
+        ParticleAnimationSet.prototype.addAnimation = function (animation) {
+            if (this._animations.indexOf(animation) == -1)
+                this._animations.push(animation);
+        };
+        ParticleAnimationSet.prototype.update = function (particleAnimator) {
+            if (this._isDirty) {
+                this.generateParticles();
+                this._isDirty = false;
+            }
+            this._animations.forEach(function (element) {
+                element.setRenderState(particleAnimator);
+            });
+        };
+        /**
+         * 生成粒子
+         */
+        ParticleAnimationSet.prototype.generateParticles = function () {
+            var generateFunctions = this.generateFunctions.concat();
+            var components = this._animations;
+            components.forEach(function (element) {
+                generateFunctions.push({ generate: element.generateParticle.bind(element), priority: element.priority });
+            });
+            //按优先级排序，优先级越高先执行
+            generateFunctions.sort(function (a, b) { return b.priority - a.priority; });
+            //
+            for (var i = 0; i < this.numParticles; i++) {
+                var particle = {};
+                particle.index = i;
+                particle.total = this.numParticles;
+                generateFunctions.forEach(function (element) {
+                    element.generate(particle);
+                });
+                this.collectionParticle(particle);
+            }
+            //更新宏定义
+            for (var attribute in this._attributes) {
+                this.createBoolMacro(("D_" + attribute), true);
+            }
+            this.invalidateRenderData();
+        };
+        /**
+         * 收集粒子数据
+         * @param particle      粒子
+         */
+        ParticleAnimationSet.prototype.collectionParticle = function (particle) {
+            for (var attribute in particle) {
+                this.collectionParticleAttribute(attribute, particle);
+            }
+        };
+        /**
+         * 收集粒子属性数据
+         * @param attributeID       属性编号
+         * @param index             粒子编号
+         * @param data              属性数据
+         */
+        ParticleAnimationSet.prototype.collectionParticleAttribute = function (attribute, particle) {
+            var attributeID = "a_particle_" + attribute;
+            var data = particle[attribute];
+            var index = particle.index;
+            var numParticles = particle.total;
+            //
+            var attributeRenderData = this._attributes[attributeID];
+            var vector3DData;
+            if (typeof data == "number") {
+                if (!attributeRenderData) {
+                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(attributeID, new Float32Array(numParticles), 1, 1);
+                }
+                vector3DData = attributeRenderData.data;
+                vector3DData[index] = data;
+            }
+            else if (data instanceof feng3d.Vector3D) {
+                if (!attributeRenderData) {
+                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(attributeID, new Float32Array(numParticles * 3), 3, 1);
+                }
+                vector3DData = attributeRenderData.data;
+                vector3DData[index * 3] = data.x;
+                vector3DData[index * 3 + 1] = data.y;
+                vector3DData[index * 3 + 2] = data.z;
+            }
+            else if (data instanceof feng3d.Color) {
+                if (!attributeRenderData) {
+                    this._attributes[attributeID] = attributeRenderData = this.createAttributeRenderData(attributeID, new Float32Array(numParticles * 4), 4, 1);
+                }
+                vector3DData = attributeRenderData.data;
+                vector3DData[index * 4] = data.r;
+                vector3DData[index * 4 + 1] = data.g;
+                vector3DData[index * 4 + 2] = data.b;
+                vector3DData[index * 4 + 3] = data.a;
+            }
+            else {
+                throw new Error("\u65E0\u6CD5\u5904\u7406" + feng3d.ClassUtils.getQualifiedClassName(data) + "\u7C92\u5B50\u5C5E\u6027");
+            }
+        };
+        return ParticleAnimationSet;
+    }(feng3d.RenderDataHolder));
+    feng3d.ParticleAnimationSet = ParticleAnimationSet;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 粒子动画
+     * @author feng 2017-01-09
+     */
+    var ParticleAnimator = (function (_super) {
+        __extends(ParticleAnimator, _super);
+        function ParticleAnimator() {
+            var _this = _super.call(this) || this;
+            /**
+             * 粒子时间
+             */
+            _this.time = 0;
+            /**
+             * 起始时间
+             */
+            _this.startTime = 0;
+            /**
+             * 播放速度
+             */
+            _this.playbackSpeed = 1;
+            /**
+             * 周期
+             */
+            _this.cycle = 10000;
+            _this._single = true;
+            _this._updateEverytime = true;
+            //
+            _this.createUniformData("u_particleTime", function () { return _this.time; });
+            //
+            _this.createBoolMacro("HAS_PARTICLE_ANIMATOR", function () { return _this.isPlaying = true; });
+            return _this;
+        }
+        Object.defineProperty(ParticleAnimator.prototype, "animatorSet", {
+            get: function () {
+                return this._animatorSet;
+            },
+            set: function (value) {
+                if (this._animatorSet == value)
+                    return;
+                if (this._animatorSet)
+                    this.removeRenderDataHolder(this._animatorSet);
+                this._animatorSet = value;
+                if (this._animatorSet)
+                    this.addRenderDataHolder(this._animatorSet);
+                this.invalidateRenderHolder();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ParticleAnimator.prototype.play = function () {
+            if (this.isPlaying)
+                return;
+            if (!this.animatorSet) {
+                return;
+            }
+            this.startTime = feng3d.getTimer();
+            this.isPlaying = true;
+            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.update, this);
+        };
+        ParticleAnimator.prototype.update = function () {
+            this.time = ((feng3d.getTimer() - this.startTime) / 1000) % this.cycle;
+            this.animatorSet.update(this);
+        };
+        /**
+         * 收集渲染数据拥有者
+         * @param renderAtomic 渲染原子
+         */
+        ParticleAnimator.prototype.collectRenderDataHolder = function (renderAtomic) {
+            if (renderAtomic === void 0) { renderAtomic = null; }
+            this.animatorSet.collectRenderDataHolder(renderAtomic);
+            _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
+        };
+        return ParticleAnimator;
+    }(feng3d.Component));
+    feng3d.ParticleAnimator = ParticleAnimator;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -18876,7 +18925,8 @@ var feng3d;
             scene.addChild(particle.transform);
             var particleAnimator = particle.addComponent(feng3d.ParticleAnimator);
             particleAnimator.cycle = 10;
-            particleAnimator.numParticles = 1000;
+            var particleAnimatorSet = particleAnimator.animatorSet = new feng3d.ParticleAnimationSet();
+            particleAnimatorSet.numParticles = 1000;
             //发射组件
             var emission = new feng3d.ParticleEmission();
             //每秒发射数量
@@ -18884,12 +18934,12 @@ var feng3d;
             //批量发射
             emission.bursts.push({ time: 1, particles: 100 }, { time: 2, particles: 100 }, { time: 3, particles: 100 }, { time: 4, particles: 100 }, { time: 5, particles: 100 });
             //通过组件来创建粒子初始状态
-            particleAnimator.addAnimation(emission);
-            particleAnimator.addAnimation(new feng3d.ParticlePosition());
-            particleAnimator.addAnimation(new feng3d.ParticleVelocity());
-            particleAnimator.setGlobal("acceleration", function () { return feng3d.acceleration; });
+            particleAnimatorSet.addAnimation(emission);
+            particleAnimatorSet.addAnimation(new feng3d.ParticlePosition());
+            particleAnimatorSet.addAnimation(new feng3d.ParticleVelocity());
+            particleAnimatorSet.setGlobal("acceleration", function () { return feng3d.acceleration; });
             //通过函数来创建粒子初始状态
-            particleAnimator.generateFunctions.push({
+            particleAnimatorSet.generateFunctions.push({
                 generate: function (particle) {
                     particle.color = new feng3d.Color(1, 0, 0, 1).mix(new feng3d.Color(0, 1, 0, 1), particle.index / particle.total);
                 }, priority: 0
@@ -19533,11 +19583,10 @@ var feng3d;
             var material = this._particleMesh.addComponent(feng3d.MeshRenderer).material = new feng3d.StandardMaterial("resources/blue.png");
             material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
             material.enableBlend = true;
-            var particleAnimator = new feng3d.ParticleAnimator();
-            particleAnimator.cycle = 10;
-            particleAnimator.numParticles = 20000;
+            var particleAnimationSet = new feng3d.ParticleAnimationSet();
+            particleAnimationSet.numParticles = 20000;
             //通过函数来创建粒子初始状态
-            particleAnimator.generateFunctions.push({
+            particleAnimationSet.generateFunctions.push({
                 generate: function (particle) {
                     particle.birthTime = Math.random() * 5 - 5;
                     particle.lifetime = 5;
@@ -19547,8 +19596,10 @@ var feng3d;
                     particle.velocity = new feng3d.Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                 }, priority: 0
             });
-            particleAnimator.addAnimation(new feng3d.ParticleBillboard(this._view.camera.getComponent(feng3d.Camera)));
-            this._particleMesh.addComponent(particleAnimator);
+            particleAnimationSet.addAnimation(new feng3d.ParticleBillboard(this._view.camera.getComponent(feng3d.Camera)));
+            var particleAnimator = this._particleMesh.addComponent(feng3d.ParticleAnimator);
+            particleAnimator.animatorSet = particleAnimationSet;
+            particleAnimator.cycle = 10;
             particleAnimator.play();
             this._view.scene.addChild(this._particleMesh.transform);
             feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
@@ -19607,12 +19658,12 @@ var feng3d;
             this.cameraController.tiltAngle = 20;
         };
         Basic_Fire.prototype.initLights = function () {
+            var gameObject = new feng3d.GameObject();
             this.directionalLight = gameObject.addComponent(feng3d.DirectionalLight);
             this.directionalLight.direction = new feng3d.Vector3D(0, -1, 0);
             this.directionalLight.castsShadows = false;
             this.directionalLight.color.fromUnit(0xeedddd);
             this.directionalLight.intensity = .5;
-            var gameObject = new feng3d.GameObject();
             this.scene.addChild(gameObject.transform);
         };
         Basic_Fire.prototype.initMaterials = function () {
@@ -19623,7 +19674,7 @@ var feng3d;
             this.particleMaterial.enableBlend = true;
         };
         Basic_Fire.prototype.initParticles = function () {
-            this.fireAnimationSet = new feng3d.ParticleAnimator();
+            this.fireAnimationSet = new feng3d.ParticleAnimationSet();
             this.fireAnimationSet.addAnimation(new feng3d.ParticleBillboard(this.camera.getComponent(feng3d.Camera)));
             // this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
@@ -19643,7 +19694,6 @@ var feng3d;
                 }, priority: 0
             });
             this.particleGeometry = new feng3d.PlaneGeometry(10, 10, 1, 1, false);
-            this.fireAnimationSet.play();
         };
         Basic_Fire.prototype.initObjects = function () {
             this.plane = new feng3d.GameObject();
@@ -19658,12 +19708,13 @@ var feng3d;
                 var model = particleMesh.addComponent(feng3d.MeshRenderer);
                 particleMesh.addComponent(feng3d.MeshFilter).mesh = this.particleGeometry;
                 model.material = this.particleMaterial;
-                particleMesh.addComponent(this.fireAnimationSet);
+                var particleAnimator = particleMesh.addComponent(feng3d.ParticleAnimator);
+                particleAnimator.animatorSet = this.fireAnimationSet;
                 var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
                 particleMesh.transform.x = Math.sin(degree) * 400;
                 particleMesh.transform.z = Math.cos(degree) * 400;
                 particleMesh.transform.y = 5;
-                this.fireObjects.push(new FireVO(particleMesh));
+                this.fireObjects.push(new FireVO(particleMesh, particleAnimator));
                 this.view.scene.addChild(particleMesh.transform);
             }
             this.timer = new feng3d.Timer(1000, this.fireObjects.length);
@@ -19687,7 +19738,7 @@ var feng3d;
         };
         Basic_Fire.prototype.onTimer = function (e) {
             var fireObject = this.fireObjects[this.timer.currentCount - 1];
-            // fireObject.animator["start"]();
+            fireObject.animator.play();
             var lightObject = new feng3d.GameObject();
             var light = lightObject.addComponent(feng3d.PointLight);
             light.color.fromUnit(0xFF3301);
@@ -19731,7 +19782,6 @@ var feng3d;
     feng3d.Basic_Fire = Basic_Fire;
     var FireVO = (function () {
         function FireVO(mesh, animator) {
-            if (animator === void 0) { animator = null; }
             this.strength = 0;
             this.mesh = mesh;
             this.animator = animator;

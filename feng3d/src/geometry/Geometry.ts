@@ -438,7 +438,8 @@ namespace feng3d
             this._attributes = {};
             for (var key in geometry._attributes)
             {
-                this._attributes[key] = geometry._attributes[key].clone();
+                var attributeRenderData = geometry._attributes[key];
+                this.setVAData(<any>key, attributeRenderData.data, attributeRenderData.size);
             }
         }
     }

@@ -9412,7 +9412,8 @@ var feng3d;
             this._indexBuffer = geometry._indexBuffer.clone();
             this._attributes = {};
             for (var key in geometry._attributes) {
-                this._attributes[key] = geometry._attributes[key].clone();
+                var attributeRenderData = geometry._attributes[key];
+                this.setVAData(key, attributeRenderData.data, attributeRenderData.size);
             }
         };
         return Geometry;

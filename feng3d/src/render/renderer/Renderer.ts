@@ -14,7 +14,14 @@ namespace feng3d
          * Returns the first instantiated Material assigned to the renderer.
          */
         public get material() { return this._material || defaultMaterial; }
-        public set material(value) { this._material = value; this.invalidateRenderHolder(); }
+        public set material(value)
+        {
+            if (this._material == value)
+                return;
+            this.removeRenderDataHolder(this.material);
+            this._material = value;
+            this.addRenderDataHolder(this.material);
+        }
         private _material: Material;
 
         /**
@@ -41,6 +48,7 @@ namespace feng3d
         constructor()
         {
             super();
+            this.addRenderDataHolder(this.material);
             Renderer.renderers.push(this);
         }
 
@@ -50,27 +58,27 @@ namespace feng3d
             //更新数据
             object3D.updateRender(renderContext);
             var gl = renderContext.gl;
-            try
+            // try
+            // {
+            //绘制
+            var material = this.material;
+            if (material.enableBlend)
             {
-                //绘制
-                var material = this.material;
-                if (material.enableBlend)
-                {
-                    //
-                    gl.enable(GL.BLEND);
-                    gl.blendEquation(material.blendEquation);
-                    gl.depthMask(false);
-                    gl.blendFunc(material.sfactor, material.dfactor);
-                } else
-                {
-                    gl.disable(GL.BLEND);
-                    gl.depthMask(true);
-                }
-                this.drawObject3D(gl, object3D.renderData);            //
-            } catch (error)
+                //
+                gl.enable(GL.BLEND);
+                gl.blendEquation(material.blendEquation);
+                gl.depthMask(false);
+                gl.blendFunc(material.sfactor, material.dfactor);
+            } else
             {
-                console.log(error);
+                gl.disable(GL.BLEND);
+                gl.depthMask(true);
             }
+            this.drawObject3D(gl, object3D.renderData);            //
+            // } catch (error)
+            // {
+            //     console.log(error);
+            // }
         }
 
         /**
@@ -86,16 +94,6 @@ namespace feng3d
             renderAtomic.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.activeUniforms(gl, shaderProgram.uniforms);
             renderAtomic.dodraw(gl);
-        }
-
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
-        {
-            this.material.collectRenderDataHolder(renderAtomic);
-            super.collectRenderDataHolder(renderAtomic);
         }
     }
 }

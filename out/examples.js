@@ -5603,15 +5603,20 @@ var feng3d;
         RenderDataHolder.prototype.collectRenderDataHolder = function (renderAtomic) {
             if (renderAtomic === void 0) { renderAtomic = null; }
             renderAtomic.addRenderDataHolder(this);
+            for (var i = 0; i < this.childrenRenderDataHolder.length; i++) {
+                this.childrenRenderDataHolder[i].collectRenderDataHolder(renderAtomic);
+            }
         };
         RenderDataHolder.prototype.addRenderDataHolder = function (renderDataHolder) {
             if (this.childrenRenderDataHolder.indexOf(renderDataHolder) == -1)
                 this.childrenRenderDataHolder.push(renderDataHolder);
+            this.invalidateRenderHolder();
         };
         RenderDataHolder.prototype.removeRenderDataHolder = function (renderDataHolder) {
             var index = this.childrenRenderDataHolder.indexOf(renderDataHolder);
             if (index != -1)
                 this.childrenRenderDataHolder.splice(index, 1);
+            this.invalidateRenderHolder();
         };
         /**
          * 更新渲染数据
@@ -6460,7 +6465,6 @@ var feng3d;
             /**
              * 组件列表
              */
-            _this.components_ = [];
             _this._single = false;
             _this.initComponent();
             return _this;
@@ -6528,38 +6532,8 @@ var feng3d;
          * @return			返回与给出类定义一致的组件
          */
         Component.prototype.getComponents = function (type) {
-            var filterResult = this.components_.filter(function (value, index, array) {
-                return value instanceof type;
-            });
-            return filterResult;
-        };
-        /**
-         * 派发子组件事件
-         * <p>事件广播给子组件</p>
-         * @param event     事件
-         * @param depth     广播深度
-         */
-        Component.prototype.dispatchChildrenEvent = function (event, depth) {
-            if (depth === void 0) { depth = 1; }
-            if (depth == 0)
-                return;
-            this.components_.forEach(function (value, index, array) {
-                value.dispatchEvent(event);
-                value.dispatchChildrenEvent(event, depth - 1);
-            });
-        };
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        Component.prototype.collectRenderDataHolder = function (renderAtomic) {
-            if (renderAtomic === void 0) { renderAtomic = null; }
-            renderAtomic.addRenderDataHolder(this);
-            this.components_.forEach(function (element) {
-                if (element instanceof feng3d.RenderDataHolder) {
-                    element.collectRenderDataHolder(renderAtomic);
-                }
-            });
+            if (type === void 0) { type = null; }
+            return this.gameObject.getComponents(type);
         };
         /**
          * 派发事件，该事件将会强制冒泡到3D对象中
@@ -6718,6 +6692,7 @@ var feng3d;
         __extends(Renderer, _super);
         function Renderer() {
             var _this = _super.call(this) || this;
+            _this.addRenderDataHolder(_this.material);
             Renderer.renderers.push(_this);
             return _this;
         }
@@ -6727,7 +6702,13 @@ var feng3d;
              * Returns the first instantiated Material assigned to the renderer.
              */
             get: function () { return this._material || feng3d.defaultMaterial; },
-            set: function (value) { this._material = value; this.invalidateRenderHolder(); },
+            set: function (value) {
+                if (this._material == value)
+                    return;
+                this.removeRenderDataHolder(this.material);
+                this._material = value;
+                this.addRenderDataHolder(this.material);
+            },
             enumerable: true,
             configurable: true
         });
@@ -6796,15 +6777,6 @@ var feng3d;
             renderAtomic.activeAttributes(gl, shaderProgram.attributes);
             renderAtomic.activeUniforms(gl, shaderProgram.uniforms);
             renderAtomic.dodraw(gl);
-        };
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        Renderer.prototype.collectRenderDataHolder = function (renderAtomic) {
-            if (renderAtomic === void 0) { renderAtomic = null; }
-            this.material.collectRenderDataHolder(renderAtomic);
-            _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
         };
         return Renderer;
     }(feng3d.Component));
@@ -6993,7 +6965,9 @@ var feng3d;
     var MeshFilter = (function (_super) {
         __extends(MeshFilter, _super);
         function MeshFilter() {
-            return _super.call(this) || this;
+            var _this = _super.call(this) || this;
+            _this.addRenderDataHolder(_this.mesh);
+            return _this;
         }
         Object.defineProperty(MeshFilter.prototype, "mesh", {
             /**
@@ -7005,21 +6979,16 @@ var feng3d;
             set: function (value) {
                 if (this._mesh == value)
                     return;
+                if (this._mesh) {
+                    this.removeRenderDataHolder(this.mesh);
+                }
                 this._mesh = value;
+                this.addRenderDataHolder(this.mesh);
                 this.invalidateRenderHolder();
             },
             enumerable: true,
             configurable: true
         });
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        MeshFilter.prototype.collectRenderDataHolder = function (renderAtomic) {
-            if (renderAtomic === void 0) { renderAtomic = null; }
-            this.mesh.collectRenderDataHolder(renderAtomic);
-            _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
-        };
         return MeshFilter;
     }(feng3d.Component));
     feng3d.MeshFilter = MeshFilter;
@@ -8418,13 +8387,19 @@ var feng3d;
      */
     var GameObject = (function (_super) {
         __extends(GameObject, _super);
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
         /**
          * 构建3D对象
          */
         function GameObject(name) {
-            if (name === void 0) { name = "object"; }
+            if (name === void 0) { name = "GameObject"; }
             var _this = _super.call(this) || this;
-            _this._renderData = new feng3d.Object3DRenderAtomic();
+            /**
+             * @private
+             */
+            _this.renderData = new feng3d.Object3DRenderAtomic();
             /**
              * 组件列表
              */
@@ -8435,25 +8410,16 @@ var feng3d;
             GameObject._gameObjects.push(_this);
             return _this;
         }
-        Object.defineProperty(GameObject, "gameObjects", {
-            get: function () {
-                return this._gameObjects;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(GameObject.prototype, "transform", {
+            //------------------------------------------
+            // Variables
+            //------------------------------------------
             /**
              * The Transform attached to this GameObject. (null if there is none attached).
              */
             get: function () {
                 return this._transform;
             },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(GameObject.prototype, "renderData", {
-            get: function () { return this._renderData; },
             enumerable: true,
             configurable: true
         });
@@ -8464,16 +8430,6 @@ var feng3d;
                 this.renderData.renderHolderInvalid = false;
             }
             this.renderData.update(renderContext);
-        };
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        GameObject.prototype.collectRenderDataHolder = function (renderAtomic) {
-            if (renderAtomic === void 0) { renderAtomic = null; }
-            this.components_.forEach(function (element) {
-                element.collectRenderDataHolder(renderAtomic);
-            });
         };
         Object.defineProperty(GameObject.prototype, "numComponents", {
             /**
@@ -8563,7 +8519,7 @@ var feng3d;
             //派发添加组件事件
             component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
             this.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
-            this.invalidateRenderHolder();
+            this.addRenderDataHolder(component);
         };
         /**
          * 设置子组件的位置
@@ -8617,7 +8573,7 @@ var feng3d;
             //派发移除组件事件
             component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
             this.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
-            this.invalidateRenderHolder();
+            this.removeRenderDataHolder(component);
             return component;
         };
         /**
@@ -13368,7 +13324,6 @@ var feng3d;
                 return;
             this._methods.push(method);
             this.addRenderDataHolder(method);
-            this.invalidateRenderHolder();
         };
         /**
          * 删除方法
@@ -13378,19 +13333,7 @@ var feng3d;
             if (index != -1) {
                 this._methods.splice(index, 1);
                 this.removeRenderDataHolder(method);
-                this.invalidateRenderData();
             }
-        };
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        Material.prototype.collectRenderDataHolder = function (renderAtomic) {
-            if (renderAtomic === void 0) { renderAtomic = null; }
-            for (var i = 0; i < this._methods.length; i++) {
-                this._methods[i].collectRenderDataHolder(renderAtomic);
-            }
-            _super.prototype.collectRenderDataHolder.call(this, renderAtomic);
         };
         return Material;
     }(feng3d.RenderDataHolder));

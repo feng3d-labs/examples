@@ -138,7 +138,6 @@ namespace feng3d
                 return;
             this._methods.push(method);
             this.addRenderDataHolder(method);
-            this.invalidateRenderHolder();
         }
 
         /**
@@ -151,21 +150,7 @@ namespace feng3d
             {
                 this._methods.splice(index, 1);
                 this.removeRenderDataHolder(method);
-                this.invalidateRenderData();
             }
-        }
-
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
-        {
-            for (var i = 0; i < this._methods.length; i++)
-            {
-                this._methods[i].collectRenderDataHolder(renderAtomic);
-            }
-            super.collectRenderDataHolder(renderAtomic);
         }
     }
 }

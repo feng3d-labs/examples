@@ -17,7 +17,12 @@ namespace feng3d
         {
             if (this._mesh == value)
                 return;
+            if(this._mesh)
+            {
+                this.removeRenderDataHolder(this.mesh);
+            }
             this._mesh = value;
+            this.addRenderDataHolder(this.mesh);
             this.invalidateRenderHolder();
         }
         private _mesh: Geometry;
@@ -25,16 +30,7 @@ namespace feng3d
         constructor()
         {
             super();
-        }
-
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
-        {
-            this.mesh.collectRenderDataHolder(renderAtomic);
-            super.collectRenderDataHolder(renderAtomic);
+            this.addRenderDataHolder(this.mesh);
         }
     }
 }

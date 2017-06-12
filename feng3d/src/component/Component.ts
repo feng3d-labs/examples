@@ -76,47 +76,9 @@ namespace feng3d
          * @param type		类定义
          * @return			返回与给出类定义一致的组件
          */
-        public getComponents<T extends Component>(type: new () => T): T[]
+        public getComponents<T extends Component>(type: new () => T = null): T[]
         {
-            var filterResult: any = this.components_.filter(function (value: Component, index: number, array: Component[]): boolean
-            {
-                return value instanceof type;
-            });
-
-            return filterResult;
-        }
-
-        /**
-         * 派发子组件事件
-         * <p>事件广播给子组件</p>
-         * @param event     事件
-         * @param depth     广播深度
-         */
-        public dispatchChildrenEvent(event: Event, depth = 1): void
-        {
-            if (depth == 0)
-                return;
-            this.components_.forEach(function (value: Component, index: number, array: Component[]): void
-            {
-                value.dispatchEvent(event);
-                value.dispatchChildrenEvent(event, depth - 1)
-            });
-        }
-
-        /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
-        {
-            renderAtomic.addRenderDataHolder(this);
-            this.components_.forEach(element =>
-            {
-                if (element instanceof RenderDataHolder)
-                {
-                    element.collectRenderDataHolder(renderAtomic);
-                }
-            });
+            return this.gameObject.getComponents(type);
         }
 
         /**
@@ -143,7 +105,6 @@ namespace feng3d
 		/**
 		 * 组件列表
 		 */
-        protected components_: Component[] = [];
         protected _single = false;
 
         //------------------------------------------

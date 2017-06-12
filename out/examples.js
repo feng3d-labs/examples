@@ -8399,13 +8399,19 @@ var feng3d;
      */
     var GameObject = (function (_super) {
         __extends(GameObject, _super);
+        //------------------------------------------
+        // Public Functions
+        //------------------------------------------
         /**
          * 构建3D对象
          */
         function GameObject(name) {
-            if (name === void 0) { name = "object"; }
+            if (name === void 0) { name = "GameObject"; }
             var _this = _super.call(this) || this;
-            _this._renderData = new feng3d.Object3DRenderAtomic();
+            /**
+             * @private
+             */
+            _this.renderData = new feng3d.Object3DRenderAtomic();
             /**
              * 组件列表
              */
@@ -8416,25 +8422,16 @@ var feng3d;
             GameObject._gameObjects.push(_this);
             return _this;
         }
-        Object.defineProperty(GameObject, "gameObjects", {
-            get: function () {
-                return this._gameObjects;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(GameObject.prototype, "transform", {
+            //------------------------------------------
+            // Variables
+            //------------------------------------------
             /**
              * The Transform attached to this GameObject. (null if there is none attached).
              */
             get: function () {
                 return this._transform;
             },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(GameObject.prototype, "renderData", {
-            get: function () { return this._renderData; },
             enumerable: true,
             configurable: true
         });

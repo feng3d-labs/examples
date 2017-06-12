@@ -29,12 +29,17 @@ namespace feng3d
         public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
         {
             renderAtomic.addRenderDataHolder(this);
+            for (var i = 0; i < this.childrenRenderDataHolder.length; i++)
+            {
+                this.childrenRenderDataHolder[i].collectRenderDataHolder(renderAtomic);
+            }
         }
 
         public addRenderDataHolder(renderDataHolder: RenderDataHolder)
         {
             if (this.childrenRenderDataHolder.indexOf(renderDataHolder) == -1)
                 this.childrenRenderDataHolder.push(renderDataHolder);
+            this.invalidateRenderHolder();
         }
 
         public removeRenderDataHolder(renderDataHolder: RenderDataHolder)
@@ -42,6 +47,7 @@ namespace feng3d
             var index = this.childrenRenderDataHolder.indexOf(renderDataHolder);
             if (index != -1)
                 this.childrenRenderDataHolder.splice(index, 1);
+            this.invalidateRenderHolder();
         }
 
 		/**

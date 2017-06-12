@@ -39,18 +39,6 @@ namespace feng3d
         }
 
         /**
-         * 收集渲染数据拥有者
-         * @param renderAtomic 渲染原子
-         */
-        public collectRenderDataHolder(renderAtomic: Object3DRenderAtomic = null)
-        {
-            this.components_.forEach(element =>
-            {
-                element.collectRenderDataHolder(renderAtomic);
-            });
-        }
-
-        /**
          * 构建3D对象
          */
         constructor(name = "object")
@@ -171,7 +159,7 @@ namespace feng3d
             //派发添加组件事件
             component.dispatchEvent(new ComponentEvent(ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
             this.dispatchEvent(new ComponentEvent(ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
-            this.invalidateRenderHolder();
+            this.addRenderDataHolder(component);
         }
 
         /**
@@ -241,7 +229,7 @@ namespace feng3d
             //派发移除组件事件
             component.dispatchEvent(new ComponentEvent(ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
             this.dispatchEvent(new ComponentEvent(ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
-            this.invalidateRenderHolder();
+            this.removeRenderDataHolder(component);
             return component;
         }
 

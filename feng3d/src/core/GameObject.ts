@@ -86,7 +86,7 @@ namespace feng3d
                 return;
             }
             component = new param();
-            this.addComponentAt(component, this.components_.length);
+            this.addComponentAt(component, this.components.length);
             return component;
         }
 
@@ -130,32 +130,6 @@ namespace feng3d
                 });
             }
             return <T[]>filterResult;
-        }
-
-		/**
-		 * 添加组件到指定位置
-		 * @param component		被添加的组件
-		 * @param index			插入的位置
-		 */
-        private addComponentAt(component: Component, index: number): void
-        {
-            debuger && assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
-
-            if (this.hasComponent(component))
-            {
-                index = Math.min(index, this.components_.length - 1);
-                this.setComponentIndex(component, index)
-                return;
-            }
-            //组件唯一时移除同类型的组件
-            if (component.single)
-                this.removeComponentsByType(<new () => Component>component.constructor);
-
-            this.components_.splice(index, 0, component);
-            //派发添加组件事件
-            component.dispatchEvent(new ComponentEvent(ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
-            this.dispatchEvent(new ComponentEvent(ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
-            this.invalidateRenderHolder();
         }
 
         /**
@@ -266,7 +240,7 @@ namespace feng3d
             var removeComponents = [];
             for (var i = this.components.length - 1; i >= 0; i--)
             {
-                if (this.components_[i].constructor == type)
+                if (this.components[i].constructor == type)
                     removeComponents.push(this.removeComponentAt(i));
             }
             return removeComponents;
@@ -325,7 +299,7 @@ namespace feng3d
             }
             //组件唯一时移除同类型的组件
             if (component.single)
-                this.removeComponentsByType(component.type);
+                this.removeComponentsByType(<new () => Component>component.constructor);
 
             this.components.splice(index, 0, component);
             //派发添加组件事件

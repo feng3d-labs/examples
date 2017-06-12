@@ -6744,25 +6744,26 @@ var feng3d;
             //更新数据
             object3D.updateRender(renderContext);
             var gl = renderContext.gl;
-            try {
-                //绘制
-                var material = this.material;
-                if (material.enableBlend) {
-                    //
-                    gl.enable(feng3d.GL.BLEND);
-                    gl.blendEquation(material.blendEquation);
-                    gl.depthMask(false);
-                    gl.blendFunc(material.sfactor, material.dfactor);
-                }
-                else {
-                    gl.disable(feng3d.GL.BLEND);
-                    gl.depthMask(true);
-                }
-                this.drawObject3D(gl, object3D.renderData); //
+            // try
+            // {
+            //绘制
+            var material = this.material;
+            if (material.enableBlend) {
+                //
+                gl.enable(feng3d.GL.BLEND);
+                gl.blendEquation(material.blendEquation);
+                gl.depthMask(false);
+                gl.blendFunc(material.sfactor, material.dfactor);
             }
-            catch (error) {
-                console.log(error);
+            else {
+                gl.disable(feng3d.GL.BLEND);
+                gl.depthMask(true);
             }
+            this.drawObject3D(gl, object3D.renderData); //
+            // } catch (error)
+            // {
+            //     console.log(error);
+            // }
         };
         /**
          * 绘制3D对象
@@ -8400,10 +8401,13 @@ var feng3d;
              * @private
              */
             _this.renderData = new feng3d.Object3DRenderAtomic();
+            //------------------------------------------
+            // Protected Properties
+            //------------------------------------------
             /**
              * 组件列表
              */
-            _this.components_ = [];
+            _this.components = [];
             _this.name = name;
             _this._transform = _this.addComponent(feng3d.Transform);
             //
@@ -8423,6 +8427,16 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(GameObject.prototype, "numComponents", {
+            /**
+             * 子组件个数
+             */
+            get: function () {
+                return this.components.length;
+            },
+            enumerable: true,
+            configurable: true
+        });
         GameObject.prototype.updateRender = function (renderContext) {
             if (this.renderData.renderHolderInvalid) {
                 this.renderData.clear();
@@ -8431,16 +8445,6 @@ var feng3d;
             }
             this.renderData.update(renderContext);
         };
-        Object.defineProperty(GameObject.prototype, "numComponents", {
-            /**
-             * 子组件个数
-             */
-            get: function () {
-                return this.components_.length;
-            },
-            enumerable: true,
-            configurable: true
-        });
         /**
          * 获取指定位置索引的子组件
          * @param index			位置索引
@@ -8448,7 +8452,7 @@ var feng3d;
          */
         GameObject.prototype.getComponentAt = function (index) {
             feng3d.debuger && feng3d.assert(index < this.numComponents, "给出索引超出范围");
-            return this.components_[index];
+            return this.components[index];
         };
         /**
          * 添加组件
@@ -8462,7 +8466,7 @@ var feng3d;
                 return;
             }
             component = new param();
-            this.addComponentAt(component, this.components_.length);
+            this.addComponentAt(component, this.components.length);
             return component;
         };
         /**
@@ -8471,7 +8475,7 @@ var feng3d;
          * @return		true：拥有该组件；false：不拥有该组件。
          */
         GameObject.prototype.hasComponent = function (com) {
-            return this.components_.indexOf(com) != -1;
+            return this.components.indexOf(com) != -1;
         };
         /**
          * Returns the component of Type type if the game object has one attached, null if it doesn't.
@@ -8491,35 +8495,14 @@ var feng3d;
             if (type === void 0) { type = null; }
             var filterResult;
             if (!type) {
-                filterResult = this.components_.concat();
+                filterResult = this.components.concat();
             }
             else {
-                filterResult = this.components_.filter(function (value, index, array) {
+                filterResult = this.components.filter(function (value, index, array) {
                     return value instanceof type;
                 });
             }
             return filterResult;
-        };
-        /**
-         * 添加组件到指定位置
-         * @param component		被添加的组件
-         * @param index			插入的位置
-         */
-        GameObject.prototype.addComponentAt = function (component, index) {
-            feng3d.debuger && feng3d.assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
-            if (this.hasComponent(component)) {
-                index = Math.min(index, this.components_.length - 1);
-                this.setComponentIndex(component, index);
-                return;
-            }
-            //组件唯一时移除同类型的组件
-            if (component.single)
-                this.removeComponentsByType(component.constructor);
-            this.components_.splice(index, 0, component);
-            //派发添加组件事件
-            component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
-            this.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
-            this.addRenderDataHolder(component);
         };
         /**
          * 设置子组件的位置
@@ -8528,10 +8511,10 @@ var feng3d;
          */
         GameObject.prototype.setComponentIndex = function (component, index) {
             feng3d.debuger && feng3d.assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
-            var oldIndex = this.components_.indexOf(component);
+            var oldIndex = this.components.indexOf(component);
             feng3d.debuger && feng3d.assert(oldIndex >= 0 && oldIndex < this.numComponents, "子组件不在容器内");
-            this.components_.splice(oldIndex, 1);
-            this.components_.splice(index, 0, component);
+            this.components.splice(oldIndex, 1);
+            this.components.splice(index, 0, component);
         };
         /**
          * 设置组件到指定位置
@@ -8539,7 +8522,7 @@ var feng3d;
          * @param index			索引
          */
         GameObject.prototype.setComponentAt = function (component, index) {
-            if (this.components_[index]) {
+            if (this.components[index]) {
                 this.removeComponentAt(index);
             }
             this.addComponentAt(component, index);
@@ -8559,8 +8542,8 @@ var feng3d;
          * @return				    组件在容器的索引位置
          */
         GameObject.prototype.getComponentIndex = function (component) {
-            feng3d.debuger && feng3d.assert(this.components_.indexOf(component) != -1, "组件不在容器中");
-            var index = this.components_.indexOf(component);
+            feng3d.debuger && feng3d.assert(this.components.indexOf(component) != -1, "组件不在容器中");
+            var index = this.components.indexOf(component);
             return index;
         };
         /**
@@ -8569,7 +8552,7 @@ var feng3d;
          */
         GameObject.prototype.removeComponentAt = function (index) {
             feng3d.debuger && feng3d.assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
-            var component = this.components_.splice(index, 1)[0];
+            var component = this.components.splice(index, 1)[0];
             //派发移除组件事件
             component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
             this.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }));
@@ -8584,9 +8567,9 @@ var feng3d;
         GameObject.prototype.swapComponentsAt = function (index1, index2) {
             feng3d.debuger && feng3d.assert(index1 >= 0 && index1 < this.numComponents, "第一个子组件的索引位置超出范围");
             feng3d.debuger && feng3d.assert(index2 >= 0 && index2 < this.numComponents, "第二个子组件的索引位置超出范围");
-            var temp = this.components_[index1];
-            this.components_[index1] = this.components_[index2];
-            this.components_[index2] = temp;
+            var temp = this.components[index1];
+            this.components[index1] = this.components[index2];
+            this.components[index2] = temp;
         };
         /**
          * 交换子组件位置
@@ -8604,14 +8587,58 @@ var feng3d;
          */
         GameObject.prototype.removeComponentsByType = function (type) {
             var removeComponents = [];
-            for (var i = this.components_.length - 1; i >= 0; i--) {
-                if (this.components_[i].constructor == type)
+            for (var i = this.components.length - 1; i >= 0; i--) {
+                if (this.components[i].constructor == type)
                     removeComponents.push(this.removeComponentAt(i));
             }
             return removeComponents;
         };
+        /**
+         * Finds a game object by name and returns it.
+         * @param name
+         */
+        GameObject.find = function (name) {
+            for (var i = 0; i < this._gameObjects.length; i++) {
+                var element = this._gameObjects[i];
+                if (element.name == name)
+                    return element;
+            }
+        };
+        //------------------------------------------
+        // Protected Functions
+        //------------------------------------------
+        //------------------------------------------
+        // Private Properties
+        //------------------------------------------
+        //------------------------------------------
+        // Private Methods
+        //------------------------------------------
+        /**
+         * 添加组件到指定位置
+         * @param component		被添加的组件
+         * @param index			插入的位置
+         */
+        GameObject.prototype.addComponentAt = function (component, index) {
+            feng3d.debuger && feng3d.assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
+            if (this.hasComponent(component)) {
+                index = Math.min(index, this.components.length - 1);
+                this.setComponentIndex(component, index);
+                return;
+            }
+            //组件唯一时移除同类型的组件
+            if (component.single)
+                this.removeComponentsByType(component.constructor);
+            this.components.splice(index, 0, component);
+            //派发添加组件事件
+            component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
+            this.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }));
+            this.addRenderDataHolder(component);
+        };
         return GameObject;
     }(feng3d.Feng3dObject));
+    //------------------------------------------
+    // Static Functions
+    //------------------------------------------
     GameObject._gameObjects = [];
     feng3d.GameObject = GameObject;
 })(feng3d || (feng3d = {}));

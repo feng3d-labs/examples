@@ -45,7 +45,6 @@ namespace feng3d
             this._animatorSet = value;
             if (this._animatorSet)
                 this.addRenderDataHolder(this._animatorSet);
-            this.invalidateRenderHolder();
         }
         private _animatorSet: ParticleAnimationSet;
 

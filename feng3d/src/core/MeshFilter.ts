@@ -23,7 +23,6 @@ namespace feng3d
             }
             this._mesh = value;
             this.addRenderDataHolder(this.mesh);
-            this.invalidateRenderHolder();
         }
         private _mesh: Geometry;
 

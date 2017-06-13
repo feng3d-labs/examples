@@ -55,7 +55,6 @@ namespace feng3d
 		 */
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
-            renderData.addRenderElement(this.elements);
         }
 
         protected invalidateRenderData()

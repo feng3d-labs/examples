@@ -5188,6 +5188,17 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var RenderElement = (function (_super) {
+        __extends(RenderElement, _super);
+        function RenderElement() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return RenderElement;
+    }(feng3d.EventDispatcher));
+    feng3d.RenderElement = RenderElement;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     var RenderData = (function (_super) {
         __extends(RenderData, _super);
         function RenderData() {
@@ -5290,7 +5301,7 @@ var feng3d;
             return renderData;
         };
         RenderData.prototype.addRenderElement = function (element) {
-            if (element instanceof RenderElement) {
+            if (element instanceof feng3d.RenderElement) {
                 this._elements.push(element);
             }
             else {
@@ -5300,7 +5311,7 @@ var feng3d;
             }
         };
         RenderData.prototype.removeRenderElement = function (element) {
-            if (element instanceof RenderElement) {
+            if (element instanceof feng3d.RenderElement) {
                 var index = this._elements.indexOf(element);
                 if (index != -1) {
                     this._elements.splice(i, 1);
@@ -5335,14 +5346,6 @@ var feng3d;
         return RenderData;
     }(feng3d.EventDispatcher));
     feng3d.RenderData = RenderData;
-    var RenderElement = (function (_super) {
-        __extends(RenderElement, _super);
-        function RenderElement() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return RenderElement;
-    }(feng3d.EventDispatcher));
-    feng3d.RenderElement = RenderElement;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -5622,7 +5625,6 @@ var feng3d;
          * 更新渲染数据
          */
         RenderDataHolder.prototype.updateRenderData = function (renderContext, renderData) {
-            renderData.addRenderElement(this.elements);
         };
         RenderDataHolder.prototype.invalidateRenderData = function () {
             this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE));
@@ -5809,6 +5811,9 @@ var feng3d;
         return RenderAtomic;
     }());
     feng3d.RenderAtomic = RenderAtomic;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     var Object3DRenderAtomic = (function (_super) {
         __extends(Object3DRenderAtomic, _super);
         function Object3DRenderAtomic() {
@@ -5848,6 +5853,7 @@ var feng3d;
             if (renderDataHolder.updateEverytime) {
                 this.updateEverytimeList.push(renderDataHolder);
             }
+            this.addRenderElement(renderDataHolder.elements);
             this.addInvalidateHolders(renderDataHolder);
             this.addInvalidateShader(renderDataHolder);
             renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
@@ -5876,11 +5882,13 @@ var feng3d;
             if (this.updateEverytimeList.length > 0) {
                 this.updateEverytimeList.forEach(function (element) {
                     element.updateRenderData(renderContext, _this);
+                    _this.addRenderElement(element.elements);
                 });
             }
             if (this._invalidateRenderDataHolderList.length > 0) {
                 this._invalidateRenderDataHolderList.forEach(function (element) {
                     element.updateRenderData(renderContext, _this);
+                    _this.addRenderElement(element.elements);
                 });
                 this._invalidateRenderDataHolderList.length = 0;
             }
@@ -5892,7 +5900,7 @@ var feng3d;
             });
         };
         return Object3DRenderAtomic;
-    }(RenderAtomic));
+    }(feng3d.RenderAtomic));
     /**
      * 数据是否失效，需要重新收集数据
      */

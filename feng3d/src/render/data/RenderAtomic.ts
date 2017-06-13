@@ -92,7 +92,7 @@ namespace feng3d
         /**
          * 渲染实例数量
          */
-        public instanceCount: number|(()=>number);
+        public instanceCount: number | (() => number);
 
         constructor() { }
 
@@ -200,7 +200,7 @@ namespace feng3d
         public dodraw(gl: GL)
         {
             var instanceCount = this.instanceCount;
-            if(instanceCount instanceof Function)
+            if (instanceCount instanceof Function)
             {
                 instanceCount = instanceCount();
             }
@@ -211,7 +211,7 @@ namespace feng3d
             indexBuffer.active(gl);
 
             var renderMode = shaderParams.renderMode;
-            if(renderMode instanceof Function)
+            if (renderMode instanceof Function)
                 renderMode = renderMode();
             if (instanceCount > 1)
             {
@@ -231,9 +231,13 @@ namespace feng3d
          */
         public static INVALIDATE = "invalidate";
         /**
-         * 渲染拥有者失效，需要重新收集渲染数据拥有者
+         * 添加渲染数据拥有者
          */
-        public static INVALIDATE_RENDERHOLDER = "invalidateRenderHolder";
+        public static ADD_RENDERHOLDER = "addRenderHolder";
+        /**
+         * 移除渲染数据拥有者
+         */
+        public static REMOVE_RENDERHOLDER = "removeRenderHolder";
         /**
          * shader失效，需要重新收集shader数据
          */
@@ -254,9 +258,16 @@ namespace feng3d
             this.addInvalidateShader(renderDataHolder);
         }
 
-        private onInvalidateRenderHolder()
+        private onAddRenderHolder(event:Event)
         {
             this.renderHolderInvalid = true;
+            this.addRenderDataHolder(event.data);
+        }
+
+        private onRemoveRenderHolder(event:Event)
+        {
+            this.renderHolderInvalid = true;
+            this.removeRenderDataHolder(event.data);
         }
 
         private addInvalidateHolders(renderDataHolder: RenderDataHolder)
@@ -284,9 +295,28 @@ namespace feng3d
             }
             this.addInvalidateHolders(renderDataHolder);
             this.addInvalidateShader(renderDataHolder);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this)
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this)
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.onInvalidateRenderHolder, this)
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
+        }
+
+        public removeRenderDataHolder(renderDataHolder: RenderDataHolder)
+        {
+            var index = this.renderDataHolders.indexOf(renderDataHolder); 
+            if(index != -1)
+                this.renderDataHolders.splice(index,1);
+            if (renderDataHolder.updateEverytime)
+            {
+                let index = this.updateEverytimeList.indexOf(renderDataHolder);
+                if(index != -1)
+                    this.updateEverytimeList.splice(index,1);
+            }
+            this.addInvalidateShader(renderDataHolder);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
         }
 
         public update(renderContext: RenderContext)
@@ -313,13 +343,8 @@ namespace feng3d
         {
             this.renderDataHolders.forEach(element =>
             {
-                element.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this)
-                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this)
-                element.removeEventListener(Object3DRenderAtomic.INVALIDATE_RENDERHOLDER, this.onInvalidateRenderHolder, this)
+                this.removeRenderDataHolder(element);
             });
-
-            this.renderDataHolders.length = 0;
-            this.updateEverytimeList.length = 0;
         }
     }
 }

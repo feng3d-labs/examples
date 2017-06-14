@@ -19,7 +19,8 @@ namespace feng3d
             if (this._indices == value)
                 return;
             this._indices = value;
-            this.invalidate();
+            this._invalid = true;
+            this.count = this.indices ? this.indices.length : 0;
         }
         private _indices: Uint16Array;
 
@@ -49,15 +50,6 @@ namespace feng3d
         constructor()
         {
             super();
-        }
-
-        /**
-         * 使缓冲失效
-         */
-        protected invalidate()
-        {
-            this._invalid = true;
-            this.count = this.indices ? this.indices.length : 0;
         }
 
         /**

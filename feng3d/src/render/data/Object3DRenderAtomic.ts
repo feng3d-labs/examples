@@ -7,6 +7,14 @@ namespace feng3d
          */
         public static INVALIDATE = "invalidate";
         /**
+         * 添加渲染元素
+         */
+        public static ADD_RENDERELEMENT = "addRenderElement";
+        /**
+         * 移除渲染元素
+         */
+        public static REMOVE_RENDERELEMENT = "removeRenderElement";
+        /**
          * 添加渲染数据拥有者
          */
         public static ADD_RENDERHOLDER = "addRenderHolder";
@@ -26,6 +34,16 @@ namespace feng3d
         {
             var renderDataHolder = <RenderDataHolder>event.target;
             this.addInvalidateHolders(renderDataHolder);
+        }
+
+        private onAddElement(event: Event)
+        {
+            this.addRenderElement(event.data);
+        }
+
+        private onRemoveElement(event: Event)
+        {
+            this.removeRenderElement(event.data);
         }
 
         private onInvalidateShader(event: Event)
@@ -73,6 +91,8 @@ namespace feng3d
             this.addInvalidateHolders(renderDataHolder);
             this.addInvalidateShader(renderDataHolder);
             renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
             renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
             renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
             renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
@@ -89,8 +109,11 @@ namespace feng3d
                 if (index != -1)
                     this.updateEverytimeList.splice(index, 1);
             }
+            this.removeRenderElement(renderDataHolder.elements);
             this.addInvalidateShader(renderDataHolder);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);

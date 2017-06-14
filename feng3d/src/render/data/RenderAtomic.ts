@@ -35,12 +35,77 @@ namespace feng3d
                 {
                     throw "未知RenderElement！";
                 }
+                element.addEventListener(Event.CHANGE, this.onElementChange, this);
             } else
             {
                 for (var i = 0; i < element.length; i++)
                 {
                     this.addRenderElement(element[i]);
                 }
+            }
+        }
+
+        public removeRenderElement(element: RenderElement | RenderElement[])
+        {
+            if (element instanceof RenderElement)
+            {
+                if (element instanceof UniformData)
+                {
+                    this.removeUniform(element);
+                } else if (element instanceof AttributeRenderData)
+                {
+                    this.removeAttribute(element);
+                } else if (element instanceof IndexRenderData)
+                {
+                    delete this.indexBuffer;
+                } else if (element instanceof Macro)
+                {
+                    this.shader.removeMacro(element);
+                } else if (element instanceof ShaderCode)
+                {
+                    this.shader.setShaderCode(null);
+                } else if (element instanceof RenderInstanceCount)
+                {
+                    delete this.instanceCount;
+                } else if (element instanceof ShaderParam)
+                {
+                    delete this.shader.shaderParams[element.name];
+                } else
+                {
+                    throw "未知RenderElement！";
+                }
+                element.removeEventListener(Event.CHANGE, this.onElementChange, this);
+            } else
+            {
+                for (var i = 0; i < element.length; i++)
+                {
+                    this.removeRenderElement(element[i]);
+                }
+            }
+        }
+
+        private onElementChange(event: Event)
+        {
+            var element = <RenderElement>event.target;
+            if (element instanceof UniformData)
+            {
+            } else if (element instanceof AttributeRenderData)
+            {
+            } else if (element instanceof IndexRenderData)
+            {
+            } else if (element instanceof Macro)
+            {
+                this.shader.invalidate();
+            } else if (element instanceof ShaderCode)
+            {
+                this.shader.invalidate();
+            } else if (element instanceof RenderInstanceCount)
+            {
+            } else if (element instanceof ShaderParam)
+            {
+            } else
+            {
+                throw "未知RenderElement！";
             }
         }
 

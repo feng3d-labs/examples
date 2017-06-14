@@ -5193,6 +5193,9 @@ var feng3d;
         function RenderElement() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
+        RenderElement.prototype.invalidate = function () {
+            this.dispatchEvent(new feng3d.Event(feng3d.Event.CHANGE));
+        };
         return RenderElement;
     }(feng3d.EventDispatcher));
     feng3d.RenderElement = RenderElement;
@@ -5221,6 +5224,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.indices = indices;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createUniformData = function (name, data) {
@@ -5230,6 +5234,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.data = data;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createAttributeRenderData = function (name, data, size, divisor) {
@@ -5244,6 +5249,7 @@ var feng3d;
             renderData.data = data;
             renderData.size = size;
             renderData.divisor = divisor;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createShaderCode = function (code) {
@@ -5253,6 +5259,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.code = code;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createValueMacro = function (name, value) {
@@ -5262,6 +5269,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.value = value;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createBoolMacro = function (name, value) {
@@ -5271,6 +5279,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.value = value;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createAddMacro = function (name, value) {
@@ -5280,6 +5289,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.value = value;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createInstanceCount = function (value) {
@@ -5289,6 +5299,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.data = value;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createShaderParam = function (name, value) {
@@ -5298,6 +5309,7 @@ var feng3d;
                 this._elements.push(renderData);
             }
             renderData.value = value;
+            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.addRenderElement = function (element) {
@@ -5683,11 +5695,68 @@ var feng3d;
                 else {
                     throw "未知RenderElement！";
                 }
+                element.addEventListener(feng3d.Event.CHANGE, this.onElementChange, this);
             }
             else {
                 for (var i = 0; i < element.length; i++) {
                     this.addRenderElement(element[i]);
                 }
+            }
+        };
+        RenderAtomic.prototype.removeRenderElement = function (element) {
+            if (element instanceof feng3d.RenderElement) {
+                if (element instanceof feng3d.UniformData) {
+                    this.removeUniform(element);
+                }
+                else if (element instanceof feng3d.AttributeRenderData) {
+                    this.removeAttribute(element);
+                }
+                else if (element instanceof feng3d.IndexRenderData) {
+                    delete this.indexBuffer;
+                }
+                else if (element instanceof feng3d.Macro) {
+                    this.shader.removeMacro(element);
+                }
+                else if (element instanceof feng3d.ShaderCode) {
+                    this.shader.setShaderCode(null);
+                }
+                else if (element instanceof feng3d.RenderInstanceCount) {
+                    delete this.instanceCount;
+                }
+                else if (element instanceof feng3d.ShaderParam) {
+                    delete this.shader.shaderParams[element.name];
+                }
+                else {
+                    throw "未知RenderElement！";
+                }
+                element.removeEventListener(feng3d.Event.CHANGE, this.onElementChange, this);
+            }
+            else {
+                for (var i = 0; i < element.length; i++) {
+                    this.removeRenderElement(element[i]);
+                }
+            }
+        };
+        RenderAtomic.prototype.onElementChange = function (event) {
+            var element = event.target;
+            if (element instanceof feng3d.UniformData) {
+            }
+            else if (element instanceof feng3d.AttributeRenderData) {
+            }
+            else if (element instanceof feng3d.IndexRenderData) {
+            }
+            else if (element instanceof feng3d.Macro) {
+                this.shader.invalidate();
+            }
+            else if (element instanceof feng3d.ShaderCode) {
+                this.shader.invalidate();
+            }
+            else if (element instanceof feng3d.RenderInstanceCount) {
+            }
+            else if (element instanceof feng3d.ShaderParam) {
+            }
+            else {
+                throw "未知RenderElement！";
             }
         };
         RenderAtomic.prototype.addUniform = function (uniformData) {
@@ -5828,6 +5897,12 @@ var feng3d;
             var renderDataHolder = event.target;
             this.addInvalidateHolders(renderDataHolder);
         };
+        Object3DRenderAtomic.prototype.onAddElement = function (event) {
+            this.addRenderElement(event.data);
+        };
+        Object3DRenderAtomic.prototype.onRemoveElement = function (event) {
+            this.removeRenderElement(event.data);
+        };
         Object3DRenderAtomic.prototype.onInvalidateShader = function (event) {
             var renderDataHolder = event.target;
             this.addInvalidateShader(renderDataHolder);
@@ -5857,6 +5932,8 @@ var feng3d;
             this.addInvalidateHolders(renderDataHolder);
             this.addInvalidateShader(renderDataHolder);
             renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+            renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
             renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
             renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
             renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
@@ -5870,8 +5947,11 @@ var feng3d;
                 if (index_1 != -1)
                     this.updateEverytimeList.splice(index_1, 1);
             }
+            this.removeRenderElement(renderDataHolder.elements);
             this.addInvalidateShader(renderDataHolder);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+            renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
             renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
@@ -5905,6 +5985,14 @@ var feng3d;
      * 数据是否失效，需要重新收集数据
      */
     Object3DRenderAtomic.INVALIDATE = "invalidate";
+    /**
+     * 添加渲染元素
+     */
+    Object3DRenderAtomic.ADD_RENDERELEMENT = "addRenderElement";
+    /**
+     * 移除渲染元素
+     */
+    Object3DRenderAtomic.REMOVE_RENDERELEMENT = "removeRenderElement";
     /**
      * 添加渲染数据拥有者
      */
@@ -5958,18 +6046,12 @@ var feng3d;
                 if (this._indices == value)
                     return;
                 this._indices = value;
-                this.invalidate();
+                this._invalid = true;
+                this.count = this.indices ? this.indices.length : 0;
             },
             enumerable: true,
             configurable: true
         });
-        /**
-         * 使缓冲失效
-         */
-        IndexRenderData.prototype.invalidate = function () {
-            this._invalid = true;
-            this.count = this.indices ? this.indices.length : 0;
-        };
         /**
          * 激活缓冲
          * @param gl

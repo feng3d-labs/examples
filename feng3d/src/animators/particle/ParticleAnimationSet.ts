@@ -37,7 +37,6 @@ namespace feng3d
             this.particleGlobal[property] = value;
             this.createUniformData(<any>("u_particle_" + property), value);
             this.createBoolMacro(<any>("D_u_particle_" + property), true);
-            this.invalidateRenderData();
         }
 
         public addAnimation(animation: ParticleComponent)
@@ -90,7 +89,6 @@ namespace feng3d
             {
                 this.createBoolMacro(<any>("D_" + attribute), true);
             }
-            this.invalidateRenderData();
         }
 
         /**

@@ -18,7 +18,6 @@ namespace feng3d
             if (this._color == value)
                 return;
             this._color = value;
-            this.invalidateRenderData();
         }
         private _color: Color;
 

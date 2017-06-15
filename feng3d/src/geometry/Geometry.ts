@@ -95,7 +95,6 @@ namespace feng3d
         protected invalidateGeometry()
         {
             this._geometryInvalid = true;
-            this.invalidateRenderData();
         }
 
         /**
@@ -132,7 +131,6 @@ namespace feng3d
         public setIndices(indices: Uint16Array)
         {
             this._indexBuffer = this.createIndexBuffer(indices);
-            this.invalidateRenderData();
             this.dispatchEvent(new GeometryEvent(GeometryEvent.CHANGED_INDEX_DATA));
         }
 
@@ -161,7 +159,6 @@ namespace feng3d
             {
                 delete this._attributes[vaId];
             }
-            this.invalidateRenderData();
             this.dispatchEvent(new GeometryEvent(GeometryEvent.CHANGED_VA_DATA, vaId));
         }
 

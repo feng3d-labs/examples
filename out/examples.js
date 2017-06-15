@@ -5924,7 +5924,6 @@ var feng3d;
                     this.updateEverytimeList.push(renderDataHolder);
                 }
                 this.addRenderElement(renderDataHolder.elements);
-                this.addInvalidateHolders(renderDataHolder);
                 this.addInvalidateShader(renderDataHolder);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
@@ -5967,18 +5966,16 @@ var feng3d;
         };
         Object3DRenderAtomic.prototype.update = function (renderContext) {
             var _this = this;
-            renderContext.updateRenderData1(this);
+            renderContext.updateRenderData1();
             this.addRenderDataHolder(renderContext);
             if (this.updateEverytimeList.length > 0) {
                 this.updateEverytimeList.forEach(function (element) {
                     element.updateRenderData(renderContext, _this);
-                    _this.addRenderElement(element.elements);
                 });
             }
             if (this._invalidateRenderDataHolderList.length > 0) {
                 this._invalidateRenderDataHolderList.forEach(function (element) {
                     element.updateRenderData(renderContext, _this);
-                    _this.addRenderElement(element.elements);
                 });
                 this._invalidateRenderDataHolderList.length = 0;
             }
@@ -6302,10 +6299,10 @@ var feng3d;
         /**
          * 更新渲染数据
          */
-        RenderContext.prototype.updateRenderData1 = function (renderAtomic) {
+        RenderContext.prototype.updateRenderData1 = function () {
             var pointLights = feng3d.PointLight.pointLights;
             var directionalLights = feng3d.DirectionalLight.directionalLights;
-            renderAtomic.shader.addMacro(this.createValueMacro("NUM_LIGHT", feng3d.Light.lights.length));
+            this.createValueMacro("NUM_LIGHT", feng3d.Light.lights.length);
             //收集点光源数据
             var pointLightPositions = [];
             var pointLightColors = [];
@@ -6319,17 +6316,17 @@ var feng3d;
                 pointLightRanges.push(pointLight.range);
             }
             //设置点光源数据
-            renderAtomic.shader.addMacro(this.createValueMacro("NUM_POINTLIGHT", pointLights.length));
+            this.createValueMacro("NUM_POINTLIGHT", pointLights.length);
             if (pointLights.length > 0) {
-                renderAtomic.shader.addMacro(this.createAddMacro("A_NORMAL_NEED", 1));
-                renderAtomic.shader.addMacro(this.createAddMacro("V_NORMAL_NEED", 1));
-                renderAtomic.shader.addMacro(this.createAddMacro("V_GLOBAL_POSITION_NEED", 1));
-                renderAtomic.shader.addMacro(this.createAddMacro("U_CAMERAMATRIX_NEED", 1));
+                this.createAddMacro("A_NORMAL_NEED", 1);
+                this.createAddMacro("V_NORMAL_NEED", 1);
+                this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
+                this.createAddMacro("U_CAMERAMATRIX_NEED", 1);
                 //
-                renderAtomic.addUniform(this.createUniformData("u_pointLightPositions", pointLightPositions));
-                renderAtomic.addUniform(this.createUniformData("u_pointLightColors", pointLightColors));
-                renderAtomic.addUniform(this.createUniformData("u_pointLightIntensitys", pointLightIntensitys));
-                renderAtomic.addUniform(this.createUniformData("u_pointLightRanges", pointLightRanges));
+                this.createUniformData("u_pointLightPositions", pointLightPositions);
+                this.createUniformData("u_pointLightColors", pointLightColors);
+                this.createUniformData("u_pointLightIntensitys", pointLightIntensitys);
+                this.createUniformData("u_pointLightRanges", pointLightRanges);
             }
             var directionalLightDirections = [];
             var directionalLightColors = [];
@@ -6340,18 +6337,18 @@ var feng3d;
                 directionalLightColors.push(directionalLight.color);
                 directionalLightIntensitys.push(directionalLight.intensity);
             }
-            renderAtomic.shader.addMacro(this.createValueMacro("NUM_DIRECTIONALLIGHT", directionalLights.length));
+            this.createValueMacro("NUM_DIRECTIONALLIGHT", directionalLights.length);
             if (directionalLights.length > 0) {
-                renderAtomic.shader.addMacro(this.createAddMacro("A_NORMAL_NEED", 1));
-                renderAtomic.shader.addMacro(this.createAddMacro("V_NORMAL_NEED", 1));
-                renderAtomic.shader.addMacro(this.createAddMacro("U_CAMERAMATRIX_NEED", 1));
+                this.createAddMacro("A_NORMAL_NEED", 1);
+                this.createAddMacro("V_NORMAL_NEED", 1);
+                this.createAddMacro("U_CAMERAMATRIX_NEED", 1);
                 //
-                renderAtomic.addUniform(this.createUniformData("u_directionalLightDirections", directionalLightDirections));
-                renderAtomic.addUniform(this.createUniformData("u_directionalLightColors", directionalLightColors));
-                renderAtomic.addUniform(this.createUniformData("u_directionalLightIntensitys", directionalLightIntensitys));
+                this.createUniformData("u_directionalLightDirections", directionalLightDirections);
+                this.createUniformData("u_directionalLightColors", directionalLightColors);
+                this.createUniformData("u_directionalLightIntensitys", directionalLightIntensitys);
             }
-            renderAtomic.addUniform(this.createUniformData("u_sceneAmbientColor", this.scene3d.ambientColor));
-            renderAtomic.addUniform(this.createUniformData("u_scaleByDepth", this.view3D.getScaleByDepth(1)));
+            this.createUniformData("u_sceneAmbientColor", this.scene3d.ambientColor);
+            this.createUniformData("u_scaleByDepth", this.view3D.getScaleByDepth(1));
         };
         return RenderContext;
     }(feng3d.RenderDataHolder));
@@ -9247,7 +9244,6 @@ var feng3d;
          */
         Geometry.prototype.invalidateGeometry = function () {
             this._geometryInvalid = true;
-            this.invalidateRenderData();
         };
         /**
          * 更新几何体
@@ -9279,7 +9275,6 @@ var feng3d;
          */
         Geometry.prototype.setIndices = function (indices) {
             this._indexBuffer = this.createIndexBuffer(indices);
-            this.invalidateRenderData();
             this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_INDEX_DATA));
         };
         /**
@@ -9303,7 +9298,6 @@ var feng3d;
             else {
                 delete this._attributes[vaId];
             }
-            this.invalidateRenderData();
             this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_VA_DATA, vaId));
         };
         /**
@@ -13464,7 +13458,6 @@ var feng3d;
             },
             set: function (value) {
                 this._pointSize = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -13555,7 +13548,6 @@ var feng3d;
                 if (this._color == value)
                     return;
                 this._color = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -13638,7 +13630,6 @@ var feng3d;
                 if (this._texture == value)
                     return;
                 this._texture = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -13674,7 +13665,6 @@ var feng3d;
                 if (this._texture == value)
                     return;
                 this._texture = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -13869,7 +13859,6 @@ var feng3d;
             configurable: true
         });
         DiffuseMethod.prototype.onLoaded = function () {
-            this.invalidateRenderData();
             this.invalidateShader();
         };
         return DiffuseMethod;
@@ -13919,7 +13908,6 @@ var feng3d;
          * 加载完成
          */
         NormalMethod.prototype.onLoaded = function () {
-            this.invalidateRenderData();
             this.invalidateShader();
         };
         return NormalMethod;
@@ -13989,7 +13977,6 @@ var feng3d;
             configurable: true
         });
         SpecularMethod.prototype.onLoaded = function () {
-            this.invalidateRenderData();
             this.invalidateShader();
         };
         return SpecularMethod;
@@ -14099,7 +14086,6 @@ var feng3d;
             },
             set: function (value) {
                 this._minDistance = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -14113,7 +14099,6 @@ var feng3d;
             },
             set: function (value) {
                 this._maxDistance = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -14127,7 +14112,6 @@ var feng3d;
             },
             set: function (value) {
                 this._fogColor = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -14138,7 +14122,6 @@ var feng3d;
             },
             set: function (value) {
                 this.density = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -14152,7 +14135,6 @@ var feng3d;
             },
             set: function (value) {
                 this._mode = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -14222,7 +14204,6 @@ var feng3d;
                 if (this._reflectivity == value)
                     return;
                 this._reflectivity = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -16248,7 +16229,6 @@ var feng3d;
             this.particleGlobal[property] = value;
             this.createUniformData(("u_particle_" + property), value);
             this.createBoolMacro(("D_u_particle_" + property), true);
-            this.invalidateRenderData();
         };
         ParticleAnimationSet.prototype.addAnimation = function (animation) {
             if (this._animations.indexOf(animation) == -1)
@@ -16288,7 +16268,6 @@ var feng3d;
             for (var attribute in this._attributes) {
                 this.createBoolMacro(("D_" + attribute), true);
             }
-            this.invalidateRenderData();
         };
         /**
          * 收集粒子数据
@@ -17350,7 +17329,6 @@ var feng3d;
                 this._activeState.positionDelta;
             }
             this._activeSkeletonState = this._activeState;
-            this.invalidateRenderData();
             this.invalidateShader();
             this.start();
         };
@@ -17360,7 +17338,6 @@ var feng3d;
         SkeletonAnimator.prototype.updateDeltaTime = function (dt) {
             _super.prototype.updateDeltaTime.call(this, dt);
             this._globalPropertiesDirty = true;
-            this.invalidateRenderData();
         };
         /**
          * 更新骨骼全局变换矩阵

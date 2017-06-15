@@ -73,7 +73,6 @@ namespace feng3d
             }
 
             this._activeSkeletonState = <SkeletonClipState>this._activeState;
-            this.invalidateRenderData();
             this.invalidateShader();
 
             this.start();
@@ -87,8 +86,6 @@ namespace feng3d
             super.updateDeltaTime(dt);
 
             this._globalPropertiesDirty = true;
-
-            this.invalidateRenderData();
         }
 
 		/**

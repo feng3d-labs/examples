@@ -70,7 +70,6 @@ namespace feng3d
 
         private onLoaded()
         {
-            this.invalidateRenderData();
             this.invalidateShader();
         }
     }

@@ -5221,20 +5221,18 @@ var feng3d;
             var renderData = this._elementMap["index"];
             if (!renderData) {
                 this._elementMap["index"] = renderData = new feng3d.IndexRenderData();
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.indices = indices;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createUniformData = function (name, data) {
             var renderData = this._elementMap[name];
             if (!renderData) {
                 this._elementMap[name] = renderData = new feng3d.UniformData(name, data);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.data = data;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createAttributeRenderData = function (name, data, size, divisor) {
@@ -5244,77 +5242,71 @@ var feng3d;
             var renderData = this._elementMap[name];
             if (!renderData) {
                 this._elementMap[name] = renderData = new feng3d.AttributeRenderData(name, data, size, divisor);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.data = data;
             renderData.size = size;
             renderData.divisor = divisor;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createShaderCode = function (code) {
             var renderData = this._elementMap["shader"];
             if (!renderData) {
                 this._elementMap["shader"] = renderData = new feng3d.ShaderCode(code);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.code = code;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createValueMacro = function (name, value) {
             var renderData = this._elementMap[name];
             if (!renderData) {
                 this._elementMap[name] = renderData = new feng3d.ValueMacro(name, value);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createBoolMacro = function (name, value) {
             var renderData = this._elementMap[name];
             if (!renderData) {
                 this._elementMap[name] = renderData = new feng3d.BoolMacro(name, value);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createAddMacro = function (name, value) {
             var renderData = this._elementMap[name];
             if (!renderData) {
                 this._elementMap[name] = renderData = new feng3d.AddMacro(name, value);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createInstanceCount = function (value) {
             var renderData = this._elementMap["instanceCount"];
             if (!renderData) {
                 this._elementMap["instanceCount"] = renderData = new feng3d.RenderInstanceCount();
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.data = value;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.createShaderParam = function (name, value) {
             var renderData = this._elementMap[name];
             if (!renderData) {
                 this._elementMap["instanceCount"] = renderData = new feng3d.ShaderParam(name);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         };
         RenderData.prototype.addRenderElement = function (element) {
             if (element instanceof feng3d.RenderElement) {
                 this._elements.push(element);
+                this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.ADD_RENDERELEMENT, element));
             }
             else {
                 for (var i = 0; i < element.length; i++) {
@@ -5327,6 +5319,7 @@ var feng3d;
                 var index = this._elements.indexOf(element);
                 if (index != -1) {
                     this._elements.splice(i, 1);
+                    this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.REMOVE_RENDERELEMENT, element));
                 }
             }
             else {
@@ -5924,41 +5917,58 @@ var feng3d;
             this.invalidateShader();
         };
         Object3DRenderAtomic.prototype.addRenderDataHolder = function (renderDataHolder) {
-            this.renderDataHolders.push(renderDataHolder);
-            if (renderDataHolder.updateEverytime) {
-                this.updateEverytimeList.push(renderDataHolder);
+            if (renderDataHolder instanceof feng3d.RenderDataHolder) {
+                this.addRenderDataHolder(renderDataHolder.childrenRenderDataHolder);
+                this.renderDataHolders.push(renderDataHolder);
+                if (renderDataHolder.updateEverytime) {
+                    this.updateEverytimeList.push(renderDataHolder);
+                }
+                this.addRenderElement(renderDataHolder.elements);
+                this.addInvalidateHolders(renderDataHolder);
+                this.addInvalidateShader(renderDataHolder);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
             }
-            this.addRenderElement(renderDataHolder.elements);
-            this.addInvalidateHolders(renderDataHolder);
-            this.addInvalidateShader(renderDataHolder);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
+            else {
+                for (var i = 0; i < renderDataHolder.length; i++) {
+                    this.addRenderDataHolder(renderDataHolder[i]);
+                }
+            }
         };
         Object3DRenderAtomic.prototype.removeRenderDataHolder = function (renderDataHolder) {
-            var index = this.renderDataHolders.indexOf(renderDataHolder);
-            if (index != -1)
-                this.renderDataHolders.splice(index, 1);
-            if (renderDataHolder.updateEverytime) {
-                var index_1 = this.updateEverytimeList.indexOf(renderDataHolder);
-                if (index_1 != -1)
-                    this.updateEverytimeList.splice(index_1, 1);
+            if (renderDataHolder instanceof Array) {
+                for (var i = 0; i < renderDataHolder.length; i++) {
+                    this.removeRenderDataHolder(renderDataHolder[i]);
+                }
             }
-            this.removeRenderElement(renderDataHolder.elements);
-            this.addInvalidateShader(renderDataHolder);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
+            else {
+                this.removeRenderDataHolder(renderDataHolder.childrenRenderDataHolder);
+                var index = this.renderDataHolders.indexOf(renderDataHolder);
+                if (index != -1)
+                    this.renderDataHolders.splice(index, 1);
+                if (renderDataHolder.updateEverytime) {
+                    var index_1 = this.updateEverytimeList.indexOf(renderDataHolder);
+                    if (index_1 != -1)
+                        this.updateEverytimeList.splice(index_1, 1);
+                }
+                this.removeRenderElement(renderDataHolder.elements);
+                this.addInvalidateShader(renderDataHolder);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
+            }
         };
         Object3DRenderAtomic.prototype.update = function (renderContext) {
             var _this = this;
             renderContext.updateRenderData1(this);
+            this.addRenderDataHolder(renderContext);
             if (this.updateEverytimeList.length > 0) {
                 this.updateEverytimeList.forEach(function (element) {
                     element.updateRenderData(renderContext, _this);
@@ -6270,13 +6280,31 @@ var feng3d;
         function RenderContext() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
+        Object.defineProperty(RenderContext.prototype, "camera", {
+            /**
+             * 摄像机
+             */
+            get: function () {
+                return this._camera;
+            },
+            set: function (value) {
+                if (this._camera == value)
+                    return;
+                if (this._camera)
+                    this.removeRenderDataHolder(this._camera);
+                this._camera = value;
+                if (this._camera)
+                    this.addRenderDataHolder(this._camera);
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 更新渲染数据
          */
         RenderContext.prototype.updateRenderData1 = function (renderAtomic) {
             var pointLights = feng3d.PointLight.pointLights;
             var directionalLights = feng3d.DirectionalLight.directionalLights;
-            this.camera.updateRenderData(this, renderAtomic);
             renderAtomic.shader.addMacro(this.createValueMacro("NUM_LIGHT", feng3d.Light.lights.length));
             //收集点光源数据
             var pointLightPositions = [];

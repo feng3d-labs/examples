@@ -17,10 +17,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap["index"] = renderData = new IndexRenderData();
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.indices = indices;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -30,10 +29,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap[<any>name] = renderData = new UniformData(name, data);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.data = data;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -43,12 +41,11 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap[<any>name] = renderData = new AttributeRenderData(name, data, size, divisor);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.data = data;
             renderData.size = size;
             renderData.divisor = divisor;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -58,10 +55,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap["shader"] = renderData = new ShaderCode(code);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.code = code;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -71,10 +67,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap[<any>name] = renderData = new ValueMacro(name, value);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -84,10 +79,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap[<any>name] = renderData = new BoolMacro(name, value);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -97,10 +91,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap[<any>name] = renderData = new AddMacro(name, value);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -110,10 +103,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap["instanceCount"] = renderData = new RenderInstanceCount();
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.data = value;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -123,10 +115,9 @@ namespace feng3d
             if (!renderData)
             {
                 this._elementMap["instanceCount"] = renderData = new ShaderParam(name);
-                this._elements.push(renderData);
+                this.addRenderElement(renderData);
             }
             renderData.value = value;
-            this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, renderData));
             return renderData;
         }
 
@@ -135,6 +126,7 @@ namespace feng3d
             if (element instanceof RenderElement)
             {
                 this._elements.push(element);
+                this.dispatchEvent(new Event(Object3DRenderAtomic.ADD_RENDERELEMENT, element));
             } else
             {
                 for (var i = 0; i < element.length; i++)
@@ -152,6 +144,7 @@ namespace feng3d
                 if (index != -1)
                 {
                     this._elements.splice(i, 1);
+                    this.dispatchEvent(new Event(Object3DRenderAtomic.REMOVE_RENDERELEMENT, element));
                 }
             } else
             {

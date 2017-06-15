@@ -12,7 +12,7 @@ namespace feng3d
         public get updateEverytime() { return this._updateEverytime; }
         protected _updateEverytime = false;
 
-        private childrenRenderDataHolder: RenderDataHolder[] = [];
+        public childrenRenderDataHolder: RenderDataHolder[] = [];
 
 		/**
 		 * 创建GL数据缓冲

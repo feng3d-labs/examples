@@ -80,48 +80,65 @@ namespace feng3d
         private renderDataHolders: RenderDataHolder[] = [];
         private updateEverytimeList: RenderDataHolder[] = [];
 
-        public addRenderDataHolder(renderDataHolder: RenderDataHolder)
+        public addRenderDataHolder(renderDataHolder: RenderDataHolder|RenderDataHolder[])
         {
-            this.renderDataHolders.push(renderDataHolder);
-            if (renderDataHolder.updateEverytime)
+            if(renderDataHolder instanceof RenderDataHolder)
             {
-                this.updateEverytimeList.push(renderDataHolder);
+                this.addRenderDataHolder(renderDataHolder.childrenRenderDataHolder);
+                this.renderDataHolders.push(renderDataHolder);
+                if (renderDataHolder.updateEverytime)
+                {
+                    this.updateEverytimeList.push(renderDataHolder);
+                }
+                this.addRenderElement(renderDataHolder.elements);
+                this.addInvalidateHolders(renderDataHolder);
+                this.addInvalidateShader(renderDataHolder);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
+                renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
+            }else{
+                for (var i = 0; i < renderDataHolder.length; i++) {
+                    this.addRenderDataHolder(renderDataHolder[i]);
+                }
             }
-            this.addRenderElement(renderDataHolder.elements);
-            this.addInvalidateHolders(renderDataHolder);
-            this.addInvalidateShader(renderDataHolder);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
-            renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
         }
 
-        public removeRenderDataHolder(renderDataHolder: RenderDataHolder)
+        public removeRenderDataHolder(renderDataHolder: RenderDataHolder|RenderDataHolder[])
         {
-            var index = this.renderDataHolders.indexOf(renderDataHolder);
-            if (index != -1)
-                this.renderDataHolders.splice(index, 1);
-            if (renderDataHolder.updateEverytime)
+            if(renderDataHolder instanceof Array)
             {
-                let index = this.updateEverytimeList.indexOf(renderDataHolder);
+                for (var i = 0; i < renderDataHolder.length; i++) {
+                    this.removeRenderDataHolder(renderDataHolder[i]);
+                }
+            }else{
+                this.removeRenderDataHolder(renderDataHolder.childrenRenderDataHolder);
+                var index = this.renderDataHolders.indexOf(renderDataHolder);
                 if (index != -1)
-                    this.updateEverytimeList.splice(index, 1);
+                    this.renderDataHolders.splice(index, 1);
+                if (renderDataHolder.updateEverytime)
+                {
+                    let index = this.updateEverytimeList.indexOf(renderDataHolder);
+                    if (index != -1)
+                        this.updateEverytimeList.splice(index, 1);
+                }
+                this.removeRenderElement(renderDataHolder.elements);
+                this.addInvalidateShader(renderDataHolder);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
+                renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
             }
-            this.removeRenderElement(renderDataHolder.elements);
-            this.addInvalidateShader(renderDataHolder);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
-            renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
         }
 
         public update(renderContext: RenderContext)
         {
             renderContext.updateRenderData1(this);
+            this.addRenderDataHolder(renderContext);
             if (this.updateEverytimeList.length > 0)
             {
                 this.updateEverytimeList.forEach(element =>

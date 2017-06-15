@@ -86,7 +86,6 @@ namespace feng3d
         public set pointSize(value)
         {
             this._pointSize = value;
-            this.invalidateRenderData();
         }
 
         /**

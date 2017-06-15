@@ -54,7 +54,6 @@ namespace feng3d
             if (this._reflectivity == value)
                 return;
             this._reflectivity = value;
-            this.invalidateRenderData();
         }
     }
 }

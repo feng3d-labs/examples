@@ -12,7 +12,6 @@ namespace feng3d
         public set minDistance(value)
         {
             this._minDistance = value;
-            this.invalidateRenderData();
         }
         private _minDistance = 0;
 		/**
@@ -25,7 +24,6 @@ namespace feng3d
         public set maxDistance(value)
         {
             this._maxDistance = value;
-            this.invalidateRenderData();
         }
         private _maxDistance = 100;
         /**
@@ -38,7 +36,6 @@ namespace feng3d
         public set fogColor(value)
         {
             this._fogColor = value;
-            this.invalidateRenderData();
         }
         private _fogColor: Color;
         public get density()
@@ -48,7 +45,6 @@ namespace feng3d
         public set density(value)
         {
             this.density = value;
-            this.invalidateRenderData();
         }
         private _density: number;
         /**
@@ -61,7 +57,6 @@ namespace feng3d
         public set mode(value)
         {
             this._mode = value;
-            this.invalidateRenderData();
         }
         private _mode: FogMode;
 

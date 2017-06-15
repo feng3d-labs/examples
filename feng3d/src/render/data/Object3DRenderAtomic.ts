@@ -91,7 +91,7 @@ namespace feng3d
                     this.updateEverytimeList.push(renderDataHolder);
                 }
                 this.addRenderElement(renderDataHolder.elements);
-                this.addInvalidateHolders(renderDataHolder);
+                // this.addInvalidateHolders(renderDataHolder);
                 this.addInvalidateShader(renderDataHolder);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
@@ -144,7 +144,6 @@ namespace feng3d
                 this.updateEverytimeList.forEach(element =>
                 {
                     element.updateRenderData(renderContext, this);
-                    this.addRenderElement(element.elements);
                 });
             }
             if (this._invalidateRenderDataHolderList.length > 0)
@@ -152,7 +151,6 @@ namespace feng3d
                 this._invalidateRenderDataHolderList.forEach(element =>
                 {
                     element.updateRenderData(renderContext, this);
-                    this.addRenderElement(element.elements);
                 });
                 this._invalidateRenderDataHolderList.length = 0;
             }

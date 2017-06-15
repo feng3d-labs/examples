@@ -19,7 +19,6 @@ namespace feng3d
             if (this._texture == value)
                 return;
             this._texture = value;
-            this.invalidateRenderData();
         }
         private _texture: Texture2D;
 

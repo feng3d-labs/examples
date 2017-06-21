@@ -16,7 +16,6 @@ namespace feng3d
         public set ambientTexture(value)
         {
             this._ambientTexture = value;
-            this.invalidateShader();
         }
         private _ambientTexture: Texture2D;
 

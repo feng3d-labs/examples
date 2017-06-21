@@ -20,7 +20,6 @@ namespace feng3d
             if (this._skeleton == value)
                 return;
             this._skeleton = value;
-            this.invalidateShader();
         }
         private _skeleton: Skeleton;
 
@@ -73,8 +72,6 @@ namespace feng3d
             }
 
             this._activeSkeletonState = <SkeletonClipState>this._activeState;
-            this.invalidateShader();
-
             this.start();
         }
 

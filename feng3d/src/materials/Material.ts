@@ -20,7 +20,6 @@ namespace feng3d
         public set renderMode(value)
         {
             this._renderMode = value;
-            this.invalidateShader();
         }
         private _renderMode = RenderMode.TRIANGLES;
 
@@ -36,7 +35,6 @@ namespace feng3d
             if (this._vertexCode == value)
                 return;
             this._vertexCode = value;
-            this.invalidateShader();
         }
         private _vertexCode: string;
 
@@ -52,7 +50,6 @@ namespace feng3d
             if (this._fragmentCode == value)
                 return;
             this._fragmentCode = value;
-            this.invalidateShader();
         }
         private _fragmentCode: string;
 

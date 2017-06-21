@@ -18,10 +18,6 @@ namespace feng3d
          * 移除渲染数据拥有者
          */
         public static REMOVE_RENDERHOLDER = "removeRenderHolder";
-        /**
-         * shader失效，需要重新收集shader数据
-         */
-        public static INVALIDATE_SHADER = "invalidateShader";
 
         private _invalidateRenderDataHolderList: RenderDataHolder[] = [];
         public renderHolderInvalid = true;
@@ -90,7 +86,6 @@ namespace feng3d
                 this.addInvalidateShader(renderDataHolder);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
             }else{
@@ -122,7 +117,6 @@ namespace feng3d
                 this.addInvalidateShader(renderDataHolder);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
             }

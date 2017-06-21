@@ -5475,7 +5475,8 @@ var feng3d;
         ShaderRenderData.prototype.activeShaderProgram = function (gl) {
             if (!this.shaderCode || !this.shaderCode.code)
                 return null;
-            if (this._invalid) {
+            // if (this._invalid)
+            {
                 //应用宏
                 var shaderMacroStr = this.getMacroCode(this.macros);
                 if (this.shaderCode.code instanceof Function) {
@@ -5610,9 +5611,6 @@ var feng3d;
          * 更新渲染数据
          */
         RenderDataHolder.prototype.updateRenderData = function (renderContext, renderData) {
-        };
-        RenderDataHolder.prototype.invalidateShader = function () {
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE_SHADER));
         };
         return RenderDataHolder;
     }(feng3d.RenderData));
@@ -5904,7 +5902,6 @@ var feng3d;
                 this.addInvalidateShader(renderDataHolder);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
             }
@@ -5934,7 +5931,6 @@ var feng3d;
                 this.addInvalidateShader(renderDataHolder);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
-                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERHOLDER, this.onAddRenderHolder, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERHOLDER, this.onRemoveRenderHolder, this);
             }
@@ -5979,10 +5975,6 @@ var feng3d;
      * 移除渲染数据拥有者
      */
     Object3DRenderAtomic.REMOVE_RENDERHOLDER = "removeRenderHolder";
-    /**
-     * shader失效，需要重新收集shader数据
-     */
-    Object3DRenderAtomic.INVALIDATE_SHADER = "invalidateShader";
     feng3d.Object3DRenderAtomic = Object3DRenderAtomic;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -13369,7 +13361,6 @@ var feng3d;
             },
             set: function (value) {
                 this._renderMode = value;
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13385,7 +13376,6 @@ var feng3d;
                 if (this._vertexCode == value)
                     return;
                 this._vertexCode = value;
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13401,7 +13391,6 @@ var feng3d;
                 if (this._fragmentCode == value)
                     return;
                 this._fragmentCode = value;
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13797,7 +13786,6 @@ var feng3d;
             },
             set: function (value) {
                 this._difuseTexture = value;
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13834,22 +13822,11 @@ var feng3d;
                 return this._normalTexture;
             },
             set: function (value) {
-                if (this._normalTexture)
-                    this._normalTexture.removeEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this._normalTexture = value;
-                if (this._normalTexture)
-                    this._normalTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
         });
-        /**
-         * 加载完成
-         */
-        NormalMethod.prototype.onLoaded = function () {
-            this.invalidateShader();
-        };
         return NormalMethod;
     }(feng3d.RenderDataHolder));
     feng3d.NormalMethod = NormalMethod;
@@ -13892,12 +13869,7 @@ var feng3d;
                 return this._specularTexture;
             },
             set: function (value) {
-                if (this._specularTexture)
-                    this._specularTexture.removeEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this._specularTexture = value;
-                if (this._specularTexture)
-                    this._specularTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -13915,9 +13887,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        SpecularMethod.prototype.onLoaded = function () {
-            this.invalidateShader();
-        };
         return SpecularMethod;
     }(feng3d.RenderDataHolder));
     feng3d.SpecularMethod = SpecularMethod;
@@ -13954,7 +13923,6 @@ var feng3d;
             },
             set: function (value) {
                 this._ambientTexture = value;
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -14120,7 +14088,6 @@ var feng3d;
                 if (this._cubeTexture == value)
                     return;
                 this._cubeTexture = value;
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -17185,7 +17152,6 @@ var feng3d;
                 if (this._skeleton == value)
                     return;
                 this._skeleton = value;
-                this.invalidateShader();
             },
             enumerable: true,
             configurable: true
@@ -17217,7 +17183,6 @@ var feng3d;
                 this._activeState.positionDelta;
             }
             this._activeSkeletonState = this._activeState;
-            this.invalidateShader();
             this.start();
         };
         /**

@@ -16,7 +16,6 @@ namespace feng3d
         public set difuseTexture(value)
         {
             this._difuseTexture = value;
-            this.invalidateShader();
         }
         private _difuseTexture: Texture2D;
 

@@ -128,7 +128,7 @@ namespace feng3d
             if (!this.shaderCode || !this.shaderCode.code)
                 return null;
 
-            if (this._invalid)
+            // if (this._invalid)
             {
                 //应用宏
                 var shaderMacroStr = this.getMacroCode(this.macros);

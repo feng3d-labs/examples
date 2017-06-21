@@ -15,12 +15,7 @@ namespace feng3d
         }
         public set normalTexture(value)
         {
-            if (this._normalTexture)
-                this._normalTexture.removeEventListener(Event.LOADED, this.onLoaded, this);
             this._normalTexture = value;
-            if (this._normalTexture)
-                this._normalTexture.addEventListener(Event.LOADED, this.onLoaded, this);
-            this.invalidateShader();
         }
         private _normalTexture: Texture2D;
 
@@ -34,14 +29,6 @@ namespace feng3d
             //
             this.createUniformData("s_normal", () => this.normalTexture);
             this.createBoolMacro("HAS_NORMAL_SAMPLER", () => this.normalTexture.checkRenderData());
-        }
-
-        /**
-         * 加载完成
-         */
-        private onLoaded()
-        {
-            this.invalidateShader();
         }
     }
 }

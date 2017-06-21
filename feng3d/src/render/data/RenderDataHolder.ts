@@ -56,10 +56,5 @@ namespace feng3d
         public updateRenderData(renderContext: RenderContext, renderData: RenderAtomic)
         {
         }
-
-        protected invalidateShader()
-        {
-            this.dispatchEvent(new Event(Object3DRenderAtomic.INVALIDATE_SHADER));
-        }
     }
 }

@@ -15,12 +15,7 @@ namespace feng3d
         }
         public set specularTexture(value)
         {
-            if (this._specularTexture)
-                this._specularTexture.removeEventListener(Event.LOADED, this.onLoaded, this);
             this._specularTexture = value;
-            if (this._specularTexture)
-                this._specularTexture.addEventListener(Event.LOADED, this.onLoaded, this);
-            this.invalidateShader();
         }
         private _specularTexture: Texture2D;
         /**
@@ -55,11 +50,6 @@ namespace feng3d
             this.createUniformData("u_specular", () => this.specularColor);
             this.createUniformData("u_glossiness", () => this.glossiness);
             this.createBoolMacro("HAS_SPECULAR_SAMPLER", () => this.specularTexture.checkRenderData());
-        }
-
-        private onLoaded()
-        {
-            this.invalidateShader();
         }
     }
 }

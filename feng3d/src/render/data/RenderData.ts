@@ -154,33 +154,5 @@ namespace feng3d
                 }
             }
         }
-
-        public addRenderData(renderData: RenderData | RenderData[])
-        {
-            if (renderData instanceof RenderData)
-            {
-                this.addRenderElement(renderData.elements);
-            } else
-            {
-                for (var i = 0; i < renderData.length; i++)
-                {
-                    this.addRenderData(renderData[i]);
-                }
-            }
-        }
-
-        public removeRenderData(renderData: RenderData | RenderData[])
-        {
-            if (renderData instanceof RenderData)
-            {
-                this.removeRenderElement(renderData.elements);
-            } else
-            {
-                for (var i = 0; i < renderData.length; i++)
-                {
-                    this.removeRenderData(renderData[i]);
-                }
-            }
-        }
     }
 }

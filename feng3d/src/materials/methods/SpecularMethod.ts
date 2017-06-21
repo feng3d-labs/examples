@@ -20,7 +20,6 @@ namespace feng3d
             this._specularTexture = value;
             if (this._specularTexture)
                 this._specularTexture.addEventListener(Event.LOADED, this.onLoaded, this);
-            this.invalidateRenderData();
             this.invalidateShader();
         }
         private _specularTexture: Texture2D;

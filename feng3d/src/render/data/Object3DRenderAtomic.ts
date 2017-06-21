@@ -3,10 +3,6 @@ namespace feng3d
     export class Object3DRenderAtomic extends RenderAtomic
     {
         /**
-         * 数据是否失效，需要重新收集数据
-         */
-        public static INVALIDATE = "invalidate";
-        /**
          * 添加渲染元素
          */
         public static ADD_RENDERELEMENT = "addRenderElement";
@@ -92,7 +88,6 @@ namespace feng3d
                 }
                 this.addRenderElement(renderDataHolder.elements);
                 this.addInvalidateShader(renderDataHolder);
-                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
@@ -125,7 +120,6 @@ namespace feng3d
                 }
                 this.removeRenderElement(renderDataHolder.elements);
                 this.addInvalidateShader(renderDataHolder);
-                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);

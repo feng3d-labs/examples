@@ -13,12 +13,7 @@ namespace feng3d
         }
         public set splatTexture1(value)
         {
-            if (this._splatTexture1)
-                this._splatTexture1.removeEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
             this._splatTexture1 = value;
-            if (this._splatTexture1)
-                this._splatTexture1.addEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
-            this.invalidateRenderData();
         }
         private _splatTexture1: Texture2D;
 
@@ -28,12 +23,7 @@ namespace feng3d
         }
         public set splatTexture2(value)
         {
-            if (this._splatTexture2)
-                this._splatTexture2.removeEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
             this._splatTexture2 = value;
-            if (this._splatTexture2)
-                this._splatTexture2.addEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
-            this.invalidateRenderData();
         }
         private _splatTexture2: Texture2D;
 
@@ -43,12 +33,7 @@ namespace feng3d
         }
         public set splatTexture3(value)
         {
-            if (this._splatTexture3)
-                this._splatTexture3.removeEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
             this._splatTexture3 = value;
-            if (this._splatTexture3)
-                this._splatTexture3.addEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
-            this.invalidateRenderData();
         }
         private _splatTexture3: Texture2D;
 
@@ -58,12 +43,7 @@ namespace feng3d
         }
         public set blendTexture(value)
         {
-            if (this._blendTexture)
-                this._blendTexture.removeEventListener(Event.LOADED, this.onBlendTextureLoaded, this);
             this._blendTexture = value;
-            if (this._blendTexture)
-                this._blendTexture.addEventListener(Event.LOADED, this.onBlendTextureLoaded, this);
-            this.invalidateRenderData();
         }
         private _blendTexture: Texture2D;
 
@@ -74,7 +54,6 @@ namespace feng3d
         public set splatRepeats(value)
         {
             this._splatRepeats = value;
-            this.invalidateRenderData();
         }
         private _splatRepeats: Vector3D;
 
@@ -120,16 +99,6 @@ namespace feng3d
                     && this.splatTexture2.checkRenderData()
                     && this.splatTexture3.checkRenderData();
             });
-        }
-
-        private onSplatTextureLoaded()
-        {
-            this.invalidateRenderData();
-        }
-
-        private onBlendTextureLoaded()
-        {
-            this.invalidateRenderData();
         }
     }
 }

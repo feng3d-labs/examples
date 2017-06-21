@@ -20,7 +20,6 @@ namespace feng3d
             this._normalTexture = value;
             if (this._normalTexture)
                 this._normalTexture.addEventListener(Event.LOADED, this.onLoaded, this);
-            this.invalidateRenderData();
             this.invalidateShader();
         }
         private _normalTexture: Texture2D;

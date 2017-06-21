@@ -57,11 +57,6 @@ namespace feng3d
         {
         }
 
-        protected invalidateRenderData()
-        {
-            this.dispatchEvent(new Event(Object3DRenderAtomic.INVALIDATE));
-        }
-
         protected invalidateShader()
         {
             this.dispatchEvent(new Event(Object3DRenderAtomic.INVALIDATE_SHADER));

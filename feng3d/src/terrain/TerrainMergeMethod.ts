@@ -13,12 +13,7 @@ namespace feng3d
         }
         public set splatMergeTexture(value)
         {
-            if (this._splatMergeTexture)
-                this._splatMergeTexture.removeEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
             this._splatMergeTexture = value;
-            if (this._splatMergeTexture)
-                this._splatMergeTexture.addEventListener(Event.LOADED, this.onSplatTextureLoaded, this);
-            this.invalidateRenderData();
         }
         private _splatMergeTexture: Texture2D;
 
@@ -28,12 +23,7 @@ namespace feng3d
         }
         public set blendTexture(value)
         {
-            if (this._blendTexture)
-                this._blendTexture.removeEventListener(Event.LOADED, this.onBlendTextureLoaded, this);
             this._blendTexture = value;
-            if (this._blendTexture)
-                this._blendTexture.addEventListener(Event.LOADED, this.onBlendTextureLoaded, this);
-            this.invalidateRenderData();
         }
         private _blendTexture: Texture2D;
 
@@ -44,7 +34,6 @@ namespace feng3d
         public set splatRepeats(value)
         {
             this._splatRepeats = value;
-            this.invalidateRenderData();
         }
         private _splatRepeats: Vector3D;
 
@@ -82,16 +71,6 @@ namespace feng3d
             this.createUniformData("u_lod0vec", new Vector3D(0.5, 1, 0, 0));
             this.createBoolMacro("HAS_TERRAIN_METHOD", true);
             this.createBoolMacro("USE_TERRAIN_MERGE", true);
-        }
-
-        private onSplatTextureLoaded()
-        {
-            this.invalidateRenderData();
-        }
-
-        private onBlendTextureLoaded()
-        {
-            this.invalidateRenderData();
         }
     }
 }

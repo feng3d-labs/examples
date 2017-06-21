@@ -15,12 +15,7 @@ namespace feng3d
         }
         public set difuseTexture(value)
         {
-            if (this._difuseTexture)
-                this.difuseTexture.removeEventListener(Event.LOADED, this.onLoaded, this);
             this._difuseTexture = value;
-            if (this._difuseTexture)
-                this.difuseTexture.addEventListener(Event.LOADED, this.onLoaded, this);
-            this.invalidateRenderData();
             this.invalidateShader();
         }
         private _difuseTexture: Texture2D;
@@ -28,30 +23,12 @@ namespace feng3d
         /**
          * 基本颜色
          */
-        public get color()
-        {
-            return this._color;
-        }
-        public set color(value)
-        {
-            this._color = value;
-            this.invalidateRenderData();
-        }
-        private _color = new Color(1, 1, 1, 1);
+        public color = new Color(1, 1, 1, 1);
 
         /**
          * 透明阈值，透明度小于该值的像素被片段着色器丢弃
          */
-        public get alphaThreshold()
-        {
-            return this._alphaThreshold;
-        }
-        public set alphaThreshold(value)
-        {
-            this._alphaThreshold = value;
-            this.invalidateRenderData();
-        }
-        private _alphaThreshold = 0;
+        public alphaThreshold = 0;
 
         /**
          * 构建
@@ -66,11 +43,6 @@ namespace feng3d
             this.createUniformData("s_diffuse", () => this.difuseTexture);
             this.createUniformData("u_alphaThreshold", () => this.alphaThreshold);
             this.createBoolMacro("HAS_DIFFUSE_SAMPLER", () => this.difuseTexture.checkRenderData());
-        }
-
-        private onLoaded()
-        {
-            this.invalidateShader();
         }
     }
 }

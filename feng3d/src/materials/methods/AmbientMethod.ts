@@ -15,12 +15,7 @@ namespace feng3d
         }
         public set ambientTexture(value)
         {
-            if (this.ambientTexture)
-                this.ambientTexture.removeEventListener(Event.LOADED, this.invalidateRenderData, this);
             this._ambientTexture = value;
-            if (this.ambientTexture)
-                this.ambientTexture.addEventListener(Event.LOADED, this.invalidateRenderData, this);
-            this.invalidateRenderData();
             this.invalidateShader();
         }
         private _ambientTexture: Texture2D;
@@ -35,7 +30,6 @@ namespace feng3d
         public set color(value)
         {
             this._color = value;
-            this.invalidateRenderData();
         }
         private _color: Color;
 

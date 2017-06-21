@@ -5328,26 +5328,6 @@ var feng3d;
                 }
             }
         };
-        RenderData.prototype.addRenderData = function (renderData) {
-            if (renderData instanceof RenderData) {
-                this.addRenderElement(renderData.elements);
-            }
-            else {
-                for (var i = 0; i < renderData.length; i++) {
-                    this.addRenderData(renderData[i]);
-                }
-            }
-        };
-        RenderData.prototype.removeRenderData = function (renderData) {
-            if (renderData instanceof RenderData) {
-                this.removeRenderElement(renderData.elements);
-            }
-            else {
-                for (var i = 0; i < renderData.length; i++) {
-                    this.removeRenderData(renderData[i]);
-                }
-            }
-        };
         return RenderData;
     }(feng3d.EventDispatcher));
     feng3d.RenderData = RenderData;
@@ -5630,9 +5610,6 @@ var feng3d;
          * 更新渲染数据
          */
         RenderDataHolder.prototype.updateRenderData = function (renderContext, renderData) {
-        };
-        RenderDataHolder.prototype.invalidateRenderData = function () {
-            this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE));
         };
         RenderDataHolder.prototype.invalidateShader = function () {
             this.dispatchEvent(new feng3d.Event(feng3d.Object3DRenderAtomic.INVALIDATE_SHADER));
@@ -5925,7 +5902,6 @@ var feng3d;
                 }
                 this.addRenderElement(renderDataHolder.elements);
                 this.addInvalidateShader(renderDataHolder);
-                renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
                 renderDataHolder.addEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
@@ -5956,7 +5932,6 @@ var feng3d;
                 }
                 this.removeRenderElement(renderDataHolder.elements);
                 this.addInvalidateShader(renderDataHolder);
-                renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE, this.onInvalidate, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.ADD_RENDERELEMENT, this.onAddElement, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.REMOVE_RENDERELEMENT, this.onRemoveElement, this);
                 renderDataHolder.removeEventListener(Object3DRenderAtomic.INVALIDATE_SHADER, this.onInvalidateShader, this);
@@ -5988,10 +5963,6 @@ var feng3d;
         };
         return Object3DRenderAtomic;
     }(feng3d.RenderAtomic));
-    /**
-     * 数据是否失效，需要重新收集数据
-     */
-    Object3DRenderAtomic.INVALIDATE = "invalidate";
     /**
      * 添加渲染元素
      */
@@ -13800,8 +13771,14 @@ var feng3d;
         function DiffuseMethod(diffuseUrl) {
             if (diffuseUrl === void 0) { diffuseUrl = ""; }
             var _this = _super.call(this) || this;
-            _this._color = new feng3d.Color(1, 1, 1, 1);
-            _this._alphaThreshold = 0;
+            /**
+             * 基本颜色
+             */
+            _this.color = new feng3d.Color(1, 1, 1, 1);
+            /**
+             * 透明阈值，透明度小于该值的像素被片段着色器丢弃
+             */
+            _this.alphaThreshold = 0;
             _this.difuseTexture = new feng3d.Texture2D(diffuseUrl);
             _this.color = new feng3d.Color(1, 1, 1, 1);
             //
@@ -13819,48 +13796,12 @@ var feng3d;
                 return this._difuseTexture;
             },
             set: function (value) {
-                if (this._difuseTexture)
-                    this.difuseTexture.removeEventListener(feng3d.Event.LOADED, this.onLoaded, this);
                 this._difuseTexture = value;
-                if (this._difuseTexture)
-                    this.difuseTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
-                this.invalidateRenderData();
                 this.invalidateShader();
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(DiffuseMethod.prototype, "color", {
-            /**
-             * 基本颜色
-             */
-            get: function () {
-                return this._color;
-            },
-            set: function (value) {
-                this._color = value;
-                this.invalidateRenderData();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(DiffuseMethod.prototype, "alphaThreshold", {
-            /**
-             * 透明阈值，透明度小于该值的像素被片段着色器丢弃
-             */
-            get: function () {
-                return this._alphaThreshold;
-            },
-            set: function (value) {
-                this._alphaThreshold = value;
-                this.invalidateRenderData();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        DiffuseMethod.prototype.onLoaded = function () {
-            this.invalidateShader();
-        };
         return DiffuseMethod;
     }(feng3d.RenderDataHolder));
     feng3d.DiffuseMethod = DiffuseMethod;
@@ -13898,7 +13839,6 @@ var feng3d;
                 this._normalTexture = value;
                 if (this._normalTexture)
                     this._normalTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
-                this.invalidateRenderData();
                 this.invalidateShader();
             },
             enumerable: true,
@@ -13957,7 +13897,6 @@ var feng3d;
                 this._specularTexture = value;
                 if (this._specularTexture)
                     this._specularTexture.addEventListener(feng3d.Event.LOADED, this.onLoaded, this);
-                this.invalidateRenderData();
                 this.invalidateShader();
             },
             enumerable: true,
@@ -14014,12 +13953,7 @@ var feng3d;
                 return this._ambientTexture;
             },
             set: function (value) {
-                if (this.ambientTexture)
-                    this.ambientTexture.removeEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
                 this._ambientTexture = value;
-                if (this.ambientTexture)
-                    this.ambientTexture.addEventListener(feng3d.Event.LOADED, this.invalidateRenderData, this);
-                this.invalidateRenderData();
                 this.invalidateShader();
             },
             enumerable: true,
@@ -14034,7 +13968,6 @@ var feng3d;
             },
             set: function (value) {
                 this._color = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -14187,7 +14120,6 @@ var feng3d;
                 if (this._cubeTexture == value)
                     return;
                 this._cubeTexture = value;
-                this.invalidateRenderData();
                 this.invalidateShader();
             },
             enumerable: true,
@@ -15574,12 +15506,7 @@ var feng3d;
                 return this._splatTexture1;
             },
             set: function (value) {
-                if (this._splatTexture1)
-                    this._splatTexture1.removeEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
                 this._splatTexture1 = value;
-                if (this._splatTexture1)
-                    this._splatTexture1.addEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -15589,12 +15516,7 @@ var feng3d;
                 return this._splatTexture2;
             },
             set: function (value) {
-                if (this._splatTexture2)
-                    this._splatTexture2.removeEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
                 this._splatTexture2 = value;
-                if (this._splatTexture2)
-                    this._splatTexture2.addEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -15604,12 +15526,7 @@ var feng3d;
                 return this._splatTexture3;
             },
             set: function (value) {
-                if (this._splatTexture3)
-                    this._splatTexture3.removeEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
                 this._splatTexture3 = value;
-                if (this._splatTexture3)
-                    this._splatTexture3.addEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -15619,12 +15536,7 @@ var feng3d;
                 return this._blendTexture;
             },
             set: function (value) {
-                if (this._blendTexture)
-                    this._blendTexture.removeEventListener(feng3d.Event.LOADED, this.onBlendTextureLoaded, this);
                 this._blendTexture = value;
-                if (this._blendTexture)
-                    this._blendTexture.addEventListener(feng3d.Event.LOADED, this.onBlendTextureLoaded, this);
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -15635,17 +15547,10 @@ var feng3d;
             },
             set: function (value) {
                 this._splatRepeats = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
         });
-        TerrainMethod.prototype.onSplatTextureLoaded = function () {
-            this.invalidateRenderData();
-        };
-        TerrainMethod.prototype.onBlendTextureLoaded = function () {
-            this.invalidateRenderData();
-        };
         return TerrainMethod;
     }(feng3d.RenderDataHolder));
     feng3d.TerrainMethod = TerrainMethod;
@@ -15698,12 +15603,7 @@ var feng3d;
                 return this._splatMergeTexture;
             },
             set: function (value) {
-                if (this._splatMergeTexture)
-                    this._splatMergeTexture.removeEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
                 this._splatMergeTexture = value;
-                if (this._splatMergeTexture)
-                    this._splatMergeTexture.addEventListener(feng3d.Event.LOADED, this.onSplatTextureLoaded, this);
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -15713,12 +15613,7 @@ var feng3d;
                 return this._blendTexture;
             },
             set: function (value) {
-                if (this._blendTexture)
-                    this._blendTexture.removeEventListener(feng3d.Event.LOADED, this.onBlendTextureLoaded, this);
                 this._blendTexture = value;
-                if (this._blendTexture)
-                    this._blendTexture.addEventListener(feng3d.Event.LOADED, this.onBlendTextureLoaded, this);
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
@@ -15729,17 +15624,10 @@ var feng3d;
             },
             set: function (value) {
                 this._splatRepeats = value;
-                this.invalidateRenderData();
             },
             enumerable: true,
             configurable: true
         });
-        TerrainMergeMethod.prototype.onSplatTextureLoaded = function () {
-            this.invalidateRenderData();
-        };
-        TerrainMergeMethod.prototype.onBlendTextureLoaded = function () {
-            this.invalidateRenderData();
-        };
         return TerrainMergeMethod;
     }(feng3d.RenderDataHolder));
     feng3d.TerrainMergeMethod = TerrainMergeMethod;

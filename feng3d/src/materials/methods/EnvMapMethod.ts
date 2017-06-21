@@ -37,7 +37,6 @@ namespace feng3d
             if (this._cubeTexture == value)
                 return;
             this._cubeTexture = value;
-            this.invalidateRenderData();
             this.invalidateShader();
         }
 

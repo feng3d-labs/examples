@@ -34,6 +34,9 @@
         "src/away3d/Basic_Shading.ts",
         "src/away3d/Basic_Particles.ts",
         "src/away3d/Basic_Fire.ts",
-        "src/away3d/Basic_View.ts"
+        "src/away3d/Basic_View.ts",
+        //unittest
+        "src/unittest/ArrayListTest.ts",
+        "src/unittest/UnitTest.ts"
     ]
 }

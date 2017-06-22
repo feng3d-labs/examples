@@ -6,6 +6,8 @@ namespace feng3d
      */
     export class RenderAtomic
     {
+        private readonly elements: RenderElement[] = [];
+
         public addRenderElement(element: RenderElement | RenderElement[])
         {
             if (element instanceof RenderElement)
@@ -36,6 +38,7 @@ namespace feng3d
                     throw "未知RenderElement！";
                 }
                 element.addEventListener(Event.CHANGE, this.onElementChange, this);
+                this.elements.push(element);
             } else
             {
                 for (var i = 0; i < element.length; i++)

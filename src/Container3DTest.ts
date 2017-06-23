@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
 
     /**
@@ -10,30 +10,29 @@ module feng3d
         view3D: View3D;
         constructor()
         {
-
             this.init();
         }
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+
+            this.view3D = new View3D();
 
             //初始化颜色材质
-            var cube = new CubeObject3D();
-            cube.transform.position.z = 500;
-            this.view3D.scene.addChild(cube);
+            var cube = GameObjectFactory.createCube();
+            cube.transform.z = 500;
+            this.view3D.scene.addChild(cube.transform);
 
-            var colorMaterial = cube.getOrCreateComponentByClass(Model).material = new ColorMaterial();
+            var colorMaterial = cube.getComponent(MeshRenderer).material = new ColorMaterial();
 
-            var cylinder = new CylinderObject3D();
-            cylinder.transform.position.x = 200;
-            cube.addChild(cylinder);
+            var cylinder = GameObjectFactory.createCylinder();
+            cylinder.transform.x = 200;
+            cube.transform.addChild(cylinder.transform);
 
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.transform.rotation.y += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             setInterval(function ()
             {
@@ -42,4 +41,3 @@ module feng3d
         }
     }
 }
-new feng3d.Container3DTest();

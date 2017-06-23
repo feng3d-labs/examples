@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     export class OBJParserTest
     {
@@ -6,21 +6,20 @@ module feng3d
 
         constructor()
         {
-
             this.init();
         }
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+
+            this.view3D = new View3D();
 
             // //变化旋转
             setInterval(function ()
             {
                 if (object)
                 {
-                    object.transform.rotation.y += 1;
+                    object.transform.rotationY += 1;
                 }
             }, 15);
 
@@ -28,19 +27,29 @@ module feng3d
             var objUrl = "resources/head.obj";
             var scene = this.view3D.scene;
 
+            var material = new StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = "resources/head_diffuse.jpg";
+            material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
+            material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
+            // var material = new ColorMaterial();
+
             var objLoader = new ObjLoader();
-            objLoader.load(objUrl, function (object3D: Object3D)
+            objLoader.load(objUrl, material, function (object3D: GameObject)
             {
                 object = object3D;
-                object.transform.scale.x = 20;
-                object.transform.scale.y = 20;
-                object.transform.scale.z = 20;
-                object.transform.position.z = 300;
-                scene.addChild(object3D);
+                object.transform.scaleX = 20;
+                object.transform.scaleY = 20;
+                object.transform.scaleZ = 20;
+                object.transform.z = 300;
+                scene.addChild(object3D.transform);
             });
+
+            //初始化光源
+            var light1 = new GameObject();
+            var pointLight1 = light1.addComponent(PointLight);
+            pointLight1.color = new Color(0, 1, 0, 1);
+            scene.addChild(light1.transform);
         }
     }
-    var object: Object3D;
+    var object: GameObject;
 }
-
-new feng3d.OBJParserTest();

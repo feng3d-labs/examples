@@ -1,69 +1,41 @@
-module feng3d
+namespace feng3d
 {
     export class SkyBoxTest
     {
         view3D: View3D;
         controller: FPSController;
-        cameraObj: Object3D;
+        cameraObj: GameObject;
 
         constructor()
         {
-
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
+            this.cameraObj.transform.z = -500;
             this.cameraObj.transform.lookAt(new Vector3D());
             //
-            this.controller = new FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-
-
-            input.addEventListener("mousedown", this.onMousedown, this);
-            input.addEventListener("mouseup", this.onMouseup, this);
-        }
-
-        private onMousedown()
-        {
-
-            this.controller.target = this.cameraObj.transform;
-        }
-
-        private onMouseup()
-        {
-
-            this.controller.target = null;
-        }
-
-        process()
-        {
-
-            this.controller.update();
+            this.controller = new FPSController(this.view3D.camera);
         }
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+            
+            this.view3D = new View3D();
 
             var scene = this.view3D.scene;
 
-            var root = 'resources/skybox/';
-            var imagePaths = ['px.jpg', 'py.jpg', 'pz.jpg', 'nx.jpg', 'ny.jpg', 'nz.jpg'];
-            for (var i = 0; i < imagePaths.length; i++)
-            {
-                imagePaths[i] = root + imagePaths[i];
-            }
-
-            var skybox = new Object3D("skybox");
-            var model = skybox.getOrCreateComponentByClass(Model);
-            model.geometry = new SkyBoxGeometry();
-            model.material = new SkyBoxMaterial(imagePaths);
-            scene.addChild(skybox);
+            var skybox = new GameObject("skybox");
+            var model = skybox.addComponent(MeshRenderer);
+            skybox.addComponent(MeshFilter).mesh = new SkyBoxGeometry();
+            model.material = new SkyBoxMaterial([
+                'resources/skybox/px.jpg',
+                'resources/skybox/py.jpg',
+                'resources/skybox/pz.jpg',
+                'resources/skybox/nx.jpg',
+                'resources/skybox/ny.jpg',
+                'resources/skybox/nz.jpg'
+            ]);
+            scene.addChild(skybox.transform);
         }
     }
 }
-
-new feng3d.SkyBoxTest();

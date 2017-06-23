@@ -1,20 +1,17 @@
-module feng3d
+namespace feng3d
 {
-
     export class PrimitiveTest
     {
-
         view3D: View3D;
         controller: LookAtController;
-        cameraObj: Object3D;
+        cameraObj: GameObject;
 
         constructor()
         {
-
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.controller = new LookAtController(this.cameraObj.transform);
+            this.controller = new LookAtController(this.cameraObj);
             this.controller.lookAtPosition = new Vector3D();
             //
             this.process();
@@ -23,43 +20,39 @@ module feng3d
 
         process()
         {
-
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
-            angle = angle * MathConsts.DEGREES_TO_RADIANS;
-            this.cameraObj.transform.position = new Vector3D(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
+            angle = angle * Math.DEG2RAD;
+            this.cameraObj.transform.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
 
             this.controller.update();
         }
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+            
+            this.view3D = new View3D();
             var scene3D = this.view3D.scene;
 
-            var cube = new CubeObject3D();
-            cube.transform.position = new Vector3D(0, 0, 0);
-            scene3D.addChild(cube);
+            var cube = GameObjectFactory.createCube();
+            scene3D.addChild(cube.transform);
 
-            var plane = new PlaneObject3D();
-            plane.transform.position = new Vector3D(150, 0, 0);
-            plane.transform.rotation = new Vector3D(90, 0, 0);
-            scene3D.addChild(plane);
+            var plane = GameObjectFactory.createPlane();
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            scene3D.addChild(plane.transform);
 
-            var sphere = new SphereObject3D();
-            sphere.transform.position = new Vector3D(-150, 0, 0);
-            scene3D.addChild(sphere);
+            var sphere = GameObjectFactory.createSphere();
+            sphere.transform.setPosition(-150, 0, 0);
+            scene3D.addChild(sphere.transform);
 
-            var capsule = new CapsuleObject3D();
-            capsule.transform.position = new Vector3D(300, 0, 0);
-            scene3D.addChild(capsule);
+            var capsule = GameObjectFactory.createCapsule();
+            capsule.transform.setPosition(300, 0, 0);
+            scene3D.addChild(capsule.transform);
 
-            var cylinder = new CylinderObject3D();
-            cylinder.transform.position = new Vector3D(-300, 0, 0);
-            scene3D.addChild(cylinder);
+            var cylinder = GameObjectFactory.createCylinder();
+            cylinder.transform.setPosition(-300, 0, 0);
+            scene3D.addChild(cylinder.transform);
         }
     }
 }
-
-new feng3d.PrimitiveTest();

@@ -3761,9 +3761,9 @@ var feng3d;
          * 在指定的索引处放置项目。
          */
         ArrayList.prototype.setItemAt = function (item, index) {
-            var item = this.removeItemAt(index);
+            var deleteItem = this.removeItemAt(index);
             this.addItemAt(item, index);
-            return item;
+            return deleteItem;
         };
         /**
          * 返回与 IList 实现的填充顺序相同的 Array。
@@ -19905,6 +19905,7 @@ var feng3d;
 (function (feng3d) {
     var ArrayListTest = (function () {
         function ArrayListTest() {
+            console.log("\u6267\u884CArrayList\u5355\u5143\u6D4B\u8BD5");
             this.testLength();
             this.testAddItem();
             this.testAddItemAt();
@@ -19915,6 +19916,9 @@ var feng3d;
             this.testRemoveItemAt();
             this.testSetItemAt();
             this.testToArray();
+            this.testAddItemEventListener();
+            this.testRemoveItemEventListener();
+            console.log("\u901A\u8FC7ArrayList\u5355\u5143\u6D4B\u8BD5");
         }
         /**
          * 此集合中的项目数。
@@ -19988,7 +19992,7 @@ var feng3d;
          */
         ArrayListTest.prototype.testRemoveItem = function () {
             var arr = [1, 2, 1, 4];
-            var arrayList = new feng3d.ArrayList(arr);
+            var arrayList = new feng3d.ArrayList(arr.concat());
             for (var i = 0; i < arr.length; i++) {
                 var element = arr[i];
                 arrayList.removeItem(element);
@@ -20000,7 +20004,7 @@ var feng3d;
          */
         ArrayListTest.prototype.testRemoveItemAt = function () {
             var arr = [1, 2, 1, 4];
-            var arrayList = new feng3d.ArrayList(arr);
+            var arrayList = new feng3d.ArrayList(arr.concat());
             for (var i = arr.length - 1; i >= 0; i--) {
                 arrayList.removeItemAt(i);
             }
@@ -20011,7 +20015,7 @@ var feng3d;
          */
         ArrayListTest.prototype.testSetItemAt = function () {
             var arr = [1, 2, 1, 4];
-            var arrayList = new feng3d.ArrayList(arr);
+            var arrayList = new feng3d.ArrayList(arr.concat());
             for (var i = arr.length - 1; i >= 0; i--) {
                 arrayList.setItemAt(0, i);
             }
@@ -20024,7 +20028,7 @@ var feng3d;
          */
         ArrayListTest.prototype.testToArray = function () {
             var arr = [1, 2, 1, 4];
-            var arrayList = new feng3d.ArrayList(arr);
+            var arrayList = new feng3d.ArrayList(arr.concat());
             var arr1 = arrayList.toArray();
             for (var i = arr.length - 1; i >= 0; i--) {
                 feng3d.assert(arr1[i] == arr[i]);
@@ -20037,7 +20041,38 @@ var feng3d;
          * @param thisObject                listener函数作用域
          * @param priority					事件侦听器的优先级。数字越大，优先级越高。默认优先级为 0。
          */
-        ArrayListTest.prototype.addItemEventListener = function () {
+        ArrayListTest.prototype.testAddItemEventListener = function () {
+            var arrayList = new feng3d.ArrayList();
+            var changeItem;
+            arrayList.addItemEventListener("change", function (event) {
+                changeItem = event.target;
+            }, null);
+            var eventDispatcher = new feng3d.EventDispatcher();
+            arrayList.addItem(eventDispatcher);
+            eventDispatcher.dispatchEvent(new feng3d.Event("change"));
+            feng3d.assert(eventDispatcher == changeItem);
+        };
+        /**
+         * 移除项事件
+         * @param type						事件的类型。
+         * @param listener					要删除的侦听器对象。
+         * @param thisObject                listener函数作用域
+         */
+        ArrayListTest.prototype.testRemoveItemEventListener = function () {
+            var arrayList = new feng3d.ArrayList();
+            var changeItem;
+            var onChange = function (event) {
+                changeItem = event.target;
+            };
+            arrayList.addItemEventListener("change", onChange, null);
+            var eventDispatcher = new feng3d.EventDispatcher();
+            arrayList.addItem(eventDispatcher);
+            eventDispatcher.dispatchEvent(new feng3d.Event("change"));
+            feng3d.assert(eventDispatcher == changeItem);
+            changeItem = null;
+            arrayList.removeItemEventListener("change", onChange, null);
+            eventDispatcher.dispatchEvent(new feng3d.Event("change"));
+            feng3d.assert(null === changeItem);
         };
         return ArrayListTest;
     }());

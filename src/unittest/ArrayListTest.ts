@@ -4,6 +4,7 @@ namespace feng3d
     {
         constructor()
         {
+            console.log(`执行ArrayList单元测试`);
             this.testLength();
             this.testAddItem();
             this.testAddItemAt();
@@ -14,6 +15,9 @@ namespace feng3d
             this.testRemoveItemAt();
             this.testSetItemAt();
             this.testToArray();
+            this.testAddItemEventListener();
+            this.testRemoveItemEventListener();
+            console.log(`通过ArrayList单元测试`);
         }
 
         /**
@@ -107,7 +111,7 @@ namespace feng3d
         testRemoveItem(): void
         {
             var arr = [1, 2, 1, 4];
-            var arrayList = new ArrayList(arr);
+            var arrayList = new ArrayList(arr.concat());
             for (var i = 0; i < arr.length; i++)
             {
                 var element = arr[i];
@@ -122,7 +126,7 @@ namespace feng3d
         testRemoveItemAt()
         {
             var arr = [1, 2, 1, 4];
-            var arrayList = new ArrayList(arr);
+            var arrayList = new ArrayList(arr.concat());
             for (var i = arr.length - 1; i >= 0; i--)
             {
                 arrayList.removeItemAt(i);
@@ -136,7 +140,7 @@ namespace feng3d
         testSetItemAt()
         {
             var arr = [1, 2, 1, 4];
-            var arrayList = new ArrayList(arr);
+            var arrayList = new ArrayList(arr.concat());
             for (var i = arr.length - 1; i >= 0; i--)
             {
                 arrayList.setItemAt(0, i);
@@ -153,7 +157,7 @@ namespace feng3d
         testToArray()
         {
             var arr = [1, 2, 1, 4];
-            var arrayList = new ArrayList(arr);
+            var arrayList = new ArrayList(arr.concat());
             var arr1 = arrayList.toArray();
             for (var i = arr.length - 1; i >= 0; i--)
             {
@@ -168,28 +172,43 @@ namespace feng3d
          * @param thisObject                listener函数作用域
          * @param priority					事件侦听器的优先级。数字越大，优先级越高。默认优先级为 0。
          */
-        addItemEventListener()
+        testAddItemEventListener()
         {
-
+            var arrayList = new ArrayList();
+            var changeItem;
+            arrayList.addItemEventListener("change", event =>
+            {
+                changeItem = event.target;
+            }, null);
+            var eventDispatcher = new EventDispatcher();
+            arrayList.addItem(eventDispatcher);
+            eventDispatcher.dispatchEvent(new Event("change"));
+            assert(eventDispatcher == changeItem);
         }
 
-        // /**
-        //  * 移除项事件
-        //  * @param type						事件的类型。
-        //  * @param listener					要删除的侦听器对象。
-        //  * @param thisObject                listener函数作用域
-        //  */
-        // removeItemEventListener(type: string, listener: (event: Event) => void, thisObject: any): void
-        // {
-        //     this._eventDispatcher.removeEventListener(type, listener, thisObject);
-        //     for (var i = 0; i < this._source.length; i++)
-        //     {
-        //         var item: EventDispatcher = <any>this._source[i]
-        //         if (item instanceof EventDispatcher)
-        //         {
-        //             item.removeEventListener(type, listener, thisObject);
-        //         }
-        //     }
-        // }
+        /**
+         * 移除项事件
+         * @param type						事件的类型。
+         * @param listener					要删除的侦听器对象。
+         * @param thisObject                listener函数作用域
+         */
+        testRemoveItemEventListener()
+        {
+            var arrayList = new ArrayList();
+            var changeItem;
+            var onChange = event =>
+            {
+                changeItem = event.target;
+            }
+            arrayList.addItemEventListener("change", onChange, null);
+            var eventDispatcher = new EventDispatcher();
+            arrayList.addItem(eventDispatcher);
+            eventDispatcher.dispatchEvent(new Event("change"));
+            assert(eventDispatcher == changeItem);
+            changeItem = null;
+            arrayList.removeItemEventListener("change", onChange, null);
+            eventDispatcher.dispatchEvent(new Event("change"));
+            assert(null === changeItem);
+        }
     }
 }

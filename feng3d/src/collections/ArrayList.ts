@@ -131,9 +131,9 @@ namespace feng3d
          */
         setItemAt(item: T, index: number): T
         {
-            var item = this.removeItemAt(index);
+            var deleteItem = this.removeItemAt(index);
             this.addItemAt(item, index);
-            return item;
+            return deleteItem;
         }
 
         /**

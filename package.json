@@ -1,5 +1,5 @@
 {
-  "name": "feng3d-ts-test",
+  "name": "feng3d-test",
   "version": "1.0.0",
   "description": "",
   "main": "index.html",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/feng3dTS/feng3d-ts-examples.git"
+    "url": "git+https://github.com/feng3dTS/feng3d-examples.git"
   },
   "keywords": [
     "feng3d-examples"
@@ -19,9 +19,9 @@
   "author": "feng",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/feng3dTS/feng3d-ts-examples/issues"
+    "url": "https://github.com/feng3dTS/feng3d-examples/issues"
   },
-  "homepage": "https://github.com/feng3dTS/feng3d-ts-examples#readme",
+  "homepage": "https://github.com/feng3dTS/feng3d-examples#readme",
   "dependencies": {
     "monaco-editor": "^0.7.0"
   }

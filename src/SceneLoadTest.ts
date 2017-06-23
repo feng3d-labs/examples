@@ -1,54 +1,26 @@
-module feng3d
+namespace feng3d
 {
 
     export class SceneLoadTest
     {
-
         view3D: View3D;
         controller: FPSController;
-        cameraObj: Object3D;
+        cameraObj: GameObject;
 
         constructor()
         {
-
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
+            this.cameraObj.transform.z = -500;
             this.cameraObj.transform.lookAt(new Vector3D());
             //
-            this.controller = new FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-
-
-            input.addEventListener("mousedown", this.onMousedown, this);
-            input.addEventListener("mouseup", this.onMouseup, this);
-        }
-
-        private onMousedown()
-        {
-
-            this.controller.target = this.cameraObj.transform;
-        }
-
-        private onMouseup()
-        {
-
-            this.controller.target = null;
-        }
-
-        process()
-        {
-
-            this.controller.update();
+            this.controller = new FPSController(this.view3D.camera);
         }
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+            this.view3D = new View3D();
             var scene3D = this.view3D.scene;
 
             var loader = new Loader();
@@ -56,15 +28,12 @@ module feng3d
             {
                 var json = JSON.parse(loader.content);
                 var scene: Scene3D = serialization.readObject(json);
-                for (var i = 0; i < scene.numChildren; i++)
+                for (var i = 0; i < scene.childCount; i++)
                 {
                     scene3D.addChild(scene.getChildAt(i));
                 }
             }, this);
             loader.loadText("resources/scene/scene.json");
         }
-
     }
 }
-
-new feng3d.SceneLoadTest();

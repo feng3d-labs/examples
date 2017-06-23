@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     export class MD5LoaderTest
     {
@@ -6,21 +6,20 @@ module feng3d
 
         constructor()
         {
-
             this.init();
         }
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+
+            this.view3D = new View3D();
 
             // //变化旋转
             setInterval(function ()
             {
                 if (object)
                 {
-                    object.transform.rotation.y += 1;
+                    object.transform.rotationY += 1;
                 }
             }, 15);
 
@@ -31,18 +30,18 @@ module feng3d
             var useMatrial = this.useMatrial;
 
             var md5Loader = new MD5Loader();
-            md5Loader.load(md5meshUrl, function (object3D: Object3D, animator: SkeletonAnimator)
+            md5Loader.load(md5meshUrl, function (object3D: GameObject, animator: SkeletonAnimator)
             {
 
-                object3D.transform.position.y = -100;
-                object3D.transform.rotation.x = -90;
+                object3D.transform.y = -100;
+                object3D.transform.rotationX = -90;
 
                 object = object3D;
 
                 useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
 
-                object.transform.position.z = 300;
-                scene.addChild(object3D);
+                object.transform.z = 300;
+                scene.addChild(object3D.transform);
                 skeletonAnimator = animator;
                 //
                 md5Loader.loadAnim(md5animUrl, function (skeletonClipNode: SkeletonClipNode)
@@ -53,18 +52,23 @@ module feng3d
                     skeletonAnimator.play();
                 });
             });
+
+            //初始化光源
+            var light1 = new GameObject();
+            var pointLight1 = light1.addComponent(PointLight);
+            pointLight1.color = new Color(0, 1, 0, 1);
+            scene.addChild(light1.transform);
         }
 
-        private useMatrial(object3D: Object3D, imageUrl: string)
+        private useMatrial(object3D: GameObject, imageUrl: string)
         {
+            var material = new StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = imageUrl;
 
-            var material = new SkeletonAnimatorMaterial();
-            material.texture = new Texture2D(imageUrl);
-
-            for (var i = 0; i < object3D.numChildren; i++)
+            for (var i = 0; i < object3D.transform.childCount; i++)
             {
-                var child = object3D.getChildAt(i);
-                var model = child.getComponentByType(Model);
+                var child = object3D.transform.getChildAt(i);
+                var model = child.getComponent(MeshRenderer);
                 if (model)
                 {
                     model.material = material;
@@ -72,7 +76,5 @@ module feng3d
             }
         }
     }
-    var object: Object3D;
+    var object: GameObject;
 }
-
-new feng3d.MD5LoaderTest();

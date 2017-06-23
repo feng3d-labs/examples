@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     export class ColorMaterialTest
     {
@@ -11,20 +11,20 @@ module feng3d
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+            
+            this.view3D = new View3D();
 
-            var cube = new CubeObject3D();
-            cube.transform.position.z = 300;
-            this.view3D.scene.addChild(cube);
+            var cube = GameObjectFactory.createCube();
+            cube.transform.z = 300;
+            this.view3D.scene.addChild(cube.transform);
 
             //初始化颜色材质
-            var colorMaterial = cube.getOrCreateComponentByClass(Model).material = new ColorMaterial();
+            var colorMaterial = cube.getComponent(MeshRenderer).material = new ColorMaterial();
 
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.transform.rotation.y += 1;
+                cube.transform.rotationY += 1;
             }, 15);
             setInterval(function ()
             {
@@ -33,5 +33,3 @@ module feng3d
         }
     }
 }
-
-new feng3d.ColorMaterialTest();

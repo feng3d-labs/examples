@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     export class SegmentMaterialTest
     {
@@ -11,23 +11,22 @@ module feng3d
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+            
+            this.view3D = new View3D();
 
-            var segment = new Object3D("segment");
-            segment.transform.position.z = 300;
-            this.view3D.scene.addChild(segment);
+            var segment = new GameObject("segment");
+            segment.transform.z = 300;
+            this.view3D.scene.addChild(segment.transform);
 
             //初始化材质
-            segment.getOrCreateComponentByClass(Model).material = new SegmentMaterial();
-            var segmentGeometry = segment.getOrCreateComponentByClass(Model).geometry = new SegmentGeometry();
+            segment.addComponent(MeshRenderer).material = new SegmentMaterial();
+            var segmentGeometry = segment.addComponent(MeshFilter).mesh = new SegmentGeometry();
 
             var length = 200;
             var height = 200 / Math.PI;
             var preVec: Vector3D;
             for (var x = -length; x <= length; x++)
             {
-
                 var angle = x / length * Math.PI;
                 if (preVec == null)
                 {
@@ -43,10 +42,8 @@ module feng3d
             //变化旋转
             setInterval(function ()
             {
-                segment.transform.rotation.y += 1;
+                segment.transform.rotationY += 1;
             }, 15);
         }
     }
 }
-
-new feng3d.SegmentMaterialTest();

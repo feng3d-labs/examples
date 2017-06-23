@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
 
     /**
@@ -9,7 +9,7 @@ module feng3d
 
         view3D: View3D;
         controller: FPSController;
-        cameraObj: Object3D;
+        cameraObj: GameObject;
 
         constructor()
         {
@@ -17,75 +17,51 @@ module feng3d
             this.init();
 
             this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.position.z = -500;
+            this.cameraObj.transform.z = -500;
             this.cameraObj.transform.lookAt(new Vector3D());
             //
-            this.controller = new FPSController();
-            //
-            this.process();
-            setInterval(this.process.bind(this), 17);
-
-
-            input.addEventListener("mousedown", this.onMousedown, this);
-            input.addEventListener("mouseup", this.onMouseup, this);
-        }
-
-        private onMousedown()
-        {
-
-            this.controller.target = this.cameraObj.transform;
-        }
-
-        private onMouseup()
-        {
-
-            this.controller.target = null;
-        }
-
-        process()
-        {
-
-            this.controller.update();
+            this.controller = new FPSController(this.cameraObj);
         }
 
         init()
         {
-            var canvas = document.getElementById("glcanvas");
-            this.view3D = new View3D(canvas);
+
+            this.view3D = new View3D();
             var scene3D = this.view3D.scene;
 
-            var cube = new CubeObject3D();
-            cube.transform.position = new Vector3D(0, 0, 0);
-            scene3D.addChild(cube);
+            var cube = GameObjectFactory.createCube();
+            cube.transform.mouseEnabled = true;
+            scene3D.addChild(cube.transform);
 
-            var plane = new PlaneObject3D();
-            plane.transform.position = new Vector3D(150, 0, 0);
-            plane.transform.rotation = new Vector3D(90, 0, 0);
-            scene3D.addChild(plane);
+            var plane = GameObjectFactory.createPlane();
+            plane.transform.setPosition(150, 0, 0);
+            plane.transform.rotationX = 90;
+            plane.transform.mouseEnabled = true;
+            scene3D.addChild(plane.transform);
 
-            var sphere = new SphereObject3D();
-            sphere.transform.position = new Vector3D(-150, 0, 0);
-            scene3D.addChild(sphere);
+            var sphere = GameObjectFactory.createSphere();
+            sphere.transform.setPosition(-150, 0, 0);
+            sphere.transform.mouseEnabled = true;
+            scene3D.addChild(sphere.transform);
 
-            var capsule = new CapsuleObject3D();
-            capsule.transform.position = new Vector3D(300, 0, 0);
-            scene3D.addChild(capsule);
+            var capsule = GameObjectFactory.createCapsule();
+            capsule.transform.setPosition(300, 0, 0);
+            capsule.transform.mouseEnabled = true;
+            scene3D.addChild(capsule.transform);
 
-            var cylinder = new CylinderObject3D();
-            cylinder.transform.position = new Vector3D(-300, 0, 0);
-            scene3D.addChild(cylinder);
+            var cylinder = GameObjectFactory.createCylinder();
+            cylinder.transform.setPosition(-300, 0, 0);
+            cylinder.transform.mouseEnabled = true;
+            scene3D.addChild(cylinder.transform);
 
             scene3D.addEventListener(Mouse3DEvent.CLICK, this.onMouseClick, this);
         }
 
         onMouseClick(event: Event)
         {
-
             var object3D: Object3D = <Object3D>event.target;
-            var material = object3D.getComponentByType(Model).material = new ColorMaterial();
+            var material = object3D.getComponent(MeshRenderer).material = new ColorMaterial();
             material.color.fromUnit(Math.random() * (1 << 24));
         }
     }
 }
-
-new feng3d.MousePickTest();

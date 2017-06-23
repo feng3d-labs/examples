@@ -1,6 +1,6 @@
 namespace feng3d
 {
-    export class TextureMaterialTest
+    export class FogTest
     {
         view3D: View3D;
         constructor()
@@ -26,13 +26,12 @@ namespace feng3d
 
             var model = cube.addComponent(MeshRenderer);
             cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
-            // model.geometry = new PlaneGeometry();
             //材质
-            var textureMaterial = model.material = new TextureMaterial();
-            //
-            // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
-            var texture = textureMaterial.texture = new Texture2D('resources/m.png');
-            texture.flipY = false;
+            var material = model.material = new StandardMaterial();
+            material.diffuseMethod.difuseTexture.url = 'resources/m.png';
+
+            var fogMethod = new FogMethod(new Color(1, 1, 0), 200, 300);
+            material.addMethod(fogMethod);
         }
     }
 }

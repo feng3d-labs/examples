@@ -1,0 +1,3 @@
+[submodule "feng3d"]
+	path = feng3d
+	url = https://git.oschina.net/feng3d/feng3d.git

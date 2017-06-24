@@ -26,13 +26,31 @@ function mergeTsConfig(modulePath) {
     }
 
     var examplesTsConfig = readTsConfig("examples_tsconfig.json");
-    examplesTsConfig.files = files.concat(examplesTsConfig.files);
-    var index = examplesTsConfig.files.indexOf("typings/index.d.ts");
-    if (index != -1) { examplesTsConfig.files.splice(index, 1); }
+    var files = files.concat(examplesTsConfig.files);
+
+    if (modulePath instanceof Array) {
+        for (var i = 0; i < modulePath.length; i++) {
+            removeDTS(files, modulePath[i] + ".d.ts");
+        }
+    } else {
+        removeDTS(files, modulePath + ".d.ts");
+    }
+
+    examplesTsConfig.files = files;
     var examplesTsConfigStr = JSON.stringify(examplesTsConfig, null, '\t');
     examplesTsConfigStr = examplesTsConfigStr.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1');
     examplesTsConfigStr = "//由node mergeTSConfig.js合并examples_tsconfig.json与feng3d/tsconfig.json生成\n" + examplesTsConfigStr;
     writeFile("tsconfig.json", examplesTsConfigStr);
+}
+
+function removeDTS(files, dts) {
+
+    for (var i = files.length - 1; i > -1; i--) {
+        var element = files[i];
+        if (element.indexOf(dts) > -1) {
+            files.splice(i, 1);
+        }
+    }
 }
 
 function readTsConfig(path) {

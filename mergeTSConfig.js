@@ -2,21 +2,38 @@ var fs = require("fs");
 const util = require("util");
 const debuglog = util.debuglog('foo');
 
-var feng3dtsconfig = readTsConfig("feng3d/tsconfig.json");
-var feng3dFiles = feng3dtsconfig.files;
-for (var i = 0; i < feng3dFiles.length; i++) {
-    var element = feng3dFiles[i];
-    feng3dFiles[i] = "feng3d/" + feng3dFiles[i];
+mergeTsConfig(["event", "feng3d"]);
+
+function readModuleFiles(modulePath) {
+    var tsconfig = readTsConfig(modulePath + "/tsconfig.json");
+    var feng3dFiles = tsconfig.files;
+    for (var i = 0; i < feng3dFiles.length; i++) {
+        var element = feng3dFiles[i];
+        feng3dFiles[i] = modulePath + "/" + feng3dFiles[i];
+    }
+    return feng3dFiles;
 }
 
-var examplesTsConfig = readTsConfig("examples_tsconfig.json");
-examplesTsConfig.files = feng3dFiles.concat(examplesTsConfig.files);
-var index = examplesTsConfig.files.indexOf("typings/index.d.ts");
-if (index != -1) { examplesTsConfig.files.splice(index, 1); }
-var examplesTsConfigStr = JSON.stringify(examplesTsConfig, null, '\t');
-examplesTsConfigStr = examplesTsConfigStr.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1');
-examplesTsConfigStr = "//由node mergeTSConfig.js合并examples_tsconfig.json与feng3d/tsconfig.json生成\n" + examplesTsConfigStr;
-writeFile("tsconfig.json", examplesTsConfigStr);
+function mergeTsConfig(modulePath) {
+
+    var files = [];
+    if (modulePath instanceof Array) {
+        for (var i = 0; i < modulePath.length; i++) {
+            files = files.concat(readModuleFiles(modulePath[i]));
+        }
+    } else {
+        files = readModuleFiles(modulePath);
+    }
+
+    var examplesTsConfig = readTsConfig("examples_tsconfig.json");
+    examplesTsConfig.files = files.concat(examplesTsConfig.files);
+    var index = examplesTsConfig.files.indexOf("typings/index.d.ts");
+    if (index != -1) { examplesTsConfig.files.splice(index, 1); }
+    var examplesTsConfigStr = JSON.stringify(examplesTsConfig, null, '\t');
+    examplesTsConfigStr = examplesTsConfigStr.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1');
+    examplesTsConfigStr = "//由node mergeTSConfig.js合并examples_tsconfig.json与feng3d/tsconfig.json生成\n" + examplesTsConfigStr;
+    writeFile("tsconfig.json", examplesTsConfigStr);
+}
 
 function readTsConfig(path) {
     var tsconfigStr = readFile(path);

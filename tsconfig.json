@@ -7,6 +7,9 @@
 		"outFile": "out/examples.js"
 	},
 	"files": [
+		"event/src/Event.ts",
+		"event/src/IEventDispatcher.ts",
+		"event/src/EventDispatcher.ts",
 		"feng3d/src/debug/assert.ts",
 		"feng3d/src/utils/ClassUtils.ts",
 		"feng3d/src/utils/ObjectUtils.ts",
@@ -29,9 +32,6 @@
 		"feng3d/src/mathlib/PlaneClassification.ts",
 		"feng3d/src/mathlib/Color.ts",
 		"feng3d/src/serialization/Serialization.ts",
-		"feng3d/src/events/Event.ts",
-		"feng3d/src/events/IEventDispatcher.ts",
-		"feng3d/src/events/EventDispatcher.ts",
 		"feng3d/src/collections/IList.ts",
 		"feng3d/src/collections/ArrayList.ts",
 		"feng3d/src/sys/SystemTicker.ts",
@@ -190,7 +190,6 @@
 		"feng3d/src/core/Mouse3DManager.ts",
 		"feng3d/src/autofiles/shaders.ts",
 		"feng3d/src/Feng3d.ts",
-		"libs/feng3d.d.ts",
 		"src/BillboardTest.ts",
 		"src/ColorMaterialTest.ts",
 		"src/Container3DTest.ts",

@@ -1,28 +1,21 @@
 {
-  "name": "feng3d-ts-test",
+  "name": "feng3d-examples",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.html",
-  "bin": {
-    "feng3d-examples": "examples.js"
-  },
+  "description": "feng3d引擎示例",
+  "main": "out/examples.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/feng3dTS/feng3d-ts-examples.git"
+    "url": "https://git.oschina.net/feng3d/feng3d-examples.git"
   },
   "keywords": [
-    "feng3d-examples"
+    "feng3d",
+    "examples",
+    "webgl",
+    "3dEngine"
   ],
   "author": "feng",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/feng3dTS/feng3d-ts-examples/issues"
-  },
-  "homepage": "https://github.com/feng3dTS/feng3d-ts-examples#readme",
-  "dependencies": {
-    "monaco-editor": "^0.7.0"
-  }
+  "license": "ISC"
 }

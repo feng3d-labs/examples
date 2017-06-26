@@ -11,7 +11,7 @@
 		//
 		"libs/event.d.ts",
 		"libs/common.d.ts",
-		"libs/feng3d-shader.d.ts",
+		"libs/render.d.ts",
 		"libs/feng3d.d.ts",
 		//
 		"src/BillboardTest.ts",

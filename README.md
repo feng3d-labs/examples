@@ -1,4 +1,4 @@
-# feng3d-examples
+# examples
 
 feng3d引擎示例
 

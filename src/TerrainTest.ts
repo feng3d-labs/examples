@@ -42,7 +42,7 @@ namespace feng3d
             material.addMethod(terrainMethod);
 
             terrain.addComponent(MeshRenderer).material = material;
-            scene.addChild(terrain.transform);
+            scene.transform.addChild(terrain.transform);
 
             //初始化光源
             var light1 = this.light1 = new GameObject();
@@ -50,7 +50,7 @@ namespace feng3d
             // pointLight1.range = 1000;
             pointLight1.color = new Color(1, 1, 0, 1);
             light1.transform.y = 300;
-            // scene.addChild(light1);
+            // scene.transform.addChild(light1);
         }
 
         private light1: GameObject;

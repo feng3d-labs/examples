@@ -41,14 +41,14 @@ namespace feng3d
                 object.transform.scaleY = 20;
                 object.transform.scaleZ = 20;
                 object.transform.z = 300;
-                scene.addChild(object3D.transform);
+                scene.transform.addChild(object3D.transform);
             });
 
             //初始化光源
             var light1 = new GameObject();
             var pointLight1 = light1.addComponent(PointLight);
             pointLight1.color = new Color(0, 1, 0, 1);
-            scene.addChild(light1.transform);
+            scene.transform.addChild(light1.transform);
         }
     }
     var object: GameObject;

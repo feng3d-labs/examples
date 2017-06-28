@@ -35,7 +35,7 @@ namespace feng3d
                 'resources/skybox/ny.jpg',
                 'resources/skybox/nz.jpg'
             ]);
-            scene.addChild(skybox.transform);
+            scene.transform.addChild(skybox.transform);
         }
     }
 }

@@ -34,8 +34,8 @@ namespace feng3d
                     break;
                 case "b":
                     this.initObjects();
-                    this.scene.addChild(this.light0.transform);
-                    this.scene.addChild(this.light1.transform);
+                    this.scene.transform.addChild(this.light0.transform);
+                    this.scene.transform.addChild(this.light1.transform);
                     break;
             }
         }
@@ -73,21 +73,21 @@ namespace feng3d
             var geometry = plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             geometry.scaleUV(2, 2);
             model.material = material;
-            this.scene.addChild(plane.transform);
+            this.scene.transform.addChild(plane.transform);
 
             var cube = new GameObject();
             var model = cube.addComponent(MeshRenderer);
             model.material = material;
             cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
             cube.getComponent(MeshFilter).mesh.scaleUV(2, 2);
-            this.scene.addChild(cube.transform);
+            this.scene.transform.addChild(cube.transform);
         }
 
         private clearObjects()
         {
-            for (var i = this.scene.childCount - 1; i >= 0; i--)
+            for (var i = this.scene.transform.childCount - 1; i >= 0; i--)
             {
-                this.scene.removeChildAt(i);
+                this.scene.transform.removeChildAt(i);
             }
         }
 
@@ -100,7 +100,7 @@ namespace feng3d
             var pointLight0 = this.light0.addComponent(PointLight);
             pointLight0.color = lightColor0;
             this.light0.addComponent(MeshRenderer).material = new ColorMaterial(lightColor0);
-            this.scene.addChild(this.light0.transform);
+            this.scene.transform.addChild(this.light0.transform);
 
             //
             var lightColor1 = new Color(0, 1, 0, 1);
@@ -109,7 +109,7 @@ namespace feng3d
             var pointLight1 = this.light1.addComponent(DirectionalLight);
             pointLight1.color = lightColor1;
             this.light1.addComponent(MeshRenderer).material = new ColorMaterial(lightColor1);
-            this.scene.addChild(this.light1.transform);
+            this.scene.transform.addChild(this.light1.transform);
         }
         
         setPointLightPosition()

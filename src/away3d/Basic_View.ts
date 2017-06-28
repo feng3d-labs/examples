@@ -19,7 +19,7 @@ namespace feng3d
             this._plane.addComponent(MeshFilter).mesh = new PlaneGeometry(700, 700);
             var model = this._plane.addComponent(MeshRenderer);
             var material = model.material = new StandardMaterial("resources/floor_diffuse.jpg");
-            scene.addChild(this._plane.transform);
+            scene.transform.addChild(this._plane.transform);
 
             ticker.addEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);
         }

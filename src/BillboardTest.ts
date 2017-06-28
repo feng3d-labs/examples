@@ -19,7 +19,7 @@ namespace feng3d
 
             var cube = GameObjectFactory.createCube();
             cube.transform.z = 300;
-            scene.addChild(cube.transform);
+            scene.transform.addChild(cube.transform);
 
             var gameObject = GameObjectFactory.createPlane();
             gameObject.transform.y = 150;

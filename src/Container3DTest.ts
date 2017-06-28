@@ -21,7 +21,7 @@ namespace feng3d
             //初始化颜色材质
             var cube = GameObjectFactory.createCube();
             cube.transform.z = 500;
-            this.view3D.scene.addChild(cube.transform);
+            this.view3D.scene.transform.addChild(cube.transform);
 
             var colorMaterial = cube.getComponent(MeshRenderer).material = new ColorMaterial();
 

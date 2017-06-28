@@ -33,7 +33,7 @@ namespace feng3d
             skybox.addComponent(MeshFilter).mesh = new SkyBoxGeometry();
             var material = model.material = new SkyBoxMaterial();
             material.texture = cubeTexture;
-            scene.addChild(skybox.transform);
+            scene.transform.addChild(skybox.transform);
 
             var camera = this.camera = view3D.camera;
             camera.transform.z = -600;
@@ -50,7 +50,7 @@ namespace feng3d
             var model = torus.addComponent(MeshRenderer);
             torus.addComponent(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;
-            scene.addChild(torus.transform);
+            scene.transform.addChild(torus.transform);
 
             ticker.addEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);
         }

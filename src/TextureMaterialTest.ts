@@ -16,7 +16,7 @@ namespace feng3d
             var cube = new GameObject();
             cube.transform.z = 300;
             cube.transform.y = -100;
-            this.view3D.scene.addChild(cube.transform);
+            this.view3D.scene.transform.addChild(cube.transform);
 
             //变化旋转与颜色
             setInterval(function ()

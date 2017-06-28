@@ -19,7 +19,7 @@ namespace feng3d
             object3D.addComponent(MeshFilter).mesh = pointGeometry;
             object3D.addComponent(MeshRenderer).material = pointMaterial;
             object3D.transform.z = 300;
-            this.view3D.scene.addChild(object3D.transform);
+            this.view3D.scene.transform.addChild(object3D.transform);
 
             var length = 200;
             var height = 200 / Math.PI;

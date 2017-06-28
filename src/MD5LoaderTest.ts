@@ -41,7 +41,7 @@ namespace feng3d
                 useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
 
                 object.transform.z = 300;
-                scene.addChild(object3D.transform);
+                scene.transform.addChild(object3D.transform);
                 skeletonAnimator = animator;
                 //
                 md5Loader.loadAnim(md5animUrl, function (skeletonClipNode: SkeletonClipNode)
@@ -57,7 +57,7 @@ namespace feng3d
             var light1 = new GameObject();
             var pointLight1 = light1.addComponent(PointLight);
             pointLight1.color = new Color(0, 1, 0, 1);
-            scene.addChild(light1.transform);
+            scene.transform.addChild(light1.transform);
         }
 
         private useMatrial(object3D: GameObject, imageUrl: string)

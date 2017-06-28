@@ -38,24 +38,24 @@ namespace feng3d
             var scene3D = this.view3D.scene;
 
             var cube = GameObjectFactory.createCube();
-            scene3D.addChild(cube.transform);
+            scene3D.transform.addChild(cube.transform);
 
             var plane = GameObjectFactory.createPlane();
             plane.transform.setPosition(150, 0, 0);
             plane.transform.rotationX = 90;
-            scene3D.addChild(plane.transform);
+            scene3D.transform.addChild(plane.transform);
 
             sphere = GameObjectFactory.createSphere();
             sphere.transform.setPosition(-150, 0, 0);
-            scene3D.addChild(sphere.transform);
+            scene3D.transform.addChild(sphere.transform);
 
             var capsule = GameObjectFactory.createCapsule();
             capsule.transform.setPosition(300, 0, 0);
-            scene3D.addChild(capsule.transform);
+            scene3D.transform.addChild(capsule.transform);
 
             var cylinder = GameObjectFactory.createCylinder();
             cylinder.transform.setPosition(-300, 0, 0);
-            scene3D.addChild(cylinder.transform);
+            scene3D.transform.addChild(cylinder.transform);
         }
     }
     var sphere: GameObject;

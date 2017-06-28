@@ -14,7 +14,7 @@ namespace feng3d
             
             this.view3D = new View3D();
 
-            var object3d = new GameObject();
+            var object3d = GameObject.create();
             var model = object3d.addComponent(MeshRenderer);
 
 

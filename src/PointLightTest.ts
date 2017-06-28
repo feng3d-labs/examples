@@ -5,21 +5,21 @@ namespace feng3d
         view3D: View3D;
         scene: Scene3D;
         controller: FPSController;
-        cameraObj: GameObject;
+        camera: Camera;
 
-        light0 = new feng3d.GameObject("pointLight");
-        light1 = new feng3d.GameObject("pointLight");
+        light0 = GameObject.create("pointLight");
+        light1 = GameObject.create("pointLight");
 
         constructor()
         {
             this.init();
 
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.z = -500;
-            this.cameraObj.transform.y = 200;
-            this.cameraObj.transform.lookAt(new Vector3D());
+            this.camera = this.view3D.camera;
+            this.camera.transform.z = -500;
+            this.camera.transform.y = 200;
+            this.camera.transform.lookAt(new Vector3D());
             //
-            this.controller = new FPSController(this.view3D.camera);
+            this.controller = new FPSController(this.view3D.camera.gameObject);
 
             input.addEventListener(inputType.KEY_UP, this.onKeyUp, this);
         }
@@ -42,7 +42,7 @@ namespace feng3d
 
         init()
         {
-            
+
             this.view3D = new View3D();
 
             this.scene = this.view3D.scene;
@@ -67,7 +67,7 @@ namespace feng3d
             material.specularMethod.specularTexture.wrapT = GL.MIRRORED_REPEAT;
 
             //初始化立方体
-            var plane = new GameObject();
+            var plane = GameObject.create();
             plane.transform.y = -100;
             var model = plane.addComponent(MeshRenderer);
             var geometry = plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
@@ -75,7 +75,7 @@ namespace feng3d
             model.material = material;
             this.scene.transform.addChild(plane.transform);
 
-            var cube = new GameObject();
+            var cube = GameObject.create();
             var model = cube.addComponent(MeshRenderer);
             model.material = material;
             cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
@@ -111,7 +111,7 @@ namespace feng3d
             this.light1.addComponent(MeshRenderer).material = new ColorMaterial(lightColor1);
             this.scene.transform.addChild(this.light1.transform);
         }
-        
+
         setPointLightPosition()
         {
             var time = new Date().getTime();

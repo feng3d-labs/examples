@@ -14,7 +14,7 @@ namespace feng3d
             
             this.view3D = new View3D();
 
-            var segment = new GameObject("segment");
+            var segment = GameObject.create("segment");
             segment.transform.z = 300;
             this.view3D.scene.transform.addChild(segment.transform);
 

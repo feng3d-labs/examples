@@ -13,7 +13,7 @@ namespace feng3d
             
             this.view3D = new View3D();
 
-            var cube = new GameObject();
+            var cube = GameObject.create();
             cube.transform.z = 300;
             cube.transform.y = -100;
             this.view3D.scene.transform.addChild(cube.transform);

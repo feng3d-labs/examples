@@ -8,7 +8,7 @@ namespace feng3d
         {
             this.init();
             //
-            this.controller = new FPSController(this.view3D.camera);
+            this.controller = new FPSController(this.view3D.camera.gameObject);
         }
 
         init()

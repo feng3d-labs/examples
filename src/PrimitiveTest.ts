@@ -4,14 +4,14 @@ namespace feng3d
     {
         view3D: View3D;
         controller: LookAtController;
-        cameraObj: GameObject;
+        camera: Camera;
 
         constructor()
         {
             this.init();
 
-            this.cameraObj = this.view3D.camera;
-            this.controller = new LookAtController(this.cameraObj);
+            this.camera = this.view3D.camera;
+            this.controller = new LookAtController(this.camera.gameObject);
             this.controller.lookAtPosition = new Vector3D();
             //
             this.process();
@@ -23,7 +23,7 @@ namespace feng3d
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
             angle = angle * Math.DEG2RAD;
-            this.cameraObj.transform.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
+            this.camera.transform.setPosition(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
 
             this.controller.update();
         }

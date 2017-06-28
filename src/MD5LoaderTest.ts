@@ -54,7 +54,7 @@ namespace feng3d
             });
 
             //初始化光源
-            var light1 = new GameObject();
+            var light1 = GameObject.create();
             var pointLight1 = light1.addComponent(PointLight);
             pointLight1.color = new Color(0, 1, 0, 1);
             scene.transform.addChild(light1.transform);

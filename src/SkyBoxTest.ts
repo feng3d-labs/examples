@@ -4,17 +4,17 @@ namespace feng3d
     {
         view3D: View3D;
         controller: FPSController;
-        cameraObj: GameObject;
+        camera: Camera;
 
         constructor()
         {
             this.init();
 
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.z = -500;
-            this.cameraObj.transform.lookAt(new Vector3D());
+            this.camera = this.view3D.camera;
+            this.camera.transform.z = -500;
+            this.camera.transform.lookAt(new Vector3D());
             //
-            this.controller = new FPSController(this.view3D.camera);
+            this.controller = new FPSController(this.view3D.camera.gameObject);
         }
 
         init()
@@ -24,7 +24,7 @@ namespace feng3d
 
             var scene = this.view3D.scene;
 
-            var skybox = new GameObject("skybox");
+            var skybox = GameObject.create("skybox");
             var model = skybox.addComponent(MeshRenderer);
             skybox.addComponent(MeshFilter).mesh = new SkyBoxGeometry();
             model.material = new SkyBoxMaterial([

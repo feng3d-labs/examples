@@ -9,17 +9,17 @@ namespace feng3d
 
         view3D: View3D;
         controller: FPSController;
-        cameraObj: GameObject;
+        camera: Camera;
 
         constructor()
         {
             this.init();
 
-            this.cameraObj = this.view3D.camera;
-            this.cameraObj.transform.z = -500;
-            this.cameraObj.transform.lookAt(new Vector3D());
+            this.camera = this.view3D.camera;
+            this.camera.transform.z = -500;
+            this.camera.transform.lookAt(new Vector3D());
             //
-            this.controller = new FPSController(this.cameraObj);
+            this.controller = new FPSController(this.camera.gameObject);
             //
             this.process();
             setInterval(this.process.bind(this), 17);

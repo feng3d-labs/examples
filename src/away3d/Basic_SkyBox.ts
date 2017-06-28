@@ -4,7 +4,7 @@ namespace feng3d
     {
         private _view: View3D;
         private _torus: GameObject;
-        private camera: GameObject;
+        private camera: Camera;
 
         public constructor()
         {
@@ -28,7 +28,7 @@ namespace feng3d
                 'resources/skybox/snow_negative_z.jpg',
             ]);
 
-            var skybox = new GameObject("skybox");
+            var skybox = GameObject.create("skybox");
             var model = skybox.addComponent(MeshRenderer);
             skybox.addComponent(MeshFilter).mesh = new SkyBoxGeometry();
             var material = model.material = new SkyBoxMaterial();
@@ -38,7 +38,7 @@ namespace feng3d
             var camera = this.camera = view3D.camera;
             camera.transform.z = -600;
             camera.transform.lookAt(new Vector3D());
-            camera.camera.lens = new PerspectiveLens(90);
+            camera.lens = new PerspectiveLens(90);
 
             var torusMaterial = new StandardMaterial();
             torusMaterial.specularMethod.specular = 0.5;
@@ -46,7 +46,7 @@ namespace feng3d
             torusMaterial.ambientMethod.color.a = 0.25;
             torusMaterial.addMethod(new EnvMapMethod(cubeTexture, 1));
 
-            var torus = this._torus = new GameObject("torus");
+            var torus = this._torus = GameObject.create("torus");
             var model = torus.addComponent(MeshRenderer);
             torus.addComponent(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;

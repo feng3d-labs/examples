@@ -16,14 +16,14 @@ namespace feng3d
 
             var view3D = this._view = new View3D();
 
-            this._cameraController = new HoverController(this._view.camera, null, 45, 20, 1000);
+            this._cameraController = new HoverController(this._view.camera.gameObject, null, 45, 20, 1000);
 
             // this._particleAnimationSet = new ParticleAnimationSet(true, true);
             // this._particleAnimationSet["addAnimation"](new ParticleBillboardNode());
             // this._particleAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
             // this._particleAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
 
-            this._particleMesh = new GameObject("particle");
+            this._particleMesh = GameObject.create("particle");
             // this._particleMesh.geometry = new PointGeometry();
             this._particleMesh.addComponent(MeshFilter).mesh = new PlaneGeometry(10, 10, 1, 1, false);
             var material = this._particleMesh.addComponent(MeshRenderer).material = new StandardMaterial("resources/blue.png");

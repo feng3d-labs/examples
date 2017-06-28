@@ -15,7 +15,7 @@ namespace feng3d
 
             var pointGeometry = new PointGeometry();
             var pointMaterial = new PointMaterial();
-            var object3D = new GameObject("plane");
+            var object3D = GameObject.create("plane");
             object3D.addComponent(MeshFilter).mesh = pointGeometry;
             object3D.addComponent(MeshRenderer).material = pointMaterial;
             object3D.transform.z = 300;

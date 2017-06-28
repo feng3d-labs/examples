@@ -4,7 +4,7 @@ namespace feng3d
     {
         public static NUM_FIRES: number = 10;
         private scene: Scene3D;
-        private camera: GameObject;
+        private camera: Camera;
         private view: View3D;
         private cameraController: HoverController;
         private planeMaterial: StandardMaterial;
@@ -38,12 +38,11 @@ namespace feng3d
 
         private initEngine()
         {
-
             var view3D = this.view = new View3D();
 
             this.camera = view3D.camera;
             this.scene = view3D.scene;
-            this.cameraController = new HoverController(this.camera);
+            this.cameraController = new HoverController(this.camera.gameObject);
             this.cameraController.distance = 1000;
             this.cameraController.minTiltAngle = 0;
             this.cameraController.maxTiltAngle = 90;
@@ -53,7 +52,7 @@ namespace feng3d
 
         private initLights()
         {
-            var gameObject = new GameObject();
+            var gameObject = GameObject.create();
             this.directionalLight = gameObject.addComponent(DirectionalLight);
             this.directionalLight.direction = new Vector3D(0, -1, 0);
             this.directionalLight.castsShadows = false;
@@ -99,7 +98,7 @@ namespace feng3d
 
         private initObjects()
         {
-            this.plane = new GameObject();
+            this.plane = GameObject.create();
             var model = this.plane.addComponent(MeshRenderer);
             this.plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             this.plane.getComponent(MeshFilter).mesh.scaleUV(2, 2);
@@ -108,7 +107,7 @@ namespace feng3d
             this.scene.transform.addChild(this.plane.transform);
             for (var i: number = 0; i < Basic_Fire.NUM_FIRES; i++)
             {
-                var particleMesh = new GameObject();
+                var particleMesh = GameObject.create();
                 var model = particleMesh.addComponent(MeshRenderer);
                 particleMesh.addComponent(MeshFilter).mesh = this.particleGeometry;
                 model.material = this.particleMaterial;
@@ -150,7 +149,7 @@ namespace feng3d
         {
             var fireObject: FireVO = this.fireObjects[this.timer.currentCount - 1];
             fireObject.animator.play();
-            var lightObject = new GameObject();
+            var lightObject = GameObject.create();
             var light: PointLight = lightObject.addComponent(PointLight);
             light.color.fromUnit(0xFF3301);
             light.intensity = 0;

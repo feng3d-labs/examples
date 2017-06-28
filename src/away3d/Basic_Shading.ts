@@ -4,7 +4,7 @@ namespace feng3d
     export class Basic_Shading
     {
         private scene: Scene3D;
-        private camera: CameraObject3D;
+        private camera: Camera;
         private view: View3D;
         private cameraController: HoverController;
         private planeMaterial: StandardMaterial;
@@ -45,7 +45,7 @@ namespace feng3d
             this.scene = view3D.scene;
             this.camera = view3D.camera;
 
-            this.cameraController = new HoverController(this.camera);
+            this.cameraController = new HoverController(this.camera.gameObject);
             this.cameraController.distance = 1000;
             this.cameraController.minTiltAngle = 0;
             this.cameraController.maxTiltAngle = 90;
@@ -65,13 +65,13 @@ namespace feng3d
         {
             this.scene.ambientColor.a = 0.2;
 
-            this.light1 = new GameObject();
+            this.light1 = GameObject.create();
             var directionalLight = this.light1.addComponent(DirectionalLight);
             directionalLight.intensity = 0.7;
             this.light1.transform.rotationX = 90;
             this.scene.transform.addChild(this.light1.transform);
 
-            this.light2 = new GameObject();
+            this.light2 = GameObject.create();
             var directionalLight = this.light2.addComponent(DirectionalLight);
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
@@ -81,14 +81,14 @@ namespace feng3d
 
         private initObjects()
         {
-            this.plane = new GameObject();
+            this.plane = GameObject.create();
             var model = this.plane.addComponent(MeshRenderer);
             var geometry: Geometry = this.plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
             model.material = this.planeMaterial;
             geometry.scaleUV(2, 2);
             this.plane.transform.y = -20;
             this.scene.transform.addChild(this.plane.transform);
-            this.sphere = new GameObject();
+            this.sphere = GameObject.create();
             var model = this.sphere.addComponent(MeshRenderer);
             this.sphere.addComponent(MeshFilter).mesh = new SphereGeometry(150, 40, 20)
             model.material = this.sphereMaterial;
@@ -96,7 +96,7 @@ namespace feng3d
             this.sphere.transform.y = 160;
             this.sphere.transform.z = 300;
             this.scene.transform.addChild(this.sphere.transform);
-            this.cube = new GameObject();
+            this.cube = GameObject.create();
             var model = this.cube.addComponent(MeshRenderer);
             this.cube.addComponent(MeshFilter).mesh = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
             model.material = this.cubeMaterial;
@@ -104,7 +104,7 @@ namespace feng3d
             this.cube.transform.y = 160;
             this.cube.transform.z = -250;
             this.scene.transform.addChild(this.cube.transform);
-            this.torus = new GameObject();
+            this.torus = GameObject.create();
             var model = this.torus.addComponent(MeshRenderer);
             geometry = this.torus.addComponent(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
             model.material = this.torusMaterial;

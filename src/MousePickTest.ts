@@ -52,10 +52,10 @@ namespace feng3d
             cylinder.transform.mouseEnabled = true;
             scene3D.transform.addChild(cylinder.transform);
 
-            scene3D.transform.addEventListener(Mouse3DEvent.CLICK, this.onMouseClick, this);
+            Event.on(scene3D.transform, <any>Mouse3DEvent.CLICK, this.onMouseClick, this);
         }
 
-        onMouseClick(event: Event)
+        onMouseClick(event: EventVO<any>)
         {
             var object3D = <Transform>event.target;
             var material = object3D.getComponent(MeshRenderer).material = new ColorMaterial();

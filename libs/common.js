@@ -11,56 +11,12 @@ var __extends = (this && this.__extends) || (function () {
 var feng3d;
 (function (feng3d) {
     /**
-     * 断言
-     * @b			判定为真的表达式
-     * @msg			在表达式为假时将输出的错误信息
-     * @author feng 2014-10-29
-     */
-    function assert(b, msg) {
-        if (msg === void 0) { msg = "assert"; }
-        if (!b)
-            throw msg;
-    }
-    feng3d.assert = assert;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 类工具
      * @author feng 2017-02-15
      */
     var ClassUtils = (function () {
         function ClassUtils() {
         }
-        /**
-         * 判断a对象是否为b类型
-         */
-        ClassUtils.is = function (a, b) {
-            var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
-            while (prototype != null) {
-                //类型==自身原型的构造函数
-                if (prototype.constructor == b)
-                    return true;
-                //父类就是原型的原型构造函数
-                prototype = Object.getPrototypeOf(prototype);
-            }
-            return false;
-        };
-        /**
-         * 如果a为b类型则返回，否则返回null
-         */
-        ClassUtils.as = function (a, b) {
-            if (!ClassUtils.is(a, b))
-                return null;
-            return a;
-        };
-        /**
-         * 是否为基础类型
-         * @param object    对象
-         */
-        ClassUtils.isBaseType = function (object) {
-            return object == null || typeof object == "number" || typeof object == "boolean" || typeof object == "string";
-        };
         /**
          * 返回对象的完全限定类名。
          * @param value 需要完全限定类名称的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型
@@ -93,7 +49,7 @@ var feng3d;
                     }
                 }
             }
-            feng3d.debuger && feng3d.assert(ClassUtils.getDefinitionByName(className) == prototype.constructor);
+            feng3d.debuger && console.assert(ClassUtils.getDefinitionByName(className) == prototype.constructor);
             return className;
         };
         /**
@@ -190,7 +146,7 @@ var feng3d;
          * @returns             克隆数据
          */
         ObjectUtils.deepClone = function (source) {
-            if (feng3d.ClassUtils.isBaseType(source))
+            if (!(source instanceof Object))
                 return source;
             var target = ObjectUtils.getInstance(source);
             for (var attribute in source) {
@@ -223,7 +179,7 @@ var feng3d;
          * @returns             克隆数据
          */
         ObjectUtils.clone = function (source) {
-            if (feng3d.ClassUtils.isBaseType(source))
+            if (!(source instanceof Object))
                 return source;
             var prototype = source["prototype"] ? source["prototype"] : Object.getPrototypeOf(source);
             var target = new prototype.constructor();
@@ -247,7 +203,7 @@ var feng3d;
         ObjectUtils.deepCopy = function (target, source) {
             var keys = Object.keys(source);
             keys.forEach(function (element) {
-                if (!source[element] || feng3d.ClassUtils.isBaseType(source[element])) {
+                if (!source[element] || !(source[element] instanceof Object)) {
                     target[element] = source[element];
                 }
                 else if (!target[element]) {
@@ -267,7 +223,7 @@ var feng3d;
          */
         ObjectUtils.merge = function (source, mergeData, createNew) {
             if (createNew === void 0) { createNew = false; }
-            if (feng3d.ClassUtils.isBaseType(mergeData))
+            if (!(mergeData instanceof Object))
                 return mergeData;
             var target = createNew ? ObjectUtils.clone(source) : source;
             for (var mergeAttribute in mergeData) {
@@ -278,509 +234,6 @@ var feng3d;
         return ObjectUtils;
     }());
     feng3d.ObjectUtils = ObjectUtils;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var VersionUtils = (function () {
-        function VersionUtils() {
-        }
-        /**
-         * 获取对象版本
-         * @param object 对象
-         */
-        VersionUtils.getVersion = function (object) {
-            this.assertObject(object);
-            if (!object.hasOwnProperty(_versionKey)) {
-                return -1;
-            }
-            return ~~object[_versionKey];
-        };
-        /**
-         * 升级对象版本（版本号+1）
-         * @param object 对象
-         */
-        VersionUtils.upgradeVersion = function (object) {
-            this.assertObject(object);
-            if (!object.hasOwnProperty(_versionKey)) {
-                Object.defineProperty(object, _versionKey, {
-                    value: 0,
-                    enumerable: false,
-                    writable: true
-                });
-            }
-            object[_versionKey] = ~~object[_versionKey] + 1;
-        };
-        /**
-         * 设置版本号
-         * @param object 对象
-         * @param version 版本号
-         */
-        VersionUtils.setVersion = function (object, version) {
-            this.assertObject(object);
-            object[_versionKey] = ~~version;
-        };
-        /**
-         * 判断两个对象的版本号是否相等
-         */
-        VersionUtils.equal = function (a, b) {
-            var va = this.getVersion(a);
-            var vb = this.getVersion(b);
-            if (va == -1 && vb == -1)
-                return false;
-            return va == vb;
-        };
-        /**
-         * 断言object为对象类型
-         */
-        VersionUtils.assertObject = function (object) {
-            if (typeof object != "object") {
-                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684UID";
-            }
-        };
-        return VersionUtils;
-    }());
-    feng3d.VersionUtils = VersionUtils;
-    /**
-     * 版本号键名称
-     */
-    var _versionKey = "__version__";
-})(feng3d || (feng3d = {}));
-//参考 egret https://github.com/egret-labs/egret-core/blob/master/src/extension/eui/binding/Watcher.ts
-var feng3d;
-(function (feng3d) {
-    /**
-     * @private
-     */
-    var listeners = "__listeners__";
-    /**
-     * @private
-     */
-    var bindables = "__bindables__";
-    /**
-     * @private
-     */
-    var bindableCount = 0;
-    /**
-     * Register a property of an instance is can be bound.
-     * This method is ususally invoked by Watcher class.
-     *
-     * @param instance the instance to be registered.
-     * @param property the property of specified instance to be registered.
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * 标记实例的一个属性是可绑定的,此方法通常由 Watcher 类调用。
-     *
-     * @param instance 要标记的实例
-     * @param property 可绑定的属性。
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @language zh_CN
-     */
-    function registerBindable(instance, property) {
-        if (instance.hasOwnProperty(bindables)) {
-            instance[bindables].push(property);
-        }
-        else {
-            var list = [property];
-            if (instance[bindables]) {
-                list = instance[bindables].concat(list);
-            }
-            instance[bindables] = list;
-        }
-    }
-    feng3d.registerBindable = registerBindable;
-    /**
-     * @private
-     *
-     * @param host
-     * @param property
-     * @returns
-     */
-    function getPropertyDescriptor(host, property) {
-        var data = Object.getOwnPropertyDescriptor(host, property);
-        if (data) {
-            return data;
-        }
-        var prototype = Object.getPrototypeOf(host);
-        if (prototype) {
-            return getPropertyDescriptor(prototype, property);
-        }
-        return null;
-    }
-    function notifyListener(host, property) {
-        var list = host[listeners];
-        var length = list.length;
-        for (var i = 0; i < length; i += 2) {
-            var listener = list[i];
-            var target = list[i + 1];
-            listener.call(target, property);
-        }
-    }
-    /**
-     * The Watcher class defines utility method that you can use with bindable properties.
-     * These methods var you define an event handler that is executed whenever a bindable property is updated.
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @includeExample extension/eui/binding/WatcherExample.ts
-     * @language en_US
-     */
-    /**
-     * Watcher 类能够监视可绑定属性的改变，您可以定义一个事件处理函数作为 Watcher 的回调方法，在每次可绑定属性的值改变时都执行此函数。
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @includeExample extension/eui/binding/WatcherExample.ts
-     * @language zh_CN
-     */
-    var Watcher = (function () {
-        /**
-         * Constructor.
-         * Not for public use. This method is called only from the <code>watch()</code> method.
-         * See the <code>watch()</code> method for parameter usage.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 构造函数，非公开。只能从 watch() 方法中调用此方法。有关参数用法，请参阅 watch() 方法。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        function Watcher(property, handler, thisObject, next) {
-            /**
-             * @private
-             */
-            this.isExecuting = false;
-            this.property = property;
-            this.handler = handler;
-            this.next = next;
-            this.thisObject = thisObject;
-        }
-        /**
-         * Creates and starts a Watcher instance.
-         * The Watcher can only watch the property of a Object which host is instance of egret.IEventDispatcher.
-         * @param host The object that hosts the property or property chain to be watched.
-         * You can use the use the <code>reset()</code> method to change the value of the <code>host</code> argument
-         * after creating the Watcher instance.
-         * The <code>host</code> maintains a list of <code>handlers</code> to invoke when <code>prop</code> changes.
-         * @param chain A value specifying the property or chain to be watched.
-         * For example, to watch the property <code>host.a.b.c</code>,
-         * call the method as: <code>watch(host, ["a","b","c"], ...)</code>.
-         * @param handler  An event handler function called when the value of the watched property
-         * (or any property in a watched chain) is modified.
-         * @param thisObject <code>this</code> object of which binding with handler
-         * @returns he ChangeWatcher instance, if at least one property name has been specified to
-         * the <code>chain</code> argument; null otherwise.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建并启动 Watcher 实例。注意：Watcher 只能监视 host 为 egret.IEventDispatcher 对象的属性改变。若属性链中某个属性所对应的实例不是 egret.IEventDispatcher，
-         * 则属性链中在它之后的属性改变将无法检测到。
-         * @param host 用于承载要监视的属性或属性链的对象。
-         * 创建Watcher实例后，您可以利用<code>reset()</code>方法更改<code>host</code>参数的值。
-         * 当<code>prop</code>改变的时候，会使得host对应的一系列<code>handlers</code>被触发。
-         * @param chain 用于指定要监视的属性链的值。例如，要监视属性 host.a.b.c，需按以下形式调用此方法：watch¬(host, ["a","b","c"], ...)。
-         * @param handler 在监视的目标属性链中任何属性的值发生改变时调用的事件处理函数。
-         * @param thisObject handler 方法绑定的this对象
-         * @returns 如果已为 chain 参数至少指定了一个属性名称，则返回 Watcher 实例；否则返回 null。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Watcher.watch = function (host, chain, handler, thisObject) {
-            if (chain.length > 0) {
-                var property = chain.shift();
-                var next = Watcher.watch(null, chain, handler, thisObject);
-                var watcher = new Watcher(property, handler, thisObject, next);
-                watcher.reset(host);
-                return watcher;
-            }
-            else {
-                return null;
-            }
-        };
-        /**
-         * @private
-         * 检查属性是否可以绑定。若还未绑定，尝试添加绑定事件。若是只读或只写属性，返回false。
-         */
-        Watcher.checkBindable = function (host, property) {
-            var list = host[bindables];
-            if (list && list.indexOf(property) != -1) {
-                return true;
-            }
-            if (!host[listeners]) {
-                host[listeners] = [];
-            }
-            var data = getPropertyDescriptor(host, property);
-            if (data && data.set && data.get) {
-                var orgSet = data.set;
-                data.set = function (value) {
-                    if (this[property] != value) {
-                        orgSet.call(this, value);
-                        notifyListener(this, property);
-                    }
-                };
-            }
-            else if (!data || (!data.get && !data.set)) {
-                bindableCount++;
-                var newProp = "_" + bindableCount + property;
-                host[newProp] = data ? data.value : undefined;
-                data = { enumerable: true, configurable: true };
-                data.get = function () {
-                    return this[newProp];
-                };
-                data.set = function (value) {
-                    if (this[newProp] != value) {
-                        this[newProp] = value;
-                        notifyListener(this, property);
-                    }
-                };
-            }
-            else {
-                return false;
-            }
-            Object.defineProperty(host, property, data);
-            registerBindable(host, property);
-        };
-        /**
-         * Detaches this Watcher instance, and its handler function, from the current host.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 从当前宿主中断开此 Watcher 实例及其处理函数。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Watcher.prototype.unwatch = function () {
-            this.reset(null);
-            this.handler = null;
-            if (this.next) {
-                this.next.handler = null;
-            }
-        };
-        /**
-         * Retrieves the current value of the watched property or property chain, or null if the host object is null.
-         * @example
-         * <pre>
-         * watch(obj, ["a","b","c"], ...).getValue() === obj.a.b.c
-         * </pre>
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 检索观察的属性或属性链的当前值，当宿主对象为空时此值为空。
-         * @example
-         * <pre>
-         * watch(obj, ["a","b","c"], ...).getValue() === obj.a.b.c
-         * </pre>
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Watcher.prototype.getValue = function () {
-            if (this.next) {
-                return this.next.getValue();
-            }
-            return this.getHostPropertyValue();
-        };
-        Watcher.prototype.setValue = function (value) {
-            if (this.next) {
-                this.next.setValue(value);
-            }
-            else {
-                this.setHostPropertyValue(value);
-            }
-        };
-        /**
-         * Sets the handler function.s
-         * @param handler The handler function. This argument must not be null.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 设置处理函数。
-         * @param handler 处理函数，此参数必须为非空。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Watcher.prototype.setHandler = function (handler, thisObject) {
-            this.handler = handler;
-            this.thisObject = thisObject;
-            if (this.next) {
-                this.next.setHandler(handler, thisObject);
-            }
-        };
-        /**
-         * Resets this ChangeWatcher instance to use a new host object.
-         * You can call this method to reuse a watcher instance on a different host.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 重置此 Watcher 实例使用新的宿主对象。
-         * 您可以通过该方法实现一个Watcher实例用于不同的宿主。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Watcher.prototype.reset = function (newHost) {
-            if (newHost == this.host)
-                return;
-            var oldHost = this.host;
-            if (oldHost) {
-                var list = oldHost[listeners];
-                var index = list.indexOf(this);
-                list.splice(index - 1, 2);
-            }
-            this.host = newHost;
-            if (newHost) {
-                Watcher.checkBindable(newHost, this.property);
-                var list = newHost[listeners];
-                list.push(this.onPropertyChange);
-                list.push(this);
-            }
-            if (this.next)
-                this.next.reset(this.getHostPropertyValue());
-        };
-        /**
-         * @private
-         *
-         * @returns
-         */
-        Watcher.prototype.getHostPropertyValue = function () {
-            return this.host ? this.host[this.property] : null;
-        };
-        /**
-         * @private
-         *
-         * @returns
-         */
-        Watcher.prototype.setHostPropertyValue = function (value) {
-            this.host && (this.host[this.property] = value);
-        };
-        /**
-         * @private
-         */
-        Watcher.prototype.onPropertyChange = function (property) {
-            if (property == this.property && !this.isExecuting) {
-                try {
-                    this.isExecuting = true;
-                    if (this.next)
-                        this.next.reset(this.getHostPropertyValue());
-                    this.handler.call(this.thisObject, this.getValue());
-                }
-                finally {
-                    this.isExecuting = false;
-                }
-            }
-        };
-        return Watcher;
-    }());
-    feng3d.Watcher = Watcher;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 绑定工具类
-     */
-    var Binding = (function () {
-        function Binding() {
-        }
-        /**
-         * （单向）绑定属性
-         * @param host 用于承载要监视的属性或属性链的对象。
-         * 当 <code>host</code>上<code>chain</code>所对应的值发生改变时，<code>target</code>上的<code>prop</code>属性将被自动更新。
-         * @param chain 用于指定要监视的属性链的值。例如，要监视属性 <code>host.a.b.c</code>，需按以下形式调用此方法：<code>bindProperty(host, ["a","b","c"], ...)。</code>
-         * @param target 本次绑定要更新的目标对象。
-         * @param prop 本次绑定要更新的目标属性名称。
-         * @returns 如果已为 chain 参数至少指定了一个属性名称，则返回 Watcher 实例；否则返回 null。
-         */
-        Binding.bindProperty = function (host, chain, target, prop) {
-            var watcher = feng3d.Watcher.watch(host, chain, null, null);
-            if (watcher) {
-                var assign = function (value) {
-                    target[prop] = value;
-                };
-                watcher.setHandler(assign, null);
-            }
-            return watcher;
-        };
-        /**
-         * 双向绑定属性
-         */
-        Binding.bothBindProperty = function (hosta, chaina, hostb, chainb) {
-            var bothBind = new BothBind(hosta, chaina, hostb, chainb);
-            return bothBind;
-        };
-        return Binding;
-    }());
-    feng3d.Binding = Binding;
-    var BothBind = (function () {
-        function BothBind(hosta, chaina, hostb, chainb) {
-            this._watchera = feng3d.Watcher.watch(hosta, chaina, this.todata, this);
-            this._watcherb = feng3d.Watcher.watch(hostb, chainb, this.fromdata, this);
-        }
-        BothBind.prototype.todata = function () {
-            var value = this._watchera.getValue();
-            if (value !== undefined) {
-                this._watcherb.setValue(value);
-            }
-        };
-        BothBind.prototype.fromdata = function () {
-            var value = this._watcherb.getValue();
-            if (value !== undefined) {
-                this._watchera.setValue(value);
-            }
-        };
-        BothBind.prototype.unwatch = function () {
-            this._watchera.unwatch();
-            this._watcherb.unwatch();
-        };
-        return BothBind;
-    }());
-    feng3d.BothBind = BothBind;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 获取feng3d运行时间，毫秒为单位
-     */
-    function getTimer() {
-        return Date.now() - feng3d.ticker.startTime;
-    }
-    feng3d.getTimer = getTimer;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -880,14 +333,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var ArrayList = (function (_super) {
-        __extends(ArrayList, _super);
+    var ArrayList = (function () {
         function ArrayList(source) {
             if (source === void 0) { source = null; }
-            var _this = _super.call(this) || this;
-            _this._source = source || [];
-            _this._eventDispatcher = new feng3d.EventDispatcher();
-            return _this;
+            this._source = source || [];
+            this._eventDispatcher = {};
         }
         Object.defineProperty(ArrayList.prototype, "length", {
             /**
@@ -916,13 +366,13 @@ var feng3d;
             }
             else {
                 this._source.splice(index, 0, item);
-                if (item instanceof feng3d.EventDispatcher) {
-                    var _listenermap = this._eventDispatcher["_listenermap"];
+                if (item instanceof Object) {
+                    var _listenermap = feng3d.Event["listenermap"][this._eventDispatcher.uuid];
                     for (var type in _listenermap) {
                         var listenerVOs = _listenermap[type];
                         for (var i = 0; i < listenerVOs.length; i++) {
                             var element = listenerVOs[i];
-                            item.addEventListener(type, element.listener, element.thisObject, element.priority);
+                            feng3d.Event.on(item, type, element.listener, element.thisObject, element.priority);
                         }
                     }
                 }
@@ -968,13 +418,13 @@ var feng3d;
          */
         ArrayList.prototype.removeItemAt = function (index) {
             var item = this._source.splice(index, 1)[0];
-            if (item instanceof feng3d.EventDispatcher) {
-                var _listenermap = this._eventDispatcher["_listenermap"];
+            if (item instanceof Object) {
+                var _listenermap = feng3d.Event["listenermap"][this._eventDispatcher.uuid];
                 for (var type in _listenermap) {
                     var listenerVOs = _listenermap[type];
                     for (var i = 0; i < listenerVOs.length; i++) {
                         var element = listenerVOs[i];
-                        item.removeEventListener(type, element.listener, element.thisObject);
+                        feng3d.Event.off(item, type, element.listener, element.thisObject);
                     }
                 }
             }
@@ -1003,11 +453,10 @@ var feng3d;
          */
         ArrayList.prototype.addItemEventListener = function (type, listener, thisObject, priority) {
             if (priority === void 0) { priority = 0; }
-            this._eventDispatcher.addEventListener(type, listener, thisObject, priority);
+            feng3d.Event.on(this._eventDispatcher, type, listener, thisObject, priority);
             for (var i = 0; i < this._source.length; i++) {
-                if (item instanceof feng3d.EventDispatcher) {
-                    var item = this._source[i];
-                    item.addEventListener(type, listener, thisObject, priority);
+                if (this._source[i] instanceof Object) {
+                    feng3d.Event.on(this._source[i], type, listener, thisObject, priority);
                 }
             }
         };
@@ -1018,16 +467,15 @@ var feng3d;
          * @param thisObject                listener函数作用域
          */
         ArrayList.prototype.removeItemEventListener = function (type, listener, thisObject) {
-            this._eventDispatcher.removeEventListener(type, listener, thisObject);
+            feng3d.Event.off(this._eventDispatcher, type, listener, thisObject);
             for (var i = 0; i < this._source.length; i++) {
-                var item = this._source[i];
-                if (item instanceof feng3d.EventDispatcher) {
-                    item.removeEventListener(type, listener, thisObject);
+                if (this._source[i] instanceof Object) {
+                    feng3d.Event.off(this._source[i], type, listener, thisObject);
                 }
             }
         };
         return ArrayList;
-    }(feng3d.EventDispatcher));
+    }());
     feng3d.ArrayList = ArrayList;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -2049,7 +1497,7 @@ var feng3d;
             this.rawData[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
             this.rawData[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
             this.rawData[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
-            feng3d.debuger && feng3d.assert(this.rawData[0] !== NaN && this.rawData[4] !== NaN && this.rawData[8] !== NaN && this.rawData[12] !== NaN);
+            feng3d.debuger && console.assert(this.rawData[0] !== NaN && this.rawData[4] !== NaN && this.rawData[8] !== NaN && this.rawData[12] !== NaN);
             return this;
         };
         /**
@@ -3356,17 +2804,14 @@ var feng3d;
     /**
      * 心跳计时器
      */
-    var SystemTicker = (function (_super) {
-        __extends(SystemTicker, _super);
+    var SystemTicker = (function () {
         /**
          * @private
          */
         function SystemTicker() {
-            var _this = _super.call(this) || this;
-            _this._startTime = -1;
-            _this._startTime = Date.now();
-            _this.init();
-            return _this;
+            this._startTime = -1;
+            this._startTime = Date.now();
+            this.init();
         }
         SystemTicker.init = function () {
             feng3d.ticker = new SystemTicker();
@@ -3404,10 +2849,10 @@ var feng3d;
          * 执行一次刷新
          */
         SystemTicker.prototype.update = function () {
-            this.dispatchEvent(new feng3d.Event(feng3d.Event.ENTER_FRAME));
+            feng3d.Event.dispatch(this, "enterFrame");
         };
         return SystemTicker;
-    }(feng3d.EventDispatcher));
+    }());
     feng3d.SystemTicker = SystemTicker;
 })(feng3d || (feng3d = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -3463,8 +2908,7 @@ var feng3d;
      * @includeExample egret/utils/Timer.ts
      * @language zh_CN
      */
-    var Timer = (function (_super) {
-        __extends(Timer, _super);
+    var Timer = (function () {
         /**
          * Constructs a new Timer object with the specified delay and repeatCount states.
          * @param delay The delay between timer events, in milliseconds. A delay lower than 20 milliseconds is not recommended.
@@ -3485,34 +2929,32 @@ var feng3d;
          */
         function Timer(delay, repeatCount) {
             if (repeatCount === void 0) { repeatCount = 0; }
-            var _this = _super.call(this) || this;
             /**
              * @private
              */
-            _this._delay = 0;
+            this._delay = 0;
             /**
              * @private
              */
-            _this._currentCount = 0;
+            this._currentCount = 0;
             /**
              * @private
              */
-            _this._running = false;
+            this._running = false;
             /**
              * @private
              */
-            _this.updateInterval = 1000;
+            this.updateInterval = 1000;
             /**
              * @private
              */
-            _this.lastCount = 1000;
+            this.lastCount = 1000;
             /**
              * @private
              */
-            _this.lastTimeStamp = 0;
-            _this.delay = delay;
-            _this.repeatCount = +repeatCount | 0;
-            return _this;
+            this.lastTimeStamp = 0;
+            this.delay = delay;
+            this.repeatCount = +repeatCount | 0;
         }
         Object.defineProperty(Timer.prototype, "delay", {
             /**
@@ -3617,8 +3059,8 @@ var feng3d;
             if (this._running)
                 return;
             this.lastCount = this.updateInterval;
-            this.lastTimeStamp = feng3d.getTimer();
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.$update, this);
+            this.lastTimeStamp = Date.now();
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this.$update, this);
             this._running = true;
         };
         /**
@@ -3637,7 +3079,7 @@ var feng3d;
         Timer.prototype.stop = function () {
             if (!this._running)
                 return;
-            feng3d.ticker.removeEventListener(feng3d.Event.ENTER_FRAME, this.$update, this);
+            feng3d.Event.off(feng3d.ticker, "enterFrame", this.$update, this);
             this._running = false;
         };
         /**
@@ -3645,7 +3087,7 @@ var feng3d;
          * Ticker以60FPS频率刷新此方法
          */
         Timer.prototype.$update = function () {
-            var timeStamp = feng3d.getTimer();
+            var timeStamp = Date.now();
             var deltaTime = timeStamp - this.lastTimeStamp;
             if (deltaTime >= this._delay) {
                 this.lastCount = this.updateInterval;
@@ -3660,15 +3102,15 @@ var feng3d;
             this.lastTimeStamp = timeStamp;
             this._currentCount++;
             var complete = (this.repeatCount > 0 && this._currentCount >= this.repeatCount);
-            this.dispatchEvent(new feng3d.TimerEvent(feng3d.TimerEvent.TIMER));
+            feng3d.Event.dispatch(this, feng3d.TimerEvent.TIMER);
             if (complete) {
                 this.stop();
-                this.dispatchEvent(new feng3d.TimerEvent(feng3d.TimerEvent.TIMER_COMPLETE));
+                feng3d.Event.dispatch(this, feng3d.TimerEvent.TIMER_COMPLETE);
             }
             return false;
         };
         return Timer;
-    }(feng3d.EventDispatcher));
+    }());
     feng3d.Timer = Timer;
 })(feng3d || (feng3d = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -3717,34 +3159,11 @@ var feng3d;
      * @includeExample egret/events/TimerEvent.ts
      * @language zh_CN
      */
-    var TimerEvent = (function (_super) {
-        __extends(TimerEvent, _super);
-        /**
-         * Creates an Event object with specific information relevant to timer events.
-         * @param type The type of the event. Event listeners can access this information through the inherited type property.
-         * @param bubbles Determines whether the Event object bubbles. Event listeners can access this information through
-         * the inherited bubbles property.
-         * @param cancelable Determines whether the Event object can be canceled. Event listeners can access this information
-         * through the inherited cancelable property.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建一个 Event 对象，其中包含有关 timer 事件的特定信息。
-         * @param type 事件的类型。事件侦听器可以通过继承的 type 属性访问此信息。
-         * @param bubbles 确定 Event 对象是否冒泡。事件侦听器可以通过继承的 bubbles 属性访问此信息。
-         * @param cancelable 确定是否可以取消 Event 对象。事件侦听器可以通过继承的 cancelable 属性访问此信息。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        function TimerEvent(type, data, bubbles) {
-            if (data === void 0) { data = null; }
-            return _super.call(this, type, data, bubbles) || this;
+    var TimerEvent = (function () {
+        function TimerEvent() {
         }
         return TimerEvent;
-    }(feng3d.Event));
+    }());
     /**
      * Dispatched whenever a Timer object reaches an interval specified according to the Timer.delay property.
      * @version Egret 2.4
@@ -3779,26 +3198,19 @@ var feng3d;
      * 鼠标键盘输入，处理js事件中this关键字问题
      * @author feng 2016-12-19
      */
-    var Input = (function (_super) {
-        __extends(Input, _super);
+    var Input = (function () {
         function Input() {
-            var _this = _super.call(this) || this;
-            _this.clientX = 0;
-            _this.clientY = 0;
+            this.clientX = 0;
+            this.clientY = 0;
             var mouseKeyType = [
                 "click", "dblclick",
                 "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "mousewheel",
                 "keydown", "keypress", "keyup"
             ];
             for (var i = 0; i < mouseKeyType.length; i++) {
-                window.addEventListener(mouseKeyType[i], _this.onMouseKey.bind(_this));
+                window.addEventListener(mouseKeyType[i], this.onMouseKey.bind(this));
             }
-            return _this;
         }
-        Input.init = function () {
-            feng3d.input = new Input();
-            feng3d.inputType = new InputEventType();
-        };
         /**
          * 键盘按下事件
          */
@@ -3808,85 +3220,72 @@ var feng3d;
                 this.clientX = event.clientX;
                 this.clientY = event.clientY;
             }
-            this.dispatchEvent(new InputEvent(event, this, true));
-        };
-        /**
-         *
-         */
-        Input.prototype.addEventListener = function (type, listener, thisObject, priority) {
-            if (priority === void 0) { priority = 0; }
-            _super.prototype.addEventListener.call(this, type, listener, thisObject, priority);
+            var inputEvent = new InputEvent(event);
+            feng3d.Event.dispatch(this, inputEvent.type, inputEvent, true);
         };
         return Input;
-    }(feng3d.EventDispatcher));
-    feng3d.Input = Input;
-    var InputEventType = (function () {
-        function InputEventType() {
-            /** 鼠标双击 */
-            this.DOUBLE_CLICK = "dblclick";
-            /** 鼠标单击 */
-            this.CLICK = "click";
-            /** 鼠标按下 */
-            this.MOUSE_DOWN = "mousedown";
-            /** 鼠标弹起 */
-            this.MOUSE_UP = "mouseup";
-            /** 鼠标中键单击 */
-            this.MIDDLE_CLICK = "middleclick";
-            /** 鼠标中键按下 */
-            this.MIDDLE_MOUSE_DOWN = "middlemousedown";
-            /** 鼠标中键弹起 */
-            this.MIDDLE_MOUSE_UP = "middlemouseup";
-            /** 鼠标右键单击 */
-            this.RIGHT_CLICK = "rightclick";
-            /** 鼠标右键按下 */
-            this.RIGHT_MOUSE_DOWN = "rightmousedown";
-            /** 鼠标右键弹起 */
-            this.RIGHT_MOUSE_UP = "rightmouseup";
-            /** 鼠标移动 */
-            this.MOUSE_MOVE = "mousemove";
-            /** 鼠标移出 */
-            this.MOUSE_OUT = "mouseout";
-            /** 鼠标移入 */
-            this.MOUSE_OVER = "mouseover";
-            /** 鼠标滚动滚轮 */
-            this.MOUSE_WHEEL = "mousewheel";
-            /** 键盘按下 */
-            this.KEY_DOWN = "keydown";
-            /** 键盘按着 */
-            this.KEY_PRESS = "keypress";
-            /** 键盘弹起 */
-            this.KEY_UP = "keyup";
-        }
-        return InputEventType;
     }());
-    feng3d.InputEventType = InputEventType;
-    var InputEvent = (function (_super) {
-        __extends(InputEvent, _super);
-        function InputEvent(event, data, bubbles) {
-            if (data === void 0) { data = null; }
-            if (bubbles === void 0) { bubbles = true; }
-            var _this = _super.call(this, event.type, null, true) || this;
-            if (event["clientX"] != undefined) {
-                var mouseEvent = event;
-                _this.clientX = mouseEvent.clientX;
-                _this.clientY = mouseEvent.clientY;
-                if (["click", "mousedown", "mouseup"].indexOf(mouseEvent.type) != -1) {
-                    _this["_type"] = ["", "middle", "right"][mouseEvent.button] + mouseEvent.type;
+    feng3d.Input = Input;
+    var InputEvent = (function () {
+        function InputEvent(event) {
+            this.type = event.type;
+            if (event instanceof MouseEvent) {
+                this.clientX = event.clientX;
+                this.clientY = event.clientY;
+                if (["click", "mousedown", "mouseup"].indexOf(event.type) != -1) {
+                    this.type = ["", "middle", "right"][event.button] + event.type;
                 }
             }
-            if (event["keyCode"] != undefined) {
-                var keyboardEvent = event;
-                _this.keyCode = keyboardEvent.keyCode;
+            if (event instanceof KeyboardEvent) {
+                this.keyCode = event.keyCode;
             }
-            if (event["wheelDelta"] != undefined) {
-                var wheelEvent = event;
-                _this.wheelDelta = wheelEvent.wheelDelta;
+            if (event instanceof WheelEvent) {
+                this.wheelDelta = event.wheelDelta;
             }
-            return _this;
         }
         return InputEvent;
-    }(feng3d.Event));
+    }());
     feng3d.InputEvent = InputEvent;
+    /**
+     * 键盘鼠标输入
+     */
+    feng3d.input = new Input();
+    feng3d.inputType = {
+        /** 鼠标双击 */
+        DOUBLE_CLICK: "dblclick",
+        /** 鼠标单击 */
+        CLICK: "click",
+        /** 鼠标按下 */
+        MOUSE_DOWN: "mousedown",
+        /** 鼠标弹起 */
+        MOUSE_UP: "mouseup",
+        /** 鼠标中键单击 */
+        MIDDLE_CLICK: "middleclick",
+        /** 鼠标中键按下 */
+        MIDDLE_MOUSE_DOWN: "middlemousedown",
+        /** 鼠标中键弹起 */
+        MIDDLE_MOUSE_UP: "middlemouseup",
+        /** 鼠标右键单击 */
+        RIGHT_CLICK: "rightclick",
+        /** 鼠标右键按下 */
+        RIGHT_MOUSE_DOWN: "rightmousedown",
+        /** 鼠标右键弹起 */
+        RIGHT_MOUSE_UP: "rightmouseup",
+        /** 鼠标移动 */
+        MOUSE_MOVE: "mousemove",
+        /** 鼠标移出 */
+        MOUSE_OUT: "mouseout",
+        /** 鼠标移入 */
+        MOUSE_OVER: "mouseover",
+        /** 鼠标滚动滚轮 */
+        MOUSE_WHEEL: "mousewheel",
+        /** 键盘按下 */
+        KEY_DOWN: "keydown",
+        /** 键盘按着 */
+        KEY_PRESS: "keypress",
+        /** 键盘弹起 */
+        KEY_UP: "keyup",
+    };
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -3906,8 +3305,8 @@ var feng3d;
             this._mouseKeyDic = {};
             this._keyState = shortCut.keyState;
             //
-            feng3d.input.addEventListener(feng3d.inputType.KEY_DOWN, this.onKeydown, this);
-            feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyup, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.KEY_DOWN, this.onKeydown, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.KEY_UP, this.onKeyup, this);
             this._boardKeyDic = {};
             this.defaultSupportKeys();
             //监听鼠标事件
@@ -3927,9 +3326,9 @@ var feng3d;
                 feng3d.inputType.MOUSE_OUT,
             ];
             for (var i = 0; i < mouseEvents.length; i++) {
-                feng3d.input.addEventListener(mouseEvents[i], this.onMouseOnce, this);
+                feng3d.Event.on(feng3d.input, mouseEvents[i], this.onMouseOnce, this);
             }
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_WHEEL, this.onMousewheel, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.MOUSE_WHEEL, this.onMousewheel, this);
         }
         /**
          * 默认支持按键
@@ -3946,32 +3345,32 @@ var feng3d;
          */
         KeyCapture.prototype.onMouseOnce = function (event) {
             var mouseKey = event.type;
-            this._keyState.pressKey(mouseKey, event);
-            this._keyState.releaseKey(mouseKey, event);
+            this._keyState.pressKey(mouseKey, event.data);
+            this._keyState.releaseKey(mouseKey, event.data);
         };
         /**
          * 鼠标事件
          */
         KeyCapture.prototype.onMousewheel = function (event) {
             var mouseKey = event.type;
-            this._keyState.pressKey(mouseKey, event);
-            this._keyState.releaseKey(mouseKey, event);
+            this._keyState.pressKey(mouseKey, event.data);
+            this._keyState.releaseKey(mouseKey, event.data);
         };
         /**
          * 键盘按下事件
          */
         KeyCapture.prototype.onKeydown = function (event) {
-            var boardKey = this.getBoardKey(event.keyCode);
+            var boardKey = this.getBoardKey(event.data.keyCode);
             if (boardKey != null)
-                this._keyState.pressKey(boardKey, event);
+                this._keyState.pressKey(boardKey, event.data);
         };
         /**
          * 键盘弹起事件
          */
         KeyCapture.prototype.onKeyup = function (event) {
-            var boardKey = this.getBoardKey(event.keyCode);
+            var boardKey = this.getBoardKey(event.data.keyCode);
             if (boardKey)
-                this._keyState.releaseKey(boardKey, event);
+                this._keyState.releaseKey(boardKey, event.data);
         };
         /**
          * 获取键盘按键名称
@@ -3993,15 +3392,12 @@ var feng3d;
      * 按键状态
      * @author feng 2016-4-26
      */
-    var KeyState = (function (_super) {
-        __extends(KeyState, _super);
+    var KeyState = (function () {
         /**
          * 构建
          */
         function KeyState() {
-            var _this = _super.call(this) || this;
-            _this._keyStateDic = {};
-            return _this;
+            this._keyStateDic = {};
         }
         /**
          * 按下键
@@ -4010,7 +3406,7 @@ var feng3d;
          */
         KeyState.prototype.pressKey = function (key, data) {
             this._keyStateDic[key] = true;
-            this.dispatchEvent(new feng3d.ShortCutEvent(key, data));
+            feng3d.Event.dispatch(this, key, data);
         };
         /**
          * 释放键
@@ -4019,7 +3415,7 @@ var feng3d;
          */
         KeyState.prototype.releaseKey = function (key, data) {
             this._keyStateDic[key] = false;
-            this.dispatchEvent(new feng3d.ShortCutEvent(key, data));
+            feng3d.Event.dispatch(this, key, data);
         };
         /**
          * 获取按键状态
@@ -4029,7 +3425,7 @@ var feng3d;
             return !!this._keyStateDic[key];
         };
         return KeyState;
-    }(feng3d.EventDispatcher));
+    }());
     feng3d.KeyState = KeyState;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -4068,7 +3464,7 @@ var feng3d;
          */
         ShortCutCapture.prototype.init = function () {
             for (var i = 0; i < this._keys.length; i++) {
-                this._keyState.addEventListener(this._keys[i].key, this.onCapture, this);
+                feng3d.Event.on(this._keyState, this._keys[i].key, this.onCapture, this);
             }
         };
         /**
@@ -4087,7 +3483,7 @@ var feng3d;
          */
         ShortCutCapture.prototype.dispatchCommands = function (commands, data) {
             for (var i = 0; i < commands.length; i++) {
-                this._shortCut.dispatchEvent(new feng3d.ShortCutEvent(commands[i], data));
+                feng3d.Event.dispatch(this._shortCut, commands[i], data);
             }
         };
         /**
@@ -4215,7 +3611,7 @@ var feng3d;
          */
         ShortCutCapture.prototype.destroy = function () {
             for (var i = 0; i < this._keys.length; i++) {
-                this._keyState.removeEventListener(this._keys[i].key, this.onCapture, this);
+                feng3d.Event.off(this._keyState, this._keys[i].key, this.onCapture, this);
             }
             this._shortCut = null;
             this._keys = null;
@@ -4273,25 +3669,6 @@ var StateCommand = (function () {
 var feng3d;
 (function (feng3d) {
     /**
-     * 快捷键命令事件
-     * @author feng 2016-4-27
-     */
-    var ShortCutEvent = (function (_super) {
-        __extends(ShortCutEvent, _super);
-        /**
-         * 构建
-         * @param command		命令名称
-         */
-        function ShortCutEvent(command, data) {
-            return _super.call(this, command, data) || this;
-        }
-        return ShortCutEvent;
-    }(feng3d.Event));
-    feng3d.ShortCutEvent = ShortCutEvent;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 初始化快捷键模块
      * @author feng 2016-4-26
      *
@@ -4309,24 +3686,21 @@ var shortcuts:Array = [ //
 //添加快捷键
 shortCut.addShortCuts(shortcuts);
 //监听命令
-shortCut.addEventListener("run", function(e:Event):void
+Event.on(shortCut,<any>"run", function(e:Event):void
 {
     trace("接受到命令：" + e.type);
 });
      * </pre>
      */
-    var ShortCut = (function (_super) {
-        __extends(ShortCut, _super);
+    var ShortCut = (function () {
         /**
          * 初始化快捷键模块
          */
         function ShortCut() {
-            var _this = _super.call(this) || this;
-            _this.keyState = new feng3d.KeyState();
-            _this.keyCapture = new feng3d.KeyCapture(_this);
-            _this.captureDic = {};
-            _this.stateDic = {};
-            return _this;
+            this.keyState = new feng3d.KeyState();
+            this.keyCapture = new feng3d.KeyCapture(this);
+            this.captureDic = {};
+            this.stateDic = {};
         }
         ShortCut.init = function () {
             feng3d.shortcut = new ShortCut();
@@ -4400,7 +3774,7 @@ shortCut.addEventListener("run", function(e:Event):void
             return shortcut.key + "," + shortcut.command + "," + shortcut.when;
         };
         return ShortCut;
-    }(feng3d.EventDispatcher));
+    }());
     feng3d.ShortCut = ShortCut;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -4409,10 +3783,8 @@ var feng3d;
      * 加载类
      * @author feng 2016-12-14
      */
-    var Loader = (function (_super) {
-        __extends(Loader, _super);
+    var Loader = (function () {
         function Loader() {
-            return _super !== null && _super.apply(this, arguments) || this;
         }
         /**
          * 加载资源
@@ -4468,7 +3840,7 @@ var feng3d;
         Loader.prototype.onRequestProgress = function (event) {
             this.bytesLoaded = event.loaded;
             this.bytesTotal = event.total;
-            this.dispatchEvent(new feng3d.LoaderEvent(feng3d.LoaderEvent.PROGRESS, this));
+            feng3d.Event.dispatch(this, "progress", this);
         };
         /**
          * 请求状态变化回调
@@ -4478,13 +3850,13 @@ var feng3d;
                 this._request.onreadystatechange = null;
                 if (this._request.status >= 200 && this._request.status < 300) {
                     this.content = this.dataFormat == feng3d.LoaderDataFormat.TEXT ? this._request.responseText : this._request.response;
-                    this.dispatchEvent(new feng3d.LoaderEvent(feng3d.LoaderEvent.COMPLETE, this));
+                    feng3d.Event.dispatch(this, "complete", this);
                 }
                 else {
-                    if (!this.hasEventListener(feng3d.LoaderEvent.ERROR)) {
+                    if (!feng3d.Event.has(this, "error")) {
                         throw new Error("Error status: " + this._request + " - Unable to load " + this._url);
                     }
-                    this.dispatchEvent(new feng3d.LoaderEvent(feng3d.LoaderEvent.ERROR, this));
+                    feng3d.Event.dispatch(this, "error", this);
                 }
             }
         };
@@ -4493,7 +3865,7 @@ var feng3d;
          */
         Loader.prototype.onImageLoad = function (event) {
             this.content = this._image;
-            this.dispatchEvent(new feng3d.LoaderEvent(feng3d.LoaderEvent.COMPLETE, this));
+            feng3d.Event.dispatch(this, "complete", this);
         };
         /**
          * 加载图片出错回调
@@ -4504,38 +3876,11 @@ var feng3d;
             this._image.src = "data:image/jpg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBmRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAAExAAIAAAAQAAAATgAAAAAAAABgAAAAAQAAAGAAAAABcGFpbnQubmV0IDQuMC41AP/bAEMABAIDAwMCBAMDAwQEBAQFCQYFBQUFCwgIBgkNCw0NDQsMDA4QFBEODxMPDAwSGBITFRYXFxcOERkbGRYaFBYXFv/bAEMBBAQEBQUFCgYGChYPDA8WFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFv/AABEIAQABAAMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APH6KKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FCiiigD6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++gooooA+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gUKKKKAPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76CiiigD5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BQooooA+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/voKKKKAPl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FCiiigD6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++gooooA+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gUKKKKAPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76CiiigD5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BQooooA+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/voKKKKAPl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FCiiigD6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++gooooA+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gUKKKKAPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76Pl+iiivuj+BT6gooor4U/vo+X6KKK+6P4FPqCiiivhT++j5fooor7o/gU+oKKKK+FP76P//Z";
             //
             this.onImageLoad(null);
-            this.dispatchEvent(new feng3d.LoaderEvent(feng3d.LoaderEvent.ERROR, this));
+            feng3d.Event.dispatch(this, "error", this);
         };
         return Loader;
-    }(feng3d.EventDispatcher));
+    }());
     feng3d.Loader = Loader;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 加载事件
-     * @author feng 2016-12-14
-     */
-    var LoaderEvent = (function (_super) {
-        __extends(LoaderEvent, _super);
-        function LoaderEvent() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return LoaderEvent;
-    }(feng3d.Event));
-    /**
-     * 加载进度发生改变时调度。
-     */
-    LoaderEvent.PROGRESS = "progress";
-    /**
-     * 加载完成后调度。
-     */
-    LoaderEvent.COMPLETE = "complete";
-    /**
-     * 加载出错时调度。
-     */
-    LoaderEvent.ERROR = "error";
-    feng3d.LoaderEvent = LoaderEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

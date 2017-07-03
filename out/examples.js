@@ -279,7 +279,7 @@ var feng3d;
             cylinder.transform.setPosition(-300, 0, 0);
             cylinder.transform.mouseEnabled = true;
             scene3D.transform.addChild(cylinder.transform);
-            scene3D.transform.addEventListener(feng3d.Mouse3DEvent.CLICK, this.onMouseClick, this);
+            feng3d.Event.on(scene3D.transform, feng3d.Mouse3DEvent.CLICK, this.onMouseClick, this);
         };
         MousePickTest.prototype.onMouseClick = function (event) {
             var object3D = event.target;
@@ -393,10 +393,11 @@ var feng3d;
             this.camera.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.view3D.camera.gameObject);
-            feng3d.input.addEventListener(feng3d.inputType.KEY_UP, this.onKeyUp, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.KEY_UP, this.onKeyUp, this);
         }
         PointLightTest.prototype.onKeyUp = function (event) {
-            var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
+            var inputEvent = event.data;
+            var boardKey = String.fromCharCode(inputEvent.keyCode).toLocaleLowerCase();
             switch (boardKey) {
                 case "c":
                     this.clearObjects();
@@ -413,7 +414,7 @@ var feng3d;
             this.scene = this.view3D.scene;
             this.initObjects();
             this.initLights();
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.setPointLightPosition, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this.setPointLightPosition, this);
         };
         PointLightTest.prototype.initObjects = function () {
             var material = new feng3d.StandardMaterial();
@@ -569,7 +570,7 @@ var feng3d;
             this.view3D = new feng3d.View3D();
             var scene3D = this.view3D.scene;
             var loader = new feng3d.Loader();
-            loader.addEventListener(feng3d.LoaderEvent.COMPLETE, function () {
+            feng3d.Event.on(loader, "complete", function () {
                 var json = JSON.parse(loader.content);
                 var scene = feng3d.serialization.readObject(json);
                 for (var i = 0; i < scene.transform.childCount; i++) {
@@ -694,7 +695,7 @@ var feng3d;
             this.camera.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.camera.gameObject);
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this.onEnterFrame, this);
         }
         TerrainTest.prototype.onEnterFrame = function () {
             var time = new Date().getTime();
@@ -737,7 +738,7 @@ var feng3d;
             this.camera.transform.lookAt(new feng3d.Vector3D());
             //
             this.controller = new feng3d.FPSController(this.camera.gameObject);
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this.onEnterFrame, this);
         }
         TerrainMergeTest.prototype.onEnterFrame = function () {
             var time = new Date().getTime();
@@ -868,7 +869,7 @@ var feng3d;
             torus.addComponent(feng3d.MeshFilter).mesh = new feng3d.TorusGeometry(150, 60, 40, 20);
             model.material = torusMaterial;
             scene.transform.addChild(torus.transform);
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this._onEnterFrame, this);
         }
         Basic_SkyBox.prototype._onEnterFrame = function (e) {
             this._torus.transform.rotationX += 2;
@@ -965,9 +966,9 @@ var feng3d;
             this.scene.transform.addChild(this.torus.transform);
         };
         Basic_Shading.prototype.initListeners = function () {
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this.onEnterFrame, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
         };
         Basic_Shading.prototype.onEnterFrame = function (event) {
             if (this.move) {
@@ -1031,9 +1032,9 @@ var feng3d;
             particleAnimator.cycle = 10;
             particleAnimator.play();
             this._view.scene.transform.addChild(this._particleMesh.transform);
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this.onEnterFrame, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
         }
         Basic_Particles.prototype.onEnterFrame = function (event) {
             if (this._move) {
@@ -1147,13 +1148,13 @@ var feng3d;
                 this.view.scene.transform.addChild(particleMesh.transform);
             }
             this.timer = new feng3d.Timer(1000, this.fireObjects.length);
-            this.timer.addEventListener(feng3d.TimerEvent.TIMER, this.onTimer, this);
+            feng3d.Event.on(this.timer, feng3d.TimerEvent.TIMER, this.onTimer, this);
             this.timer.start();
         };
         Basic_Fire.prototype.initListeners = function () {
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, this);
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
-            feng3d.input.addEventListener(feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this.onEnterFrame, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.MOUSE_DOWN, this.onMouseDown, this);
+            feng3d.Event.on(feng3d.input, feng3d.inputType.MOUSE_UP, this.onMouseUp, this);
         };
         Basic_Fire.prototype.getAllLights = function () {
             var lights = new Array();
@@ -1232,7 +1233,7 @@ var feng3d;
             var model = this._plane.addComponent(feng3d.MeshRenderer);
             var material = model.material = new feng3d.StandardMaterial("resources/floor_diffuse.jpg");
             scene.transform.addChild(this._plane.transform);
-            feng3d.ticker.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame, this);
+            feng3d.Event.on(feng3d.ticker, "enterFrame", this._onEnterFrame, this);
         }
         Basic_View.prototype._onEnterFrame = function (e) {
             this._plane.transform.rotationY += 1;
@@ -1267,7 +1268,7 @@ var feng3d;
         ArrayListTest.prototype.testLength = function () {
             var arr = [1, 2];
             var arrayList = new feng3d.ArrayList(arr);
-            feng3d.assert(arr.length == arrayList.length);
+            console.assert(arr.length == arrayList.length);
         };
         /**
          * 向列表末尾添加指定项目。
@@ -1277,7 +1278,7 @@ var feng3d;
             var arrayList = new feng3d.ArrayList();
             arrayList.addItem(1);
             arrayList.addItem(arr);
-            feng3d.assert(arrayList.length == arr.length + 1);
+            console.assert(arrayList.length == arr.length + 1);
         };
         /**
          * 在指定的索引处添加项目。
@@ -1289,7 +1290,7 @@ var feng3d;
                 arrayList.addItemAt(i, i);
             }
             for (var i = 0; i < 10; i++) {
-                feng3d.assert(arrayList.getItemAt(i) == i);
+                console.assert(arrayList.getItemAt(i) == i);
             }
         };
         /**
@@ -1302,7 +1303,7 @@ var feng3d;
                 arrayList.addItemAt(i, i);
             }
             for (var i = 0; i < 10; i++) {
-                feng3d.assert(arrayList.getItemAt(i) == i);
+                console.assert(arrayList.getItemAt(i) == i);
             }
         };
         /**
@@ -1315,7 +1316,7 @@ var feng3d;
                 arrayList.addItemAt(i, i);
             }
             for (var i = 0; i < 10; i++) {
-                feng3d.assert(arrayList.getItemIndex(i) == i);
+                console.assert(arrayList.getItemIndex(i) == i);
             }
         };
         /**
@@ -1324,9 +1325,9 @@ var feng3d;
         ArrayListTest.prototype.testRemoveAll = function () {
             var arr = [1, 2, 1, 4];
             var arrayList = new feng3d.ArrayList(arr);
-            feng3d.assert(arr.length == arrayList.length);
+            console.assert(arr.length == arrayList.length);
             arrayList.removeAll();
-            feng3d.assert(0 == arrayList.length);
+            console.assert(0 == arrayList.length);
         };
         /**
          * 删除指定项目。
@@ -1338,7 +1339,7 @@ var feng3d;
                 var element = arr[i];
                 arrayList.removeItem(element);
             }
-            feng3d.assert(0 == arrayList.length);
+            console.assert(0 == arrayList.length);
         };
         /**
          * 删除指定索引处的项目并返回该项目。
@@ -1349,7 +1350,7 @@ var feng3d;
             for (var i = arr.length - 1; i >= 0; i--) {
                 arrayList.removeItemAt(i);
             }
-            feng3d.assert(0 == arrayList.length);
+            console.assert(0 == arrayList.length);
         };
         /**
          * 在指定的索引处放置项目。
@@ -1361,7 +1362,7 @@ var feng3d;
                 arrayList.setItemAt(0, i);
             }
             for (var i = arr.length - 1; i >= 0; i--) {
-                feng3d.assert(0 == arrayList.getItemAt(i));
+                console.assert(0 == arrayList.getItemAt(i));
             }
         };
         /**
@@ -1372,7 +1373,7 @@ var feng3d;
             var arrayList = new feng3d.ArrayList(arr.concat());
             var arr1 = arrayList.toArray();
             for (var i = arr.length - 1; i >= 0; i--) {
-                feng3d.assert(arr1[i] == arr[i]);
+                console.assert(arr1[i] == arr[i]);
             }
         };
         /**
@@ -1388,10 +1389,10 @@ var feng3d;
             arrayList.addItemEventListener("change", function (event) {
                 changeItem = event.target;
             }, null);
-            var eventDispatcher = new feng3d.EventDispatcher();
+            var eventDispatcher = {};
             arrayList.addItem(eventDispatcher);
-            eventDispatcher.dispatchEvent(new feng3d.Event("change"));
-            feng3d.assert(eventDispatcher == changeItem);
+            feng3d.Event.dispatch(eventDispatcher, "change");
+            console.assert(eventDispatcher == changeItem);
         };
         /**
          * 移除项事件
@@ -1406,14 +1407,14 @@ var feng3d;
                 changeItem = event.target;
             };
             arrayList.addItemEventListener("change", onChange, null);
-            var eventDispatcher = new feng3d.EventDispatcher();
+            var eventDispatcher = {};
             arrayList.addItem(eventDispatcher);
-            eventDispatcher.dispatchEvent(new feng3d.Event("change"));
-            feng3d.assert(eventDispatcher == changeItem);
+            feng3d.Event.dispatch(eventDispatcher, "change");
+            console.assert(eventDispatcher == changeItem);
             changeItem = null;
             arrayList.removeItemEventListener("change", onChange, null);
-            eventDispatcher.dispatchEvent(new feng3d.Event("change"));
-            feng3d.assert(null === changeItem);
+            feng3d.Event.dispatch(eventDispatcher, "change");
+            console.assert(null === changeItem);
         };
         return ArrayListTest;
     }());

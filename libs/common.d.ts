@@ -1,31 +1,9 @@
 declare namespace feng3d {
     /**
-     * 断言
-     * @b			判定为真的表达式
-     * @msg			在表达式为假时将输出的错误信息
-     * @author feng 2014-10-29
-     */
-    function assert(b: boolean, msg?: string): void;
-}
-declare namespace feng3d {
-    /**
      * 类工具
      * @author feng 2017-02-15
      */
     class ClassUtils {
-        /**
-         * 判断a对象是否为b类型
-         */
-        static is<T>(a: any, b: new () => T): boolean;
-        /**
-         * 如果a为b类型则返回，否则返回null
-         */
-        static as<T>(a: any, b: new () => T): T;
-        /**
-         * 是否为基础类型
-         * @param object    对象
-         */
-        static isBaseType(object: any): boolean;
         /**
          * 返回对象的完全限定类名。
          * @param value 需要完全限定类名称的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型
@@ -100,287 +78,6 @@ declare namespace feng3d {
          */
         static merge<T>(source: T, mergeData: Object, createNew?: boolean): T;
     }
-}
-declare namespace feng3d {
-    class VersionUtils {
-        /**
-         * 获取对象版本
-         * @param object 对象
-         */
-        static getVersion(object: Object): number;
-        /**
-         * 升级对象版本（版本号+1）
-         * @param object 对象
-         */
-        static upgradeVersion(object: Object): void;
-        /**
-         * 设置版本号
-         * @param object 对象
-         * @param version 版本号
-         */
-        static setVersion(object: Object, version: number): void;
-        /**
-         * 判断两个对象的版本号是否相等
-         */
-        static equal(a: Object, b: Object): boolean;
-        /**
-         * 断言object为对象类型
-         */
-        private static assertObject(object);
-    }
-}
-declare namespace feng3d {
-    /**
-     * Register a property of an instance is can be bound.
-     * This method is ususally invoked by Watcher class.
-     *
-     * @param instance the instance to be registered.
-     * @param property the property of specified instance to be registered.
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * 标记实例的一个属性是可绑定的,此方法通常由 Watcher 类调用。
-     *
-     * @param instance 要标记的实例
-     * @param property 可绑定的属性。
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @language zh_CN
-     */
-    function registerBindable(instance: any, property: string): void;
-    /**
-     * The Watcher class defines utility method that you can use with bindable properties.
-     * These methods var you define an event handler that is executed whenever a bindable property is updated.
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @includeExample extension/eui/binding/WatcherExample.ts
-     * @language en_US
-     */
-    /**
-     * Watcher 类能够监视可绑定属性的改变，您可以定义一个事件处理函数作为 Watcher 的回调方法，在每次可绑定属性的值改变时都执行此函数。
-     *
-     * @version Egret 2.4
-     * @version eui 1.0
-     * @platform Web,Native
-     * @includeExample extension/eui/binding/WatcherExample.ts
-     * @language zh_CN
-     */
-    class Watcher {
-        /**
-         * Creates and starts a Watcher instance.
-         * The Watcher can only watch the property of a Object which host is instance of egret.IEventDispatcher.
-         * @param host The object that hosts the property or property chain to be watched.
-         * You can use the use the <code>reset()</code> method to change the value of the <code>host</code> argument
-         * after creating the Watcher instance.
-         * The <code>host</code> maintains a list of <code>handlers</code> to invoke when <code>prop</code> changes.
-         * @param chain A value specifying the property or chain to be watched.
-         * For example, to watch the property <code>host.a.b.c</code>,
-         * call the method as: <code>watch(host, ["a","b","c"], ...)</code>.
-         * @param handler  An event handler function called when the value of the watched property
-         * (or any property in a watched chain) is modified.
-         * @param thisObject <code>this</code> object of which binding with handler
-         * @returns he ChangeWatcher instance, if at least one property name has been specified to
-         * the <code>chain</code> argument; null otherwise.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建并启动 Watcher 实例。注意：Watcher 只能监视 host 为 egret.IEventDispatcher 对象的属性改变。若属性链中某个属性所对应的实例不是 egret.IEventDispatcher，
-         * 则属性链中在它之后的属性改变将无法检测到。
-         * @param host 用于承载要监视的属性或属性链的对象。
-         * 创建Watcher实例后，您可以利用<code>reset()</code>方法更改<code>host</code>参数的值。
-         * 当<code>prop</code>改变的时候，会使得host对应的一系列<code>handlers</code>被触发。
-         * @param chain 用于指定要监视的属性链的值。例如，要监视属性 host.a.b.c，需按以下形式调用此方法：watch¬(host, ["a","b","c"], ...)。
-         * @param handler 在监视的目标属性链中任何属性的值发生改变时调用的事件处理函数。
-         * @param thisObject handler 方法绑定的this对象
-         * @returns 如果已为 chain 参数至少指定了一个属性名称，则返回 Watcher 实例；否则返回 null。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        static watch(host: any, chain: string[], handler: (value: any) => void, thisObject: any): Watcher;
-        /**
-         * @private
-         * 检查属性是否可以绑定。若还未绑定，尝试添加绑定事件。若是只读或只写属性，返回false。
-         */
-        private static checkBindable(host, property);
-        /**
-         * Constructor.
-         * Not for public use. This method is called only from the <code>watch()</code> method.
-         * See the <code>watch()</code> method for parameter usage.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 构造函数，非公开。只能从 watch() 方法中调用此方法。有关参数用法，请参阅 watch() 方法。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        constructor(property: string, handler: (value: any) => void, thisObject: any, next?: Watcher);
-        /**
-         * @private
-         */
-        private host;
-        /**
-         * @private
-         */
-        private property;
-        /**
-         * @private
-         */
-        private handler;
-        /**
-         * @private
-         */
-        private thisObject;
-        /**
-         * @private
-         */
-        private next;
-        /**
-         * @private
-         */
-        private isExecuting;
-        /**
-         * Detaches this Watcher instance, and its handler function, from the current host.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 从当前宿主中断开此 Watcher 实例及其处理函数。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        unwatch(): void;
-        /**
-         * Retrieves the current value of the watched property or property chain, or null if the host object is null.
-         * @example
-         * <pre>
-         * watch(obj, ["a","b","c"], ...).getValue() === obj.a.b.c
-         * </pre>
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 检索观察的属性或属性链的当前值，当宿主对象为空时此值为空。
-         * @example
-         * <pre>
-         * watch(obj, ["a","b","c"], ...).getValue() === obj.a.b.c
-         * </pre>
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        getValue(): any;
-        setValue(value: any): void;
-        /**
-         * Sets the handler function.s
-         * @param handler The handler function. This argument must not be null.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 设置处理函数。
-         * @param handler 处理函数，此参数必须为非空。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        setHandler(handler: (value: any) => void, thisObject: any): void;
-        /**
-         * Resets this ChangeWatcher instance to use a new host object.
-         * You can call this method to reuse a watcher instance on a different host.
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 重置此 Watcher 实例使用新的宿主对象。
-         * 您可以通过该方法实现一个Watcher实例用于不同的宿主。
-         * @version Egret 2.4
-         * @version eui 1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        reset(newHost: Object): void;
-        /**
-         * @private
-         *
-         * @returns
-         */
-        private getHostPropertyValue();
-        /**
-         * @private
-         *
-         * @returns
-         */
-        private setHostPropertyValue(value);
-        /**
-         * @private
-         */
-        private onPropertyChange(property);
-    }
-}
-declare namespace feng3d {
-    /**
-     * 绑定工具类
-     */
-    class Binding {
-        /**
-         * （单向）绑定属性
-         * @param host 用于承载要监视的属性或属性链的对象。
-         * 当 <code>host</code>上<code>chain</code>所对应的值发生改变时，<code>target</code>上的<code>prop</code>属性将被自动更新。
-         * @param chain 用于指定要监视的属性链的值。例如，要监视属性 <code>host.a.b.c</code>，需按以下形式调用此方法：<code>bindProperty(host, ["a","b","c"], ...)。</code>
-         * @param target 本次绑定要更新的目标对象。
-         * @param prop 本次绑定要更新的目标属性名称。
-         * @returns 如果已为 chain 参数至少指定了一个属性名称，则返回 Watcher 实例；否则返回 null。
-         */
-        static bindProperty(host: any, chain: string[], target: any, prop: string): Watcher;
-        /**
-         * 双向绑定属性
-         */
-        static bothBindProperty(hosta: any, chaina: string[], hostb: any, chainb: string[]): BothBind;
-    }
-    class BothBind {
-        private _watchera;
-        private _watcherb;
-        constructor(hosta: any, chaina: string[], hostb: any, chainb: string[]);
-        private todata();
-        private fromdata();
-        unwatch(): void;
-    }
-}
-declare namespace feng3d {
-    /**
-     * 获取feng3d运行时间，毫秒为单位
-     */
-    function getTimer(): number;
 }
 declare namespace feng3d {
     class StringUtils {
@@ -480,18 +177,18 @@ declare namespace feng3d {
          * @param thisObject                listener函数作用域
          * @param priority					事件侦听器的优先级。数字越大，优先级越高。默认优先级为 0。
          */
-        addItemEventListener(type: string, listener: (event: Event) => void, thisObject: any, priority?: number): void;
+        addItemEventListener(type: string, listener: (event: EventVO<any>) => void, thisObject: any, priority?: number): void;
         /**
          * 移除项事件
          * @param type						事件的类型。
          * @param listener					要删除的侦听器对象。
          * @param thisObject                listener函数作用域
          */
-        removeItemEventListener(type: string, listener: (event: Event) => void, thisObject: any): void;
+        removeItemEventListener(type: string, listener: (event: EventVO<any>) => void, thisObject: any): void;
     }
 }
 declare namespace feng3d {
-    class ArrayList<T> extends EventDispatcher implements IList<T> {
+    class ArrayList<T> implements IList<T> {
         private readonly _source;
         private readonly _eventDispatcher;
         /**
@@ -542,14 +239,14 @@ declare namespace feng3d {
          * @param thisObject                listener函数作用域
          * @param priority					事件侦听器的优先级。数字越大，优先级越高。默认优先级为 0。
          */
-        addItemEventListener(type: string, listener: (event: Event) => void, thisObject: any, priority?: number): void;
+        addItemEventListener(type: string, listener: (event: EventVO<any>) => void, thisObject: any, priority?: number): void;
         /**
          * 移除项事件
          * @param type						事件的类型。
          * @param listener					要删除的侦听器对象。
          * @param thisObject                listener函数作用域
          */
-        removeItemEventListener(type: string, listener: (event: Event) => void, thisObject: any): void;
+        removeItemEventListener(type: string, listener: (event: EventVO<any>) => void, thisObject: any): void;
     }
 }
 declare namespace feng3d {
@@ -1663,6 +1360,12 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    interface EventType {
+        /**
+         * [广播事件] 进入新的一帧,监听此事件将会在下一帧开始时触发一次回调。这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
+         */
+        enterFrame: any;
+    }
     /**
      * 心跳计时器单例
      */
@@ -1670,7 +1373,7 @@ declare namespace feng3d {
     /**
      * 心跳计时器
      */
-    class SystemTicker extends EventDispatcher {
+    class SystemTicker {
         static init(): void;
         private _startTime;
         /**
@@ -1713,7 +1416,7 @@ declare namespace feng3d {
      * @includeExample egret/utils/Timer.ts
      * @language zh_CN
      */
-    class Timer extends EventDispatcher {
+    class Timer {
         /**
          * Constructs a new Timer object with the specified delay and repeatCount states.
          * @param delay The delay between timer events, in milliseconds. A delay lower than 20 milliseconds is not recommended.
@@ -1863,10 +1566,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    interface Timer {
-        addEventListener<Z>(type: "timer" | "timerComplete", listener: (this: Z, e: TimerEvent) => void, thisObject: Z, priority?: number): any;
-        addEventListener(type: string, listener: Function, thisObject: any, priority?: number): any;
-    }
     /**
      * A Timer object dispatches a TimerEvent objects whenever the Timer object reaches the interval specified by the Timer.delay property.
      * @see egret.Timer
@@ -1883,7 +1582,7 @@ declare namespace feng3d {
      * @includeExample egret/events/TimerEvent.ts
      * @language zh_CN
      */
-    class TimerEvent extends Event {
+    class TimerEvent {
         /**
          * Dispatched whenever a Timer object reaches an interval specified according to the Timer.delay property.
          * @version Egret 2.4
@@ -1910,36 +1609,16 @@ declare namespace feng3d {
          * @language zh_CN
          */
         static TIMER_COMPLETE: "timerComplete";
-        /**
-         * Creates an Event object with specific information relevant to timer events.
-         * @param type The type of the event. Event listeners can access this information through the inherited type property.
-         * @param bubbles Determines whether the Event object bubbles. Event listeners can access this information through
-         * the inherited bubbles property.
-         * @param cancelable Determines whether the Event object can be canceled. Event listeners can access this information
-         * through the inherited cancelable property.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建一个 Event 对象，其中包含有关 timer 事件的特定信息。
-         * @param type 事件的类型。事件侦听器可以通过继承的 type 属性访问此信息。
-         * @param bubbles 确定 Event 对象是否冒泡。事件侦听器可以通过继承的 bubbles 属性访问此信息。
-         * @param cancelable 确定是否可以取消 Event 对象。事件侦听器可以通过继承的 cancelable 属性访问此信息。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        constructor(type: string, data?: any, bubbles?: boolean);
     }
 }
 declare namespace feng3d {
+    interface EventType {
+    }
     /**
      * 鼠标键盘输入，处理js事件中this关键字问题
      * @author feng 2016-12-19
      */
-    class Input extends EventDispatcher {
-        static init(): void;
+    class Input {
         clientX: number;
         clientY: number;
         constructor();
@@ -1947,60 +1626,38 @@ declare namespace feng3d {
          * 键盘按下事件
          */
         private onMouseKey(event);
-        /**
-         *
-         */
-        addEventListener(type: string, listener: (event: InputEvent) => void, thisObject: any, priority?: number): void;
     }
-    class InputEventType {
-        /** 鼠标双击 */
-        DOUBLE_CLICK: string;
-        /** 鼠标单击 */
-        CLICK: string;
-        /** 鼠标按下 */
-        MOUSE_DOWN: string;
-        /** 鼠标弹起 */
-        MOUSE_UP: string;
-        /** 鼠标中键单击 */
-        MIDDLE_CLICK: string;
-        /** 鼠标中键按下 */
-        MIDDLE_MOUSE_DOWN: string;
-        /** 鼠标中键弹起 */
-        MIDDLE_MOUSE_UP: string;
-        /** 鼠标右键单击 */
-        RIGHT_CLICK: string;
-        /** 鼠标右键按下 */
-        RIGHT_MOUSE_DOWN: string;
-        /** 鼠标右键弹起 */
-        RIGHT_MOUSE_UP: string;
-        /** 鼠标移动 */
-        MOUSE_MOVE: string;
-        /** 鼠标移出 */
-        MOUSE_OUT: string;
-        /** 鼠标移入 */
-        MOUSE_OVER: string;
-        /** 鼠标滚动滚轮 */
-        MOUSE_WHEEL: string;
-        /** 键盘按下 */
-        KEY_DOWN: string;
-        /** 键盘按着 */
-        KEY_PRESS: string;
-        /** 键盘弹起 */
-        KEY_UP: string;
-    }
-    class InputEvent extends Event {
-        data: Input;
+    class InputEvent {
         clientX: number;
         clientY: number;
         keyCode: number;
         wheelDelta: number;
-        constructor(event: WheelEvent | MouseEvent | KeyboardEvent, data?: Input, bubbles?: boolean);
+        type: string;
+        constructor(event: WheelEvent | MouseEvent | KeyboardEvent);
     }
     /**
      * 键盘鼠标输入
      */
     var input: Input;
-    var inputType: InputEventType;
+    var inputType: {
+        DOUBLE_CLICK: string;
+        CLICK: string;
+        MOUSE_DOWN: string;
+        MOUSE_UP: string;
+        MIDDLE_CLICK: string;
+        MIDDLE_MOUSE_DOWN: string;
+        MIDDLE_MOUSE_UP: string;
+        RIGHT_CLICK: string;
+        RIGHT_MOUSE_DOWN: string;
+        RIGHT_MOUSE_UP: string;
+        MOUSE_MOVE: string;
+        MOUSE_OUT: string;
+        MOUSE_OVER: string;
+        MOUSE_WHEEL: string;
+        KEY_DOWN: string;
+        KEY_PRESS: string;
+        KEY_UP: string;
+    };
 }
 declare namespace feng3d {
     /**
@@ -2057,7 +1714,7 @@ declare namespace feng3d {
      * 按键状态
      * @author feng 2016-4-26
      */
-    class KeyState extends EventDispatcher {
+    class KeyState {
         /**
          * 按键状态{key:键名称,value:是否按下}
          */
@@ -2246,21 +1903,6 @@ declare class StateCommand {
     constructor(state: string);
 }
 declare namespace feng3d {
-    /**
-     * 快捷键命令事件
-     * @author feng 2016-4-27
-     */
-    class ShortCutEvent extends Event {
-        /**
-         * 携带数据
-         */
-        data: InputEvent;
-        /**
-         * 构建
-         * @param command		命令名称
-         */
-        constructor(command: string, data: InputEvent);
-    }
 }
 declare namespace feng3d {
     /**
@@ -2285,13 +1927,13 @@ var shortcuts:Array = [ //
 //添加快捷键
 shortCut.addShortCuts(shortcuts);
 //监听命令
-shortCut.addEventListener("run", function(e:Event):void
+Event.on(shortCut,<any>"run", function(e:Event):void
 {
     trace("接受到命令：" + e.type);
 });
      * </pre>
      */
-    class ShortCut extends EventDispatcher {
+    class ShortCut {
         static init(): void;
         /**
          * 按键状态
@@ -2350,10 +1992,28 @@ shortCut.addEventListener("run", function(e:Event):void
 }
 declare namespace feng3d {
     /**
+     * 加载事件
+     * @author feng 2016-12-14
+     */
+    interface EventType {
+        /**
+         * 加载进度发生改变时调度。
+         */
+        progress: any;
+        /**
+         * 加载完成后调度。
+         */
+        complete: any;
+        /**
+         * 加载出错时调度。
+         */
+        error: any;
+    }
+    /**
      * 加载类
      * @author feng 2016-12-14
      */
-    class Loader extends EventDispatcher {
+    class Loader {
         private _request;
         private _image;
         /**
@@ -2416,24 +2076,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    /**
-     * 加载事件
-     * @author feng 2016-12-14
-     */
-    class LoaderEvent extends Event {
-        /**
-         * 加载进度发生改变时调度。
-         */
-        static PROGRESS: string;
-        /**
-         * 加载完成后调度。
-         */
-        static COMPLETE: string;
-        /**
-         * 加载出错时调度。
-         */
-        static ERROR: string;
-    }
 }
 declare namespace feng3d {
     /**

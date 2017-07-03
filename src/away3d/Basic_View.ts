@@ -21,10 +21,10 @@ namespace feng3d
             var material = model.material = new StandardMaterial("resources/floor_diffuse.jpg");
             scene.transform.addChild(this._plane.transform);
 
-            ticker.addEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);
+            Event.on(ticker, "enterFrame", this._onEnterFrame, this);
         }
 
-        private _onEnterFrame(e: Event)
+        private _onEnterFrame(e: EventVO<any>)
         {
             this._plane.transform.rotationY += 1;
             this._view.render();

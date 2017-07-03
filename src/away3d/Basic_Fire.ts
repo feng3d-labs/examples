@@ -117,19 +117,19 @@ namespace feng3d
                 particleMesh.transform.x = Math.sin(degree) * 400;
                 particleMesh.transform.z = Math.cos(degree) * 400;
                 particleMesh.transform.y = 5;
-                this.fireObjects.push(new FireVO(particleMesh,particleAnimator));
+                this.fireObjects.push(new FireVO(particleMesh, particleAnimator));
                 this.view.scene.transform.addChild(particleMesh.transform);
             }
             this.timer = new Timer(1000, this.fireObjects.length);
-            this.timer.addEventListener(TimerEvent.TIMER, this.onTimer, this);
+            Event.on(this.timer, <any>TimerEvent.TIMER, this.onTimer, this);
             this.timer.start();
         }
 
         private initListeners()
         {
-            ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);
-            input.addEventListener(inputType.MOUSE_DOWN, this.onMouseDown, this);
-            input.addEventListener(inputType.MOUSE_UP, this.onMouseUp, this);
+            Event.on(ticker, "enterFrame", this.onEnterFrame, this);
+            Event.on(input, <any>inputType.MOUSE_DOWN, this.onMouseDown, this);
+            Event.on(input, <any>inputType.MOUSE_UP, this.onMouseUp, this);
         }
 
         private getAllLights(): Array<any>

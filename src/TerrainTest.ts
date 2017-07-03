@@ -15,7 +15,7 @@ namespace feng3d
             this.camera.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.camera.gameObject);
-            ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);
+            Event.on(ticker, "enterFrame", this.onEnterFrame, this);
         }
 
         private onEnterFrame()
@@ -44,7 +44,7 @@ namespace feng3d
 
             //初始化光源
             var light1 = this.light1 = GameObject.create();
-            var pointLight1 =  light1.addComponent(PointLight);
+            var pointLight1 = light1.addComponent(PointLight);
             // pointLight1.range = 1000;
             pointLight1.color = new Color(1, 1, 0, 1);
             light1.transform.y = 300;

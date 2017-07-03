@@ -24,7 +24,7 @@ namespace feng3d
             var scene3D = this.view3D.scene;
 
             var loader = new Loader();
-            loader.addEventListener(LoaderEvent.COMPLETE, function ()
+            Event.on(loader, "complete", function ()
             {
                 var json = JSON.parse(loader.content);
                 var scene: Scene3D = serialization.readObject(json);

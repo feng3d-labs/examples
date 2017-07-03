@@ -20,13 +20,13 @@ namespace feng3d
             this.camera.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.view3D.camera.gameObject);
-
-            input.addEventListener(inputType.KEY_UP, this.onKeyUp, this);
+            Event.on(input, <any>inputType.KEY_UP, this.onKeyUp, this);
         }
 
-        private onKeyUp(event: InputEvent)
+        private onKeyUp(event: EventVO<any>)
         {
-            var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
+            var inputEvent: InputEvent = event.data;
+            var boardKey = String.fromCharCode(inputEvent.keyCode).toLocaleLowerCase();
             switch (boardKey)
             {
                 case "c":
@@ -50,7 +50,7 @@ namespace feng3d
             this.initObjects();
             this.initLights();
 
-            ticker.addEventListener(Event.ENTER_FRAME, this.setPointLightPosition, this);
+            Event.on(ticker, "enterFrame", this.setPointLightPosition, this);
         }
 
         private initObjects()

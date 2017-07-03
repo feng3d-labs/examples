@@ -117,9 +117,9 @@ namespace feng3d
 
         private initListeners()
         {
-            ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, this);
-            input.addEventListener(inputType.MOUSE_DOWN, this.onMouseDown, this);
-            input.addEventListener(inputType.MOUSE_UP, this.onMouseUp, this);
+            Event.on(ticker, "enterFrame", this.onEnterFrame, this);
+            Event.on(input, <any>inputType.MOUSE_DOWN, this.onMouseDown, this);
+            Event.on(input, <any>inputType.MOUSE_UP, this.onMouseUp, this);
         }
 
         private onEnterFrame(event: Event)

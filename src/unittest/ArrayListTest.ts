@@ -27,7 +27,7 @@ namespace feng3d
         {
             var arr = [1, 2];
             var arrayList = new ArrayList(arr);
-            assert(arr.length == arrayList.length);
+            console.assert(arr.length == arrayList.length);
         }
 
         /**
@@ -39,7 +39,7 @@ namespace feng3d
             var arrayList = new ArrayList();
             arrayList.addItem(1);
             arrayList.addItem(arr);
-            assert(arrayList.length == arr.length + 1);
+            console.assert(arrayList.length == arr.length + 1);
         }
 
         /**
@@ -55,7 +55,7 @@ namespace feng3d
             }
             for (var i = 0; i < 10; i++)
             {
-                assert(arrayList.getItemAt(i) == i);
+                console.assert(arrayList.getItemAt(i) == i);
             }
         }
 
@@ -72,7 +72,7 @@ namespace feng3d
             }
             for (var i = 0; i < 10; i++)
             {
-                assert(arrayList.getItemAt(i) == i);
+                console.assert(arrayList.getItemAt(i) == i);
             }
         }
 
@@ -89,7 +89,7 @@ namespace feng3d
             }
             for (var i = 0; i < 10; i++)
             {
-                assert(arrayList.getItemIndex(i) == i);
+                console.assert(arrayList.getItemIndex(i) == i);
             }
         }
 
@@ -100,9 +100,9 @@ namespace feng3d
         {
             var arr = [1, 2, 1, 4];
             var arrayList = new ArrayList(arr);
-            assert(arr.length == arrayList.length);
+            console.assert(arr.length == arrayList.length);
             arrayList.removeAll();
-            assert(0 == arrayList.length);
+            console.assert(0 == arrayList.length);
         }
 
         /**
@@ -117,7 +117,7 @@ namespace feng3d
                 var element = arr[i];
                 arrayList.removeItem(element);
             }
-            assert(0 == arrayList.length);
+            console.assert(0 == arrayList.length);
         }
 
         /**
@@ -131,7 +131,7 @@ namespace feng3d
             {
                 arrayList.removeItemAt(i);
             }
-            assert(0 == arrayList.length);
+            console.assert(0 == arrayList.length);
         }
 
         /**
@@ -147,7 +147,7 @@ namespace feng3d
             }
             for (var i = arr.length - 1; i >= 0; i--)
             {
-                assert(0 == arrayList.getItemAt(i));
+                console.assert(0 == arrayList.getItemAt(i));
             }
         }
 
@@ -161,7 +161,7 @@ namespace feng3d
             var arr1 = arrayList.toArray();
             for (var i = arr.length - 1; i >= 0; i--)
             {
-                assert(arr1[i] == arr[i]);
+                console.assert(arr1[i] == arr[i]);
             }
         }
 
@@ -180,10 +180,10 @@ namespace feng3d
             {
                 changeItem = event.target;
             }, null);
-            var eventDispatcher = new EventDispatcher();
+            var eventDispatcher = {};
             arrayList.addItem(eventDispatcher);
-            eventDispatcher.dispatchEvent(new Event("change"));
-            assert(eventDispatcher == changeItem);
+            Event.dispatch(eventDispatcher, "change");
+            console.assert(eventDispatcher == changeItem);
         }
 
         /**
@@ -201,14 +201,14 @@ namespace feng3d
                 changeItem = event.target;
             }
             arrayList.addItemEventListener("change", onChange, null);
-            var eventDispatcher = new EventDispatcher();
+            var eventDispatcher = {};
             arrayList.addItem(eventDispatcher);
-            eventDispatcher.dispatchEvent(new Event("change"));
-            assert(eventDispatcher == changeItem);
+            Event.dispatch(eventDispatcher, "change");
+            console.assert(eventDispatcher == changeItem);
             changeItem = null;
             arrayList.removeItemEventListener("change", onChange, null);
-            eventDispatcher.dispatchEvent(new Event("change"));
-            assert(null === changeItem);
+            Event.dispatch(eventDispatcher, "change");
+            console.assert(null === changeItem);
         }
     }
 }

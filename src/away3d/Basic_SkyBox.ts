@@ -8,7 +8,7 @@ namespace feng3d
 
         public constructor()
         {
-            
+
             var view3D = this._view = new View3D();
 
             var scene = view3D.scene;
@@ -52,10 +52,10 @@ namespace feng3d
             model.material = torusMaterial;
             scene.transform.addChild(torus.transform);
 
-            ticker.addEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);
+            Event.on(ticker, "enterFrame", this._onEnterFrame, this);
         }
 
-        private _onEnterFrame(e: Event)
+        private _onEnterFrame(e: EventVO<any>)
         {
             this._torus.transform.rotationX += 2;
             this._torus.transform.rotationY += 1;

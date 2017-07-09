@@ -19,7 +19,7 @@ namespace feng3d
             {
                 if (object)
                 {
-                    object.transform.rotationY += 1;
+                    object.transform.ry += 1;
                 }
             }, 15);
 
@@ -37,9 +37,9 @@ namespace feng3d
             objLoader.load(objUrl, material, function (object3D: GameObject)
             {
                 object = object3D;
-                object.transform.scaleX = 20;
-                object.transform.scaleY = 20;
-                object.transform.scaleZ = 20;
+                object.transform.sx = 20;
+                object.transform.sy = 20;
+                object.transform.sz = 20;
                 object.transform.z = 300;
                 scene.transform.addChild(object3D.transform);
             });

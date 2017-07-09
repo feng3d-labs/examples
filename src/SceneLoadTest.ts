@@ -27,7 +27,7 @@ namespace feng3d
             Event.on(loader, "complete", function ()
             {
                 var json = JSON.parse(loader.content);
-                var scene: Scene3D = serialization.readObject(json);
+                var scene: Scene3D = Serialization.deserialize(json);
                 for (var i = 0; i < scene.transform.childCount; i++)
                 {
                     scene3D.transform.addChild(scene.transform.getChildAt(i));

@@ -33,8 +33,8 @@ namespace feng3d
             //变化旋转
             setInterval(function ()
             {
-                object3D.transform.rotationY += 1;
-                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.rotationY / 30);
+                object3D.transform.ry += 1;
+                pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.ry / 30);
             }, 15);
         }
     }

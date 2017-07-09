@@ -26,7 +26,7 @@ namespace feng3d
 
         private _onEnterFrame(e: EventVO<any>)
         {
-            this._plane.transform.rotationY += 1;
+            this._plane.transform.ry += 1;
             this._view.render();
         }
     }

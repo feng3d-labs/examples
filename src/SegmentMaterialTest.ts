@@ -42,7 +42,7 @@ namespace feng3d
             //变化旋转
             setInterval(function ()
             {
-                segment.transform.rotationY += 1;
+                segment.transform.ry += 1;
             }, 15);
         }
     }

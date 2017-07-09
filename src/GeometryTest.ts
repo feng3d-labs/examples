@@ -11,7 +11,7 @@ namespace feng3d
 
         init()
         {
-            
+
             this.view3D = new View3D();
 
             var object3d = GameObject.create();
@@ -30,9 +30,8 @@ namespace feng3d
 
             addGeometry.width = 50;
             matrix3D.appendTranslation(0, 50, 0);
-            matrix3D.appendRotation(45, Vector3D.Z_AXIS);
+            matrix3D.appendRotation(Vector3D.Z_AXIS, 45);
             geometry.addGeometry(addGeometry, matrix3D);
-
 
             object3d.transform.z = 300;
             object3d.transform.y = -100;
@@ -44,7 +43,7 @@ namespace feng3d
             //变化旋转与颜色
             setInterval(function ()
             {
-                object3d.transform.rotationY += 1;
+                object3d.transform.ry += 1;
             }, 15);
             setInterval(function ()
             {

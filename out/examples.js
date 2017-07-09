@@ -572,7 +572,7 @@ var feng3d;
             var loader = new feng3d.Loader();
             feng3d.Event.on(loader, "complete", function () {
                 var json = JSON.parse(loader.content);
-                var scene = feng3d.serialization.readObject(json);
+                var scene = feng3d.Serialization.deserialize(json);
                 for (var i = 0; i < scene.transform.childCount; i++) {
                     scene3D.transform.addChild(scene.transform.getChildAt(i));
                 }

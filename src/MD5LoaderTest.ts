@@ -11,7 +11,6 @@ namespace feng3d
 
         init()
         {
-
             this.view3D = new View3D();
 
             // //变化旋转
@@ -19,7 +18,7 @@ namespace feng3d
             {
                 if (object)
                 {
-                    object.transform.rotationY += 1;
+                    object.transform.ry += 1;
                 }
             }, 15);
 
@@ -34,7 +33,7 @@ namespace feng3d
             {
 
                 object3D.transform.y = -100;
-                object3D.transform.rotationX = -90;
+                object3D.transform.rx = -90;
 
                 object = object3D;
 

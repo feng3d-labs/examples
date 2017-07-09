@@ -127,6 +127,27 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
+     * 序列化装饰器，被装饰属性将被序列化
+     */
+    function serialize(target: any, propertyKey: string): void;
+    /**
+     * 观察装饰器，观察被装饰属性的变化
+     * @param onChange 属性变化回调
+     */
+    function watch(onChange: string): (target: any, propertyKey: string) => void;
+}
+declare namespace feng3d {
+    /**
+     * 数据序列化
+     * @author feng 2017-03-11
+     */
+    class Serialization {
+        static serialize(object: any, data?: any): any;
+        static deserialize(data: any, object?: any): any;
+    }
+}
+declare namespace feng3d {
+    /**
      * 按顺序组织的项目的集合。提供基于索引的访问和处理方法。
      */
     interface IList<T> {
@@ -732,6 +753,10 @@ declare namespace feng3d {
          * 返回当前 Vector3D 对象4个元素的数组
          */
         toArray(num?: 3 | 4): number[];
+        /**
+         * 比较矩阵是否相等
+         */
+        compare(matrix3D: Vector3D, num?: 3 | 4, precision?: number): boolean;
     }
 }
 declare namespace feng3d {
@@ -804,23 +829,44 @@ declare namespace feng3d {
          * 创建旋转矩阵
          * @param   degrees         角度
          * @param   axis            旋转轴
-         * @param   pivotPoint      旋转中心点
          */
-        static createRotationMatrix3D(degrees: number, axis: Vector3D): Matrix3D;
+        static fromAxisRotate(degrees: number, axis: Vector3D): Matrix3D;
+        /**
+         * 创建旋转矩阵
+         * @param   rx      用于沿 x 轴旋转对象的角度。
+         * @param   ry      用于沿 y 轴旋转对象的角度。
+         * @param   rz      用于沿 z 轴旋转对象的角度。
+         */
+        static fromRotation(rx: number, ry: number, rz: number): Matrix3D;
+        /**
+         * 创建旋转矩阵
+         * @param   degrees         角度
+         */
+        static fromRotation(euler: Vector3D): Matrix3D;
         /**
          * 创建缩放矩阵
          * @param   xScale      用于沿 x 轴缩放对象的乘数。
          * @param   yScale      用于沿 y 轴缩放对象的乘数。
          * @param   zScale      用于沿 z 轴缩放对象的乘数。
          */
-        static createScaleMatrix3D(xScale: number, yScale: number, zScale: number): Matrix3D;
+        static fromScale(xScale: number, yScale: number, zScale: number): Matrix3D;
+        /**
+         * 创建缩放矩阵
+         * @param   scale       缩放值
+         */
+        static fromScale(scale: Vector3D): Matrix3D;
         /**
          * 创建位移矩阵
          * @param   x   沿 x 轴的增量平移。
          * @param   y   沿 y 轴的增量平移。
          * @param   z   沿 z 轴的增量平移。
          */
-        static createTranslationMatrix3D(x: number, y: number, z: number): Matrix3D;
+        static fromPosition(x: number, y: number, z: number): Matrix3D;
+        /**
+         * 创建位移矩阵
+         * @param   position        位置
+         */
+        static fromPosition(position: Vector3D): Matrix3D;
         /**
          * 通过将另一个 Matrix3D 对象与当前 Matrix3D 对象相乘来后置一个矩阵。
          */

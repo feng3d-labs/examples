@@ -24,20 +24,34 @@
     <!--<script src="out/examples.js"></script>-->
 
     <!-- 合并js -->
-    <script src="../out/examples.js"></script>
+    <script src="loadjs.js"></script>
 </head>
 
 <body style="background-color: #a18c34;">
     <script>
-        function GetQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) return r[2];
-            return null;
+        var loadpaths = [//
+            '../out/examples.js',
+        ];
+
+        for (var i = 0; i < loadpaths.length; i++) {
+            loadpaths[i] = loadpaths[i] + "?version=" + Math.random();
         }
-        var type = GetQueryString("type");
-        type = type || "PrimitiveTest";
-        new feng3d[type]();
+
+        loadjs(loadpaths, {
+            success: function () {
+                if (top != window)
+                    top.feng3dWin = window;
+                function GetQueryString(name) {
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                    var r = window.location.search.substr(1).match(reg);
+                    if (r != null) return r[2];
+                    return null;
+                }
+                var type = GetQueryString("type");
+                type = type || "PrimitiveTest";
+                new feng3d[type]();
+            }
+        });
     </script>
 </body>
 

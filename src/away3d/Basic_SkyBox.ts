@@ -57,10 +57,10 @@ namespace feng3d
 
         private _onEnterFrame(e: EventVO<any>)
         {
-            this._torus.transform.rotationX += 2;
-            this._torus.transform.rotationY += 1;
-            this.camera.transform.setPosition(0, 0, 0);
-            this.camera.transform.rotationY += 0.5 * (this._view.mousePos.x - this._view.width / 2) / 800;
+            this._torus.transform.rx += 2;
+            this._torus.transform.ry += 1;
+            this.camera.transform.position = new Vector3D(0, 0, 0);
+            this.camera.transform.ry += 0.5 * (this._view.mousePos.x - this._view.width / 2) / 800;
             this.camera.transform.moveBackward(600);
         }
     }

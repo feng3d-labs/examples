@@ -21,7 +21,7 @@ namespace feng3d
             //变化旋转与颜色
             setInterval(function ()
             {
-                cube.transform.rotationY += 1;
+                cube.transform.ry += 1;
             }, 15);
 
             var model = cube.addComponent(MeshRenderer);

@@ -68,14 +68,14 @@ namespace feng3d
             this.light1 = GameObject.create();
             var directionalLight = this.light1.addComponent(DirectionalLight);
             directionalLight.intensity = 0.7;
-            this.light1.transform.rotationX = 90;
+            this.light1.transform.rx = 90;
             this.scene.transform.addChild(this.light1.transform);
 
             this.light2 = GameObject.create();
             var directionalLight = this.light2.addComponent(DirectionalLight);
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
-            this.light2.transform.rotationX = 90;
+            this.light2.transform.rx = 90;
             this.scene.transform.addChild(this.light2.transform);
         }
 
@@ -129,8 +129,8 @@ namespace feng3d
                 this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
                 this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
             }
-            this.light1.transform.rotationX = 30;
-            this.light1.transform.rotationY++;
+            this.light1.transform.rx = 30;
+            this.light1.transform.ry++;
         }
 
         private onMouseDown(event: Event)

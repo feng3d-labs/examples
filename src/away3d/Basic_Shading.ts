@@ -17,13 +17,13 @@ namespace feng3d
         private sphere: GameObject;
         private cube: GameObject;
         private torus: GameObject;
-        private move: boolean = false;
-        private lastPanAngle: number = 0;
-        private lastTiltAngle: number = 0;
-        private lastMouseX: number = 0;
-        private lastMouseY: number = 0;
+        private move = false;
+        private lastPanAngle = 0;
+        private lastTiltAngle = 0;
+        private lastMouseX = 0;
+        private lastMouseY = 0;
 
-        public constructor()
+        constructor()
         {
             this.init();
         }

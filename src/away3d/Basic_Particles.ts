@@ -5,13 +5,13 @@ namespace feng3d
         private _view: View3D;
         private _cameraController: HoverController;
         private _particleMesh: GameObject;
-        private _move: boolean = false;
-        private _lastPanAngle: number = NaN;
-        private _lastTiltAngle: number = NaN;
-        private _lastMouseX: number = NaN;
-        private _lastMouseY: number = NaN;
+        private _move = false;
+        private _lastPanAngle = NaN;
+        private _lastTiltAngle = NaN;
+        private _lastMouseX = NaN;
+        private _lastMouseY = NaN;
 
-        public constructor()
+        constructor()
         {
 
             var view3D = this._view = new View3D();
@@ -38,9 +38,9 @@ namespace feng3d
                 {
                     particle.birthTime = Math.random() * 5 - 5;
                     particle.lifetime = 5;
-                    var degree1: number = Math.random() * Math.PI;
-                    var degree2: number = Math.random() * Math.PI * 2;
-                    var r: number = Math.random() * 50 + 400;
+                    var degree1 = Math.random() * Math.PI;
+                    var degree2 = Math.random() * Math.PI * 2;
+                    var r = Math.random() * 50 + 400;
                     particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                 }, priority: 0
             });

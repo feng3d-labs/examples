@@ -6,7 +6,7 @@ namespace feng3d
         private _view: View3D;
         private _plane: GameObject;
 
-        public constructor()
+        constructor()
         {
             this._view = new View3D(null, null, null, false);
             var scene = this._view.scene;

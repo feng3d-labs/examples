@@ -2,7 +2,7 @@ namespace feng3d
 {
     export class Basic_Fire
     {
-        public static NUM_FIRES: number = 10;
+        static NUM_FIRES = 10;
         private scene: Scene3D;
         private camera: Camera;
         private view: View3D;
@@ -15,13 +15,13 @@ namespace feng3d
         private timer: Timer;
         private plane: GameObject;
         private fireObjects: Array<FireVO> = new Array<FireVO>();
-        private move: boolean = false;
-        private lastPanAngle: number = NaN;
-        private lastTiltAngle: number = NaN;
-        private lastMouseX: number = NaN;
-        private lastMouseY: number = NaN;
+        private move = false;
+        private lastPanAngle = NaN;
+        private lastTiltAngle = NaN;
+        private lastMouseX = NaN;
+        private lastMouseY = NaN;
 
-        public constructor()
+        constructor()
         {
             this.init();
         }
@@ -87,9 +87,9 @@ namespace feng3d
 
                     particle.birthTime = Math.random() * 5;
                     particle.lifetime = Math.random() * 4 + 0.1;
-                    var degree1: number = Math.random() * Math.PI * 2;
-                    var degree2: number = Math.random() * Math.PI * 2;
-                    var r: number = <any>15;
+                    var degree1 = Math.random() * Math.PI * 2;
+                    var degree2 = Math.random() * Math.PI * 2;
+                    var r = <any>15;
                     particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                 }, priority: 0
             });
@@ -105,7 +105,7 @@ namespace feng3d
             model.material = this.planeMaterial;
             this.plane.transform.y = -20;
             this.scene.transform.addChild(this.plane.transform);
-            for (var i: number = 0; i < Basic_Fire.NUM_FIRES; i++)
+            for (var i = 0; i < Basic_Fire.NUM_FIRES; i++)
             {
                 var particleMesh = GameObject.create();
                 var model = particleMesh.addComponent(MeshRenderer);
@@ -113,7 +113,7 @@ namespace feng3d
                 model.material = this.particleMaterial;
                 var particleAnimator = particleMesh.addComponent(ParticleAnimator);
                 particleAnimator.animatorSet = this.fireAnimationSet;
-                var degree: number = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
+                var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
                 particleMesh.transform.x = Math.sin(degree) * 400;
                 particleMesh.transform.z = Math.cos(degree) * 400;
                 particleMesh.transform.y = 5;
@@ -199,12 +199,12 @@ namespace feng3d
 
     class FireVO
     {
-        public mesh: GameObject;
-        public animator: ParticleAnimator;
-        public light: PointLight;
-        public strength: number = 0;
+        mesh: GameObject;
+        animator: ParticleAnimator;
+        light: PointLight;
+        strength = 0;
 
-        public constructor(mesh: GameObject, animator: ParticleAnimator)
+        constructor(mesh: GameObject, animator: ParticleAnimator)
         {
             this.mesh = mesh;
             this.animator = animator;

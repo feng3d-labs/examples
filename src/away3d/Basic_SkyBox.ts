@@ -6,7 +6,7 @@ namespace feng3d
         private _torus: GameObject;
         private camera: Camera;
 
-        public constructor()
+        constructor()
         {
 
             var view3D = this._view = new View3D();

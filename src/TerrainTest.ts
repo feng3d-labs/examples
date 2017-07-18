@@ -15,6 +15,7 @@ namespace feng3d
             this.camera.transform.lookAt(new Vector3D());
             //
             this.controller = new FPSController(this.camera.gameObject);
+
             Event.on(ticker, "enterFrame", this.onEnterFrame, this);
         }
 
@@ -24,11 +25,13 @@ namespace feng3d
             var angle = time / 1000;
             this.light1.transform.x = Math.sin(angle) * 300;
             this.light1.transform.z = Math.cos(angle) * 300;
+            this.view3D.render();
         }
 
         init()
         {
             this.view3D = new View3D();
+            this.view3D.autoRender = false;
 
             var scene = this.view3D.scene;
             var root = 'resources/terrain/';

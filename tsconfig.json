@@ -1,0 +1,49 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"noImplicitAny": false,
+		"sourceMap": true,
+		"experimentalDecorators": true,
+		"declaration": true,
+		"outFile": "out/examples.js"
+	},
+	"files": [ //注：如果有继承关系的，父类必须排在子类前面
+		//
+		"src/BillboardTest.ts",
+		"src/ColorMaterialTest.ts",
+		"src/Container3DTest.ts",
+		"src/FPSControllerTest.ts",
+		"src/GeometryTest.ts",
+		"src/MD5LoaderTest.ts",
+		"src/MousePickTest.ts",
+		"src/OBJParserTest.ts",
+		"src/ParticleAnimatorTest.ts",
+		"src/PointLightTest.ts",
+		"src/PointMaterialTest.ts",
+		"src/PrimitiveTest.ts",
+		"src/SceneLoadTest.ts",
+		"src/SegmentMaterialTest.ts",
+		"src/SkyBoxTest.ts",
+		"src/StandardMaterialTest.ts",
+		"src/TerrainTest.ts",
+		"src/TerrainMergeTest.ts",
+		"src/TextureMaterialTest.ts",
+		"src/FogTest.ts",
+		"src/ScriptTest.ts",
+		//
+		"src/war3/MdlParserTest.ts",
+		//
+		"src/away3d/Basic_SkyBox.ts",
+		"src/away3d/Basic_Shading.ts",
+		"src/away3d/Basic_Particles.ts",
+		"src/away3d/Basic_Fire.ts",
+		"src/away3d/Basic_View.ts"
+	],
+	"include": [
+		"../**/*.ts",
+		"../**/out/*.d.ts"
+	],
+	"exclude": [
+		"../**/*.d.ts"
+	]
+}

@@ -9,6 +9,13 @@ namespace feng3d
             this.init();
             //
             this.controller = new FPSController(this.view3D.camera.gameObject);
+
+            requestAnimationFrame(this.animate.bind(this));
+        }
+
+        animate()
+        {
+            requestAnimationFrame(this.animate.bind(this));
         }
 
         init()

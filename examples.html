@@ -15,14 +15,6 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <!-- libs -->
-    <!--<script src="libs/event.js"></script>
-    <script src="libs/common.js"></script>
-    <script src="libs/render.js"></script>
-    <script src="libs/feng3d.js"></script>-->
-    <!-- demos -->
-    <!--<script src="out/examples.js"></script>-->
-
     <!-- 合并js -->
     <script src="loadjs.js"></script>
 </head>
@@ -30,28 +22,46 @@
 <body style="background-color: #a18c34;">
     <script>
         var loadpaths = [//
-            '../out/examples.js',
+            "../event/out/event.js",
+            "../common/out/common.js",
+            "../render/out/render.js",
+            "../feng3d/out/feng3d.js",
+            "../war3model/out/war3model.js",
+            "../unittest/out/unittest.js",
+            "../examples/out/examples.js",
         ];
 
         for (var i = 0; i < loadpaths.length; i++) {
             loadpaths[i] = loadpaths[i] + "?version=" + Math.random();
         }
 
-        loadjs(loadpaths, {
-            success: function () {
-                if (top != window)
-                    top.feng3dWin = window;
-                function GetQueryString(name) {
-                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-                    var r = window.location.search.substr(1).match(reg);
-                    if (r != null) return r[2];
-                    return null;
-                }
-                var type = GetQueryString("type");
-                type = type || "PrimitiveTest";
-                new feng3d[type]();
+        function loadjsSync(loadpaths) {
+            if (loadpaths.length == 0) {
+                loadComplete();
+                return;
             }
-        });
+            loadjs(loadpaths.splice(0, 1), {
+                success: function () {
+                    loadjsSync(loadpaths);
+                }
+            });
+        }
+
+        function loadComplete() {
+            if (top != window)
+                top.feng3dWin = window;
+            function GetQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return r[2];
+                return null;
+            }
+            var type = GetQueryString("type");
+            type = type || "PrimitiveTest";
+            new feng3d[type]();
+        }
+
+        loadjsSync(loadpaths);
     </script>
 </body>
 

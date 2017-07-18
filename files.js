@@ -6,6 +6,7 @@ var files = {
         "MousePickTest",
         "SkyBoxTest",
         "FogTest",
+        "ScriptTest",
     ],
     "material": [
         "ColorMaterialTest",
@@ -39,5 +40,8 @@ var files = {
         "Basic_Shading",
         "Basic_Particles",
         "Basic_Fire",
-    ]
+    ],
+    "war3": [
+        "MdlParserTest",
+    ],
 };

@@ -1,83 +1,76 @@
 namespace feng3d
 {
-    export class Basic_Particles
+    var view3D: Engine;
+    var _cameraController: HoverController;
+    var _particleMesh: GameObject;
+    var _move = false;
+    var _lastPanAngle = NaN;
+    var _lastTiltAngle = NaN;
+    var _lastMouseX = NaN;
+    var _lastMouseY = NaN;
+
+    view3D = new Engine();
+
+    _cameraController = new HoverController(view3D.camera.gameObject, null, 45, 20, 1000);
+
+    // _particleAnimationSet = new ParticleAnimationSet(true, true);
+    // _particleAnimationSet["addAnimation"](new ParticleBillboardNode());
+    // _particleAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
+    // _particleAnimationSet["initParticleFunc"] = flash.bind(initParticleFunc, this);
+
+    _particleMesh = GameObject.create("particle");
+    // _particleMesh.geometry = new PointGeometry();
+    _particleMesh.addComponent(MeshFilter).mesh = new PlaneGeometry(10, 10, 1, 1, false);
+    var material = _particleMesh.addComponent(MeshRenderer).material = new StandardMaterial("resources/blue.png");
+    material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+    material.enableBlend = true;
+
+    var particleAnimationSet = new ParticleAnimationSet();
+    particleAnimationSet.numParticles = 20000;
+    //通过函数来创建粒子初始状态
+    particleAnimationSet.generateFunctions.push({
+        generate: (particle) =>
+        {
+            particle.birthTime = Math.random() * 5 - 5;
+            particle.lifetime = 5;
+            var degree1 = Math.random() * Math.PI;
+            var degree2 = Math.random() * Math.PI * 2;
+            var r = Math.random() * 50 + 400;
+            particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+        }, priority: 0
+    });
+    particleAnimationSet.addAnimation(new ParticleBillboard(view3D.camera.getComponent(Camera)));
+    var particleAnimator = _particleMesh.addComponent(ParticleAnimator);
+    particleAnimator.animatorSet = particleAnimationSet;
+    particleAnimator.cycle = 10;
+    particleAnimator.play();
+    view3D.scene.transform.addChild(_particleMesh.transform);
+
+    ticker.on("enterFrame", onEnterFrame);
+    input.on("mousedown", onMouseDown);
+    input.on("mouseup", onMouseUp);
+
+    function onEnterFrame(event: InputEvent)
     {
-        private _view: View3D;
-        private _cameraController: HoverController;
-        private _particleMesh: GameObject;
-        private _move = false;
-        private _lastPanAngle = NaN;
-        private _lastTiltAngle = NaN;
-        private _lastMouseX = NaN;
-        private _lastMouseY = NaN;
-
-        constructor()
+        if (_move)
         {
-
-            var view3D = this._view = new View3D();
-
-            this._cameraController = new HoverController(this._view.camera.gameObject, null, 45, 20, 1000);
-
-            // this._particleAnimationSet = new ParticleAnimationSet(true, true);
-            // this._particleAnimationSet["addAnimation"](new ParticleBillboardNode());
-            // this._particleAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
-            // this._particleAnimationSet["initParticleFunc"] = flash.bind(this.initParticleFunc, this);
-
-            this._particleMesh = GameObject.create("particle");
-            // this._particleMesh.geometry = new PointGeometry();
-            this._particleMesh.addComponent(MeshFilter).mesh = new PlaneGeometry(10, 10, 1, 1, false);
-            var material = this._particleMesh.addComponent(MeshRenderer).material = new StandardMaterial("resources/blue.png");
-            material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
-            material.enableBlend = true;
-
-            var particleAnimationSet = new ParticleAnimationSet();
-            particleAnimationSet.numParticles = 20000;
-            //通过函数来创建粒子初始状态
-            particleAnimationSet.generateFunctions.push({
-                generate: (particle) =>
-                {
-                    particle.birthTime = Math.random() * 5 - 5;
-                    particle.lifetime = 5;
-                    var degree1 = Math.random() * Math.PI;
-                    var degree2 = Math.random() * Math.PI * 2;
-                    var r = Math.random() * 50 + 400;
-                    particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
-                }, priority: 0
-            });
-            particleAnimationSet.addAnimation(new ParticleBillboard(this._view.camera.getComponent(Camera)));
-            var particleAnimator = this._particleMesh.addComponent(ParticleAnimator);
-            particleAnimator.animatorSet = particleAnimationSet;
-            particleAnimator.cycle = 10;
-            particleAnimator.play();
-            this._view.scene.transform.addChild(this._particleMesh.transform);
-
-            Event.on(ticker, "enterFrame", this.onEnterFrame, this);
-            Event.on(input, <any>inputType.MOUSE_DOWN, this.onMouseDown, this);
-            Event.on(input, <any>inputType.MOUSE_UP, this.onMouseUp, this);
+            _cameraController["panAngle"] = 0.3 * (input.clientX - view3D.canvas.clientLeft - _lastMouseX) + _lastPanAngle;
+            _cameraController["tiltAngle"] = 0.3 * (input.clientY - view3D.canvas.clientTop - _lastMouseY) + _lastTiltAngle;
         }
-
-        private onEnterFrame(event: Event)
-        {
-            if (this._move)
-            {
-                this._cameraController["panAngle"] = 0.3 * (this._view.mousePos.x - this._lastMouseX) + this._lastPanAngle;
-                this._cameraController["tiltAngle"] = 0.3 * (this._view.mousePos.y - this._lastMouseY) + this._lastTiltAngle;
-            }
-        }
-
-        private onMouseDown(event: Event)
-        {
-            this._lastPanAngle = this._cameraController["panAngle"];
-            this._lastTiltAngle = this._cameraController["tiltAngle"];
-            this._lastMouseX = this._view.mousePos.x;
-            this._lastMouseY = this._view.mousePos.y;
-            this._move = true;
-        }
-
-        private onMouseUp(event: Event)
-        {
-            this._move = false;
-        }
-
     }
+
+    function onMouseDown(event: InputEvent)
+    {
+        _lastPanAngle = _cameraController["panAngle"];
+        _lastTiltAngle = _cameraController["tiltAngle"];
+        _lastMouseX = input.clientX - view3D.canvas.clientLeft;
+        _lastMouseY = input.clientY - view3D.canvas.clientTop;
+        _move = true;
+    }
+
+    function onMouseUp(event: InputEvent)
+    {
+        _move = false;
+    }
+
 }

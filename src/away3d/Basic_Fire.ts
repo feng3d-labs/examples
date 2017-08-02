@@ -1,214 +1,196 @@
 namespace feng3d
 {
-    export class Basic_Fire
-    {
-        static NUM_FIRES = 10;
-        private scene: Scene3D;
-        private camera: Camera;
-        private view: View3D;
-        private cameraController: HoverController;
-        private planeMaterial: StandardMaterial;
-        private particleMaterial: StandardMaterial;
-        private directionalLight: DirectionalLight;
-        private fireAnimationSet: ParticleAnimationSet;
-        private particleGeometry: Geometry;
-        private timer: Timer;
-        private plane: GameObject;
-        private fireObjects: Array<FireVO> = new Array<FireVO>();
-        private move = false;
-        private lastPanAngle = NaN;
-        private lastTiltAngle = NaN;
-        private lastMouseX = NaN;
-        private lastMouseY = NaN;
-
-        constructor()
-        {
-            this.init();
-        }
-
-        private init()
-        {
-            this.initEngine();
-            this.initLights();
-            this.initMaterials();
-            this.initParticles();
-            this.initObjects();
-            this.initListeners();
-        }
-
-        private initEngine()
-        {
-            var view3D = this.view = new View3D();
-
-            this.camera = view3D.camera;
-            this.scene = view3D.scene;
-            this.cameraController = new HoverController(this.camera.gameObject);
-            this.cameraController.distance = 1000;
-            this.cameraController.minTiltAngle = 0;
-            this.cameraController.maxTiltAngle = 90;
-            this.cameraController.panAngle = 45;
-            this.cameraController.tiltAngle = 20;
-        }
-
-        private initLights()
-        {
-            var gameObject = GameObject.create();
-            this.directionalLight = gameObject.addComponent(DirectionalLight);
-            this.directionalLight.direction = new Vector3D(0, -1, 0);
-            this.directionalLight.castsShadows = false;
-            this.directionalLight.color.fromUnit(0xeedddd);
-            this.directionalLight.intensity = .5;
-            this.scene.transform.addChild(gameObject.transform);
-        }
-
-        private initMaterials()
-        {
-            this.planeMaterial = new StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
-            this.planeMaterial["specular"] = 10;
-            this.particleMaterial = new StandardMaterial("resources/blue.png");
-            this.particleMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
-            this.particleMaterial.enableBlend = true;
-        }
-
-        private initParticles()
-        {
-            this.fireAnimationSet = new ParticleAnimationSet();
-            this.fireAnimationSet.addAnimation(new ParticleBillboard(this.camera.getComponent(Camera)));
-            // this.fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
-            // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
-            // this.fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
-            // this.fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
-            //通过函数来创建粒子初始状态
-            this.fireAnimationSet.numParticles = 500;
-            this.fireAnimationSet.generateFunctions.push({
-                generate: (particle) =>
-                {
-                    particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
-
-                    particle.birthTime = Math.random() * 5;
-                    particle.lifetime = Math.random() * 4 + 0.1;
-                    var degree1 = Math.random() * Math.PI * 2;
-                    var degree2 = Math.random() * Math.PI * 2;
-                    var r = <any>15;
-                    particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
-                }, priority: 0
-            });
-            this.particleGeometry = new PlaneGeometry(10, 10, 1, 1, false);
-        }
-
-        private initObjects()
-        {
-            this.plane = GameObject.create();
-            var model = this.plane.addComponent(MeshRenderer);
-            this.plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
-            this.plane.getComponent(MeshFilter).mesh.scaleUV(2, 2);
-            model.material = this.planeMaterial;
-            this.plane.transform.y = -20;
-            this.scene.transform.addChild(this.plane.transform);
-            for (var i = 0; i < Basic_Fire.NUM_FIRES; i++)
-            {
-                var particleMesh = GameObject.create();
-                var model = particleMesh.addComponent(MeshRenderer);
-                particleMesh.addComponent(MeshFilter).mesh = this.particleGeometry;
-                model.material = this.particleMaterial;
-                var particleAnimator = particleMesh.addComponent(ParticleAnimator);
-                particleAnimator.animatorSet = this.fireAnimationSet;
-                var degree = i / Basic_Fire.NUM_FIRES * Math.PI * 2;
-                particleMesh.transform.x = Math.sin(degree) * 400;
-                particleMesh.transform.z = Math.cos(degree) * 400;
-                particleMesh.transform.y = 5;
-                this.fireObjects.push(new FireVO(particleMesh, particleAnimator));
-                this.view.scene.transform.addChild(particleMesh.transform);
-            }
-            this.timer = new Timer(1000, this.fireObjects.length);
-            Event.on(this.timer, <any>TimerEvent.TIMER, this.onTimer, this);
-            this.timer.start();
-        }
-
-        private initListeners()
-        {
-            Event.on(ticker, "enterFrame", this.onEnterFrame, this);
-            Event.on(input, <any>inputType.MOUSE_DOWN, this.onMouseDown, this);
-            Event.on(input, <any>inputType.MOUSE_UP, this.onMouseUp, this);
-        }
-
-        private getAllLights(): Array<any>
-        {
-            var lights: Array<any> = new Array();
-            lights.push(this.directionalLight);
-            for (var fireVO_key_a in this.fireObjects)
-            {
-                var fireVO: FireVO = this.fireObjects[fireVO_key_a];
-                if (fireVO.light)
-                    lights.push(fireVO.light);
-            }
-            return lights;
-        }
-
-        private onTimer(e: TimerEvent)
-        {
-            var fireObject: FireVO = this.fireObjects[this.timer.currentCount - 1];
-            fireObject.animator.play();
-            var lightObject = GameObject.create();
-            var light: PointLight = lightObject.addComponent(PointLight);
-            light.color.fromUnit(0xFF3301);
-            light.intensity = 0;
-
-            lightObject.transform.position = fireObject.mesh.transform.position;
-            fireObject.light = light;
-        }
-
-        private onEnterFrame(event: Event)
-        {
-            if (this.move)
-            {
-                this.cameraController.panAngle = 0.3 * (this.view.mousePos.x - this.lastMouseX) + this.lastPanAngle;
-                this.cameraController.tiltAngle = 0.3 * (this.view.mousePos.y - this.lastMouseY) + this.lastTiltAngle;
-            }
-            var fireVO: FireVO;
-            var fireVO_key_a;
-            for (fireVO_key_a in this.fireObjects)
-            {
-                fireVO = this.fireObjects[fireVO_key_a];
-                var light: PointLight = fireVO.light;
-                if (<any>!light)
-                    continue;
-                if (fireVO.strength < 1)
-                    fireVO.strength += 0.1;
-                light["fallOff"] = 380 + Math.random() * 20;
-                light["radius"] = 200 + Math.random() * 30;
-                light["diffuse"] = light["specular"] = fireVO.strength + Math.random() * .2;
-            }
-            // this.view["render"]();
-        }
-
-        private onMouseDown(event: Event)
-        {
-            this.lastPanAngle = this.cameraController.panAngle;
-            this.lastTiltAngle = this.cameraController.tiltAngle;
-            this.lastMouseX = this.view.mousePos.x;
-            this.lastMouseY = this.view.mousePos.y;
-            this.move = true;
-        }
-
-        private onMouseUp(event: Event)
-        {
-            this.move = false;
-        }
-    }
-
-    class FireVO
+    interface FireVO
     {
         mesh: GameObject;
         animator: ParticleAnimator;
-        light: PointLight;
-        strength = 0;
+        light?: PointLight;
+        strength: number;
+    }
 
-        constructor(mesh: GameObject, animator: ParticleAnimator)
+    var NUM_FIRES = 10;
+    var scene: Scene3D;
+    var camera: Camera;
+    var view3D: Engine;
+    var cameraController: HoverController;
+    var planeMaterial: StandardMaterial;
+    var particleMaterial: StandardMaterial;
+    var directionalLight: DirectionalLight;
+    var fireAnimationSet: ParticleAnimationSet;
+    var particleGeometry: Geometry;
+    var timer: Timer;
+    var plane: GameObject;
+    var fireObjects: FireVO[] = [];
+    var move = false;
+    var lastPanAngle = NaN;
+    var lastTiltAngle = NaN;
+    var lastMouseX = NaN;
+    var lastMouseY = NaN;
+
+    initEngine();
+    initLights();
+    initMaterials();
+    initParticles();
+    initObjects();
+    initListeners();
+
+    function initEngine()
+    {
+        view3D = new Engine();
+
+        camera = view3D.camera;
+        scene = view3D.scene;
+        cameraController = new HoverController(camera.gameObject);
+        cameraController.distance = 1000;
+        cameraController.minTiltAngle = 0;
+        cameraController.maxTiltAngle = 90;
+        cameraController.panAngle = 45;
+        cameraController.tiltAngle = 20;
+    }
+
+    function initLights()
+    {
+        var gameObject = GameObject.create();
+        directionalLight = gameObject.addComponent(DirectionalLight);
+        directionalLight.direction = new Vector3D(0, -1, 0);
+        directionalLight.castsShadows = false;
+        directionalLight.color.fromUnit(0xeedddd);
+        directionalLight.intensity = .5;
+        scene.transform.addChild(gameObject.transform);
+    }
+
+    function initMaterials()
+    {
+        planeMaterial = new StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
+        planeMaterial["specular"] = 10;
+        particleMaterial = new StandardMaterial("resources/blue.png");
+        particleMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+        particleMaterial.enableBlend = true;
+    }
+
+    function initParticles()
+    {
+        fireAnimationSet = new ParticleAnimationSet();
+        fireAnimationSet.addAnimation(new ParticleBillboard(camera.getComponent(Camera)));
+        // fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
+        // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
+        // fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
+        // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
+        //通过函数来创建粒子初始状态
+        fireAnimationSet.numParticles = 500;
+        fireAnimationSet.generateFunctions.push({
+            generate: (particle) =>
+            {
+                particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
+
+                particle.birthTime = Math.random() * 5;
+                particle.lifetime = Math.random() * 4 + 0.1;
+                var degree1 = Math.random() * Math.PI * 2;
+                var degree2 = Math.random() * Math.PI * 2;
+                var r = <any>15;
+                particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+            }, priority: 0
+        });
+        particleGeometry = new PlaneGeometry(10, 10, 1, 1, false);
+    }
+
+    function initObjects()
+    {
+        plane = GameObject.create();
+        var model = plane.addComponent(MeshRenderer);
+        plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
+        plane.getComponent(MeshFilter).mesh.scaleUV(2, 2);
+        model.material = planeMaterial;
+        plane.transform.y = -20;
+        scene.transform.addChild(plane.transform);
+        for (var i = 0; i < NUM_FIRES; i++)
         {
-            this.mesh = mesh;
-            this.animator = animator;
+            var particleMesh = GameObject.create();
+            var model = particleMesh.addComponent(MeshRenderer);
+            particleMesh.addComponent(MeshFilter).mesh = particleGeometry;
+            model.material = particleMaterial;
+            var particleAnimator = particleMesh.addComponent(ParticleAnimator);
+            particleAnimator.animatorSet = fireAnimationSet;
+            var degree = i / NUM_FIRES * Math.PI * 2;
+            particleMesh.transform.x = Math.sin(degree) * 400;
+            particleMesh.transform.z = Math.cos(degree) * 400;
+            particleMesh.transform.y = 5;
+            fireObjects.push({ mesh: particleMesh, animator: particleAnimator, strength: 0 });
+            scene.transform.addChild(particleMesh.transform);
         }
+        timer = new Timer(1000, fireObjects.length);
+        timer.on("timer", onTimer, this);
+        timer.start();
+    }
 
+    function initListeners()
+    {
+        ticker.on("enterFrame", onEnterFrame, this);
+        input.on("mousedown", onMouseDown, this);
+        input.on("mouseup", onMouseUp, this);
+    }
+
+    function getAllLights(): Array<any>
+    {
+        var lights: Array<any> = new Array();
+        lights.push(directionalLight);
+        for (var fireVO_key_a in fireObjects)
+        {
+            var fireVO: FireVO = fireObjects[fireVO_key_a];
+            if (fireVO.light)
+                lights.push(fireVO.light);
+        }
+        return lights;
+    }
+
+    function onTimer(e: EventVO)
+    {
+        var fireObject: FireVO = fireObjects[timer.currentCount - 1];
+        fireObject.animator.play();
+        var lightObject = GameObject.create();
+        var light: PointLight = lightObject.addComponent(PointLight);
+        light.color.fromUnit(0xFF3301);
+        light.intensity = 0;
+
+        lightObject.transform.position = fireObject.mesh.transform.position;
+        fireObject.light = light;
+    }
+
+    function onEnterFrame(event: EventVO)
+    {
+        if (move)
+        {
+            cameraController.panAngle = 0.3 * (input.clientX - view3D.canvas.clientLeft - lastMouseX) + lastPanAngle;
+            cameraController.tiltAngle = 0.3 * (input.clientY - view3D.canvas.clientTop - lastMouseY) + lastTiltAngle;
+        }
+        var fireVO: FireVO;
+        var fireVO_key_a;
+        for (fireVO_key_a in fireObjects)
+        {
+            fireVO = fireObjects[fireVO_key_a];
+            var light: PointLight = fireVO.light;
+            if (<any>!light)
+                continue;
+            if (fireVO.strength < 1)
+                fireVO.strength += 0.1;
+            light["fallOff"] = 380 + Math.random() * 20;
+            light["radius"] = 200 + Math.random() * 30;
+            light["diffuse"] = light["specular"] = fireVO.strength + Math.random() * .2;
+        }
+        // view["render"]();
+    }
+
+    function onMouseDown(event: InputEvent)
+    {
+        lastPanAngle = cameraController.panAngle;
+        lastTiltAngle = cameraController.tiltAngle;
+        lastMouseX = input.clientX - view3D.canvas.clientLeft;
+        lastMouseY = input.clientY - view3D.canvas.clientTop;
+        move = true;
+    }
+
+    function onMouseUp(event: InputEvent)
+    {
+        move = false;
     }
 }

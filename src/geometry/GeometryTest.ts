@@ -21,7 +21,7 @@ namespace feng3d
 
     object3d.transform.z = 300;
     object3d.transform.y = -100;
-    view3D.scene.transform.addChild(object3d.transform);
+    view3D.scene.gameObject.addChild(object3d);
 
     //初始化颜色材质
     var colorMaterial = model.material = new ColorMaterial();

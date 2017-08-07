@@ -26,10 +26,11 @@ namespace feng3d
             Loader.loadText("resources/scene/scene.json", (content) =>
             {
                 var json = JSON.parse(content);
-                var scene: Scene3D = Serialization.deserialize(json);
-                for (var i = 0; i < scene.transform.numChildren; i++)
+                var scene = GameObject.create();
+                scene.deserialize(json);
+                for (var i = 0; i < scene.numChildren; i++)
                 {
-                    scene3D.transform.addChild(scene.transform.getChildAt(i));
+                    scene3D.gameObject.addChild(scene.getChildAt(i));
                 }
             });
         }

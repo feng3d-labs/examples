@@ -29,8 +29,8 @@ namespace feng3d
                 break;
             case "b":
                 initObjects();
-                scene.transform.addChild(light0.transform);
-                scene.transform.addChild(light1.transform);
+                scene.gameObject.addChild(light0);
+                scene.gameObject.addChild(light1);
                 break;
         }
     });
@@ -55,21 +55,21 @@ namespace feng3d
         var geometry = plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
         geometry.scaleUV(2, 2);
         model.material = material;
-        scene.transform.addChild(plane.transform);
+        scene.gameObject.addChild(plane);
 
         var cube = GameObject.create();
         var model = cube.addComponent(MeshRenderer);
         model.material = material;
         cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
         cube.getComponent(MeshFilter).mesh.scaleUV(2, 2);
-        scene.transform.addChild(cube.transform);
+        scene.gameObject.addChild(cube);
     }
 
     function clearObjects()
     {
-        for (var i = scene.transform.numChildren - 1; i >= 0; i--)
+        for (var i = scene.gameObject.numChildren - 1; i >= 0; i--)
         {
-            scene.transform.removeChildAt(i);
+            scene.gameObject.removeChildAt(i);
         }
     }
 
@@ -82,7 +82,7 @@ namespace feng3d
         var pointLight0 = light0.addComponent(PointLight);
         pointLight0.color = lightColor0;
         light0.addComponent(MeshRenderer).material = new ColorMaterial(lightColor0);
-        scene.transform.addChild(light0.transform);
+        scene.gameObject.addChild(light0);
 
         //
         var lightColor1 = new Color(0, 1, 0, 1);
@@ -91,7 +91,7 @@ namespace feng3d
         var pointLight1 = light1.addComponent(DirectionalLight);
         pointLight1.color = lightColor1;
         light1.addComponent(MeshRenderer).material = new ColorMaterial(lightColor1);
-        scene.transform.addChild(light1.transform);
+        scene.gameObject.addChild(light1);
     }
 
     function setPointLightPosition()

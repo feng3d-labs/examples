@@ -13,7 +13,7 @@ var feng3d;
     var material = particle.addComponent(feng3d.MeshRenderer).material = new feng3d.StandardMaterial();
     material.renderMode = feng3d.RenderMode.POINTS;
     particle.transform.y = -100;
-    scene.transform.addChild(particle.transform);
+    scene.gameObject.addChild(particle);
     var particleAnimator = particle.addComponent(feng3d.ParticleAnimator);
     particleAnimator.cycle = 10;
     var particleAnimatorSet = particleAnimator.animatorSet = new feng3d.ParticleAnimationSet();

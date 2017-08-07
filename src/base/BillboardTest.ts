@@ -8,13 +8,16 @@ namespace feng3d
 
     var cube = GameObjectFactory.createCube();
     cube.transform.z = 300;
-    scene.transform.addChild(cube.transform);
+    scene.gameObject.addChild(cube);
 
     var gameObject = GameObjectFactory.createPlane();
     gameObject.transform.y = 150;
-    gameObject.transform.isBillboard = true;
-    gameObject.transform.holdSize = 1;
-    cube.transform.addChild(gameObject.transform);
+    var holdSizeComponent = gameObject.addComponent(HoldSizeComponent);
+    holdSizeComponent.holdSize = 1;
+    holdSizeComponent.camera = view3D.camera;
+    var billboardComponent = gameObject.addComponent(BillboardComponent);
+    billboardComponent.camera = view3D.camera;
+    cube.addChild(gameObject);
 
     //材质
     var model = gameObject.getComponent(MeshRenderer);

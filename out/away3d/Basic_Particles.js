@@ -38,7 +38,7 @@ var feng3d;
     particleAnimator.animatorSet = particleAnimationSet;
     particleAnimator.cycle = 10;
     particleAnimator.play();
-    view3D.scene.transform.addChild(_particleMesh.transform);
+    view3D.scene.gameObject.addChild(_particleMesh);
     feng3d.ticker.on("enterFrame", onEnterFrame);
     feng3d.input.on("mousedown", onMouseDown);
     feng3d.input.on("mouseup", onMouseUp);

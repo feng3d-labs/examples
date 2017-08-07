@@ -7,7 +7,7 @@ var feng3d;
     object3D.addComponent(feng3d.MeshFilter).mesh = pointGeometry;
     object3D.addComponent(feng3d.MeshRenderer).material = pointMaterial;
     object3D.transform.z = 300;
-    view3D.scene.transform.addChild(object3D.transform);
+    view3D.scene.gameObject.addChild(object3D);
     var length = 200;
     var height = 200 / Math.PI;
     for (var x = -length; x <= length; x = x + 4) {

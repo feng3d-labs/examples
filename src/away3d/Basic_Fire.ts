@@ -56,7 +56,7 @@ namespace feng3d
         directionalLight.castsShadows = false;
         directionalLight.color.fromUnit(0xeedddd);
         directionalLight.intensity = .5;
-        scene.transform.addChild(gameObject.transform);
+        scene.gameObject.addChild(gameObject);
     }
 
     function initMaterials()
@@ -102,7 +102,7 @@ namespace feng3d
         plane.getComponent(MeshFilter).mesh.scaleUV(2, 2);
         model.material = planeMaterial;
         plane.transform.y = -20;
-        scene.transform.addChild(plane.transform);
+        scene.gameObject.addChild(plane);
         for (var i = 0; i < NUM_FIRES; i++)
         {
             var particleMesh = GameObject.create();
@@ -116,7 +116,7 @@ namespace feng3d
             particleMesh.transform.z = Math.cos(degree) * 400;
             particleMesh.transform.y = 5;
             fireObjects.push({ mesh: particleMesh, animator: particleAnimator, strength: 0 });
-            scene.transform.addChild(particleMesh.transform);
+            scene.gameObject.addChild(particleMesh);
         }
         timer = new Timer(1000, fireObjects.length);
         timer.on("timer", onTimer, this);
@@ -143,7 +143,7 @@ namespace feng3d
         return lights;
     }
 
-    function onTimer(e: EventVO)
+    function onTimer(e)
     {
         var fireObject: FireVO = fireObjects[timer.currentCount - 1];
         fireObject.animator.play();
@@ -156,7 +156,7 @@ namespace feng3d
         fireObject.light = light;
     }
 
-    function onEnterFrame(event: EventVO)
+    function onEnterFrame(event)
     {
         if (move)
         {

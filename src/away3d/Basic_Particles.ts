@@ -44,7 +44,7 @@ namespace feng3d
     particleAnimator.animatorSet = particleAnimationSet;
     particleAnimator.cycle = 10;
     particleAnimator.play();
-    view3D.scene.transform.addChild(_particleMesh.transform);
+    view3D.scene.gameObject.addChild(_particleMesh);
 
     ticker.on("enterFrame", onEnterFrame);
     input.on("mousedown", onMouseDown);

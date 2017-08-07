@@ -14,30 +14,30 @@ namespace feng3d
 
     var cube = GameObjectFactory.createCube();
     cube.transform.mouseEnabled = true;
-    scene3D.transform.addChild(cube.transform);
+    scene3D.gameObject.addChild(cube);
 
     var plane = GameObjectFactory.createPlane();
     plane.transform.position = new Vector3D(150, 0, 0);
     plane.transform.rx = 90;
     plane.transform.mouseEnabled = true;
-    scene3D.transform.addChild(plane.transform);
+    scene3D.gameObject.addChild(plane);
 
     var sphere = GameObjectFactory.createSphere();
     sphere.transform.position = new Vector3D(-150, 0, 0);
     sphere.transform.mouseEnabled = true;
-    scene3D.transform.addChild(sphere.transform);
+    scene3D.gameObject.addChild(sphere);
 
     var capsule = GameObjectFactory.createCapsule();
     capsule.transform.position = new Vector3D(300, 0, 0);
     capsule.transform.mouseEnabled = true;
-    scene3D.transform.addChild(capsule.transform);
+    scene3D.gameObject.addChild(capsule);
 
     var cylinder = GameObjectFactory.createCylinder();
     cylinder.transform.position = new Vector3D(-300, 0, 0);
     cylinder.transform.mouseEnabled = true;
-    scene3D.transform.addChild(cylinder.transform);
+    scene3D.gameObject.addChild(cylinder);
 
-    scene3D.transform.on("click", (event) =>
+    scene3D.gameObject.on("click", (event) =>
     {
         var object3D = <Transform>event.target;
         var material = object3D.getComponent(MeshRenderer).material = new ColorMaterial();

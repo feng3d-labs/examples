@@ -14,9 +14,10 @@ var feng3d;
             var scene3D = this.view3D.scene;
             feng3d.Loader.loadText("resources/scene/scene.json", function (content) {
                 var json = JSON.parse(content);
-                var scene = feng3d.Serialization.deserialize(json);
-                for (var i = 0; i < scene.transform.numChildren; i++) {
-                    scene3D.transform.addChild(scene.transform.getChildAt(i));
+                var scene = feng3d.GameObject.create();
+                scene.deserialize(json);
+                for (var i = 0; i < scene.numChildren; i++) {
+                    scene3D.gameObject.addChild(scene.getChildAt(i));
                 }
             });
         };

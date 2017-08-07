@@ -16,7 +16,7 @@ var feng3d;
     var terrainMethod = new feng3d.TerrainMergeMethod(root + 'terrain_splats.png', root + 'test1.jpg', new feng3d.Vector3D(50, 50, 50));
     material.addMethod(terrainMethod);
     terrain.addComponent(feng3d.MeshRenderer).material = material;
-    scene.transform.addChild(terrain.transform);
+    scene.gameObject.addChild(terrain);
     //初始化光源
     var light1 = feng3d.GameObject.create();
     var pointLight1 = light1.addComponent(feng3d.PointLight);

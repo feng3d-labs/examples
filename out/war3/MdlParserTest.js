@@ -72,7 +72,7 @@ var feng3d;
     function updateModel() {
         if (showWar3Model) {
             var showMesh = showWar3Model.getMesh();
-            view.scene.transform.removeChild(showMesh.transform);
+            view.scene.gameObject.removeChild(showMesh);
         }
         modelId = (modelId + modelConfig.length) % modelConfig.length;
         loadModel(modelConfig[modelId]);
@@ -86,7 +86,7 @@ var feng3d;
                 war3Model.root = mdlurl.substring(0, mdlurl.lastIndexOf("/") + 1);
                 showWar3Model = war3Model;
                 var showMesh = showWar3Model.getMesh();
-                view.scene.transform.addChild(showMesh.transform);
+                view.scene.gameObject.addChild(showMesh);
                 loading = false;
             });
         });

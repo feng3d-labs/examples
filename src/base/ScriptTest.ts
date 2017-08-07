@@ -9,7 +9,7 @@ namespace feng3d
 
     input.on("keyup", (e) =>
     {
-        var inputEvent: InputEvent = e;
+        var inputEvent = e.data;
         if (inputEvent.keyCode == 82)
         {
             GameObjectUtil.removeScript(scene3D.gameObject, path);

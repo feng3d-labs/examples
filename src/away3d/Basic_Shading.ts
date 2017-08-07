@@ -57,14 +57,14 @@ namespace feng3d
         var directionalLight = light1.addComponent(DirectionalLight);
         directionalLight.intensity = 0.7;
         light1.transform.rx = 90;
-        scene.transform.addChild(light1.transform);
+        scene.gameObject.addChild(light1);
 
         light2 = GameObject.create();
         var directionalLight = light2.addComponent(DirectionalLight);
         directionalLight.color.fromUnit(0x00FFFF);
         directionalLight.intensity = 0.7;
         light2.transform.rx = 90;
-        scene.transform.addChild(light2.transform);
+        scene.gameObject.addChild(light2);
     }
 
     function initObjects()
@@ -75,7 +75,7 @@ namespace feng3d
         model.material = planeMaterial;
         geometry.scaleUV(2, 2);
         plane.transform.y = -20;
-        scene.transform.addChild(plane.transform);
+        scene.gameObject.addChild(plane);
         sphere = GameObject.create();
         var model = sphere.addComponent(MeshRenderer);
         sphere.addComponent(MeshFilter).mesh = new SphereGeometry(150, 40, 20)
@@ -83,7 +83,7 @@ namespace feng3d
         sphere.transform.x = 300;
         sphere.transform.y = 160;
         sphere.transform.z = 300;
-        scene.transform.addChild(sphere.transform);
+        scene.gameObject.addChild(sphere);
         cube = GameObject.create();
         var model = cube.addComponent(MeshRenderer);
         cube.addComponent(MeshFilter).mesh = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
@@ -91,7 +91,7 @@ namespace feng3d
         cube.transform.x = 300;
         cube.transform.y = 160;
         cube.transform.z = -250;
-        scene.transform.addChild(cube.transform);
+        scene.gameObject.addChild(cube);
         torus = GameObject.create();
         var model = torus.addComponent(MeshRenderer);
         geometry = torus.addComponent(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
@@ -100,7 +100,7 @@ namespace feng3d
         torus.transform.x = -250;
         torus.transform.y = 160;
         torus.transform.z = -250;
-        scene.transform.addChild(torus.transform);
+        scene.gameObject.addChild(torus);
     }
 
     function initListeners()

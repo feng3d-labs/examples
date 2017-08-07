@@ -17,7 +17,7 @@ var feng3d;
     geometry.addGeometry(addGeometry, matrix3D);
     object3d.transform.z = 300;
     object3d.transform.y = -100;
-    view3D.scene.transform.addChild(object3d.transform);
+    view3D.scene.gameObject.addChild(object3d);
     //初始化颜色材质
     var colorMaterial = model.material = new feng3d.ColorMaterial();
     //变化旋转与颜色

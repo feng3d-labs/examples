@@ -42,7 +42,7 @@ var feng3d;
         directionalLight.castsShadows = false;
         directionalLight.color.fromUnit(0xeedddd);
         directionalLight.intensity = .5;
-        scene.transform.addChild(gameObject.transform);
+        scene.gameObject.addChild(gameObject);
     }
     function initMaterials() {
         planeMaterial = new feng3d.StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
@@ -80,7 +80,7 @@ var feng3d;
         plane.getComponent(feng3d.MeshFilter).mesh.scaleUV(2, 2);
         model.material = planeMaterial;
         plane.transform.y = -20;
-        scene.transform.addChild(plane.transform);
+        scene.gameObject.addChild(plane);
         for (var i = 0; i < NUM_FIRES; i++) {
             var particleMesh = feng3d.GameObject.create();
             var model = particleMesh.addComponent(feng3d.MeshRenderer);
@@ -93,7 +93,7 @@ var feng3d;
             particleMesh.transform.z = Math.cos(degree) * 400;
             particleMesh.transform.y = 5;
             fireObjects.push({ mesh: particleMesh, animator: particleAnimator, strength: 0 });
-            scene.transform.addChild(particleMesh.transform);
+            scene.gameObject.addChild(particleMesh);
         }
         timer = new feng3d.Timer(1000, fireObjects.length);
         timer.on("timer", onTimer, this);

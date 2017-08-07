@@ -8,11 +8,11 @@ var feng3d;
     //初始化颜色材质
     var cube = feng3d.GameObjectFactory.createCube();
     cube.transform.z = 500;
-    scene.transform.addChild(cube.transform);
+    scene.gameObject.addChild(cube);
     var colorMaterial = cube.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
     var cylinder = feng3d.GameObjectFactory.createCylinder();
     cylinder.transform.x = 200;
-    cube.transform.addChild(cylinder.transform);
+    cube.addChild(cylinder);
     //变化旋转与颜色
     setInterval(function () {
         cube.transform.ry += 1;

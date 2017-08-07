@@ -18,6 +18,6 @@ var feng3d;
         'resources/skybox/ny.jpg',
         'resources/skybox/nz.jpg'
     ]);
-    scene.transform.addChild(skybox.transform);
+    scene.gameObject.addChild(skybox);
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=SkyBoxTest.js.map

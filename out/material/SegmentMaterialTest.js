@@ -3,7 +3,7 @@ var feng3d;
     var view3D = new feng3d.Engine();
     var segment = feng3d.GameObject.create("segment");
     segment.transform.z = 300;
-    view3D.scene.transform.addChild(segment.transform);
+    view3D.scene.gameObject.addChild(segment);
     //初始化材质
     segment.addComponent(feng3d.MeshRenderer).material = new feng3d.SegmentMaterial();
     var segmentGeometry = segment.addComponent(feng3d.MeshFilter).mesh = new feng3d.SegmentGeometry();

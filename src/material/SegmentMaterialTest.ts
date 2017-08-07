@@ -4,7 +4,7 @@ namespace feng3d
 
     var segment = GameObject.create("segment");
     segment.transform.z = 300;
-    view3D.scene.transform.addChild(segment.transform);
+    view3D.scene.gameObject.addChild(segment);
 
     //初始化材质
     segment.addComponent(MeshRenderer).material = new SegmentMaterial();

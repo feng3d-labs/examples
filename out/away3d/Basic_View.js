@@ -9,7 +9,7 @@ var feng3d;
     plane.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(700, 700);
     var model = plane.addComponent(feng3d.MeshRenderer);
     var material = model.material = new feng3d.StandardMaterial("resources/floor_diffuse.jpg");
-    scene.transform.addChild(plane.transform);
+    scene.gameObject.addChild(plane);
     feng3d.ticker.on("enterFrame", function (e) {
         plane.transform.ry += 1;
     });

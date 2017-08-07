@@ -22,8 +22,8 @@ var feng3d;
                 break;
             case "b":
                 initObjects();
-                scene.transform.addChild(light0.transform);
-                scene.transform.addChild(light1.transform);
+                scene.gameObject.addChild(light0);
+                scene.gameObject.addChild(light1);
                 break;
         }
     });
@@ -45,17 +45,17 @@ var feng3d;
         var geometry = plane.addComponent(feng3d.MeshFilter).mesh = new feng3d.PlaneGeometry(1000, 1000);
         geometry.scaleUV(2, 2);
         model.material = material;
-        scene.transform.addChild(plane.transform);
+        scene.gameObject.addChild(plane);
         var cube = feng3d.GameObject.create();
         var model = cube.addComponent(feng3d.MeshRenderer);
         model.material = material;
         cube.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
         cube.getComponent(feng3d.MeshFilter).mesh.scaleUV(2, 2);
-        scene.transform.addChild(cube.transform);
+        scene.gameObject.addChild(cube);
     }
     function clearObjects() {
-        for (var i = scene.transform.numChildren - 1; i >= 0; i--) {
-            scene.transform.removeChildAt(i);
+        for (var i = scene.gameObject.numChildren - 1; i >= 0; i--) {
+            scene.gameObject.removeChildAt(i);
         }
     }
     function initLights() {
@@ -66,7 +66,7 @@ var feng3d;
         var pointLight0 = light0.addComponent(feng3d.PointLight);
         pointLight0.color = lightColor0;
         light0.addComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor0);
-        scene.transform.addChild(light0.transform);
+        scene.gameObject.addChild(light0);
         //
         var lightColor1 = new feng3d.Color(0, 1, 0, 1);
         light1.addComponent(feng3d.MeshFilter).mesh = new feng3d.SphereGeometry(5);
@@ -74,7 +74,7 @@ var feng3d;
         var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
         pointLight1.color = lightColor1;
         light1.addComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial(lightColor1);
-        scene.transform.addChild(light1.transform);
+        scene.gameObject.addChild(light1);
     }
     function setPointLightPosition() {
         var time = new Date().getTime();

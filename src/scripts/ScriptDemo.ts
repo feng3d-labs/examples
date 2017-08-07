@@ -9,7 +9,7 @@ namespace feng3d
             var cube = this.cube = GameObject.create();
             cube.transform.z = 300;
             cube.transform.y = -100;
-            this.transform.addChild(cube.transform);
+            this.gameObject.addChild(cube);
 
             var model = cube.addComponent(MeshRenderer);
             cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);

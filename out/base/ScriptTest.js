@@ -5,7 +5,7 @@ var feng3d;
     var path = "out/scripts/ScriptDemo.js";
     feng3d.GameObjectUtil.addScript(scene3D.gameObject, path);
     feng3d.input.on("keyup", function (e) {
-        var inputEvent = e;
+        var inputEvent = e.data;
         if (inputEvent.keyCode == 82) {
             feng3d.GameObjectUtil.removeScript(scene3D.gameObject, path);
             feng3d.GameObjectUtil.addScript(scene3D.gameObject, path);

@@ -5,7 +5,7 @@ var feng3d;
     var cube = feng3d.GameObject.create();
     cube.transform.z = 300;
     cube.transform.y = -100;
-    scene.transform.addChild(cube.transform);
+    scene.gameObject.addChild(cube);
     var model = cube.addComponent(feng3d.MeshRenderer);
     cube.addComponent(feng3d.MeshFilter).mesh = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
     //材质

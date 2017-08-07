@@ -21,7 +21,7 @@ namespace feng3d
     var light1 = GameObject.create();
     var pointLight1 = light1.addComponent(PointLight);
     pointLight1.color = new Color(0, 1, 0, 1);
-    scene.transform.addChild(light1.transform);
+    scene.gameObject.addChild(light1);
 
     MD5Loader.load(md5meshUrl, (object3D, animator) =>
     {
@@ -34,7 +34,7 @@ namespace feng3d
         useMatrial(object3D, "resources/hellknight/hellknight_diffuse.jpg");
 
         object.transform.z = 300;
-        scene.transform.addChild(object3D.transform);
+        scene.gameObject.addChild(object3D);
         skeletonAnimator = animator;
         //
         MD5Loader.loadAnim(md5animUrl, (skeletonClipNode) =>
@@ -51,9 +51,9 @@ namespace feng3d
         var material = new StandardMaterial();
         material.diffuseMethod.difuseTexture.url = imageUrl;
 
-        for (var i = 0; i < object3D.transform.numChildren; i++)
+        for (var i = 0; i < object3D.numChildren; i++)
         {
-            var child = object3D.transform.getChildAt(i);
+            var child = object3D.getChildAt(i);
             var model = child.getComponent(MeshRenderer);
             if (model)
             {

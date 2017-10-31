@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
     var scene = view3D.scene;
@@ -9,7 +9,7 @@ namespace feng3d
     scene.gameObject.addChild(cube);
 
     var model = cube.addComponent(MeshRenderer);
-    cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+    model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
     //材质
     var material = model.material = new StandardMaterial();
     material.diffuseMethod.difuseTexture.url = 'resources/m.png';

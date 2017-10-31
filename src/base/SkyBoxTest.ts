@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
 
@@ -11,15 +11,15 @@ namespace feng3d
     //
 
     var skybox = GameObject.create("skybox");
-    var model = skybox.addComponent(MeshRenderer);
-    skybox.addComponent(MeshFilter).mesh = new SkyBoxGeometry();
-    model.material = new SkyBoxMaterial([
+    var model = skybox.addComponent(SkyBox);
+    model.texture = new TextureCube([
         'resources/skybox/px.jpg',
         'resources/skybox/py.jpg',
         'resources/skybox/pz.jpg',
         'resources/skybox/nx.jpg',
         'resources/skybox/ny.jpg',
         'resources/skybox/nz.jpg'
-    ]);
+    ]
+    );
     scene.gameObject.addChild(skybox);
 }

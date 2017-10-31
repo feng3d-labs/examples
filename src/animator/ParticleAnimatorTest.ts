@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
      var acceleration = new feng3d.Vector3D(0, -9.8, 0);
     var view3D = new Engine();
@@ -10,8 +10,9 @@ namespace feng3d
     var scene = view3D.scene;
 
     var particle = GameObject.create("particle");
-    particle.addComponent(MeshFilter).mesh = new PointGeometry();
-    var material = particle.addComponent(MeshRenderer).material = new StandardMaterial();
+    var meshRenderer = particle.addComponent(MeshRenderer);
+    meshRenderer.geometry = new PointGeometry();
+    var material = meshRenderer.material = new StandardMaterial();
     material.renderMode = RenderMode.POINTS;
     particle.transform.y = -100;
     scene.gameObject.addChild(particle);
@@ -44,5 +45,4 @@ namespace feng3d
             particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
         }, priority: 0
     });
-    particleAnimator.play();
 }

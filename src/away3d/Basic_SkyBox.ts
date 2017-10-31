@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
 
@@ -20,10 +20,8 @@ namespace feng3d
     ]);
 
     var skybox = GameObject.create("skybox");
-    var model = skybox.addComponent(MeshRenderer);
-    skybox.addComponent(MeshFilter).mesh = new SkyBoxGeometry();
-    var material = model.material = new SkyBoxMaterial();
-    material.texture = cubeTexture;
+    var skyboxComponent = skybox.addComponent(SkyBox);
+    skyboxComponent.texture = cubeTexture;
     scene.gameObject.addChild(skybox);
 
     var camera = view3D.camera;
@@ -39,7 +37,7 @@ namespace feng3d
 
     var torus = GameObject.create("torus");
     var model = torus.addComponent(MeshRenderer);
-    torus.addComponent(MeshFilter).mesh = new TorusGeometry(150, 60, 40, 20);
+    model.geometry = new TorusGeometry(150, 60, 40, 20);
     model.material = torusMaterial;
     scene.gameObject.addChild(torus);
 
@@ -48,7 +46,7 @@ namespace feng3d
         torus.transform.rx += 2;
         torus.transform.ry += 1;
         camera.transform.position = new Vector3D(0, 0, 0);
-        camera.transform.ry += 0.5 * (input.clientX - view3D.canvas.clientLeft - view3D.canvas.width / 2) / 800;
+        camera.transform.ry += 0.5 * (input.clientX - view3D.gl.canvas.clientLeft - view3D.gl.canvas.width / 2) / 800;
         camera.transform.moveBackward(600);
     });
 }

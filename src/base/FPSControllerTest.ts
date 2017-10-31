@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
     var scene3D = view3D.scene;
@@ -8,7 +8,7 @@ namespace feng3d
 
     var plane = GameObjectFactory.createPlane();
     plane.transform.position = new Vector3D(150, 0, 0);
-    plane.transform.rx = 90;
+    plane.transform.rx = -90;
     scene3D.gameObject.addChild(plane);
 
     var sphere = GameObjectFactory.createSphere();

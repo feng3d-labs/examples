@@ -17,5 +17,9 @@
     "3dEngine"
   ],
   "author": "feng",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "feng3d": "^201710.30.1"
+  }
 }

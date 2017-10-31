@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
 
@@ -13,12 +13,13 @@ namespace feng3d
     var root = 'resources/terrain/';
     //
     var terrain = GameObject.create("terrain");
-    terrain.addComponent(MeshFilter).mesh = new TerrainGeometry(root + 'terrain_heights.jpg');
+    var meshRenderer = terrain.addComponent(MeshRenderer);
+    meshRenderer.geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
     var material = new StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
     var terrainMethod = new TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new Vector3D(1, 50, 50, 50));
     material.addMethod(terrainMethod);
 
-    terrain.addComponent(MeshRenderer).material = material;
+    meshRenderer.material = material;
     scene.gameObject.addChild(terrain);
 
     //初始化光源

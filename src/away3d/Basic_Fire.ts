@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     interface FireVO
     {
@@ -17,7 +17,7 @@ namespace feng3d
     var particleMaterial: StandardMaterial;
     var directionalLight: DirectionalLight;
     var fireAnimationSet: ParticleAnimationSet;
-    var particleGeometry: Geometry;
+    var particleGeometry: PlaneGeometry;
     var timer: Timer;
     var plane: GameObject;
     var fireObjects: FireVO[] = [];
@@ -52,7 +52,7 @@ namespace feng3d
     {
         var gameObject = GameObject.create();
         directionalLight = gameObject.addComponent(DirectionalLight);
-        directionalLight.direction = new Vector3D(0, -1, 0);
+        directionalLight.transform.rx = 90;
         directionalLight.castsShadows = false;
         directionalLight.color.fromUnit(0xeedddd);
         directionalLight.intensity = .5;
@@ -98,8 +98,8 @@ namespace feng3d
     {
         plane = GameObject.create();
         var model = plane.addComponent(MeshRenderer);
-        plane.addComponent(MeshFilter).mesh = new PlaneGeometry(1000, 1000);
-        plane.getComponent(MeshFilter).mesh.scaleUV(2, 2);
+        model.geometry = new PlaneGeometry(1000, 1000);
+        model.geometry.scaleUV(2, 2);
         model.material = planeMaterial;
         plane.transform.y = -20;
         scene.gameObject.addChild(plane);
@@ -107,7 +107,7 @@ namespace feng3d
         {
             var particleMesh = GameObject.create();
             var model = particleMesh.addComponent(MeshRenderer);
-            particleMesh.addComponent(MeshFilter).mesh = particleGeometry;
+            model.geometry = particleGeometry;
             model.material = particleMaterial;
             var particleAnimator = particleMesh.addComponent(ParticleAnimator);
             particleAnimator.animatorSet = fireAnimationSet;
@@ -146,7 +146,6 @@ namespace feng3d
     function onTimer(e)
     {
         var fireObject: FireVO = fireObjects[timer.currentCount - 1];
-        fireObject.animator.play();
         var lightObject = GameObject.create();
         var light: PointLight = lightObject.addComponent(PointLight);
         light.color.fromUnit(0xFF3301);
@@ -160,8 +159,8 @@ namespace feng3d
     {
         if (move)
         {
-            cameraController.panAngle = 0.3 * (input.clientX - view3D.canvas.clientLeft - lastMouseX) + lastPanAngle;
-            cameraController.tiltAngle = 0.3 * (input.clientY - view3D.canvas.clientTop - lastMouseY) + lastTiltAngle;
+            cameraController.panAngle = 0.3 * (input.clientX - view3D.gl.canvas.clientLeft - lastMouseX) + lastPanAngle;
+            cameraController.tiltAngle = 0.3 * (input.clientY - view3D.gl.canvas.clientTop - lastMouseY) + lastTiltAngle;
         }
         var fireVO: FireVO;
         var fireVO_key_a;
@@ -180,16 +179,16 @@ namespace feng3d
         // view["render"]();
     }
 
-    function onMouseDown(event: InputEvent)
+    function onMouseDown()
     {
         lastPanAngle = cameraController.panAngle;
         lastTiltAngle = cameraController.tiltAngle;
-        lastMouseX = input.clientX - view3D.canvas.clientLeft;
-        lastMouseY = input.clientY - view3D.canvas.clientTop;
+        lastMouseX = input.clientX - view3D.gl.canvas.clientLeft;
+        lastMouseY = input.clientY - view3D.gl.canvas.clientTop;
         move = true;
     }
 
-    function onMouseUp(event: InputEvent)
+    function onMouseUp()
     {
         move = false;
     }

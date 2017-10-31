@@ -1,18 +1,19 @@
-namespace feng3d
+module feng3d
 {
     export class ScriptDemo extends Script
     {
         cube: GameObject;
 
-        init()
+        init(gameObject: GameObject)
         {
+            super.init(gameObject);
             var cube = this.cube = GameObject.create();
             cube.transform.z = 300;
             cube.transform.y = -100;
             this.gameObject.addChild(cube);
 
             var model = cube.addComponent(MeshRenderer);
-            cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
             //材质
             var material = model.material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/m.png';

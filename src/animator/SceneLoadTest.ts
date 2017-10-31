@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
 
     export class SceneLoadTest
@@ -15,7 +15,7 @@ namespace feng3d
             this.camera.transform.z = -500;
             this.camera.transform.lookAt(new Vector3D());
             //
-            this.controller = new FPSController(this.view3D.camera.gameObject);
+            this.camera.gameObject.addComponent(FPSController);
         }
 
         init()
@@ -26,8 +26,7 @@ namespace feng3d
             Loader.loadText("resources/scene/scene.json", (content) =>
             {
                 var json = JSON.parse(content);
-                var scene = GameObject.create();
-                scene.deserialize(json);
+                var scene = serialization.deserialize(json);
                 for (var i = 0; i < scene.numChildren; i++)
                 {
                     scene3D.gameObject.addChild(scene.getChildAt(i));

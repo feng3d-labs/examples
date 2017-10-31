@@ -27,9 +27,10 @@ var files = {
         "ParticleAnimatorTest",
         "SceneLoadTest",
     ],
-    "loader": [
+    "loaders": [
         "OBJParserTest",
         "MD5LoaderTest",
+        "MdlLoaderTest",
     ],
     "advanced": [
         "TerrainTest",
@@ -41,9 +42,6 @@ var files = {
         "Basic_Shading",
         "Basic_Particles",
         "Basic_Fire",
-    ],
-    "war3": [
-        "MdlParserTest",
     ],
 };
 
@@ -114,7 +112,7 @@ for (var key in files) {
             var link = document.createElement('a');
             link.className = 'link';
             link.textContent = file;
-            link.href = "examples.html?type=" + paths[file];
+            link.href = "examples.html?type=" + paths[file] + "&v="+Math.random();
             link.setAttribute('target', 'viewer');
             link.addEventListener('click', function (event) {
 

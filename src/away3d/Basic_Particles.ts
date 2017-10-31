@@ -1,17 +1,13 @@
-namespace feng3d
+module feng3d
 {
     var view3D: Engine;
-    var _cameraController: HoverController;
     var _particleMesh: GameObject;
-    var _move = false;
-    var _lastPanAngle = NaN;
-    var _lastTiltAngle = NaN;
-    var _lastMouseX = NaN;
-    var _lastMouseY = NaN;
 
     view3D = new Engine();
-
-    _cameraController = new HoverController(view3D.camera.gameObject, null, 45, 20, 1000);
+    var camera = view3D.camera;
+    camera.transform.x = 1000;
+    camera.transform.lookAt(new Vector3D());
+    camera.gameObject.addComponent(FPSController);
 
     // _particleAnimationSet = new ParticleAnimationSet(true, true);
     // _particleAnimationSet["addAnimation"](new ParticleBillboardNode());
@@ -20,8 +16,9 @@ namespace feng3d
 
     _particleMesh = GameObject.create("particle");
     // _particleMesh.geometry = new PointGeometry();
-    _particleMesh.addComponent(MeshFilter).mesh = new PlaneGeometry(10, 10, 1, 1, false);
-    var material = _particleMesh.addComponent(MeshRenderer).material = new StandardMaterial("resources/blue.png");
+    var meshRenderer = _particleMesh.addComponent(MeshRenderer);
+    meshRenderer.geometry = new PlaneGeometry(10, 10, 1, 1, false);
+    var material = meshRenderer.material = new StandardMaterial("resources/blue.png");
     material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
     material.enableBlend = true;
 
@@ -43,34 +40,5 @@ namespace feng3d
     var particleAnimator = _particleMesh.addComponent(ParticleAnimator);
     particleAnimator.animatorSet = particleAnimationSet;
     particleAnimator.cycle = 10;
-    particleAnimator.play();
     view3D.scene.gameObject.addChild(_particleMesh);
-
-    ticker.on("enterFrame", onEnterFrame);
-    input.on("mousedown", onMouseDown);
-    input.on("mouseup", onMouseUp);
-
-    function onEnterFrame(event: InputEvent)
-    {
-        if (_move)
-        {
-            _cameraController["panAngle"] = 0.3 * (input.clientX - view3D.canvas.clientLeft - _lastMouseX) + _lastPanAngle;
-            _cameraController["tiltAngle"] = 0.3 * (input.clientY - view3D.canvas.clientTop - _lastMouseY) + _lastTiltAngle;
-        }
-    }
-
-    function onMouseDown(event: InputEvent)
-    {
-        _lastPanAngle = _cameraController["panAngle"];
-        _lastTiltAngle = _cameraController["tiltAngle"];
-        _lastMouseX = input.clientX - view3D.canvas.clientLeft;
-        _lastMouseY = input.clientY - view3D.canvas.clientTop;
-        _move = true;
-    }
-
-    function onMouseUp(event: InputEvent)
-    {
-        _move = false;
-    }
-
 }

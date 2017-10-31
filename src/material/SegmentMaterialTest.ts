@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
 
@@ -7,8 +7,9 @@ namespace feng3d
     view3D.scene.gameObject.addChild(segment);
 
     //初始化材质
-    segment.addComponent(MeshRenderer).material = new SegmentMaterial();
-    var segmentGeometry = segment.addComponent(MeshFilter).mesh = new SegmentGeometry();
+    var meshRenderer = segment.addComponent(MeshRenderer);
+    meshRenderer.material = new SegmentMaterial();
+    var segmentGeometry = meshRenderer.geometry = new SegmentGeometry();
 
     var length = 200;
     var height = 200 / Math.PI;

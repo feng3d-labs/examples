@@ -1,10 +1,10 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
     var object3d = GameObject.create();
     var model = object3d.addComponent(MeshRenderer);
 
-    var geometry = object3d.addComponent(MeshFilter).mesh = new Geometry();
+    var geometry = model.geometry = new CustomGeometry();
     geometry.addGeometry(new PlaneGeometry());
     var matrix3D = new Matrix3D();
     matrix3D.appendTranslation(0, 50, 0);

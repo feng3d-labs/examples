@@ -1,9 +1,9 @@
-namespace feng3d
+module feng3d
 {
-    var engine = Engine.get();
+    var engine = new Engine();
     var scene3D = engine.scene;
 
-    var path = "out/scripts/ScriptDemo.js";
+    var path = "debug/scripts/ScriptDemo.js";
 
     GameObjectUtil.addScript(scene3D.gameObject, path);
 

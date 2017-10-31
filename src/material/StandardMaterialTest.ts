@@ -1,4 +1,4 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
 
@@ -14,7 +14,7 @@ namespace feng3d
     }, 15);
 
     var model = cube.addComponent(MeshRenderer);
-    cube.addComponent(MeshFilter).mesh = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+    model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
     // model.geometry = new PlaneGeometry();
     //材质
     var textureMaterial = model.material = new StandardMaterial();

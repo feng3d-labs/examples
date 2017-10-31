@@ -1,29 +1,61 @@
-var type = GetQueryString("type");
+loadjs([
+  // `../feng3d/out/feng3d.js`, //debug
+  `node_modules/feng3d/out/feng3d.js`,  //release
+], loadComplete);
 
-var loadpaths = [//
-  "../feng3d/out/feng3d.js",
-  "out/" + type + ".js",
-];
+function loadjs(path, onload, onerror)
+{
+  if (typeof path == "string")
+  {
+    var script = document.createElement('script');
+    script.src = path;
+    script.onload = (ev) =>
+    {
+      if (onload)
+        onload(ev);
+      else
+      {
+        console.log(`${path} 加载完成`);
+      }
+    }
+    script.onerror = () =>
+    {
+      if (onerror)
+        onerror();
+      else
+      {
+        console.warn(`${path} 加载失败！`);
+      }
+    }
+    document.head.appendChild(script);
+  } else
+  {
+    if (path.length == 0)
+    {
+      onload();
+    } else
+    {
+      loadjs(path.shift(), () =>
+      {
+        loadjs(path, onload, onerror);
+      }, onerror);
+    }
+  }
 
-for (var i = 0; i < loadpaths.length; i++) {
-  loadpaths[i] = loadpaths[i] + "?version=" + Math.random();
 }
 
-feng3d.loadjs.loadjs({
-  paths: loadpaths,
-  success: () => {
+function loadComplete()
+{
+  var type = GetQueryString("type");
 
-  },
-  error: (pathsNotFound) => {
-    console.log(`无法加载 ${JSON.stringify(pathsNotFound)}`);
-  }, numRetries: 5
-});
+  loadjs("debug/" + type + ".js");
 
-if (top != window)
-  top.feng3dWin = window;
-function GetQueryString(name) {
-  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-  var r = window.location.search.substr(1).match(reg);
-  if (r != null) return r[2];
-  return null;
+  function GetQueryString(name)
+  {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return r[2];
+    return null;
+  }
 }
+

@@ -1,12 +1,13 @@
-namespace feng3d
+module feng3d
 {
     var view3D = new Engine();
 
     var pointGeometry = new PointGeometry();
     var pointMaterial = new PointMaterial();
     var object3D = GameObject.create("plane");
-    object3D.addComponent(MeshFilter).mesh = pointGeometry;
-    object3D.addComponent(MeshRenderer).material = pointMaterial;
+    var meshRenderer = object3D.addComponent(MeshRenderer);
+    meshRenderer.geometry = pointGeometry;
+    meshRenderer.material = pointMaterial;
     object3D.transform.z = 300;
     view3D.scene.gameObject.addChild(object3D);
 

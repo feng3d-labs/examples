@@ -1,6 +1,5 @@
 var files = {
     "base": [
-        "UnitTest",
         "Container3DTest",
         "FPSControllerTest",
         "BillboardTest",

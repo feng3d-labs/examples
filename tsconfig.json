@@ -6,12 +6,12 @@
 		"experimentalDecorators": true,
 		"declaration": true,
 		"types": [
-			"feng3d"
+			// "feng3d"	// release
 		],
-		// "outFile": "out/examples.js"
 		"outDir": "debug"
 	},
 	"include": [
+		"../feng3d/out/feng3d.d.ts", //debug
 		"src/**/*.ts"
 	]
 }

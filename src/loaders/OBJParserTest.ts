@@ -23,7 +23,7 @@ module feng3d
     // var material = new ColorMaterial();
     // material.cullFace = GL.NONE;
 
-    ObjLoader.load(objUrl, material, function (object3D: GameObject)
+    ObjLoader.load(objUrl, function (object3D: GameObject)
     {
         object = object3D;
         object.transform.sx = 20;
@@ -31,5 +31,11 @@ module feng3d
         object.transform.sz = 20;
         object.transform.z = 300;
         scene.gameObject.addChild(object3D);
+
+        var meshRenderers = object3D.getComponentsInChildren(MeshRenderer);
+        meshRenderers.forEach(element =>
+        {
+            element.material = material;
+        });
     });
 }

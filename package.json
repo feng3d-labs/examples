@@ -20,6 +20,6 @@
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
-    "feng3d": "^201710.30.1"
+    "feng3d": "^201711.10.0"
   }
 }

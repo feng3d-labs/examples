@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view = new Engine();
     var scene = view.scene;
@@ -13,7 +13,7 @@ module feng3d
     var material = model.material = new StandardMaterial("resources/floor_diffuse.jpg");
     scene.gameObject.addChild(plane);
 
-    ticker.on("enterFrame", (e) =>
+    ticker.onframe( () =>
     {
         plane.transform.ry += 1;
     });

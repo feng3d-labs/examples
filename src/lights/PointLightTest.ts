@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var light0 = GameObject.create("pointLight");
     var light1 = GameObject.create("pointLight");
@@ -10,7 +10,7 @@ module feng3d
     initObjects();
     initLights();
 
-    ticker.on("enterFrame", setPointLightPosition);
+    ticker.onframe( setPointLightPosition);
 
     var camera = view3D.camera;
     camera.transform.z = -500;
@@ -18,10 +18,9 @@ module feng3d
     camera.transform.lookAt(new Vector3D());
     camera.gameObject.addComponent(FPSController);
     //
-    input.on("keyup", (event) =>
+    windowEventProxy.on("keyup", (event) =>
     {
-        var inputEvent: InputEvent = event.data;
-        var boardKey = String.fromCharCode(inputEvent.keyCode).toLocaleLowerCase();
+        var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
         switch (boardKey)
         {
             case "c":
@@ -41,12 +40,12 @@ module feng3d
         material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
         material.normalMethod.normalTexture.url = 'resources/head_normals.jpg';
         material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
-        material.diffuseMethod.difuseTexture.wrapS = GL.MIRRORED_REPEAT;
-        material.diffuseMethod.difuseTexture.wrapT = GL.MIRRORED_REPEAT;
-        material.normalMethod.normalTexture.wrapS = GL.MIRRORED_REPEAT;
-        material.normalMethod.normalTexture.wrapT = GL.MIRRORED_REPEAT;
-        material.specularMethod.specularTexture.wrapS = GL.MIRRORED_REPEAT;
-        material.specularMethod.specularTexture.wrapT = GL.MIRRORED_REPEAT;
+        material.diffuseMethod.difuseTexture.wrapS = TextureWrap.MIRRORED_REPEAT;
+        material.diffuseMethod.difuseTexture.wrapT = TextureWrap.MIRRORED_REPEAT;
+        material.normalMethod.normalTexture.wrapS = TextureWrap.MIRRORED_REPEAT;
+        material.normalMethod.normalTexture.wrapT = TextureWrap.MIRRORED_REPEAT;
+        material.specularMethod.specularTexture.wrapS = TextureWrap.MIRRORED_REPEAT;
+        material.specularMethod.specularTexture.wrapT = TextureWrap.MIRRORED_REPEAT;
 
         //初始化立方体
         var plane = GameObject.create();

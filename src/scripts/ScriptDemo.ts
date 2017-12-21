@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     export class ScriptDemo extends Script
     {
@@ -18,14 +18,16 @@ module feng3d
             var material = model.material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/m.png';
 
-            var fogMethod = new FogMethod(new Color(1, 1, 0), 200, 300);
-            material.addMethod(fogMethod);
+            material.fogMethod.enable = true;
+            material.fogMethod.fogColor = new Color(1, 1, 0);
+            material.fogMethod.minDistance = 200;
+            material.fogMethod.maxDistance = 300;
         }
 
         update()
         {
             this.cube.transform.ry += 1;
-            // console.log("this.cube.transform.ry: " + this.cube.transform.ry);
+            // log("this.cube.transform.ry: " + this.cube.transform.ry);
         }
 
         /**

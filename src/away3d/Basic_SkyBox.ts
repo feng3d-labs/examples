@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
 
@@ -33,7 +33,7 @@ module feng3d
     torusMaterial.specularMethod.specular = 0.5;
     torusMaterial.ambientMethod.color.fromUnit(0x111111);
     torusMaterial.ambientMethod.color.a = 0.25;
-    torusMaterial.addMethod(new EnvMapMethod(cubeTexture, 1));
+    torusMaterial.envMapMethod.cubeTexture = cubeTexture;
 
     var torus = GameObject.create("torus");
     var model = torus.addComponent(MeshRenderer);
@@ -41,12 +41,12 @@ module feng3d
     model.material = torusMaterial;
     scene.gameObject.addChild(torus);
 
-    ticker.on("enterFrame", (e) =>
+    ticker.onframe( () =>
     {
         torus.transform.rx += 2;
         torus.transform.ry += 1;
         camera.transform.position = new Vector3D(0, 0, 0);
-        camera.transform.ry += 0.5 * (input.clientX - view3D.gl.canvas.clientLeft - view3D.gl.canvas.width / 2) / 800;
+        camera.transform.ry += 0.5 * (windowEventProxy.clientX - view3D.gl.canvas.clientLeft - view3D.gl.canvas.width / 2) / 800;
         camera.transform.moveBackward(600);
     });
 }

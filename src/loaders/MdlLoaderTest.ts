@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
 	var modelConfig = [
 		{
@@ -61,25 +61,24 @@ module feng3d
 	var rooturl = "resources/war3/";
 	updateModel();
 
-	input.on("keyup", (e) =>
+	windowEventProxy.on("keyup", (e) =>
 	{
-		var inputEvent: InputEvent = e.data;
-		if (inputEvent.keyCode == 37 && !loading)
+		if (e.keyCode == 37 && !loading)
 		{
 			modelId--;
 			updateModel();
 		}
-		if (inputEvent.keyCode == 39 && !loading)
+		if (e.keyCode == 39 && !loading)
 		{
 			modelId++;
 			updateModel();
 		}
-		if (inputEvent.keyCode == 38)
+		if (e.keyCode == 38)
 		{
 			animatorId--;
 			updateAnimatorId();
 		}
-		if (inputEvent.keyCode == 40)
+		if (e.keyCode == 40)
 		{
 			animatorId++;
 			updateAnimatorId();

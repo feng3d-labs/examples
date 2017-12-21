@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var scene: Scene3D;
     var camera: Camera;
@@ -96,7 +96,7 @@ module feng3d
 
     function initListeners()
     {
-        ticker.on("enterFrame", onEnterFrame, this);
+        ticker.onframe( onEnterFrame, this);
     }
 
     function onEnterFrame()

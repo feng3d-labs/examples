@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
 
     /**
@@ -39,10 +39,10 @@ module feng3d
 
     scene3D.gameObject.on("click", (event) =>
     {
-        var object3D = <Transform>event.target;
-        if (object3D.getComponent(MeshRenderer))
+        var transform = <Transform>event.target;
+        if (transform.getComponent(MeshRenderer))
         {
-            var material = object3D.getComponent(MeshRenderer).material = new ColorMaterial();
+            var material = transform.getComponent(MeshRenderer).material = new ColorMaterial();
             material.color.fromUnit(Math.random() * (1 << 24));
         }
 

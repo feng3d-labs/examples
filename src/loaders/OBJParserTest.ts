@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var object: GameObject;
     var view3D = new Engine();
@@ -21,18 +21,18 @@ module feng3d
     material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
     material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
     // var material = new ColorMaterial();
-    // material.cullFace = GL.NONE;
+    material.cullFace = CullFace.NONE;
 
-    ObjLoader.load(objUrl, function (object3D: GameObject)
+    ObjLoader.load(objUrl, function (gameObject: GameObject)
     {
-        object = object3D;
+        object = gameObject;
         object.transform.sx = 20;
         object.transform.sy = 20;
         object.transform.sz = 20;
         object.transform.z = 300;
-        scene.gameObject.addChild(object3D);
+        scene.gameObject.addChild(gameObject);
 
-        var meshRenderers = object3D.getComponentsInChildren(MeshRenderer);
+        var meshRenderers = gameObject.getComponentsInChildren(MeshRenderer);
         meshRenderers.forEach(element =>
         {
             element.material = material;

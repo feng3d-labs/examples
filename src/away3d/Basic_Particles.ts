@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view3D: Engine;
     var _particleMesh: GameObject;
@@ -19,13 +19,13 @@ module feng3d
     var meshRenderer = _particleMesh.addComponent(MeshRenderer);
     meshRenderer.geometry = new PlaneGeometry(10, 10, 1, 1, false);
     var material = meshRenderer.material = new StandardMaterial("resources/blue.png");
-    material.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+    material.diffuseMethod.difuseTexture.format = TextureFormat.RGBA;
     material.enableBlend = true;
+    var particleAnimator = _particleMesh.addComponent(ParticleAnimator);
 
-    var particleAnimationSet = new ParticleAnimationSet();
-    particleAnimationSet.numParticles = 20000;
+    particleAnimator.numParticles = 20000;
     //通过函数来创建粒子初始状态
-    particleAnimationSet.generateFunctions.push({
+    particleAnimator.generateFunctions.push({
         generate: (particle) =>
         {
             particle.birthTime = Math.random() * 5 - 5;
@@ -36,9 +36,8 @@ module feng3d
             particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
         }, priority: 0
     });
-    particleAnimationSet.addAnimation(new ParticleBillboard(view3D.camera.getComponent(Camera)));
-    var particleAnimator = _particleMesh.addComponent(ParticleAnimator);
-    particleAnimator.animatorSet = particleAnimationSet;
+    particleAnimator.animations.billboard.enable = true;
+    particleAnimator.animations.billboard.camera = view3D.camera.getComponent(Camera);
     particleAnimator.cycle = 10;
     view3D.scene.gameObject.addChild(_particleMesh);
 }

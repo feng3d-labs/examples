@@ -1,6 +1,6 @@
-module feng3d
+namespace feng3d
 {
-     var acceleration = new feng3d.Vector3D(0, -9.8, 0);
+    var acceleration = new feng3d.Vector3D(0, -9.8, 0);
     var view3D = new Engine();
     var camera = view3D.camera;
     camera.transform.z = -500;
@@ -19,10 +19,9 @@ module feng3d
 
     var particleAnimator = particle.addComponent(ParticleAnimator);
     particleAnimator.cycle = 10;
-    var particleAnimatorSet = particleAnimator.animatorSet = new ParticleAnimationSet();
-    particleAnimatorSet.numParticles = 1000;
+    particleAnimator.numParticles = 1000;
     //发射组件
-    var emission = new ParticleEmission();
+    var emission = particleAnimator.animations.emission;
     //每秒发射数量
     emission.rate = 50;
     //批量发射
@@ -34,15 +33,15 @@ module feng3d
         { time: 5, particles: 100 },
     );
     //通过组件来创建粒子初始状态
-    particleAnimatorSet.addAnimation(emission);
-    particleAnimatorSet.addAnimation(new ParticlePosition());
-    particleAnimatorSet.addAnimation(new ParticleVelocity());
-    particleAnimatorSet.setGlobal("acceleration", () => acceleration);
+    particleAnimator.animations.position.enable = true;
+    particleAnimator.animations.velocity.enable = true;
+    particleAnimator.particleGlobal.acceleration = acceleration;
     //通过函数来创建粒子初始状态
-    particleAnimatorSet.generateFunctions.push({
+    particleAnimator.generateFunctions.push({
         generate: (particle) =>
         {
             particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
         }, priority: 0
     });
+    particleAnimator.isPlaying = true;
 }

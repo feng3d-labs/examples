@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
 
@@ -16,8 +16,12 @@ module feng3d
     var meshRenderer = terrain.addComponent(MeshRenderer);
     meshRenderer.geometry = new TerrainGeometry(root + 'terrain_heights.jpg');
     var material = new StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
-    var terrainMethod = new TerrainMethod(root + 'terrain_splats.png', [root + 'beach.jpg', root + 'grass.jpg', root + 'rock.jpg'], new Vector3D(1, 50, 50, 50));
-    material.addMethod(terrainMethod);
+    //
+    material.terrainMethod.blendTexture.url = root + 'terrain_splats.png';
+    material.terrainMethod.splatTexture1.url = root + 'beach.jpg';
+    material.terrainMethod.splatTexture2.url = root + 'grass.jpg';
+    material.terrainMethod.splatTexture3.url = root + 'rock.jpg';
+    material.terrainMethod.splatRepeats = new Vector3D(1, 50, 50, 50)
 
     meshRenderer.material = material;
     scene.gameObject.addChild(terrain);
@@ -31,7 +35,7 @@ module feng3d
     // scene.transform.addChild(light1);
 
     //
-    ticker.on("enterFrame", () =>
+    ticker.onframe( () =>
     {
         var time = new Date().getTime();
         var angle = time / 1000;

@@ -1,8 +1,8 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
-    var object3d = GameObject.create();
-    var model = object3d.addComponent(MeshRenderer);
+    var gameobject = GameObject.create();
+    var model = gameobject.addComponent(MeshRenderer);
 
     var geometry = model.geometry = new CustomGeometry();
     geometry.addGeometry(new PlaneGeometry());
@@ -19,9 +19,9 @@ module feng3d
     matrix3D.appendRotation(Vector3D.Z_AXIS, 45);
     geometry.addGeometry(addGeometry, matrix3D);
 
-    object3d.transform.z = 300;
-    object3d.transform.y = -100;
-    view3D.scene.gameObject.addChild(object3d);
+    gameobject.transform.z = 300;
+    gameobject.transform.y = -100;
+    view3D.scene.gameObject.addChild(gameobject);
 
     //初始化颜色材质
     var colorMaterial = model.material = new ColorMaterial();
@@ -29,7 +29,7 @@ module feng3d
     //变化旋转与颜色
     setInterval(function ()
     {
-        object3d.transform.ry += 1;
+        gameobject.transform.ry += 1;
     }, 15);
     setInterval(function ()
     {

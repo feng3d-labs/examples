@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
     var object: GameObject;
@@ -9,31 +9,31 @@ module feng3d
 
     view3D.camera.gameObject.transform.z = -300;
 
-    MD5Loader.load(md5meshUrl, (object3D) =>
+    MD5Loader.load(md5meshUrl, (gameObject) =>
     {
-        object = object3D;
+        object = gameObject;
 
-        object3D.transform.rx = -90;
-        object3D.transform.ry = -90;
+        gameObject.transform.rx = -90;
+        gameObject.transform.ry = -90;
 
-        useMatrial(object3D);
+        useMatrial(gameObject);
 
-        scene.gameObject.addChild(object3D);
+        scene.gameObject.addChild(gameObject);
         //
         MD5Loader.loadAnim(md5animUrl, (animationClip) =>
         {
             animationClip.name = "idle2";
-            var animation = object3D.addComponent(Animation);
+            var animation = gameObject.addComponent(Animation);
             animation.animation = animationClip;
             animation.isplaying = true;
         });
     });
 
-    function useMatrial(object3D: GameObject)
+    function useMatrial(gameObject: GameObject)
     {
-        for (var i = 0; i < object3D.numChildren; i++)
+        for (var i = 0; i < gameObject.numChildren; i++)
         {
-            var child = object3D.getChildAt(i);
+            var child = gameObject.getChildAt(i);
             var model = child.getComponent(MeshRenderer);
             if (model)
             {

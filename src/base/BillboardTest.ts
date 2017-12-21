@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
     view3D.camera.gameObject.addComponent(FPSController);
@@ -23,7 +23,7 @@ module feng3d
     var model = gameObject.getComponent(MeshRenderer);
     model.geometry = new PlaneGeometry(100, 100, 1, 1, false);
     var textureMaterial = model.material = new StandardMaterial();
-    // textureMaterial.cullFace = GL.NONE;
+    // textureMaterial.cullFace = CullFace.NONE;
     //
     var texture = textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
 

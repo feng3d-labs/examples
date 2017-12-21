@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
     var scene = view3D.scene;
@@ -14,10 +14,12 @@ module feng3d
     var material = model.material = new StandardMaterial();
     material.diffuseMethod.difuseTexture.url = 'resources/m.png';
 
-    var fogMethod = new FogMethod(new Color(1, 1, 0), 200, 300);
-    material.addMethod(fogMethod);
+    material.fogMethod.enable = true;
+    material.fogMethod.fogColor = new Color(1, 1, 0);
+    material.fogMethod.minDistance = 200;
+    material.fogMethod.maxDistance = 300;
 
-    ticker.on("enterFrame", (e) =>
+    ticker.onframe( () =>
     {
         cube.transform.ry += 1;
     });

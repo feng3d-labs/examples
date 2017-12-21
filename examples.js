@@ -1,6 +1,6 @@
 loadjs([
-  // `../feng3d/out/feng3d.js`, //debug
-  `node_modules/feng3d/out/feng3d.js`,  //release
+  `../feng3d/out/feng3d.js`, //debug
+  // `node_modules/feng3d/out/feng3d.js`,  //release
 ], loadComplete);
 
 function loadjs(path, onload, onerror)
@@ -48,7 +48,7 @@ function loadComplete()
 {
   var type = GetQueryString("type");
 
-  loadjs("debug/" + type + ".js");
+  loadjs("out/" + type + ".js");
 
   function GetQueryString(name)
   {

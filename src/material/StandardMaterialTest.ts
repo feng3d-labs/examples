@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
 
@@ -20,7 +20,7 @@ module feng3d
     var textureMaterial = model.material = new StandardMaterial();
     textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
     // textureMaterial.diffuseMethod.difuseTexture.url = 'resources/nonpowerof2.png';
-    textureMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+    textureMaterial.diffuseMethod.difuseTexture.format = TextureFormat.RGBA;
     // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
 
     textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;

@@ -1,15 +1,15 @@
-module feng3d
+namespace feng3d
 {
     var view3D = new Engine();
 
     var pointGeometry = new PointGeometry();
     var pointMaterial = new PointMaterial();
-    var object3D = GameObject.create("plane");
-    var meshRenderer = object3D.addComponent(MeshRenderer);
+    var gameObject = GameObject.create("plane");
+    var meshRenderer = gameObject.addComponent(MeshRenderer);
     meshRenderer.geometry = pointGeometry;
     meshRenderer.material = pointMaterial;
-    object3D.transform.z = 300;
-    view3D.scene.gameObject.addChild(object3D);
+    gameObject.transform.z = 300;
+    view3D.scene.gameObject.addChild(gameObject);
 
     var length = 200;
     var height = 200 / Math.PI;
@@ -23,7 +23,7 @@ module feng3d
     //变化旋转
     setInterval(function ()
     {
-        object3D.transform.ry += 1;
-        pointMaterial.pointSize = 1 + 5 * Math.sin(object3D.transform.ry / 30);
+        gameObject.transform.ry += 1;
+        pointMaterial.pointSize = 1 + 5 * Math.sin(gameObject.transform.ry / 30);
     }, 15);
 }

@@ -1,4 +1,4 @@
-module feng3d
+namespace feng3d
 {
     interface FireVO
     {
@@ -16,7 +16,6 @@ module feng3d
     var planeMaterial: StandardMaterial;
     var particleMaterial: StandardMaterial;
     var directionalLight: DirectionalLight;
-    var fireAnimationSet: ParticleAnimationSet;
     var particleGeometry: PlaneGeometry;
     var timer: Timer;
     var plane: GameObject;
@@ -30,7 +29,6 @@ module feng3d
     initEngine();
     initLights();
     initMaterials();
-    initParticles();
     initObjects();
     initListeners();
 
@@ -64,21 +62,21 @@ module feng3d
         planeMaterial = new StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
         planeMaterial["specular"] = 10;
         particleMaterial = new StandardMaterial("resources/blue.png");
-        particleMaterial.diffuseMethod.difuseTexture.format = feng3d.GL.RGBA;
+        particleMaterial.diffuseMethod.difuseTexture.format = TextureFormat.RGBA;
         particleMaterial.enableBlend = true;
     }
 
-    function initParticles()
+    function initParticles(particleAnimator: ParticleAnimator)
     {
-        fireAnimationSet = new ParticleAnimationSet();
-        fireAnimationSet.addAnimation(new ParticleBillboard(camera.getComponent(Camera)));
+        particleAnimator.animations.billboard.enable = true;
+        particleAnimator.animations.billboard.camera = camera.getComponent(Camera);
         // fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
         // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
         // fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
         // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
         //通过函数来创建粒子初始状态
-        fireAnimationSet.numParticles = 500;
-        fireAnimationSet.generateFunctions.push({
+        particleAnimator.numParticles = 500;
+        particleAnimator.generateFunctions.push({
             generate: (particle) =>
             {
                 particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
@@ -110,7 +108,7 @@ module feng3d
             model.geometry = particleGeometry;
             model.material = particleMaterial;
             var particleAnimator = particleMesh.addComponent(ParticleAnimator);
-            particleAnimator.animatorSet = fireAnimationSet;
+            initParticles(particleAnimator);
             var degree = i / NUM_FIRES * Math.PI * 2;
             particleMesh.transform.x = Math.sin(degree) * 400;
             particleMesh.transform.z = Math.cos(degree) * 400;
@@ -125,9 +123,9 @@ module feng3d
 
     function initListeners()
     {
-        ticker.on("enterFrame", onEnterFrame, this);
-        input.on("mousedown", onMouseDown, this);
-        input.on("mouseup", onMouseUp, this);
+        ticker.onframe( onEnterFrame, this);
+        windowEventProxy.on("mousedown", onMouseDown, this);
+        windowEventProxy.on("mouseup", onMouseUp, this);
     }
 
     function getAllLights(): Array<any>
@@ -155,12 +153,12 @@ module feng3d
         fireObject.light = light;
     }
 
-    function onEnterFrame(event)
+    function onEnterFrame()
     {
         if (move)
         {
-            cameraController.panAngle = 0.3 * (input.clientX - view3D.gl.canvas.clientLeft - lastMouseX) + lastPanAngle;
-            cameraController.tiltAngle = 0.3 * (input.clientY - view3D.gl.canvas.clientTop - lastMouseY) + lastTiltAngle;
+            cameraController.panAngle = 0.3 * (windowEventProxy.clientX - view3D.gl.canvas.clientLeft - lastMouseX) + lastPanAngle;
+            cameraController.tiltAngle = 0.3 * (windowEventProxy.clientY - view3D.gl.canvas.clientTop - lastMouseY) + lastTiltAngle;
         }
         var fireVO: FireVO;
         var fireVO_key_a;
@@ -183,8 +181,8 @@ module feng3d
     {
         lastPanAngle = cameraController.panAngle;
         lastTiltAngle = cameraController.tiltAngle;
-        lastMouseX = input.clientX - view3D.gl.canvas.clientLeft;
-        lastMouseY = input.clientY - view3D.gl.canvas.clientTop;
+        lastMouseX = windowEventProxy.clientX - view3D.gl.canvas.clientLeft;
+        lastMouseY = windowEventProxy.clientY - view3D.gl.canvas.clientTop;
         move = true;
     }
 

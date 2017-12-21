@@ -5,13 +5,10 @@
 		"sourceMap": true,
 		"experimentalDecorators": true,
 		"declaration": true,
-		"types": [
-			// "feng3d"	// release
-		],
 		"outDir": "out"
 	},
 	"include": [
-		"../feng3d/out/feng3d.d.ts", //debug
+		"libs/feng3d.d.ts",
 		"src/**/*.ts"
 	]
 }

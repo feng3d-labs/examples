@@ -1,6 +1,5 @@
 loadjs([
-  `../feng3d/out/feng3d.js`, //debug
-  // `node_modules/feng3d/out/feng3d.js`,  //release
+  `libs/feng3d.js`,
 ], loadComplete);
 
 function loadjs(path, onload, onerror)

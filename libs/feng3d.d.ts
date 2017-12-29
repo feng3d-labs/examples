@@ -5902,7 +5902,7 @@ declare namespace feng3d {
      * @author feng 2017-02-20
      */
     var forwardRenderer: {
-        draw: (renderContext: RenderContext) => {
+        draw: (renderContext: RenderContext, renderObjectflag: GameObjectFlag) => {
             blenditems: {
                 depth: number;
                 item: MeshRenderer;
@@ -6068,7 +6068,7 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     var skyboxRenderer: {
-        draw: (gl: GL, scene3d: Scene3D, camera: Camera) => void;
+        draw: (gl: GL, scene3d: Scene3D, camera: Camera, renderObjectflag: GameObjectFlag) => void;
     };
     class SkyBox extends Component {
         texture: TextureCube;
@@ -6357,6 +6357,10 @@ declare namespace feng3d {
     var mouselayer: {
         editor: number;
     };
+    enum GameObjectFlag {
+        feng3d = 1,
+        editor = 2,
+    }
     /**
      * Base class for all entities in feng3d scenes.
      */
@@ -6394,6 +6398,10 @@ declare namespace feng3d {
          * 自身以及子对象是否支持鼠标拾取
          */
         mouseEnabled: boolean;
+        /**
+         * 标记
+         */
+        flag: GameObjectFlag;
         /**
          * The Transform attached to this GameObject. (null if there is none attached).
          */
@@ -6614,6 +6622,10 @@ declare namespace feng3d {
         readonly root: GameObject;
         readonly gl: GL;
         /**
+         * 渲染对象标记，用于过滤渲染对象
+         */
+        renderObjectflag: GameObjectFlag;
+        /**
          * 渲染环境
          */
         private renderContext;
@@ -6765,11 +6777,16 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    enum ScriptFlag {
+        feng3d = 1,
+        editor = 2,
+    }
     /**
      * 3d对象脚本
      * @author feng 2017-03-11
      */
     class Script extends Component {
+        flag: ScriptFlag;
         /**
          * 脚本路径
          */
@@ -6833,6 +6850,10 @@ declare namespace feng3d {
          * 环境光强度
          */
         ambientColor: Color;
+        /**
+         * 指定更新脚本标记，用于过滤需要调用update的脚本
+         */
+        updateScriptFlag: ScriptFlag;
         /**
          * 收集组件
          */

@@ -1,0 +1,153 @@
+{
+	"defaultvaluedontsave": true,
+	"compress": false,
+	"strings": [],
+	"value": {
+		"__class__": "feng3d.GameObject",
+		"children": [
+			{
+				"__class__": "feng3d.GameObject",
+				"children": [],
+				"components": [
+					{
+						"__class__": "feng3d.Transform",
+						"x": 2.476671,
+						"z": -349.337322
+					},
+					null,
+					null,
+					{
+						"__class__": "feng3d.Camera",
+						"lens": {
+							"__class__": "feng3d.PerspectiveLens",
+							"aspectRatio": 1,
+							"coordinateSystem": 0,
+							"far": 10000,
+							"fieldOfView": 60,
+							"near": 0.1
+						}
+					}],
+				"name": "Main Camera"
+			},
+			{
+				"__class__": "feng3d.GameObject",
+				"children": [],
+				"components": [
+					{
+						"__class__": "feng3d.Transform",
+						"rx": 120
+					},
+					null,
+					null,
+					{
+						"__class__": "feng3d.DirectionalLight",
+						"castsShadows": false,
+						"color": {
+							"__class__": "feng3d.Color"
+						},
+						"intensity": 1,
+						"lightType": 1
+					}],
+				"name": "DirectionalLight"
+			},
+			null,
+			{
+				"__class__": "feng3d.GameObject",
+				"children": [],
+				"components": [
+					{
+						"__class__": "feng3d.Transform"
+					},
+					null,
+					null,
+					{
+						"__class__": "feng3d.MeshRenderer",
+						"geometry": {
+							"__class__": "feng3d.SphereGeometry",
+							"radius": 50,
+							"segmentsH": 12,
+							"segmentsW": 16,
+							"yUp": true
+						},
+						"material": {
+							"__class__": "feng3d.StandardMaterial",
+							"ambientMethod": {
+								"__class__": "feng3d.AmbientMethod",
+								"ambientTexture": {
+									"__class__": "feng3d.Texture2D"
+								},
+								"color": {
+									"__class__": "feng3d.Color"
+								}
+							},
+							"diffuseMethod": {
+								"__class__": "feng3d.DiffuseMethod",
+								"color": {
+									"__class__": "feng3d.Color"
+								},
+								"difuseTexture": {
+									"__class__": "feng3d.Texture2D"
+								}
+							},
+							"envMapMethod": {
+								"__class__": "feng3d.EnvMapMethod",
+								"reflectivity": 1
+							},
+							"fogMethod": {
+								"__class__": "feng3d.FogMethod",
+								"density": 0.1,
+								"enable": false,
+								"fogColor": {
+									"__class__": "feng3d.Color"
+								},
+								"maxDistance": 100,
+								"minDistance": 0,
+								"mode": 3
+							},
+							"normalMethod": {
+								"__class__": "feng3d.NormalMethod",
+								"normalTexture": {
+									"__class__": "feng3d.Texture2D"
+								}
+							},
+							"specularMethod": {
+								"__class__": "feng3d.SpecularMethod",
+								"specularColor": {
+									"__class__": "feng3d.Color"
+								},
+								"specularTexture": {
+									"__class__": "feng3d.Texture2D"
+								}
+							},
+							"terrainMethod": {
+								"__class__": "feng3d.TerrainMethod"
+							}
+						}
+					}],
+				"name": "sphere"
+			}],
+		"components": [
+			{
+				"__class__": "feng3d.Transform"
+			},
+			null,
+			null,
+			{
+				"__class__": "feng3d.Scene3D",
+				"ambientColor": {
+					"__class__": "feng3d.Color",
+					"b": 0.4,
+					"g": 0.4,
+					"r": 0.4
+				},
+				"background": {
+					"__class__": "feng3d.Color",
+					"b": 0.4,
+					"g": 0.4,
+					"r": 0.4
+				}
+			},
+			null],
+		"name": "Untitled"
+	}
+}

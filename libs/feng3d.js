@@ -8742,10 +8742,10 @@ var feng3d;
     /**
      * 渲染
      */
-    function draw(renderContext) {
+    function draw(renderContext, renderObjectflag) {
         renderContext.updateRenderData1();
         var frustumPlanes = renderContext.camera.frustumPlanes;
-        var meshRenderers = collectForwardRender(renderContext.scene3d.gameObject, frustumPlanes);
+        var meshRenderers = collectForwardRender(renderContext.scene3d.gameObject, frustumPlanes, renderObjectflag);
         var camerapos = renderContext.camera.transform.scenePosition;
         var maps = meshRenderers.map(function (item) {
             return {
@@ -8787,8 +8787,10 @@ var feng3d;
         //     log(error);
         // }
     }
-    function collectForwardRender(gameObject, frustumPlanes) {
+    function collectForwardRender(gameObject, frustumPlanes, renderObjectflag) {
         if (!gameObject.visible)
+            return [];
+        if (!(renderObjectflag & gameObject.flag))
             return [];
         var meshRenderers = [];
         var meshRenderer = gameObject.getComponent(feng3d.MeshRenderer);
@@ -8800,7 +8802,7 @@ var feng3d;
             }
         }
         gameObject.children.forEach(function (element) {
-            meshRenderers = meshRenderers.concat(collectForwardRender(element, frustumPlanes));
+            meshRenderers = meshRenderers.concat(collectForwardRender(element, frustumPlanes, renderObjectflag));
         });
         return meshRenderers;
     }
@@ -9238,10 +9240,10 @@ var feng3d;
     /**
      * 渲染
      */
-    function draw(gl, scene3d, camera) {
+    function draw(gl, scene3d, camera, renderObjectflag) {
         init();
         var skyboxs = scene3d.collectComponents.skyboxs.list.filter(function (skybox) {
-            return skybox.gameObject.visible;
+            return skybox.gameObject.visible && (renderObjectflag & skybox.gameObject.flag);
         });
         if (skyboxs.length == 0)
             return;
@@ -10061,6 +10063,11 @@ var feng3d;
     feng3d.mouselayer = {
         editor: 100
     };
+    var GameObjectFlag;
+    (function (GameObjectFlag) {
+        GameObjectFlag[GameObjectFlag["feng3d"] = 1] = "feng3d";
+        GameObjectFlag[GameObjectFlag["editor"] = 2] = "editor";
+    })(GameObjectFlag = feng3d.GameObjectFlag || (feng3d.GameObjectFlag = {}));
     /**
      * Base class for all entities in feng3d scenes.
      */
@@ -10092,6 +10099,10 @@ var feng3d;
              * 自身以及子对象是否支持鼠标拾取
              */
             _this.mouseEnabled = true;
+            /**
+             * 标记
+             */
+            _this.flag = GameObjectFlag.feng3d;
             //------------------------------------------
             // Protected Properties
             //------------------------------------------
@@ -10722,6 +10733,10 @@ var feng3d;
          * @param camera    摄像机
          */
         function Engine(canvas, scene, camera) {
+            /**
+             * 渲染对象标记，用于过滤渲染对象
+             */
+            this.renderObjectflag = feng3d.GameObjectFlag.feng3d;
             if (!canvas) {
                 canvas = document.createElement("canvas");
                 canvas.id = "glcanvas";
@@ -10814,9 +10829,9 @@ var feng3d;
             //绘制阴影图
             // this.shadowRenderer.draw(this._gl, this._scene, this._camera.camera);
             init(this.gl, this.scene);
-            feng3d.skyboxRenderer.draw(this.gl, this.scene, this.camera);
+            feng3d.skyboxRenderer.draw(this.gl, this.scene, this.camera, this.renderObjectflag);
             // 默认渲染
-            var forwardresult = feng3d.forwardRenderer.draw(this.renderContext);
+            var forwardresult = feng3d.forwardRenderer.draw(this.renderContext, this.renderObjectflag);
             feng3d.outlineRenderer.draw(this.renderContext, forwardresult.unblenditems);
             feng3d.wireframeRenderer.draw(this.renderContext, forwardresult.unblenditems);
         };
@@ -11351,6 +11366,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var ScriptFlag;
+    (function (ScriptFlag) {
+        ScriptFlag[ScriptFlag["feng3d"] = 1] = "feng3d";
+        ScriptFlag[ScriptFlag["editor"] = 2] = "editor";
+    })(ScriptFlag = feng3d.ScriptFlag || (feng3d.ScriptFlag = {}));
     /**
      * 3d对象脚本
      * @author feng 2017-03-11
@@ -11359,6 +11379,7 @@ var feng3d;
         __extends(Script, _super);
         function Script() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.flag = ScriptFlag.feng3d;
             _this._url = "";
             _this._enabled = false;
             /**
@@ -11419,7 +11440,8 @@ var feng3d;
             feng3d.oav({ componentParam: { dragparam: { accepttype: "file_script" } } })
         ], Script.prototype, "url", null);
         __decorate([
-            feng3d.oav()
+            feng3d.oav(),
+            feng3d.serialize()
         ], Script.prototype, "enabled", void 0);
         return Script;
     }(feng3d.Component));
@@ -11447,6 +11469,10 @@ var feng3d;
              * 环境光强度
              */
             _this.ambientColor = new feng3d.Color(0.2, 0.2, 0.2);
+            /**
+             * 指定更新脚本标记，用于过滤需要调用update的脚本
+             */
+            _this.updateScriptFlag = feng3d.ScriptFlag.feng3d;
             return _this;
         }
         /**
@@ -11489,7 +11515,7 @@ var feng3d;
                     element.update();
             });
             this.collectComponents.scripts.list.forEach(function (element) {
-                if (element.enabled && !_this.iseditor)
+                if (element.enabled && (_this.updateScriptFlag & element.flag))
                     element.update();
             });
         };

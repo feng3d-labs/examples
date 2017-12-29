@@ -1,27 +1,13 @@
-var feng3d;
-(function (feng3d) {
-    var SceneLoadTest = /** @class */ (function () {
-        function SceneLoadTest() {
-            this.init();
-            this.camera = this.view3D.camera;
-            this.camera.transform.z = -500;
-            this.camera.transform.lookAt(new feng3d.Vector3D());
-            //
-            this.camera.gameObject.addComponent(feng3d.FPSController);
-        }
-        SceneLoadTest.prototype.init = function () {
-            this.view3D = new feng3d.Engine();
-            var scene3D = this.view3D.scene;
-            feng3d.Loader.loadText("resources/scene/scene.json", function (content) {
-                var json = JSON.parse(content);
-                var scene = feng3d.serialization.deserialize(json);
-                for (var i = 0; i < scene.numChildren; i++) {
-                    scene3D.gameObject.addChild(scene.getChildAt(i));
-                }
-            });
-        };
-        return SceneLoadTest;
-    }());
-    feng3d.SceneLoadTest = SceneLoadTest;
-})(feng3d || (feng3d = {}));
+var view3D = new feng3d.Engine();
+var camera = view3D.camera;
+camera.transform.z = -500;
+camera.transform.lookAt(new feng3d.Vector3D());
+//
+camera.gameObject.addComponent(feng3d.FPSController);
+feng3d.Loader.loadText("resources/scene/Untitled.scene", function (content) {
+    var json = JSON.parse(content);
+    var scene = feng3d.serialization.deserialize(json);
+    if (scene.getComponent(feng3d.Scene3D))
+        view3D.scene = scene.getComponent(feng3d.Scene3D);
+});
 //# sourceMappingURL=SceneLoadTest.js.map

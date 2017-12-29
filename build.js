@@ -15,29 +15,38 @@ watchProject([
 
 function watchcopyDir(srcdir, destdir)
 {
-    srcdir = path.join(__dirname, srcdir);
-    destdir = path.join(__dirname, destdir);
-    fs.readdir(srcdir, (err, files) =>
+    var realsrcdir = path.join(__dirname, srcdir);
+    var realdestdir = path.join(__dirname, destdir);
+    fs.readdir(realsrcdir, (err, files) =>
     {
         if (err) return;
         files.forEach(element =>
         {
-            var src = `${srcdir}/${element}`;
-            var dest = `${destdir}/${element}`;
+            var src = `${realsrcdir}/${element}`;
+            var dest = `${realdestdir}/${element}`;
             watchCopyFile(src, dest);
         });
     });
-}
 
-function watchCopyFile(src, dest)
-{
-    if (fs.existsSync(src))
+    function watchCopyFile(src, dest)
     {
-        fs.watchFile(src, () =>
+        if (fs.existsSync(src))
         {
-            fs.writeFileSync(dest, fs.readFileSync(src));
-        });
-        fs.writeFileSync(dest, fs.readFileSync(src));
+            fs.watchFile(src, () =>
+            {
+                copyfile();
+            });
+            copyfile();
+        }
+        function copyfile()
+        {
+            var str = fs.readFileSync(src, "utf8");
+            if (src.indexOf(".js.map") != -1)
+            {
+                str = str.replace(`"sourceRoot":""`, `"sourceRoot":"../${srcdir}/"`);
+            }
+            fs.writeFileSync(dest, str, "utf8");
+        }
     }
 }
 

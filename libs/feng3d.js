@@ -47,20 +47,19 @@ var feng3d;
         };
     }
     feng3d.OAVComponent = OAVComponent;
-    // /**
-    //  * objectview类装饰器
-    //  */
-    // export function ov<K extends keyof OVComponentParam>(param: { component?: K; componentParam?: OVComponentParam[K]; })
-    // {
-    // 	return (constructor: Function) =>
-    // 	{
-    // 		if (!Object.getOwnPropertyDescriptor(constructor["property"], OBJECTVIEW_KEY))
-    // 			constructor["property"][OBJECTVIEW_KEY] = {};
-    // 		var objectview: ClassDefinition = constructor["property"][OBJECTVIEW_KEY];
-    // 		objectview.component = param.component;
-    // 		objectview.componentParam = param.componentParam;
-    // 	}
-    // }
+    /**
+     * objectview类装饰器
+     */
+    function ov(param) {
+        return function (constructor) {
+            if (!Object.getOwnPropertyDescriptor(constructor["prototype"], OBJECTVIEW_KEY))
+                constructor["prototype"][OBJECTVIEW_KEY] = {};
+            var objectview = constructor["prototype"][OBJECTVIEW_KEY];
+            objectview.component = param.component;
+            objectview.componentParam = param.componentParam;
+        };
+    }
+    feng3d.ov = ov;
     // /**
     //  * objectview类装饰器
     //  */
@@ -68,9 +67,9 @@ var feng3d;
     // {
     // 	return (constructor: Function) =>
     // 	{
-    // 		if (!Object.getOwnPropertyDescriptor(constructor["property"], OBJECTVIEW_KEY))
-    // 			constructor["property"][OBJECTVIEW_KEY] = {};
-    // 		var objectview: ClassDefinition = constructor["property"][OBJECTVIEW_KEY];
+    // 		if (!Object.getOwnPropertyDescriptor(constructor["prototype"], OBJECTVIEW_KEY))
+    // 			constructor["prototype"][OBJECTVIEW_KEY] = {};
+    // 		var objectview: ClassDefinition = constructor["prototype"][OBJECTVIEW_KEY];
     // 		var blockDefinitionVec: BlockDefinition[] = objectview.blockDefinitionVec = objectview.blockDefinitionVec || [];
     // 		blockDefinitionVec.push({
     // 			name: param.name,
@@ -237,6 +236,15 @@ var feng3d;
      * @return
      */
     function getObjectInfo(object) {
+        if (typeof object == "string" || typeof object == "number" || typeof object == "boolean") {
+            return {
+                objectAttributeInfos: [],
+                objectBlockInfos: [],
+                owner: object,
+                component: "",
+                componentParam: undefined
+            };
+        }
         var classConfig = getInheritClassDefinition(object);
         var objectAttributeInfos = [];
         classConfig.attributeDefinitionVec.forEach(function (attributeDefinition) {
@@ -1149,6 +1157,148 @@ var feng3d;
             element.handler.call(element.thisObject, host, property, oldview);
         });
     }
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 数据类型转换
+     * TypeArray、ArrayBuffer、Blob、File、DataURL、canvas的相互转换
+     * @see http://blog.csdn.net/yinwhm12/article/details/73482904
+     */
+    feng3d.dataTransform = {
+        /**
+         * Blob to ArrayBuffer
+         */
+        blobToArrayBuffer: function (blob, callback) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                callback(e.target["result"]);
+            };
+            reader.readAsArrayBuffer(blob);
+        },
+        /**
+         * ArrayBuffer to Blob
+         */
+        arrayBufferToBlob: function (arrayBuffer, callback) {
+            var blob = new Blob([arrayBuffer]); // 注意必须包裹[]
+            callback(blob);
+        },
+        /**
+         * ArrayBuffer to Uint8
+         * Uint8数组可以直观的看到ArrayBuffer中每个字节（1字节 == 8位）的值。一般我们要将ArrayBuffer转成Uint类型数组后才能对其中的字节进行存取操作。
+         */
+        arrayBufferToUint8: function (arrayBuffer, callback) {
+            var buffer = new ArrayBuffer(32);
+            var u8 = new Uint8Array(arrayBuffer);
+            callback(u8);
+        },
+        /**
+         * Uint8 to ArrayBuffer
+         * 我们Uint8数组可以直观的看到ArrayBuffer中每个字节（1字节 == 8位）的值。一般我们要将ArrayBuffer转成Uint类型数组后才能对其中的字节进行存取操作。
+         */
+        uint8ToArrayBuffer: function (uint8Array, callback) {
+            var buffer = uint8Array.buffer;
+            callback(buffer);
+        },
+        /**
+         * Array to ArrayBuffer
+         * @param array 例如：[0x15, 0xFF, 0x01, 0x00, 0x34, 0xAB, 0x11];
+         */
+        arrayToArrayBuffer: function (array, callback) {
+            var uint8 = new Uint8Array(array);
+            var buffer = uint8.buffer;
+            callback(buffer);
+        },
+        /**
+         * TypeArray to Array
+         */
+        uint8ArrayToArray: function (u8a) {
+            var arr = [];
+            for (var i = 0; i < u8a.length; i++) {
+                arr.push(u8a[i]);
+            }
+            return arr;
+        },
+        /**
+         * canvas转换为dataURL
+         */
+        canvasToDataURL: function (canvas, type, callback) {
+            if (type == "png") {
+                var png = canvas.toDataURL("image/png");
+                callback(png);
+            }
+            else {
+                var jpg = canvas.toDataURL("image/jpeg", 0.8);
+                callback(jpg);
+            }
+        },
+        /**
+         * File、Blob对象转换为dataURL
+         * File对象也是一个Blob对象，二者的处理相同。
+         */
+        blobToDataURL: function (blob, callback) {
+            var a = new FileReader();
+            a.onload = function (e) { callback(e.target["result"]); };
+            a.readAsDataURL(blob);
+        },
+        /**
+         * dataURL转换为Blob对象
+         */
+        dataURLtoBlob: function (dataurl, callback) {
+            var arr = dataurl.split(","), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            var blob = new Blob([u8arr], { type: mime });
+            callback(blob);
+        },
+        /**
+         * dataURL图片数据转换为HTMLImageElement
+         * dataURL图片数据绘制到canvas
+         * 先构造Image对象，src为dataURL，图片onload之后绘制到canvas
+         */
+        dataURLDrawCanvas: function (dataurl, canvas, callback) {
+            var img = new Image();
+            img.onload = function () {
+                // canvas.drawImage(img);
+                callback(img);
+            };
+            img.src = dataurl;
+        },
+        arrayBufferToDataURL: function (arrayBuffer, callback) {
+            feng3d.dataTransform.arrayBufferToBlob(arrayBuffer, function (blob) {
+                feng3d.dataTransform.blobToDataURL(blob, function (dataurl) {
+                    callback(dataurl);
+                });
+            });
+        },
+        blobToText: function (blob, callback) {
+            var a = new FileReader();
+            a.onload = function (e) { callback(e.target["result"]); };
+            a.readAsText(blob);
+        },
+        arrayBufferToText: function (arrayBuffer, callback) {
+            feng3d.dataTransform.arrayBufferToBlob(arrayBuffer, function (blob) {
+                feng3d.dataTransform.blobToText(blob, callback);
+            });
+        },
+        stringToUint8Array: function (str, callback) {
+            var utf8 = unescape(encodeURIComponent(str));
+            var uint8Array = new Uint8Array(utf8.split('').map(function (item) {
+                return item.charCodeAt(0);
+            }));
+            callback(uint8Array);
+        },
+        uint8ArrayToString: function (arr, callback) {
+            // or [].slice.apply(arr)
+            // var utf8 = Array.from(arr).map(function (item)
+            var utf8 = [].slice.apply(arr).map(function (item) {
+                return String.fromCharCode(item);
+            }).join('');
+            var str = decodeURIComponent(escape(utf8));
+            callback(str);
+        }
+    };
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -9894,6 +10044,9 @@ var feng3d;
             feng3d.serialize(1),
             feng3d.oav()
         ], Transform.prototype, "sz", null);
+        Transform = __decorate([
+            feng3d.ov({ component: "OVTransform" })
+        ], Transform);
         return Transform;
     }(feng3d.Component));
     feng3d.Transform = Transform;
@@ -10572,6 +10725,9 @@ var feng3d;
             if (!canvas) {
                 canvas = document.createElement("canvas");
                 canvas.id = "glcanvas";
+                canvas.style.position = "fixed";
+                canvas.style.left = "0px";
+                canvas.style.top = "0px";
                 canvas.style.width = "100%";
                 canvas.style.height = "100%";
                 document.body.appendChild(canvas);
@@ -10642,6 +10798,8 @@ var feng3d;
          * 绘制场景
          */
         Engine.prototype.render = function () {
+            if (!this.scene)
+                return;
             this.scene.update();
             this.canvas.width = this.canvas.clientWidth;
             this.canvas.height = this.canvas.clientHeight;
@@ -11278,24 +11436,17 @@ var feng3d;
         function Scene3D() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
             /**
+             * 是否编辑器模式
+             */
+            _this.iseditor = false;
+            /**
              * 背景颜色
              */
             _this.background = new feng3d.Color(0, 0, 0, 1);
             /**
              * 环境光强度
              */
-            _this.ambientColor = new feng3d.Color(0.4, 0.4, 0.4);
-            /**
-             * 收集组件
-             */
-            _this.collectComponents = {
-                cameras: { cls: feng3d.Camera, list: new Array() },
-                pointLights: { cls: feng3d.PointLight, list: new Array() },
-                directionalLights: { cls: feng3d.DirectionalLight, list: new Array() },
-                skyboxs: { cls: feng3d.SkyBox, list: new Array() },
-                animations: { cls: feng3d.Animation, list: new Array() },
-                scripts: { cls: feng3d.Script, list: new Array() },
-            };
+            _this.ambientColor = new feng3d.Color(0.2, 0.2, 0.2);
             return _this;
         }
         /**
@@ -11306,14 +11457,39 @@ var feng3d;
             gameObject["_scene"] = this;
             this.transform.showInInspector = false;
             feng3d.ticker.onframe(this.onEnterFrame, this);
+            this.initCollectComponents();
+        };
+        Scene3D.prototype.dispose = function () {
+            feng3d.ticker.offframe(this.onEnterFrame, this);
+            _super.prototype.dispose.call(this);
+        };
+        Scene3D.prototype.initCollectComponents = function () {
+            this.collectComponents = {
+                cameras: { cls: feng3d.Camera, list: new Array() },
+                pointLights: { cls: feng3d.PointLight, list: new Array() },
+                directionalLights: { cls: feng3d.DirectionalLight, list: new Array() },
+                skyboxs: { cls: feng3d.SkyBox, list: new Array() },
+                animations: { cls: feng3d.Animation, list: new Array() },
+                scripts: { cls: feng3d.Script, list: new Array() },
+            };
+            var _this = this;
+            collect(this.gameObject);
+            function collect(gameobject) {
+                gameobject["_scene"] = _this;
+                _this._addGameObject(gameobject);
+                gameobject.children.forEach(function (element) {
+                    collect(element);
+                });
+            }
         };
         Scene3D.prototype.onEnterFrame = function () {
+            var _this = this;
             this.collectComponents.animations.list.forEach(function (element) {
                 if (element.isplaying)
                     element.update();
             });
             this.collectComponents.scripts.list.forEach(function (element) {
-                if (element.enabled)
+                if (element.enabled && !_this.iseditor)
                     element.update();
             });
         };
@@ -12373,11 +12549,11 @@ var feng3d;
             /**
              * 最近距离
              */
-            _this._near = 0.1;
+            _this._near = 0.3;
             /**
              * 最远距离
              */
-            _this._far = 10000;
+            _this._far = 1000;
             /**
              * 视窗缩放比例(width/height)，在渲染器中设置
              */
@@ -13165,14 +13341,14 @@ var feng3d;
          * @param yUp 正面朝向 true:Y+ false:Z+
          */
         function PlaneGeometry(width, height, segmentsW, segmentsH, yUp) {
-            if (width === void 0) { width = 100; }
-            if (height === void 0) { height = 100; }
+            if (width === void 0) { width = 1; }
+            if (height === void 0) { height = 1; }
             if (segmentsW === void 0) { segmentsW = 1; }
             if (segmentsH === void 0) { segmentsH = 1; }
             if (yUp === void 0) { yUp = true; }
             var _this = _super.call(this) || this;
-            _this._width = 100;
-            _this._height = 100;
+            _this._width = 1;
+            _this._height = 1;
             _this._segmentsW = 1;
             _this._segmentsH = 1;
             _this._yUp = true;
@@ -13437,26 +13613,26 @@ var feng3d;
         __extends(CubeGeometry, _super);
         /**
          * 创建立方几何体
-         * @param   width           宽度，默认为100。
-         * @param   height          高度，默认为100。
-         * @param   depth           深度，默认为100。
+         * @param   width           宽度，默认为1。
+         * @param   height          高度，默认为1。
+         * @param   depth           深度，默认为1。
          * @param   segmentsW       宽度方向分割，默认为1。
          * @param   segmentsH       高度方向分割，默认为1。
          * @param   segmentsD       深度方向分割，默认为1。
          * @param   tile6           是否为6块贴图，默认true。
          */
         function CubeGeometry(width, height, depth, segmentsW, segmentsH, segmentsD, tile6) {
-            if (width === void 0) { width = 100; }
-            if (height === void 0) { height = 100; }
-            if (depth === void 0) { depth = 100; }
+            if (width === void 0) { width = 1; }
+            if (height === void 0) { height = 1; }
+            if (depth === void 0) { depth = 1; }
             if (segmentsW === void 0) { segmentsW = 1; }
             if (segmentsH === void 0) { segmentsH = 1; }
             if (segmentsD === void 0) { segmentsD = 1; }
             if (tile6 === void 0) { tile6 = true; }
             var _this = _super.call(this) || this;
-            _this._width = 100;
-            _this._height = 100;
-            _this._depth = 100;
+            _this._width = 1;
+            _this._height = 1;
+            _this._depth = 1;
             _this._segmentsW = 1;
             _this._segmentsH = 1;
             _this._segmentsD = 1;
@@ -13907,15 +14083,15 @@ var feng3d;
             return data;
         };
         __decorate([
-            feng3d.serialize(100),
+            feng3d.serialize(1),
             feng3d.oav()
         ], CubeGeometry.prototype, "width", null);
         __decorate([
-            feng3d.serialize(100),
+            feng3d.serialize(1),
             feng3d.oav()
         ], CubeGeometry.prototype, "height", null);
         __decorate([
-            feng3d.serialize(100),
+            feng3d.serialize(1),
             feng3d.oav()
         ], CubeGeometry.prototype, "depth", null);
         __decorate([
@@ -13954,7 +14130,7 @@ var feng3d;
          * @param yUp 正面朝向 true:Y+ false:Z+
          */
         function SphereGeometry(radius, segmentsW, segmentsH, yUp) {
-            if (radius === void 0) { radius = 50; }
+            if (radius === void 0) { radius = 0.5; }
             if (segmentsW === void 0) { segmentsW = 16; }
             if (segmentsH === void 0) { segmentsH = 12; }
             if (yUp === void 0) { yUp = true; }
@@ -14191,14 +14367,14 @@ var feng3d;
          * @param yUp 正面朝向 true:Y+ false:Z+
          */
         function CapsuleGeometry(radius, height, segmentsW, segmentsH, yUp) {
-            if (radius === void 0) { radius = 50; }
-            if (height === void 0) { height = 100; }
+            if (radius === void 0) { radius = 0.5; }
+            if (height === void 0) { height = 1; }
             if (segmentsW === void 0) { segmentsW = 16; }
             if (segmentsH === void 0) { segmentsH = 15; }
             if (yUp === void 0) { yUp = true; }
             var _this = _super.call(this) || this;
-            _this._radius = 50;
-            _this._height = 100;
+            _this._radius = 0.5;
+            _this._height = 1;
             _this._segmentsW = 16;
             _this._segmentsH = 15;
             _this._yUp = true;
@@ -14444,9 +14620,9 @@ var feng3d;
          * 创建圆柱体
          */
         function CylinderGeometry(topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed, yUp) {
-            if (topRadius === void 0) { topRadius = 50; }
-            if (bottomRadius === void 0) { bottomRadius = 50; }
-            if (height === void 0) { height = 100; }
+            if (topRadius === void 0) { topRadius = 0.5; }
+            if (bottomRadius === void 0) { bottomRadius = 0.5; }
+            if (height === void 0) { height = 2; }
             if (segmentsW === void 0) { segmentsW = 16; }
             if (segmentsH === void 0) { segmentsH = 1; }
             if (topClosed === void 0) { topClosed = true; }
@@ -14454,9 +14630,9 @@ var feng3d;
             if (surfaceClosed === void 0) { surfaceClosed = true; }
             if (yUp === void 0) { yUp = true; }
             var _this = _super.call(this) || this;
-            _this.topRadius = 50;
-            _this.bottomRadius = 50;
-            _this.height = 100;
+            _this.topRadius = 0.5;
+            _this.bottomRadius = 0.5;
+            _this.height = 2;
             _this.segmentsW = 16;
             _this.segmentsH = 1;
             _this.topClosed = true;
@@ -14796,8 +14972,8 @@ var feng3d;
          * @param yUp
          */
         function ConeGeometry(radius, height, segmentsW, segmentsH, closed, yUp) {
-            if (radius === void 0) { radius = 50; }
-            if (height === void 0) { height = 100; }
+            if (radius === void 0) { radius = 0.5; }
+            if (height === void 0) { height = 1; }
             if (segmentsW === void 0) { segmentsW = 16; }
             if (segmentsH === void 0) { segmentsH = 1; }
             if (closed === void 0) { closed = true; }
@@ -14826,14 +15002,14 @@ var feng3d;
          * @param yUp							Y轴是否朝上
          */
         function TorusGeometry(radius, tubeRadius, segmentsR, segmentsT, yUp) {
-            if (radius === void 0) { radius = 50; }
-            if (tubeRadius === void 0) { tubeRadius = 10; }
+            if (radius === void 0) { radius = 0.5; }
+            if (tubeRadius === void 0) { tubeRadius = 0.1; }
             if (segmentsR === void 0) { segmentsR = 16; }
             if (segmentsT === void 0) { segmentsT = 8; }
             if (yUp === void 0) { yUp = true; }
             var _this = _super.call(this) || this;
-            _this._radius = 50;
-            _this._tubeRadius = 10;
+            _this._radius = 0.5;
+            _this._tubeRadius = 0.1;
             _this._segmentsR = 16;
             _this._segmentsT = 8;
             _this._yUp = true;
@@ -16280,7 +16456,7 @@ var feng3d;
             /**
              * 光照范围
              */
-            _this.range = 600;
+            _this.range = 10;
             return _this;
         }
         /**
@@ -16682,13 +16858,13 @@ var feng3d;
             this.keyDirectionDic["e"] = new feng3d.Vector3D(0, 1, 0); //上
             this.keyDirectionDic["q"] = new feng3d.Vector3D(0, -1, 0); //下
             this.keyDownDic = {};
-            this.acceleration = 0.05;
+            this.acceleration = 0.0005;
             this.auto = true;
-            feng3d.ticker.onframe(this.update, this);
         };
         FPSController.prototype.onMousedown = function () {
             this.ischange = true;
             this.preMousePoint = null;
+            this.mousePoint = null;
             this.velocity = new feng3d.Vector3D();
             this.keyDownDic = {};
             feng3d.windowEventProxy.on("keydown", this.onKeydown, this);
@@ -16697,6 +16873,8 @@ var feng3d;
         };
         FPSController.prototype.onMouseup = function () {
             this.ischange = false;
+            this.preMousePoint = null;
+            this.mousePoint = null;
             feng3d.windowEventProxy.off("keydown", this.onKeydown, this);
             feng3d.windowEventProxy.off("keyup", this.onKeyup, this);
             feng3d.windowEventProxy.off("mousemove", this.onMouseMove, this);
@@ -16706,7 +16884,6 @@ var feng3d;
          */
         FPSController.prototype.dispose = function () {
             this.auto = false;
-            feng3d.ticker.offframe(this.update, this);
         };
         /**
          * 手动应用更新到目标3D对象
@@ -16714,6 +16891,26 @@ var feng3d;
         FPSController.prototype.update = function () {
             if (!this.ischange)
                 return;
+            if (this.mousePoint && this.preMousePoint) {
+                //计算旋转
+                var offsetPoint = this.mousePoint.subtract(this.preMousePoint);
+                offsetPoint.x *= 0.15;
+                offsetPoint.y *= 0.15;
+                // this.targetObject.transform.rotate(Vector3D.X_AXIS, offsetPoint.y, this.targetObject.transform.position);
+                // this.targetObject.transform.rotate(Vector3D.Y_AXIS, offsetPoint.x, this.targetObject.transform.position);
+                var matrix3d = this.transform.localToWorldMatrix;
+                matrix3d.appendRotation(matrix3d.right, offsetPoint.y, matrix3d.position);
+                var up = feng3d.Vector3D.Y_AXIS;
+                if (matrix3d.up.dotProduct(up) < 0) {
+                    up = up.clone();
+                    up.scaleBy(-1);
+                }
+                matrix3d.appendRotation(up, offsetPoint.x, matrix3d.position);
+                this.transform.localToWorldMatrix = matrix3d;
+                //
+                this.preMousePoint = this.mousePoint;
+                this.mousePoint = null;
+            }
             //计算加速度
             var accelerationVec = new feng3d.Vector3D();
             for (var key in this.keyDirectionDic) {
@@ -16743,28 +16940,11 @@ var feng3d;
          * 处理鼠标移动事件
          */
         FPSController.prototype.onMouseMove = function (event) {
-            var mousePoint = new feng3d.Point(event.clientX, event.clientY);
+            this.mousePoint = new feng3d.Point(event.clientX, event.clientY);
             if (this.preMousePoint == null) {
-                this.preMousePoint = mousePoint;
-                return;
+                this.preMousePoint = this.mousePoint;
+                this.mousePoint = null;
             }
-            //计算旋转
-            var offsetPoint = mousePoint.subtract(this.preMousePoint);
-            offsetPoint.x *= 0.15;
-            offsetPoint.y *= 0.15;
-            // this.targetObject.transform.rotate(Vector3D.X_AXIS, offsetPoint.y, this.targetObject.transform.position);
-            // this.targetObject.transform.rotate(Vector3D.Y_AXIS, offsetPoint.x, this.targetObject.transform.position);
-            var matrix3d = this.transform.localToWorldMatrix;
-            matrix3d.appendRotation(matrix3d.right, offsetPoint.y, matrix3d.position);
-            var up = feng3d.Vector3D.Y_AXIS;
-            if (matrix3d.up.dotProduct(up) < 0) {
-                up = up.clone();
-                up.scaleBy(-1);
-            }
-            matrix3d.appendRotation(up, offsetPoint.x, matrix3d.position);
-            this.transform.localToWorldMatrix = matrix3d;
-            //
-            this.preMousePoint = mousePoint;
         };
         /**
          * 键盘按下事件
@@ -16804,8 +16984,11 @@ var feng3d;
                 this.velocity.z = 0;
             }
         };
+        __decorate([
+            feng3d.oav()
+        ], FPSController.prototype, "acceleration", void 0);
         return FPSController;
-    }(feng3d.Component));
+    }(feng3d.Script));
     feng3d.FPSController = FPSController;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -18314,6 +18497,399 @@ var feng3d;
         PropertyClipPathItemType[PropertyClipPathItemType["GameObject"] = 0] = "GameObject";
         PropertyClipPathItemType[PropertyClipPathItemType["Component"] = 1] = "Component";
     })(PropertyClipPathItemType = feng3d.PropertyClipPathItemType || (feng3d.PropertyClipPathItemType = {}));
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    feng3d.assets = {};
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var databases = {};
+    feng3d.storage = {
+        /**
+         * 是否支持 indexedDB
+         */
+        support: function () {
+            if (typeof indexedDB == "undefined") {
+                indexedDB = window.indexedDB || window["mozIndexedDB"] || window["webkitIndexedDB"] || window["msIndexedDB"];
+                if (indexedDB == undefined) {
+                    return false;
+                }
+            }
+            return true;
+        },
+        getDatabase: function (dbname, callback) {
+            if (databases[dbname]) {
+                callback(null, databases[dbname]);
+                return;
+            }
+            var request = indexedDB.open(dbname);
+            request.onsuccess = function (event) {
+                databases[dbname] = event.target["result"];
+                callback(null, databases[dbname]);
+            };
+            request.onerror = function (event) {
+                callback(event, null);
+            };
+        },
+        deleteDatabase: function (dbname, callback) {
+            var request = indexedDB.deleteDatabase(dbname);
+            request.onsuccess = function (event) {
+                delete databases[dbname];
+                callback && callback(null);
+            };
+            request.onerror = function (event) {
+                callback && callback(event);
+            };
+        },
+        hasObjectStore: function (dbname, objectStroreName, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                callback(database.objectStoreNames.contains(objectStroreName));
+            });
+        },
+        getObjectStoreNames: function (dbname, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                var objectStoreNames = [];
+                for (var i = 0; i < database.objectStoreNames.length; i++) {
+                    objectStoreNames.push(database.objectStoreNames.item(i));
+                }
+                callback(null, objectStoreNames);
+            });
+        },
+        createObjectStore: function (dbname, objectStroreName, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                if (database.objectStoreNames.contains(objectStroreName)) {
+                    callback && callback(null);
+                    return;
+                }
+                database.close();
+                var request = indexedDB.open(database.name, database.version + 1);
+                request.onupgradeneeded = function (event) {
+                    var newdatabase = event.target["result"];
+                    newdatabase.createObjectStore(objectStroreName);
+                    callback && callback(null);
+                };
+                request.onsuccess = function (event) {
+                    var newdatabase = event.target["result"];
+                    databases[newdatabase.name] = newdatabase;
+                };
+                request.onerror = function (event) {
+                    callback && callback(event);
+                };
+            });
+        },
+        deleteObjectStore: function (dbname, objectStroreName, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                if (!database.objectStoreNames.contains(objectStroreName)) {
+                    callback && callback(null);
+                    return;
+                }
+                database.close();
+                var request = indexedDB.open(database.name, database.version + 1);
+                request.onupgradeneeded = function (event) {
+                    var newdatabase = event.target["result"];
+                    newdatabase.deleteObjectStore(objectStroreName);
+                    callback && callback(null);
+                };
+                request.onsuccess = function (event) {
+                    var newdatabase = event.target["result"];
+                    databases[newdatabase.name] = newdatabase;
+                };
+                request.onerror = function (event) {
+                    callback && callback(event);
+                };
+            });
+        },
+        getAllKeys: function (dbname, objectStroreName, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                try {
+                    var transaction = database.transaction([objectStroreName], 'readwrite');
+                    var objectStore = transaction.objectStore(objectStroreName);
+                    var request = objectStore.getAllKeys();
+                    request.onsuccess = function (event) {
+                        callback && callback(null, event.target["result"]);
+                    };
+                }
+                catch (error) {
+                    callback && callback(error, null);
+                }
+            });
+        },
+        get: function (dbname, objectStroreName, key, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                try {
+                    var transaction = database.transaction([objectStroreName], 'readwrite');
+                    var objectStore = transaction.objectStore(objectStroreName);
+                    var request = objectStore.get(key);
+                    request.onsuccess = function (event) {
+                        callback && callback(null, event.target["result"]);
+                    };
+                }
+                catch (error) {
+                    callback && callback(error, null);
+                }
+            });
+        },
+        set: function (dbname, objectStroreName, key, data, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                try {
+                    var transaction = database.transaction([objectStroreName], 'readwrite');
+                    var objectStore = transaction.objectStore(objectStroreName);
+                    var request = objectStore.put(data, key);
+                    request.onsuccess = function (event) {
+                        callback && callback(null);
+                    };
+                }
+                catch (error) {
+                    callback && callback(error);
+                }
+            });
+        },
+        delete: function (dbname, objectStroreName, key, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                try {
+                    var transaction = database.transaction([objectStroreName], 'readwrite');
+                    var objectStore = transaction.objectStore(objectStroreName);
+                    var request = objectStore.delete(key);
+                    request.onsuccess = function (event) {
+                        callback && callback();
+                    };
+                }
+                catch (error) {
+                    callback && callback(error);
+                }
+            });
+        },
+        clear: function (dbname, objectStroreName, callback) {
+            feng3d.storage.getDatabase(dbname, function (err, database) {
+                try {
+                    var transaction = database.transaction([objectStroreName], 'readwrite');
+                    var objectStore = transaction.objectStore(objectStroreName);
+                    var request = objectStore.clear();
+                    request.onsuccess = function (event) {
+                        callback && callback();
+                    };
+                }
+                catch (error) {
+                    callback && callback(error);
+                }
+            });
+        }
+    };
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var DBname = "feng3d-editor";
+    var _projectname;
+    function set(key, data, callback) {
+        feng3d.storage.set(DBname, _projectname, key, data, callback);
+    }
+    function get(key, callback) {
+        feng3d.storage.get(DBname, _projectname, key, callback);
+    }
+    function copy(sourcekey, targetkey, callback) {
+        get(sourcekey, function (err, data) {
+            if (err) {
+                callback && callback(err);
+                return;
+            }
+            set(targetkey, data, callback);
+        });
+    }
+    function move(sourcekey, targetkey, callback) {
+        copy(sourcekey, targetkey, function (err) {
+            if (err) {
+                callback && callback(err);
+                return;
+            }
+            deletedata(sourcekey, callback);
+        });
+    }
+    function deletedata(key, callback) {
+        feng3d.storage.delete(DBname, _projectname, key, callback);
+    }
+    function getAllKeys(callback) {
+        feng3d.storage.getAllKeys(DBname, _projectname, callback);
+    }
+    function movefiles(movelists, callback) {
+        copyfiles(movelists.concat(), function (err) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            var deletelists = movelists.reduce(function (value, current) { value.push(current[0]); return value; }, []);
+            deletefiles(deletelists, callback);
+        });
+    }
+    function copyfiles(copylists, callback) {
+        if (copylists.length > 0) {
+            var copyitem = copylists.shift();
+            copy(copyitem[0], copyitem[1], function (err) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                copyfiles(copylists, callback);
+            });
+            return;
+        }
+        callback(null);
+    }
+    function deletefiles(deletelists, callback) {
+        if (deletelists.length > 0) {
+            deletedata(deletelists.shift(), function (err) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                deletefiles(deletelists, callback);
+            });
+            return;
+        }
+        callback(null);
+    }
+    feng3d.indexedDBfs = {
+        hasProject: function (projectname, callback) {
+            feng3d.storage.hasObjectStore(DBname, projectname, callback);
+        },
+        getProjectList: function (callback) {
+            feng3d.storage.getObjectStoreNames(DBname, callback);
+        },
+        initproject: function (projectname, callback) {
+            feng3d.storage.createObjectStore(DBname, projectname, function (err) {
+                if (err) {
+                    feng3d.warn(err);
+                    return;
+                }
+                _projectname = projectname;
+                // todo 启动监听 ts代码变化自动编译
+                callback();
+            });
+        },
+        // selectFile?: (callback: (file: FileList) => void, param?: Object) => void;
+        // //
+        stat: function (path, callback) {
+            get(path, function (err, data) {
+                if (data) {
+                    callback(err, {
+                        path: path,
+                        birthtime: data.birthtime.getTime(),
+                        mtime: data.birthtime.getTime(),
+                        isDirectory: data.isDirectory,
+                        size: 0
+                    });
+                }
+                else {
+                    callback(new Error(path + " 不存在"), null);
+                }
+            });
+        },
+        readdir: function (path, callback) {
+            getAllKeys(function (err, allfilepaths) {
+                if (!allfilepaths) {
+                    callback(err, null);
+                    return;
+                }
+                var subfilemap = {};
+                allfilepaths.forEach(function (element) {
+                    var result = new RegExp(path + "\\/([\\w\\s\\(\\).\\u4e00-\\u9fa5]+)\\b").exec(element);
+                    if (result != null) {
+                        subfilemap[result[1]] = 1;
+                    }
+                });
+                var files = Object.keys(subfilemap);
+                callback(null, files);
+            });
+        },
+        writeFile: function (path, data, callback) {
+            set(path, { isDirectory: false, birthtime: new Date(), data: data }, callback);
+        },
+        /**
+         * 读取文件为字符串
+         */
+        readFileAsString: function (path, callback) {
+            get(path, function (err, data) {
+                if (err) {
+                    callback(err, null);
+                    return;
+                }
+                var str = feng3d.dataTransform.arrayBufferToText(data.data, function (content) {
+                    callback(null, content);
+                });
+            });
+        },
+        /**
+         * 读取文件为Buffer
+         */
+        readFile: function (path, callback) {
+            get(path, function (err, data) {
+                callback(err, data.data);
+            });
+        },
+        mkdir: function (path, callback) {
+            set(path, { isDirectory: true, birthtime: new Date() }, callback);
+        },
+        rename: function (oldPath, newPath, callback) {
+            getAllKeys(function (err, allfilepaths) {
+                if (!allfilepaths) {
+                    callback(err);
+                    return;
+                }
+                var renamelists = [[oldPath, newPath]];
+                allfilepaths.forEach(function (element) {
+                    var result = new RegExp(oldPath + "\\b").exec(element);
+                    if (result != null && result.index == 0) {
+                        renamelists.push([element, element.replace(oldPath, newPath)]);
+                    }
+                });
+                movefiles(renamelists, callback);
+            });
+        },
+        move: function (src, dest, callback) {
+            feng3d.indexedDBfs.rename(src, dest, callback || (function () { }));
+        },
+        remove: function (path, callback) {
+            getAllKeys(function (err, allfilepaths) {
+                if (!allfilepaths) {
+                    callback && callback(err);
+                    return;
+                }
+                var removelists = [path];
+                allfilepaths.forEach(function (element) {
+                    var result = new RegExp(path + "\\b").exec(element);
+                    if (result != null && result.index == 0) {
+                        removelists.push(element);
+                    }
+                });
+                deletefiles(removelists, callback || (function () { }));
+            });
+        },
+        /**
+         * 获取文件绝对路径
+         */
+        getAbsolutePath: function (path, callback) {
+            callback(null, null);
+        },
+        /**
+         * 获取指定文件下所有文件路径列表
+         */
+        getAllfilepathInFolder: function (dirpath, callback) {
+            getAllKeys(function (err, allfilepaths) {
+                if (!allfilepaths) {
+                    callback(err, null);
+                    return;
+                }
+                var files = [];
+                allfilepaths.forEach(function (element) {
+                    var result = new RegExp(dirpath + "\\b").exec(element);
+                    if (result != null && result.index == 0) {
+                        files.push(element);
+                    }
+                });
+                callback(null, files);
+            });
+        },
+    };
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -21112,9 +21688,9 @@ var feng3d;
         __extends(Trident, _super);
         function Trident() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.lineLength = 100;
-            _this.arrowradius = 5;
-            _this.arrowHeight = 18;
+            _this.lineLength = 1;
+            _this.arrowradius = 0.05;
+            _this.arrowHeight = 0.18;
             return _this;
         }
         Trident.prototype.init = function (gameObject) {

@@ -12,6 +12,13 @@ declare namespace feng3d {
      */
     function OAVComponent(component?: string): (constructor: Function) => void;
     /**
+     * objectview类装饰器
+     */
+    function ov<K extends keyof OVComponentParam>(param: {
+        component?: K;
+        componentParam?: OVComponentParam[K];
+    }): (constructor: Function) => void;
+    /**
      * objectview属性装饰器
      * @param param 参数
      */
@@ -508,6 +515,44 @@ declare namespace feng3d {
     var watcher: {
         watch: <T extends Object>(host: T, property: keyof T, handler: (host: any, property: string, oldvalue: any) => void, thisObject?: any) => void;
         unwatch: <T extends Object>(host: T, property: keyof T, handler?: ((host: any, property: string, oldvalue: any) => void) | undefined, thisObject?: any) => void;
+    };
+}
+/**
+ * The unescape() function computes a new string in which hexadecimal escape sequences are replaced with the character that it represents. The escape sequences might be introduced by a function like escape. Usually, decodeURI or decodeURIComponent are preferred over unescape.
+ * @param str A string to be decoded.
+ * @return A new string in which certain characters have been unescaped.
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/unescape
+ */
+declare function unescape(str: string): string;
+/**
+ * The escape() function computes a new string in which certain characters have been replaced by a hexadecimal escape sequence.
+ * @param str A string to be encoded.
+ * @return A new string in which certain characters have been escaped.
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/escape
+ */
+declare function escape(str: string): string;
+declare namespace feng3d {
+    /**
+     * 数据类型转换
+     * TypeArray、ArrayBuffer、Blob、File、DataURL、canvas的相互转换
+     * @see http://blog.csdn.net/yinwhm12/article/details/73482904
+     */
+    var dataTransform: {
+        blobToArrayBuffer(blob: Blob, callback: (arrayBuffer: ArrayBuffer) => void): void;
+        arrayBufferToBlob(arrayBuffer: ArrayBuffer, callback: (blob: Blob) => void): void;
+        arrayBufferToUint8(arrayBuffer: ArrayBuffer, callback: (uint8Array: Uint8Array) => void): void;
+        uint8ToArrayBuffer(uint8Array: Uint8Array, callback: (arrayBuffer: ArrayBuffer) => void): void;
+        arrayToArrayBuffer(array: number[], callback: (arrayBuffer: ArrayBuffer) => void): void;
+        uint8ArrayToArray(u8a: Uint8Array): number[];
+        canvasToDataURL(canvas: HTMLCanvasElement, type: "png" | "jpeg", callback: (dataurl: string) => void): void;
+        blobToDataURL(blob: Blob, callback: (dataurl: string) => void): void;
+        dataURLtoBlob(dataurl: string, callback: (blob: Blob) => void): void;
+        dataURLDrawCanvas(dataurl: string, canvas: HTMLCanvasElement, callback: (img: HTMLImageElement) => void): void;
+        arrayBufferToDataURL(arrayBuffer: ArrayBuffer, callback: (dataurl: string) => void): void;
+        blobToText(blob: Blob, callback: (content: string) => void): void;
+        arrayBufferToText(arrayBuffer: ArrayBuffer, callback: (content: string) => void): void;
+        stringToUint8Array(str: string, callback: (uint8Array: Uint8Array) => void): void;
+        uint8ArrayToString(arr: Uint8Array, callback: (str: string) => void): void;
     };
 }
 declare namespace feng3d {
@@ -6777,6 +6822,10 @@ declare namespace feng3d {
      */
     class Scene3D extends Component {
         /**
+         * 是否编辑器模式
+         */
+        iseditor: boolean;
+        /**
          * 背景颜色
          */
         background: Color;
@@ -6813,15 +6862,17 @@ declare namespace feng3d {
                 list: Script[];
             };
         };
-        /**
-         * 构造3D场景
-         */
-        init(gameObject: GameObject): void;
-        private onEnterFrame();
         _mouseCheckObjects: {
             layer: number;
             objects: GameObject[];
         }[];
+        /**
+         * 构造3D场景
+         */
+        init(gameObject: GameObject): void;
+        dispose(): void;
+        initCollectComponents(): void;
+        private onEnterFrame();
         update(): void;
         readonly mouseCheckObjects: {
             layer: number;
@@ -7459,9 +7510,9 @@ declare namespace feng3d {
         private _tile6;
         /**
          * 创建立方几何体
-         * @param   width           宽度，默认为100。
-         * @param   height          高度，默认为100。
-         * @param   depth           深度，默认为100。
+         * @param   width           宽度，默认为1。
+         * @param   height          高度，默认为1。
+         * @param   depth           深度，默认为1。
          * @param   segmentsW       宽度方向分割，默认为1。
          * @param   segmentsH       高度方向分割，默认为1。
          * @param   segmentsD       深度方向分割，默认为1。
@@ -8278,7 +8329,11 @@ declare namespace feng3d {
      * FPS模式控制器
      * @author feng 2016-12-19
      */
-    class FPSController extends Component {
+    class FPSController extends Script {
+        /**
+         * 加速度
+         */
+        acceleration: number;
         /**
          * 按键记录
          */
@@ -8287,10 +8342,6 @@ declare namespace feng3d {
          * 按键方向字典
          */
         private keyDirectionDic;
-        /**
-         * 加速度
-         */
-        private acceleration;
         /**
          * 速度
          */
@@ -8313,6 +8364,7 @@ declare namespace feng3d {
          * 手动应用更新到目标3D对象
          */
         update(): void;
+        private mousePoint;
         /**
          * 处理鼠标移动事件
          */
@@ -8825,6 +8877,66 @@ declare namespace feng3d {
         GameObject = 0,
         Component = 1,
     }
+}
+declare namespace feng3d {
+    var assets: {};
+    type FileInfo = {
+        path: string;
+        birthtime: number;
+        mtime: number;
+        isDirectory: boolean;
+        size: number;
+    };
+    interface FS {
+        hasProject(projectname: string, callback: (has: boolean) => void): void;
+        getProjectList(callback: (err: Error | null, projects: string[] | null) => void): void;
+        initproject(projectname: string, callback: () => void): void;
+        stat(path: string, callback: (err: Error | null, stats: FileInfo | null) => void): void;
+        readdir(path: string, callback: (err: Error | null, files: string[] | null) => void): void;
+        writeFile(path: string, data: ArrayBuffer, callback?: ((err: Error | null) => void) | undefined): void;
+        /**
+         * 读取文件为字符串
+         */
+        readFileAsString(path: string, callback: (err: Error | null, data: string | null) => void): void;
+        /**
+         * 读取文件为Buffer
+         */
+        readFile(path: string, callback: (err: Error | null, data: ArrayBuffer | undefined) => void): void;
+        mkdir(path: string, callback: (err: Error | null) => void): void;
+        rename(oldPath: string, newPath: string, callback: (err: Error | null) => void): void;
+        move(src: string, dest: string, callback?: ((err: Error | null) => void) | undefined): void;
+        remove(path: string, callback?: ((err: Error | null) => void) | undefined): void;
+        /**
+         * 获取文件绝对路径
+         */
+        getAbsolutePath(path: string, callback: (err: Error | null, absolutePath: string | null) => void): void;
+        /**
+         * 获取指定文件下所有文件路径列表
+         */
+        getAllfilepathInFolder(dirpath: string, callback: (err: Error | null, filepaths: string[] | null) => void): void;
+    }
+}
+interface IDBObjectStore {
+    getAllKeys(): IDBRequest;
+}
+declare namespace feng3d {
+    var storage: {
+        support(): boolean;
+        getDatabase(dbname: string, callback: (err: any, database: IDBDatabase) => void): void;
+        deleteDatabase(dbname: string, callback?: ((err: any) => void) | undefined): void;
+        hasObjectStore(dbname: string, objectStroreName: string, callback: (has: boolean) => void): void;
+        getObjectStoreNames(dbname: string, callback: (err: Error | null, objectStoreNames: string[]) => void): void;
+        createObjectStore(dbname: string, objectStroreName: string, callback?: ((err: any) => void) | undefined): void;
+        deleteObjectStore(dbname: string, objectStroreName: string, callback?: ((err: any) => void) | undefined): void;
+        getAllKeys(dbname: string, objectStroreName: string, callback?: ((err: Error | null, keys: string[] | null) => void) | undefined): void;
+        get(dbname: string, objectStroreName: string, key: string | number, callback?: ((err: Error | null, data: any) => void) | undefined): void;
+        set(dbname: string, objectStroreName: string, key: string | number, data: any, callback?: ((err: Error | null) => void) | undefined): void;
+        delete(dbname: string, objectStroreName: string, key: string | number, callback?: ((err?: Error | undefined) => void) | undefined): void;
+        clear(dbname: string, objectStroreName: string, callback?: ((err?: Error | undefined) => void) | undefined): void;
+    };
+}
+declare namespace feng3d {
+    var indexedDBfs: FS;
 }
 declare namespace feng3d {
     /**

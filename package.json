@@ -19,7 +19,5 @@
   "author": "feng",
   "license": "ISC",
   "devDependencies": {},
-  "dependencies": {
-    "feng3d": "^201711.10.0"
-  }
+  "dependencies": {}
 }

@@ -7,13 +7,13 @@ var feng3d;
     var meshRenderer = gameObject.addComponent(feng3d.MeshRenderer);
     meshRenderer.geometry = pointGeometry;
     meshRenderer.material = pointMaterial;
-    gameObject.transform.z = 300;
+    gameObject.transform.z = 3;
     view3D.scene.gameObject.addChild(gameObject);
     var length = 200;
-    var height = 200 / Math.PI;
+    var height = 2 / Math.PI;
     for (var x = -length; x <= length; x = x + 4) {
         var angle = x / length * Math.PI;
-        var vec = new feng3d.Vector3D(x, Math.sin(angle) * height, 0);
+        var vec = new feng3d.Vector3D(x / 100, Math.sin(angle) * height, 0);
         pointGeometry.addPoint(new feng3d.PointInfo(vec));
     }
     //变化旋转

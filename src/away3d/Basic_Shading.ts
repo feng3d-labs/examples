@@ -27,7 +27,8 @@ namespace feng3d
         scene = view3D.scene;
         camera = view3D.camera;
 
-        camera.transform.z = -1000;
+        camera.transform.y = 5;
+        camera.transform.z = -10;
         camera.transform.lookAt(new Vector3D());
         camera.gameObject.addComponent(FPSController);
     }
@@ -62,41 +63,41 @@ namespace feng3d
     {
         plane = GameObject.create();
         var model = plane.addComponent(MeshRenderer);
-        var geometry: Geometry = model.geometry = new PlaneGeometry(1000, 1000);
+        var geometry: Geometry = model.geometry = new PlaneGeometry(10, 10);
         model.material = planeMaterial;
         geometry.scaleUV(2, 2);
-        plane.transform.y = -20;
+        plane.transform.y = -0.20;
         scene.gameObject.addChild(plane);
         sphere = GameObject.create();
         var model = sphere.addComponent(MeshRenderer);
-        model.geometry = new SphereGeometry(150, 40, 20)
+        model.geometry = new SphereGeometry(1.50, 40, 20)
         model.material = sphereMaterial;
-        sphere.transform.x = 300;
-        sphere.transform.y = 160;
-        sphere.transform.z = 300;
+        sphere.transform.x = 3;
+        sphere.transform.y = 1.60;
+        sphere.transform.z = 3.00;
         scene.gameObject.addChild(sphere);
         cube = GameObject.create();
         var model = cube.addComponent(MeshRenderer);
-        model.geometry = new CubeGeometry(200, 200, 200, 1, 1, 1, false);
+        model.geometry = new CubeGeometry(2, 2, 2, 1, 1, 1, false);
         model.material = cubeMaterial;
-        cube.transform.x = 300;
-        cube.transform.y = 160;
-        cube.transform.z = -250;
+        cube.transform.x = 3.00;
+        cube.transform.y = 1.60;
+        cube.transform.z = -2.50;
         scene.gameObject.addChild(cube);
         torus = GameObject.create();
         var model = torus.addComponent(MeshRenderer);
-        geometry = model.geometry = new TorusGeometry(150, 60, 40, 20);
+        geometry = model.geometry = new TorusGeometry(1.50, 0.60, 40, 20);
         model.material = torusMaterial;
         geometry.scaleUV(10, 5);
-        torus.transform.x = -250;
-        torus.transform.y = 160;
-        torus.transform.z = -250;
+        torus.transform.x = -2.50;
+        torus.transform.y = 1.60;
+        torus.transform.z = -2.50;
         scene.gameObject.addChild(torus);
     }
 
     function initListeners()
     {
-        ticker.onframe( onEnterFrame, this);
+        ticker.onframe(onEnterFrame, this);
     }
 
     function onEnterFrame()

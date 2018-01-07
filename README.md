@@ -2,7 +2,7 @@
 
 feng3d引擎示例
 
-开始尝试？ 在[试验台](http://h5.feng3d.com/examples/index.html)尝试引擎的API，同时提供了一些简单的示例去学习如何使用feng3d引擎。
+    http://feng3d.gitee.io/examples/
 
 ## 编译项目
 

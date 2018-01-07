@@ -1,7 +1,7 @@
 var acceleration = new feng3d.Vector3D(0, -9.8, 0);
 var view3D = new feng3d.Engine();
 var camera = view3D.camera;
-camera.transform.z = -500;
+camera.transform.z = -5;
 camera.transform.lookAt(new feng3d.Vector3D());
 camera.gameObject.addComponent(feng3d.FPSController);
 //
@@ -11,7 +11,7 @@ var meshRenderer = particle.addComponent(feng3d.MeshRenderer);
 meshRenderer.geometry = new feng3d.PointGeometry();
 var material = meshRenderer.material = new feng3d.StandardMaterial();
 material.renderMode = feng3d.RenderMode.POINTS;
-particle.transform.y = -100;
+particle.transform.y = -1;
 scene.gameObject.addChild(particle);
 var particleAnimator = particle.addComponent(feng3d.ParticleAnimator);
 particleAnimator.cycle = 10;

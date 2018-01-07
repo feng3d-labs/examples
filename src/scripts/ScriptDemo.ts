@@ -8,20 +8,20 @@ namespace feng3d
         {
             super.init(gameObject);
             var cube = this.cube = GameObject.create();
-            cube.transform.z = 300;
-            cube.transform.y = -100;
+            cube.transform.z = 3;
+            cube.transform.y = -1;
             this.gameObject.addChild(cube);
 
             var model = cube.addComponent(MeshRenderer);
-            model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            model.geometry = new CubeGeometry(1, 1, 1, 1, 1, 1, false);
             //材质
             var material = model.material = new StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/m.png';
 
             material.fogMethod.enable = true;
             material.fogMethod.fogColor = new Color(1, 1, 0);
-            material.fogMethod.minDistance = 200;
-            material.fogMethod.maxDistance = 300;
+            material.fogMethod.minDistance = 2;
+            material.fogMethod.maxDistance = 3;
         }
 
         update()

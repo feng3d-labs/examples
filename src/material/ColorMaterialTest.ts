@@ -3,7 +3,7 @@ namespace feng3d
     var view3D = new Engine();
 
     var cube = GameObjectFactory.createCube();
-    cube.transform.z = 300;
+    cube.transform.z = 3;
     view3D.scene.gameObject.addChild(cube);
 
     //初始化颜色材质

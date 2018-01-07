@@ -7,11 +7,11 @@ namespace feng3d
     scene.background.setTo(0.3, 0.3, 0.3);
 
     var cube = GameObjectFactory.createCube();
-    cube.transform.z = 300;
+    cube.transform.z = 3;
     scene.gameObject.addChild(cube);
 
     var gameObject = GameObjectFactory.createPlane();
-    gameObject.transform.y = 150;
+    gameObject.transform.y = 1.50;
     var holdSizeComponent = gameObject.addComponent(HoldSizeComponent);
     holdSizeComponent.holdSize = 1;
     holdSizeComponent.camera = view3D.camera;

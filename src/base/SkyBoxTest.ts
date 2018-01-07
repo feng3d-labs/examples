@@ -5,7 +5,7 @@ namespace feng3d
     var scene = view3D.scene;
 
     var camera = view3D.camera;
-    camera.transform.z = -500;
+    camera.transform.z = -5;
     camera.transform.lookAt(new Vector3D());
     camera.gameObject.addComponent(FPSController);
     //

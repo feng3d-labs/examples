@@ -10,11 +10,11 @@ namespace feng3d
     initObjects();
     initLights();
 
-    ticker.onframe( setPointLightPosition);
+    ticker.onframe(setPointLightPosition);
 
     var camera = view3D.camera;
-    camera.transform.z = -500;
-    camera.transform.y = 200;
+    camera.transform.z = -5;
+    camera.transform.y = 2;
     camera.transform.lookAt(new Vector3D());
     camera.gameObject.addComponent(FPSController);
     //
@@ -49,9 +49,9 @@ namespace feng3d
 
         //初始化立方体
         var plane = GameObject.create();
-        plane.transform.y = -100;
+        plane.transform.y = -1;
         var model = plane.addComponent(MeshRenderer);
-        var geometry = model.geometry = new PlaneGeometry(1000, 1000);
+        var geometry = model.geometry = new PlaneGeometry(10, 10);
         geometry.scaleUV(2, 2);
         model.material = material;
         scene.gameObject.addChild(plane);
@@ -59,7 +59,7 @@ namespace feng3d
         var cube = GameObject.create();
         var model = cube.addComponent(MeshRenderer);
         model.material = material;
-        model.geometry = new CubeGeometry(100, 100, 100, 1, 1, 1, false);
+        model.geometry = new CubeGeometry(1, 1, 1, 1, 1, 1, false);
         model.geometry.scaleUV(2, 2);
         scene.gameObject.addChild(cube);
     }
@@ -77,7 +77,7 @@ namespace feng3d
         //
         var lightColor0 = new Color(1, 0, 0, 1);
         var meshRenderer = light0.addComponent(MeshRenderer);
-        meshRenderer.geometry = new SphereGeometry(5);
+        meshRenderer.geometry = new SphereGeometry(0.05);
         //初始化点光源
         var pointLight0 = light0.addComponent(PointLight);
         pointLight0.color = lightColor0;
@@ -87,7 +87,7 @@ namespace feng3d
         //
         var lightColor1 = new Color(0, 1, 0, 1);
         meshRenderer = light1.addComponent(MeshRenderer);
-        meshRenderer.geometry = new SphereGeometry(5);
+        meshRenderer.geometry = new SphereGeometry(0.05);
         //初始化点光源
         var pointLight1 = light1.addComponent(DirectionalLight);
         pointLight1.color = lightColor1;
@@ -100,12 +100,12 @@ namespace feng3d
         var time = new Date().getTime();
         //
         var angle = time / 1000;
-        light0.transform.x = Math.sin(angle) * 300;
-        light0.transform.z = Math.cos(angle) * 300;
+        light0.transform.x = Math.sin(angle) * 3;
+        light0.transform.z = Math.cos(angle) * 3;
         //
         angle = angle + Math.PI / 2;
-        light1.transform.x = Math.sin(angle) * 300;
-        light1.transform.z = Math.cos(angle) * 300;
+        light1.transform.x = Math.sin(angle) * 3;
+        light1.transform.z = Math.cos(angle) * 3;
         light1.transform.lookAt(new feng3d.Vector3D());
     }
 }

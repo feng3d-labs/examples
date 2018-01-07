@@ -2,7 +2,7 @@ var feng3d;
 (function (feng3d) {
     var view3D = new feng3d.Engine();
     var cube = feng3d.GameObjectFactory.createCube();
-    cube.transform.z = 300;
+    cube.transform.z = 3;
     view3D.scene.gameObject.addChild(cube);
     //初始化颜色材质
     var colorMaterial = cube.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();

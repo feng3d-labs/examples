@@ -8,20 +8,20 @@ namespace feng3d
     scene3D.gameObject.addChild(cube);
 
     var plane = GameObjectFactory.createPlane();
-    plane.transform.position = new Vector3D(150, 0, 0);
+    plane.transform.position = new Vector3D(1.50, 0, 0);
     plane.transform.rx = -90;
     scene3D.gameObject.addChild(plane);
 
     var sphere = GameObjectFactory.createSphere();
-    sphere.transform.position = new Vector3D(-150, 0, 0);
+    sphere.transform.position = new Vector3D(-1.50, 0, 0);
     scene3D.gameObject.addChild(sphere);
 
     var capsule = GameObjectFactory.createCapsule();
-    capsule.transform.position = new Vector3D(300, 0, 0);
+    capsule.transform.position = new Vector3D(3, 0, 0);
     scene3D.gameObject.addChild(capsule);
 
     var cylinder = GameObjectFactory.createCylinder();
-    cylinder.transform.position = new Vector3D(-300, 0, 0);
+    cylinder.transform.position = new Vector3D(-3, 0, 0);
     scene3D.gameObject.addChild(cylinder);
 
     var camera = view3D.camera;
@@ -33,7 +33,7 @@ namespace feng3d
         var time = new Date().getTime();
         var angle = (Math.round(time / 17) % 360);
         angle = angle * Math.DEG2RAD;
-        camera.transform.position = new Vector3D(1000 * Math.sin(angle), 0, 1000 * Math.cos(angle));
+        camera.transform.position = new Vector3D(10 * Math.sin(angle), 0, 10 * Math.cos(angle));
 
         controller.update();
     }, 17);

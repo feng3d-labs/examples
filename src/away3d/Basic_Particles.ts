@@ -5,7 +5,7 @@ namespace feng3d
 
     view3D = new Engine();
     var camera = view3D.camera;
-    camera.transform.x = 1000;
+    camera.transform.x = 10;
     camera.transform.lookAt(new Vector3D());
     camera.gameObject.addComponent(FPSController);
 
@@ -17,7 +17,7 @@ namespace feng3d
     _particleMesh = GameObject.create("particle");
     // _particleMesh.geometry = new PointGeometry();
     var meshRenderer = _particleMesh.addComponent(MeshRenderer);
-    meshRenderer.geometry = new PlaneGeometry(10, 10, 1, 1, false);
+    meshRenderer.geometry = new PlaneGeometry(0.10, 0.10, 1, 1, false);
     var material = meshRenderer.material = new StandardMaterial("resources/blue.png");
     material.diffuseMethod.difuseTexture.format = TextureFormat.RGBA;
     material.enableBlend = true;
@@ -32,7 +32,7 @@ namespace feng3d
             particle.lifetime = 5;
             var degree1 = Math.random() * Math.PI;
             var degree2 = Math.random() * Math.PI * 2;
-            var r = Math.random() * 50 + 400;
+            var r = Math.random() * 0.50 + 4;
             particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
         }, priority: 0
     });

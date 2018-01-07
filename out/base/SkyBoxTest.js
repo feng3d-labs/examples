@@ -3,7 +3,7 @@ var feng3d;
     var view3D = new feng3d.Engine();
     var scene = view3D.scene;
     var camera = view3D.camera;
-    camera.transform.z = -500;
+    camera.transform.z = -5;
     camera.transform.lookAt(new feng3d.Vector3D());
     camera.gameObject.addComponent(feng3d.FPSController);
     //

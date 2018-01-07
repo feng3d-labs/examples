@@ -25,7 +25,7 @@ namespace feng3d
     scene.gameObject.addChild(skybox);
 
     var camera = view3D.camera;
-    camera.transform.z = -600;
+    camera.transform.z = -6;
     camera.transform.lookAt(new Vector3D());
     camera.lens = new PerspectiveLens(90);
 
@@ -37,7 +37,7 @@ namespace feng3d
 
     var torus = GameObject.create("torus");
     var model = torus.addComponent(MeshRenderer);
-    model.geometry = new TorusGeometry(150, 60, 40, 20);
+    model.geometry = new TorusGeometry(1.50, 0.60, 40, 20);
     model.material = torusMaterial;
     scene.gameObject.addChild(torus);
 
@@ -47,6 +47,6 @@ namespace feng3d
         torus.transform.ry += 1;
         camera.transform.position = new Vector3D(0, 0, 0);
         camera.transform.ry += 0.5 * (windowEventProxy.clientX - view3D.gl.canvas.clientLeft - view3D.gl.canvas.width / 2) / 800;
-        camera.transform.moveBackward(600);
+        camera.transform.moveBackward(6);
     });
 }

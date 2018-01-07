@@ -18,18 +18,18 @@ var feng3d;
         ScriptDemo.prototype.init = function (gameObject) {
             _super.prototype.init.call(this, gameObject);
             var cube = this.cube = feng3d.GameObject.create();
-            cube.transform.z = 300;
-            cube.transform.y = -100;
+            cube.transform.z = 3;
+            cube.transform.y = -1;
             this.gameObject.addChild(cube);
             var model = cube.addComponent(feng3d.MeshRenderer);
-            model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+            model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
             //材质
             var material = model.material = new feng3d.StandardMaterial();
             material.diffuseMethod.difuseTexture.url = 'resources/m.png';
             material.fogMethod.enable = true;
             material.fogMethod.fogColor = new feng3d.Color(1, 1, 0);
-            material.fogMethod.minDistance = 200;
-            material.fogMethod.maxDistance = 300;
+            material.fogMethod.minDistance = 2;
+            material.fogMethod.maxDistance = 3;
         };
         ScriptDemo.prototype.update = function () {
             this.cube.transform.ry += 1;

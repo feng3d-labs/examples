@@ -3,8 +3,8 @@ var view3D = new feng3d.Engine();
 var scene = view3D.scene;
 
 var camera = view3D.camera;
-camera.transform.z = -500;
-camera.transform.y = 200;
+camera.transform.z = -5;
+camera.transform.y = 2;
 camera.transform.lookAt(new feng3d.Vector3D());
 camera.gameObject.addComponent(feng3d.FPSController);
 
@@ -29,7 +29,7 @@ var light1 = feng3d.GameObject.create();
 var pointLight1 = light1.addComponent(feng3d.PointLight);
 // pointLight1.range = 1000;
 pointLight1.color = new feng3d.Color(1, 1, 0, 1);
-light1.transform.y = 300;
+light1.transform.y = 3;
 // scene.transform.addChild(light1);
 
 //
@@ -37,6 +37,6 @@ feng3d.ticker.onframe(() =>
 {
     var time = new Date().getTime();
     var angle = time / 1000;
-    light1.transform.x = Math.sin(angle) * 300;
-    light1.transform.z = Math.cos(angle) * 300;
+    light1.transform.x = Math.sin(angle) * 3;
+    light1.transform.z = Math.cos(angle) * 3;
 });

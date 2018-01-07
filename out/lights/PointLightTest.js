@@ -8,8 +8,8 @@ var feng3d;
     initLights();
     feng3d.ticker.onframe(setPointLightPosition);
     var camera = view3D.camera;
-    camera.transform.z = -500;
-    camera.transform.y = 200;
+    camera.transform.z = -5;
+    camera.transform.y = 2;
     camera.transform.lookAt(new feng3d.Vector3D());
     camera.gameObject.addComponent(feng3d.FPSController);
     //
@@ -39,16 +39,16 @@ var feng3d;
         material.specularMethod.specularTexture.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
         //初始化立方体
         var plane = feng3d.GameObject.create();
-        plane.transform.y = -100;
+        plane.transform.y = -1;
         var model = plane.addComponent(feng3d.MeshRenderer);
-        var geometry = model.geometry = new feng3d.PlaneGeometry(1000, 1000);
+        var geometry = model.geometry = new feng3d.PlaneGeometry(10, 10);
         geometry.scaleUV(2, 2);
         model.material = material;
         scene.gameObject.addChild(plane);
         var cube = feng3d.GameObject.create();
         var model = cube.addComponent(feng3d.MeshRenderer);
         model.material = material;
-        model.geometry = new feng3d.CubeGeometry(100, 100, 100, 1, 1, 1, false);
+        model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
         model.geometry.scaleUV(2, 2);
         scene.gameObject.addChild(cube);
     }
@@ -61,7 +61,7 @@ var feng3d;
         //
         var lightColor0 = new feng3d.Color(1, 0, 0, 1);
         var meshRenderer = light0.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = new feng3d.SphereGeometry(5);
+        meshRenderer.geometry = new feng3d.SphereGeometry(0.05);
         //初始化点光源
         var pointLight0 = light0.addComponent(feng3d.PointLight);
         pointLight0.color = lightColor0;
@@ -70,7 +70,7 @@ var feng3d;
         //
         var lightColor1 = new feng3d.Color(0, 1, 0, 1);
         meshRenderer = light1.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = new feng3d.SphereGeometry(5);
+        meshRenderer.geometry = new feng3d.SphereGeometry(0.05);
         //初始化点光源
         var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
         pointLight1.color = lightColor1;
@@ -81,12 +81,12 @@ var feng3d;
         var time = new Date().getTime();
         //
         var angle = time / 1000;
-        light0.transform.x = Math.sin(angle) * 300;
-        light0.transform.z = Math.cos(angle) * 300;
+        light0.transform.x = Math.sin(angle) * 3;
+        light0.transform.z = Math.cos(angle) * 3;
         //
         angle = angle + Math.PI / 2;
-        light1.transform.x = Math.sin(angle) * 300;
-        light1.transform.z = Math.cos(angle) * 300;
+        light1.transform.x = Math.sin(angle) * 3;
+        light1.transform.z = Math.cos(angle) * 3;
         light1.transform.lookAt(new feng3d.Vector3D());
     }
 })(feng3d || (feng3d = {}));

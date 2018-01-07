@@ -9,13 +9,13 @@ namespace feng3d
 
     //初始化颜色材质
     var cube = GameObjectFactory.createCube();
-    cube.transform.z = 500;
+    cube.transform.z = 5;
     scene.gameObject.addChild(cube);
 
     var colorMaterial = cube.getComponent(MeshRenderer).material = new ColorMaterial();
 
     var cylinder = GameObjectFactory.createCylinder();
-    cylinder.transform.x = 200;
+    cylinder.transform.x = 2;
     cube.addChild(cylinder);
 
     //变化旋转与颜色

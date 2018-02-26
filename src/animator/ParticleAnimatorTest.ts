@@ -1,8 +1,8 @@
-var acceleration = new feng3d.Vector3D(0, -9.8, 0);
+var acceleration = new feng3d.Vector3(0, -9.8, 0);
 var view3D = new feng3d.Engine();
 var camera = view3D.camera;
 camera.transform.z = -5;
-camera.transform.lookAt(new feng3d.Vector3D());
+camera.transform.lookAt(new feng3d.Vector3());
 camera.gameObject.addComponent(feng3d.FPSController);
 //
 var scene = view3D.scene;

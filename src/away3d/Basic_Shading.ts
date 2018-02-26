@@ -29,7 +29,7 @@ namespace feng3d
 
         camera.transform.y = 5;
         camera.transform.z = -10;
-        camera.transform.lookAt(new Vector3D());
+        camera.transform.lookAt(new Vector3());
         camera.gameObject.addComponent(FPSController);
     }
 

@@ -4,7 +4,7 @@ var feng3d;
     var scene = view3D.scene;
     var camera = view3D.camera;
     camera.transform.z = -5;
-    camera.transform.lookAt(new feng3d.Vector3D());
+    camera.transform.lookAt(new feng3d.Vector3());
     camera.gameObject.addComponent(feng3d.FPSController);
     //
     var skybox = feng3d.GameObject.create("skybox");

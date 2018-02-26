@@ -22,7 +22,7 @@ var feng3d;
     scene.gameObject.addChild(skybox);
     var camera = view3D.camera;
     camera.transform.z = -6;
-    camera.transform.lookAt(new feng3d.Vector3D());
+    camera.transform.lookAt(new feng3d.Vector3());
     camera.lens = new feng3d.PerspectiveLens(90);
     var torusMaterial = new feng3d.StandardMaterial();
     torusMaterial.specularMethod.specular = 0.5;
@@ -37,7 +37,7 @@ var feng3d;
     feng3d.ticker.onframe(function () {
         torus.transform.rx += 2;
         torus.transform.ry += 1;
-        camera.transform.position = new feng3d.Vector3D(0, 0, 0);
+        camera.transform.position = new feng3d.Vector3(0, 0, 0);
         camera.transform.ry += 0.5 * (feng3d.windowEventProxy.clientX - view3D.gl.canvas.clientLeft - view3D.gl.canvas.width / 2) / 800;
         camera.transform.moveBackward(6);
     });

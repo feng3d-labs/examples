@@ -13,7 +13,7 @@ var feng3d;
     var height = 2 / Math.PI;
     for (var x = -length; x <= length; x = x + 4) {
         var angle = x / length * Math.PI;
-        var vec = new feng3d.Vector3D(x / 100, Math.sin(angle) * height, 0);
+        var vec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
         pointGeometry.addPoint(new feng3d.PointInfo(vec));
     }
     //变化旋转

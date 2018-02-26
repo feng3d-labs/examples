@@ -26,7 +26,7 @@ namespace feng3d
 
     var camera = view3D.camera;
     camera.transform.z = -6;
-    camera.transform.lookAt(new Vector3D());
+    camera.transform.lookAt(new Vector3());
     camera.lens = new PerspectiveLens(90);
 
     var torusMaterial = new StandardMaterial();
@@ -45,7 +45,7 @@ namespace feng3d
     {
         torus.transform.rx += 2;
         torus.transform.ry += 1;
-        camera.transform.position = new Vector3D(0, 0, 0);
+        camera.transform.position = new Vector3(0, 0, 0);
         camera.transform.ry += 0.5 * (windowEventProxy.clientX - view3D.gl.canvas.clientLeft - view3D.gl.canvas.width / 2) / 800;
         camera.transform.moveBackward(6);
     });

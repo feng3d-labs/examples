@@ -46,7 +46,7 @@ var feng3d;
     view.camera.transform.x = -200;
     view.camera.transform.y = 200;
     view.camera.transform.z = -300;
-    view.camera.transform.lookAt(new feng3d.Vector3D());
+    view.camera.transform.lookAt(new feng3d.Vector3());
     view.camera.gameObject.addComponent(feng3d.FPSController);
     //
     var rooturl = "resources/war3/";

@@ -4,7 +4,7 @@ var feng3d;
     var scene = view.scene;
     view.camera.transform.z = -6;
     view.camera.transform.y = 5;
-    view.camera.transform.lookAt(new feng3d.Vector3D());
+    view.camera.transform.lookAt(new feng3d.Vector3());
     var plane = feng3d.GameObject.create();
     var model = plane.addComponent(feng3d.MeshRenderer);
     model.geometry = new feng3d.PlaneGeometry(7, 7);

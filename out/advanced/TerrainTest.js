@@ -3,7 +3,7 @@ var scene = view3D.scene;
 var camera = view3D.camera;
 camera.transform.z = -5;
 camera.transform.y = 2;
-camera.transform.lookAt(new feng3d.Vector3D());
+camera.transform.lookAt(new feng3d.Vector3());
 camera.gameObject.addComponent(feng3d.FPSController);
 var root = 'resources/terrain/';
 //
@@ -16,7 +16,7 @@ material.terrainMethod.blendTexture.url = root + 'terrain_splats.png';
 material.terrainMethod.splatTexture1.url = root + 'beach.jpg';
 material.terrainMethod.splatTexture2.url = root + 'grass.jpg';
 material.terrainMethod.splatTexture3.url = root + 'rock.jpg';
-material.terrainMethod.splatRepeats = new feng3d.Vector3D(1, 50, 50, 50);
+material.terrainMethod.splatRepeats = new feng3d.Vector4(1, 50, 50, 50);
 meshRenderer.material = material;
 scene.gameObject.addChild(terrain);
 //初始化光源

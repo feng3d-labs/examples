@@ -6,7 +6,7 @@ namespace feng3d
     view3D = new Engine();
     var camera = view3D.camera;
     camera.transform.x = 10;
-    camera.transform.lookAt(new Vector3D());
+    camera.transform.lookAt(new Vector3());
     camera.gameObject.addComponent(FPSController);
 
     // _particleAnimationSet = new ParticleAnimationSet(true, true);
@@ -33,7 +33,7 @@ namespace feng3d
             var degree1 = Math.random() * Math.PI;
             var degree2 = Math.random() * Math.PI * 2;
             var r = Math.random() * 0.50 + 4;
-            particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+            particle.velocity = new Vector3(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
         }, priority: 0
     });
     particleAnimator.animations.billboard.enable = true;

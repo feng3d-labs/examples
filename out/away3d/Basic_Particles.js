@@ -5,7 +5,7 @@ var feng3d;
     view3D = new feng3d.Engine();
     var camera = view3D.camera;
     camera.transform.x = 10;
-    camera.transform.lookAt(new feng3d.Vector3D());
+    camera.transform.lookAt(new feng3d.Vector3());
     camera.gameObject.addComponent(feng3d.FPSController);
     // _particleAnimationSet = new ParticleAnimationSet(true, true);
     // _particleAnimationSet["addAnimation"](new ParticleBillboardNode());
@@ -28,7 +28,7 @@ var feng3d;
             var degree1 = Math.random() * Math.PI;
             var degree2 = Math.random() * Math.PI * 2;
             var r = Math.random() * 0.50 + 4;
-            particle.velocity = new feng3d.Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+            particle.velocity = new feng3d.Vector3(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
         }, priority: 0
     });
     particleAnimator.animations.billboard.enable = true;

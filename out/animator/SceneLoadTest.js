@@ -1,7 +1,7 @@
 var view3D = new feng3d.Engine();
 var camera = view3D.camera;
 camera.transform.z = -500;
-camera.transform.lookAt(new feng3d.Vector3D());
+camera.transform.lookAt(new feng3d.Vector3());
 //
 camera.gameObject.addComponent(feng3d.FPSController);
 feng3d.Loader.loadText("resources/scene/Untitled.scene", function (content) {

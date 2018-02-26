@@ -16,7 +16,7 @@ namespace feng3d
     for (var x = -length; x <= length; x = x + 4)
     {
         var angle = x / length * Math.PI;
-        var vec = new Vector3D(x / 100, Math.sin(angle) * height, 0);
+        var vec = new Vector3(x / 100, Math.sin(angle) * height, 0);
         pointGeometry.addPoint(new PointInfo(vec));
     }
 

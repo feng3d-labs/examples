@@ -14,10 +14,10 @@ var feng3d;
     for (var x = -length; x <= length; x++) {
         var angle = x / length * Math.PI;
         if (preVec == null) {
-            preVec = new feng3d.Vector3D(x / 100, Math.sin(angle) * height, 0);
+            preVec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
         }
         else {
-            var vec = new feng3d.Vector3D(x / 100, Math.sin(angle) * height, 0);
+            var vec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
             segmentGeometry.addSegment(new feng3d.Segment(preVec, vec));
             preVec = vec;
         }

@@ -15,7 +15,7 @@ namespace feng3d
     var camera = view3D.camera;
     camera.transform.z = -5;
     camera.transform.y = 2;
-    camera.transform.lookAt(new Vector3D());
+    camera.transform.lookAt(new Vector3());
     camera.gameObject.addComponent(FPSController);
     //
     windowEventProxy.on("keyup", (event) =>
@@ -106,7 +106,7 @@ namespace feng3d
         angle = angle + Math.PI / 2;
         light1.transform.x = Math.sin(angle) * 3;
         light1.transform.z = Math.cos(angle) * 3;
-        light1.transform.lookAt(new feng3d.Vector3D());
+        light1.transform.lookAt(new feng3d.Vector3());
     }
 }
 

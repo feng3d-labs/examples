@@ -9,17 +9,5 @@
             "sourceMaps": true,
             "webRoot": "${workspaceRoot}"
         },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "合并examples_tsconfig.json与feng3d/tsconfig.json为tsconfig.json",
-            "program": "${workspaceRoot}/mergeTSConfig.js"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "打包shader",
-            "program": "${workspaceRoot}/ShaderPack.js"
-        }
     ]
 }

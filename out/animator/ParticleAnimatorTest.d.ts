@@ -1,4 +1,4 @@
-declare var acceleration: feng3d.Vector3D;
+declare var acceleration: feng3d.Vector3;
 declare var view3D: feng3d.Engine;
 declare var camera: feng3d.Camera;
 declare var scene: feng3d.Scene3D;

@@ -13,16 +13,16 @@ namespace feng3d
 
     var length = 200;
     var height = 2 / Math.PI;
-    var preVec: Vector3D;
+    var preVec: Vector3;
     for (var x = -length; x <= length; x++)
     {
         var angle = x / length * Math.PI;
         if (preVec == null)
         {
-            preVec = new Vector3D(x / 100, Math.sin(angle) * height, 0);
+            preVec = new Vector3(x / 100, Math.sin(angle) * height, 0);
         } else
         {
-            var vec = new Vector3D(x / 100, Math.sin(angle) * height, 0);
+            var vec = new Vector3(x / 100, Math.sin(angle) * height, 0);
             segmentGeometry.addSegment(new Segment(preVec, vec));
             preVec = vec;
         }

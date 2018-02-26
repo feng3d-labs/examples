@@ -5,7 +5,7 @@ namespace feng3d
 
     view.camera.transform.z = -6;
     view.camera.transform.y = 5;
-    view.camera.transform.lookAt(new Vector3D());
+    view.camera.transform.lookAt(new Vector3());
 
     var plane = GameObject.create();
     var model = plane.addComponent(MeshRenderer);

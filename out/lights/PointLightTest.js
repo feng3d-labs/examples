@@ -10,7 +10,7 @@ var feng3d;
     var camera = view3D.camera;
     camera.transform.z = -5;
     camera.transform.y = 2;
-    camera.transform.lookAt(new feng3d.Vector3D());
+    camera.transform.lookAt(new feng3d.Vector3());
     camera.gameObject.addComponent(feng3d.FPSController);
     //
     feng3d.windowEventProxy.on("keyup", function (event) {
@@ -87,7 +87,7 @@ var feng3d;
         angle = angle + Math.PI / 2;
         light1.transform.x = Math.sin(angle) * 3;
         light1.transform.z = Math.cos(angle) * 3;
-        light1.transform.lookAt(new feng3d.Vector3D());
+        light1.transform.lookAt(new feng3d.Vector3());
     }
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=PointLightTest.js.map

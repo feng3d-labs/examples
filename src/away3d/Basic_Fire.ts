@@ -71,7 +71,7 @@ namespace feng3d
         particleAnimator.animations.billboard.enable = true;
         particleAnimator.animations.billboard.camera = camera.getComponent(Camera);
         // fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
-        // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3D(0, 80, 0)));
+        // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3(0, 80, 0)));
         // fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
         // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
         //通过函数来创建粒子初始状态
@@ -86,7 +86,7 @@ namespace feng3d
                 var degree1 = Math.random() * Math.PI * 2;
                 var degree2 = Math.random() * Math.PI * 2;
                 var r = <any>0.15;
-                particle.velocity = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+                particle.velocity = new Vector3(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
             }, priority: 0
         });
         particleGeometry = new PlaneGeometry(0.10, 0.10, 1, 1, false);
@@ -116,9 +116,7 @@ namespace feng3d
             fireObjects.push({ mesh: particleMesh, animator: particleAnimator, strength: 0 });
             scene.gameObject.addChild(particleMesh);
         }
-        timer = new Timer(1000, fireObjects.length);
-        timer.on("timer", onTimer, this);
-        timer.start();
+        timer = ticker.repeat(1000, fireObjects.length, onTimer, this).start();
     }
 
     function initListeners()
@@ -141,7 +139,7 @@ namespace feng3d
         return lights;
     }
 
-    function onTimer(e)
+    function onTimer()
     {
         var fireObject: FireVO = fireObjects[timer.currentCount - 1];
         var lightObject = GameObject.create();

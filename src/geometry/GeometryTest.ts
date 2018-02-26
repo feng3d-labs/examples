@@ -6,7 +6,7 @@ namespace feng3d
 
     var geometry = model.geometry = new CustomGeometry();
     geometry.addGeometry(new PlaneGeometry());
-    var matrix3D = new Matrix3D();
+    var matrix3D = new Matrix4x4();
     matrix3D.appendTranslation(0, 0.50, 0);
     geometry.addGeometry(new SphereGeometry(50), matrix3D);
 
@@ -16,7 +16,7 @@ namespace feng3d
 
     addGeometry.width = 0.50;
     matrix3D.appendTranslation(0, 0.50, 0);
-    matrix3D.appendRotation(Vector3D.Z_AXIS, 45);
+    matrix3D.appendRotation(Vector3.Z_AXIS, 45);
     geometry.addGeometry(addGeometry, matrix3D);
 
     gameobject.transform.z = 3;

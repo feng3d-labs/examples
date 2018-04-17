@@ -740,11 +740,15 @@ var feng3d;
              * 是否右击
              */
             _this.rightmouse = false;
+            _this.key = "";
+            _this.keyCode = 0;
+            _this.wheelDelta = 0;
             _this.listentypes = [];
             /**
              * 键盘按下事件
              */
             _this.onMouseKey = function (event) {
+                _this.clear();
                 if (event["clientX"] != undefined) {
                     event = event;
                     _this.clientX = event.clientX;
@@ -755,6 +759,7 @@ var feng3d;
                 }
                 if (event instanceof KeyboardEvent) {
                     _this.keyCode = event.keyCode;
+                    _this.key = event.key;
                 }
                 if (event instanceof WheelEvent) {
                     _this.wheelDelta = event.wheelDelta;
@@ -808,6 +813,17 @@ var feng3d;
                 this.target.removeEventListener(type, this.onMouseKey);
                 this.listentypes.splice(this.listentypes.indexOf(type), 1);
             }
+        };
+        /**
+         * 清理数据
+         */
+        EventProxy.prototype.clear = function () {
+            this.clientX = 0;
+            this.clientY = 0;
+            this.rightmouse = false;
+            this.key = "";
+            this.keyCode = 0;
+            this.wheelDelta = 0;
         };
         return EventProxy;
     }(feng3d.EventDispatcher));
@@ -20481,12 +20497,14 @@ var feng3d;
             this.createUniformData("u_particleTime", function () { return _this.time; });
             //
             this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
-            //
-            this.isPlaying = true;
+            this.updateRenderState();
         };
         ParticleAnimator.prototype.update = function () {
             this.time = (this.time + ((Date.now() - this.preTime) * this.playspeed / 1000) + this.cycle) % this.cycle;
             this.preTime = Date.now();
+            this.updateRenderState();
+        };
+        ParticleAnimator.prototype.updateRenderState = function () {
             for (var key in this.animations) {
                 if (this.animations.hasOwnProperty(key)) {
                     var element = this.animations[key];
@@ -20598,7 +20616,8 @@ var feng3d;
             feng3d.serialize()
         ], ParticleAnimator.prototype, "isPlaying", null);
         __decorate([
-            feng3d.oav()
+            feng3d.oav(),
+            feng3d.serialize()
         ], ParticleAnimator.prototype, "time", void 0);
         __decorate([
             feng3d.oav(),

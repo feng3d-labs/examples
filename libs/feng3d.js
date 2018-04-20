@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8451,6 +8450,37 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
+     * @private
+     */
+    feng3d.enums = {};
+    /**
+     * GL枚举
+     */
+    var GLEnum = /** @class */ (function () {
+        function GLEnum(gl) {
+            feng3d.assert(!gl.enums, gl + " " + gl.enums + " \u5B58\u5728\uFF01");
+            gl.enums = this;
+            this.getRenderModeValue = feng3d.enums.getRenderModeValue(gl);
+            this.getTextureTypeValue = feng3d.enums.getTextureTypeValue(gl);
+            this.getBlendEquationValue = feng3d.enums.getBlendEquationValue(gl);
+            this.getBlendFactorValue = feng3d.enums.getBlendFactorValue(gl);
+            this.getCullFaceValue = feng3d.enums.getCullFaceValue(gl);
+            this.getFrontFaceValue = feng3d.enums.getFrontFaceValue(gl);
+            this.getTextureFormatValue = feng3d.enums.getTextureFormatValue(gl);
+            this.getTextureDataTypeValue = feng3d.enums.getTextureDataTypeValue(gl);
+            this.getTextureMinFilterValue = feng3d.enums.getTextureMinFilterValue(gl);
+            this.getTextureMagFilterValue = feng3d.enums.getTextureMagFilterValue(gl);
+            this.getTextureWrapValue = feng3d.enums.getTextureWrapValue(gl);
+            this.getGLArrayTypeValue = feng3d.enums.getGLArrayTypeValue(gl);
+            this.getdDepthFuncValue = feng3d.enums.getdDepthFuncValue(gl);
+        }
+        return GLEnum;
+    }());
+    feng3d.GLEnum = GLEnum;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
      * 渲染模式
      * A GLenum specifying the type primitive to render. Possible values are:
      * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/drawElements
@@ -8490,7 +8520,7 @@ var feng3d;
          */
         RenderMode[RenderMode["TRIANGLE_FAN"] = 6] = "TRIANGLE_FAN";
     })(RenderMode = feng3d.RenderMode || (feng3d.RenderMode = {}));
-    (feng3d.enums = feng3d.enums || {}).getRenderModeValue = function (gl) {
+    feng3d.enums.getRenderModeValue = function (gl) {
         return function (renderMode) {
             var value = gl.TRIANGLES;
             switch (renderMode) {
@@ -8550,7 +8580,7 @@ var feng3d;
          */
         TextureType[TextureType["TEXTURE_2D_ARRAY"] = 3] = "TEXTURE_2D_ARRAY";
     })(TextureType = feng3d.TextureType || (feng3d.TextureType = {}));
-    (feng3d.enums = feng3d.enums || {}).getTextureTypeValue = function (gl) {
+    feng3d.enums.getTextureTypeValue = function (gl) {
         return function (textureType) {
             var gl2 = gl;
             var value = gl.TEXTURE_2D;
@@ -8615,7 +8645,7 @@ var feng3d;
          */
         BlendEquation[BlendEquation["MAX"] = 6] = "MAX";
     })(BlendEquation = feng3d.BlendEquation || (feng3d.BlendEquation = {}));
-    (feng3d.enums = feng3d.enums || {}).getBlendEquationValue = function (gl) {
+    feng3d.enums.getBlendEquationValue = function (gl) {
         return function (blendEquation) {
             var value = gl.FUNC_ADD;
             switch (blendEquation) {
@@ -8687,7 +8717,7 @@ var feng3d;
          */
         BlendFactor[BlendFactor["SRC_ALPHA_SATURATE"] = 10] = "SRC_ALPHA_SATURATE";
     })(BlendFactor = feng3d.BlendFactor || (feng3d.BlendFactor = {}));
-    (feng3d.enums = feng3d.enums || {}).getBlendFactorValue = function (gl) {
+    feng3d.enums.getBlendFactorValue = function (gl) {
         return function (blendFactor) {
             var value = gl.ZERO;
             switch (blendFactor) {
@@ -8757,7 +8787,7 @@ var feng3d;
          */
         CullFace[CullFace["FRONT_AND_BACK"] = 3] = "FRONT_AND_BACK";
     })(CullFace = feng3d.CullFace || (feng3d.CullFace = {}));
-    (feng3d.enums = feng3d.enums || {}).getCullFaceValue = function (gl) {
+    feng3d.enums.getCullFaceValue = function (gl) {
         return function (cullFace) {
             var value = gl.BACK;
             switch (cullFace) {
@@ -8798,7 +8828,7 @@ var feng3d;
          */
         FrontFace[FrontFace["CCW"] = 1] = "CCW";
     })(FrontFace = feng3d.FrontFace || (feng3d.FrontFace = {}));
-    (feng3d.enums = feng3d.enums || {}).getFrontFaceValue = function (gl) {
+    feng3d.enums.getFrontFaceValue = function (gl) {
         return function (frontFace) {
             var value = gl.CCW;
             switch (frontFace) {
@@ -8966,7 +8996,7 @@ var feng3d;
          */
         TextureFormat[TextureFormat["RGBA8UI"] = 33] = "RGBA8UI";
     })(TextureFormat = feng3d.TextureFormat || (feng3d.TextureFormat = {}));
-    (feng3d.enums = feng3d.enums || {}).getTextureFormatValue = function (gl) {
+    feng3d.enums.getTextureFormatValue = function (gl) {
         return function (textureFormat) {
             var gl2 = gl;
             var value = gl.RGB;
@@ -9204,7 +9234,7 @@ var feng3d;
          */
         TextureDataType[TextureDataType["FLOAT_32_UNSIGNED_INT_24_8_REV"] = 17] = "FLOAT_32_UNSIGNED_INT_24_8_REV";
     })(TextureDataType = feng3d.TextureDataType || (feng3d.TextureDataType = {}));
-    (feng3d.enums = feng3d.enums || {}).getTextureDataTypeValue = function (gl) {
+    feng3d.enums.getTextureDataTypeValue = function (gl) {
         var gl2 = gl;
         return function (textureDataType) {
             var value = gl.UNSIGNED_BYTE;
@@ -9304,7 +9334,7 @@ var feng3d;
         TextureMinFilter[TextureMinFilter["NEAREST_MIPMAP_LINEAR"] = 4] = "NEAREST_MIPMAP_LINEAR";
         TextureMinFilter[TextureMinFilter["LINEAR_MIPMAP_LINEAR"] = 5] = "LINEAR_MIPMAP_LINEAR";
     })(TextureMinFilter = feng3d.TextureMinFilter || (feng3d.TextureMinFilter = {}));
-    (feng3d.enums = feng3d.enums || {}).getTextureMinFilterValue = function (gl) {
+    feng3d.enums.getTextureMinFilterValue = function (gl) {
         return function (textureMinFilter) {
             var value = gl.NEAREST_MIPMAP_LINEAR;
             switch (textureMinFilter) {
@@ -9349,7 +9379,7 @@ var feng3d;
         TextureMagFilter[TextureMagFilter["LINEAR"] = 0] = "LINEAR";
         TextureMagFilter[TextureMagFilter["NEAREST"] = 1] = "NEAREST";
     })(TextureMagFilter = feng3d.TextureMagFilter || (feng3d.TextureMagFilter = {}));
-    (feng3d.enums = feng3d.enums || {}).getTextureMagFilterValue = function (gl) {
+    feng3d.enums.getTextureMagFilterValue = function (gl) {
         return function (textureMagFilter) {
             var value = gl.LINEAR;
             switch (textureMagFilter) {
@@ -9383,7 +9413,7 @@ var feng3d;
         TextureWrap[TextureWrap["CLAMP_TO_EDGE"] = 1] = "CLAMP_TO_EDGE";
         TextureWrap[TextureWrap["MIRRORED_REPEAT"] = 2] = "MIRRORED_REPEAT";
     })(TextureWrap = feng3d.TextureWrap || (feng3d.TextureWrap = {}));
-    (feng3d.enums = feng3d.enums || {}).getTextureWrapValue = function (gl) {
+    feng3d.enums.getTextureWrapValue = function (gl) {
         return function (textureWrap) {
             var value = gl.REPEAT;
             switch (textureWrap) {
@@ -9439,7 +9469,7 @@ var feng3d;
          */
         GLArrayType[GLArrayType["HALF_FLOAT"] = 5] = "HALF_FLOAT";
     })(GLArrayType = feng3d.GLArrayType || (feng3d.GLArrayType = {}));
-    (feng3d.enums = feng3d.enums || {}).getGLArrayTypeValue = function (gl) {
+    feng3d.enums.getGLArrayTypeValue = function (gl) {
         var gl2 = gl;
         return function (glArrayType) {
             var value = gl.FUNC_ADD;
@@ -9512,7 +9542,7 @@ var feng3d;
          */
         DepthFunc[DepthFunc["ALWAYS"] = 7] = "ALWAYS";
     })(DepthFunc = feng3d.DepthFunc || (feng3d.DepthFunc = {}));
-    (feng3d.enums = feng3d.enums || {}).getdDepthFuncValue = function (gl) {
+    feng3d.enums.getdDepthFuncValue = function (gl) {
         return function (depthFunc) {
             var value = gl.LESS;
             switch (depthFunc) {
@@ -9947,33 +9977,6 @@ var feng3d;
         return WebGLCapabilities;
     }());
     feng3d.WebGLCapabilities = WebGLCapabilities;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * GL枚举
-     */
-    var GLEnum = /** @class */ (function () {
-        function GLEnum(gl) {
-            feng3d.assert(!gl.enums, gl + " " + gl.enums + " \u5B58\u5728\uFF01");
-            gl.enums = this;
-            this.getRenderModeValue = feng3d.enums.getRenderModeValue(gl);
-            this.getTextureTypeValue = feng3d.enums.getTextureTypeValue(gl);
-            this.getBlendEquationValue = feng3d.enums.getBlendEquationValue(gl);
-            this.getBlendFactorValue = feng3d.enums.getBlendFactorValue(gl);
-            this.getCullFaceValue = feng3d.enums.getCullFaceValue(gl);
-            this.getFrontFaceValue = feng3d.enums.getFrontFaceValue(gl);
-            this.getTextureFormatValue = feng3d.enums.getTextureFormatValue(gl);
-            this.getTextureDataTypeValue = feng3d.enums.getTextureDataTypeValue(gl);
-            this.getTextureMinFilterValue = feng3d.enums.getTextureMinFilterValue(gl);
-            this.getTextureMagFilterValue = feng3d.enums.getTextureMagFilterValue(gl);
-            this.getTextureWrapValue = feng3d.enums.getTextureWrapValue(gl);
-            this.getGLArrayTypeValue = feng3d.enums.getGLArrayTypeValue(gl);
-            this.getdDepthFuncValue = feng3d.enums.getdDepthFuncValue(gl);
-        }
-        return GLEnum;
-    }());
-    feng3d.GLEnum = GLEnum;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -14083,9 +14086,10 @@ var feng3d;
                 if (this._url == value)
                     return;
                 this._url = value;
-                if (value) {
-                    feng3d.GameObjectUtil.addScript(this.gameObject, value.replace(/\.ts\b/, ".js"), function () {
-                        _this.gameObject.removeComponent(_this);
+                if (value && this.gameObject && feng3d.runEnvironment == feng3d.RunEnvironment.feng3d) {
+                    feng3d.GameObjectUtil.addScript(this.gameObject, value, function (scriptcomponent) {
+                        _this.scriptcomponent && _this.gameObject.removeComponent(_this.scriptcomponent);
+                        _this.scriptcomponent = scriptcomponent;
                     });
                 }
             },
@@ -14093,7 +14097,13 @@ var feng3d;
             configurable: true
         });
         Script.prototype.init = function (gameObject) {
+            var _this = this;
             _super.prototype.init.call(this, gameObject);
+            if (this._url && this.gameObject && feng3d.runEnvironment == feng3d.RunEnvironment.feng3d) {
+                feng3d.GameObjectUtil.addScript(this.gameObject, this._url, function (scriptcomponent) {
+                    _this.scriptcomponent = scriptcomponent;
+                });
+            }
             this.start();
         };
         /**
@@ -14120,7 +14130,8 @@ var feng3d;
             _super.prototype.dispose.call(this);
         };
         __decorate([
-            feng3d.oav({ componentParam: { dragparam: { accepttype: "file_script" } } })
+            feng3d.oav({ componentParam: { dragparam: { accepttype: "file_script" }, textEnabled: false } }),
+            feng3d.serialize()
         ], Script.prototype, "url", null);
         __decorate([
             feng3d.oav(),
@@ -21086,13 +21097,23 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var DBname = "feng3d-editor";
-    var _projectname;
+    /**
+     * 文件系统类型
+     */
+    var FSType;
+    (function (FSType) {
+        FSType["http"] = "http";
+        FSType["native"] = "native";
+        FSType["indexedDB"] = "indexedDB";
+    })(FSType = feng3d.FSType || (feng3d.FSType = {}));
+    feng3d.fstype = FSType.http;
+    feng3d.DBname = "feng3d-editor";
+    feng3d.projectname = "testproject";
     function set(key, data, callback) {
-        feng3d.storage.set(DBname, _projectname, key, data, callback);
+        feng3d.storage.set(feng3d.DBname, feng3d.projectname, key, data, callback);
     }
     function get(key, callback) {
-        feng3d.storage.get(DBname, _projectname, key, callback);
+        feng3d.storage.get(feng3d.DBname, feng3d.projectname, key, callback);
     }
     function copy(sourcekey, targetkey, callback) {
         get(sourcekey, function (err, data) {
@@ -21113,10 +21134,10 @@ var feng3d;
         });
     }
     function deletedata(key, callback) {
-        feng3d.storage.delete(DBname, _projectname, key, callback);
+        feng3d.storage.delete(feng3d.DBname, feng3d.projectname, key, callback);
     }
     function getAllKeys(callback) {
-        feng3d.storage.getAllKeys(DBname, _projectname, callback);
+        feng3d.storage.getAllKeys(feng3d.DBname, feng3d.projectname, callback);
     }
     function movefiles(movelists, callback) {
         copyfiles(movelists.concat(), function (err) {
@@ -21157,18 +21178,18 @@ var feng3d;
     }
     feng3d.indexedDBfs = {
         hasProject: function (projectname, callback) {
-            feng3d.storage.hasObjectStore(DBname, projectname, callback);
+            feng3d.storage.hasObjectStore(feng3d.DBname, projectname, callback);
         },
         getProjectList: function (callback) {
-            feng3d.storage.getObjectStoreNames(DBname, callback);
+            feng3d.storage.getObjectStoreNames(feng3d.DBname, callback);
         },
-        initproject: function (projectname, callback) {
-            feng3d.storage.createObjectStore(DBname, projectname, function (err) {
+        initproject: function (projectname1, callback) {
+            feng3d.storage.createObjectStore(feng3d.DBname, projectname1, function (err) {
                 if (err) {
                     feng3d.warn(err);
                     return;
                 }
-                _projectname = projectname;
+                feng3d.projectname = projectname1;
                 // todo 启动监听 ts代码变化自动编译
                 callback();
             });
@@ -24343,12 +24364,12 @@ var feng3d;
     };
     var resultScriptCache = {};
     function addScript(gameObject, scriptPath, callback) {
-        loadJs(scriptPath, function (resultScript) {
-            removeScript(gameObject, scriptPath);
+        var jspath = scriptPath.replace(/\.ts\b/, ".js");
+        loadJs(jspath, function (resultScript) {
             var windowEval = eval.bind(window);
             var componentClass = windowEval(resultScript.className);
             var scriptcomponent = gameObject.addComponent(componentClass);
-            scriptcomponent["_url"] = scriptPath;
+            scriptcomponent.serializable = false;
             scriptcomponent.enabled = true;
             callback && callback(scriptcomponent);
         });
@@ -24379,28 +24400,44 @@ var feng3d;
             return;
         }
         var resultScript = {};
-        var loadPath = scriptPath + ("?version=" + Math.random());
-        feng3d.Loader.loadText(loadPath, function (content) {
-            var reg = /(feng3d.(\w+)) = (\w+);/;
-            var result = content.match(reg);
-            if (result)
-                resultScript.className = result[1];
-            //
-            var scriptTag = document.getElementById(scriptPath);
-            var head = document.getElementsByTagName('head').item(0);
-            if (scriptTag)
-                head.removeChild(scriptTag);
-            var script = document.createElement('script');
-            script.onload = function (e) {
-                resultScript.script = script;
+        if (feng3d.fstype == feng3d.FSType.http) {
+            var loadPath = scriptPath + ("?version=" + Math.random());
+            feng3d.Loader.loadText(loadPath, function (content) {
+                var reg = /(feng3d.(\w+)) = (\w+);/;
+                var result = content.match(reg);
+                if (result)
+                    resultScript.className = result[1];
+                var scriptTag = document.getElementById(scriptPath);
+                var head = document.getElementsByTagName('head').item(0);
+                if (scriptTag)
+                    head.removeChild(scriptTag);
+                var script = document.createElement('script');
+                script.onload = function (e) {
+                    resultScript.script = script;
+                    resultScriptCache[scriptPath] = resultScript;
+                    onload && onload(resultScript);
+                };
+                script.src = loadPath;
+                script.type = 'text/javascript';
+                script.id = scriptPath;
+                head.appendChild(script);
+            });
+        }
+        else if (feng3d.fstype == feng3d.FSType.indexedDB) {
+            feng3d.storage.get(feng3d.DBname, feng3d.projectname, scriptPath, function (err, data) {
+                var content = data.data;
+                var reg = /(feng3d.(\w+)) = (\w+);/;
+                var result = content.match(reg);
+                if (result)
+                    resultScript.className = result[1];
+                //
+                var windowEval = eval.bind(window);
+                windowEval(content);
+                //
                 resultScriptCache[scriptPath] = resultScript;
                 onload && onload(resultScript);
-            };
-            script.src = loadPath;
-            script.type = 'text/javascript';
-            script.id = scriptPath;
-            head.appendChild(script);
-        });
+            });
+        }
     }
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -24795,6 +24832,17 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
+     * 运行环境枚举
+     */
+    var RunEnvironment;
+    (function (RunEnvironment) {
+        RunEnvironment[RunEnvironment["feng3d"] = 0] = "feng3d";
+        /**
+         * 运行在编辑器中
+         */
+        RunEnvironment[RunEnvironment["editor"] = 1] = "editor";
+    })(RunEnvironment = feng3d.RunEnvironment || (feng3d.RunEnvironment = {}));
+    /**
      * feng3d的版本号
      * @author feng 2015-03-20
      */
@@ -24807,6 +24855,10 @@ var feng3d;
      * 快捷键
      */
     feng3d.shortcut = new feng3d.ShortCut();
+    /**
+     * 运行环境
+     */
+    feng3d.runEnvironment = RunEnvironment.feng3d;
     /**
      * 资源路径
      */

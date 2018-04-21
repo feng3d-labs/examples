@@ -1640,6 +1640,72 @@ getset平均耗时比 17.3
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    feng3d.ImageUtil = {
+        /**
+         * 加载图片
+         * @param url 图片路径
+         * @param callback 加载完成回调
+         */
+        loadImage: function (url, callback) {
+            var image = new Image();
+            image.crossOrigin = "Anonymous";
+            image.addEventListener("load", onHeightMapLoad);
+            image.src = url;
+            function onHeightMapLoad() {
+                image.removeEventListener("load", onHeightMapLoad);
+                callback && callback(image);
+            }
+        },
+        /**
+         * 获取图片数据
+         * @param image 加载完成的图片元素
+         */
+        getImageData: function (image) {
+            var canvasImg = document.createElement("canvas");
+            canvasImg.width = image.width;
+            canvasImg.height = image.height;
+            var ctxt = canvasImg.getContext('2d');
+            feng3d.assert(!!ctxt);
+            ctxt.drawImage(image, 0, 0);
+            var imageData = ctxt.getImageData(0, 0, image.width, image.height); //读取整张图片的像素。
+            return imageData;
+        },
+        /**
+         * 从url获取图片数据
+         * @param url 图片路径
+         * @param callback 获取图片数据完成回调
+         */
+        getImageDataFromUrl: function (url, callback) {
+            feng3d.ImageUtil.loadImage(url, function (image) {
+                var imageData = feng3d.ImageUtil.getImageData(image);
+                callback(imageData);
+            });
+        },
+        /**
+         * 创建ImageData
+         * @param width 数据宽度
+         * @param height 数据高度
+         * @param fillcolor 填充颜色
+         */
+        createImageData: function (width, height, fillcolor) {
+            if (width === void 0) { width = 1024; }
+            if (height === void 0) { height = 1024; }
+            if (fillcolor === void 0) { fillcolor = 0; }
+            var canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = new feng3d.Color().fromUnit(fillcolor).toHexString();
+            ctx.fillRect(0, 0, width, height);
+            var imageData = ctx.getImageData(0, 0, width, height);
+            console.log(imageData);
+            // ImageData { width: 100, height: 100, data: Uint8ClampedArray[40000] }
+            return imageData;
+        },
+    };
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     var RawData = /** @class */ (function () {
         function RawData() {
         }
@@ -19244,6 +19310,10 @@ var feng3d;
         __extends(FPSController, _super);
         function FPSController() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
+            /**
+             * 加速度
+             */
+            _this.acceleration = 0.001;
             _this.ischange = false;
             return _this;
         }
@@ -19280,7 +19350,6 @@ var feng3d;
             this.keyDirectionDic["e"] = new feng3d.Vector3(0, 1, 0); //上
             this.keyDirectionDic["q"] = new feng3d.Vector3(0, -1, 0); //下
             this.keyDownDic = {};
-            this.acceleration = 0.0005;
             this.auto = true;
         };
         FPSController.prototype.onMousedown = function () {
@@ -19703,9 +19772,10 @@ var feng3d;
          * @param    minElevation	最小地形高度
          */
         function TerrainGeometry(heightMapUrl, width, height, depth, segmentsW, segmentsH, maxElevation, minElevation) {
-            if (width === void 0) { width = 10; }
-            if (height === void 0) { height = 1; }
-            if (depth === void 0) { depth = 10; }
+            if (heightMapUrl === void 0) { heightMapUrl = null; }
+            if (width === void 0) { width = 500; }
+            if (height === void 0) { height = 600; }
+            if (depth === void 0) { depth = 500; }
             if (segmentsW === void 0) { segmentsW = 30; }
             if (segmentsH === void 0) { segmentsH = 30; }
             if (maxElevation === void 0) { maxElevation = 255; }
@@ -19725,24 +19795,19 @@ var feng3d;
             _this.segmentsH = segmentsH;
             _this.maxElevation = maxElevation;
             _this.minElevation = minElevation;
-            _this._heightImage = new Image();
-            _this._heightImage.crossOrigin = "Anonymous";
-            _this._heightImage.addEventListener("load", _this.onHeightMapLoad.bind(_this));
             _this.heightMapUrl = heightMapUrl;
+            if (heightMapUrl) {
+                feng3d.ImageUtil.getImageDataFromUrl(heightMapUrl, function (imageData) {
+                    _this._heightMap = imageData;
+                    _this.invalidateGeometry();
+                });
+            }
+            else {
+                _this._heightMap = feng3d.ImageUtil.createImageData();
+                _this.invalidateGeometry();
+            }
             return _this;
         }
-        Object.defineProperty(TerrainGeometry.prototype, "heightMapUrl", {
-            get: function () {
-                return this._heightImage.src;
-            },
-            set: function (value) {
-                if (this._heightImage.src == value)
-                    return;
-                this._heightImage.src = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(TerrainGeometry.prototype, "width", {
             get: function () {
                 return this._width;
@@ -19835,22 +19900,6 @@ var feng3d;
             configurable: true
         });
         /**
-         * 高度图加载完成
-         */
-        TerrainGeometry.prototype.onHeightMapLoad = function () {
-            var canvasImg = document.createElement("canvas");
-            canvasImg.width = this._heightImage.width;
-            canvasImg.height = this._heightImage.height;
-            var ctxt = canvasImg.getContext('2d');
-            if (ctxt) {
-                ctxt.drawImage(this._heightImage, 0, 0);
-                var terrainHeightData = ctxt.getImageData(0, 0, this._heightImage.width, this._heightImage.height); //读取整张图片的像素。
-                ctxt.putImageData(terrainHeightData, terrainHeightData.width, terrainHeightData.height);
-                this._heightMap = terrainHeightData;
-                this.invalidateGeometry();
-            }
-        };
-        /**
          * 创建顶点坐标
          */
         TerrainGeometry.prototype.buildGeometry = function () {
@@ -19870,6 +19919,7 @@ var feng3d;
             var u, v;
             var y;
             var vertices = [];
+            var normals = [];
             var indices = [];
             numVerts = 0;
             var col;
@@ -19889,6 +19939,9 @@ var feng3d;
                     vertices[numVerts++] = x;
                     vertices[numVerts++] = y;
                     vertices[numVerts++] = z;
+                    normals[numVerts - 3] = 0;
+                    normals[numVerts - 2] = 1;
+                    normals[numVerts - 1] = 0;
                     if (xi != this.segmentsW && zi != this.segmentsH) {
                         //增加 一个顶点同时 生成一个格子或两个三角形
                         base = xi + zi * tw;
@@ -19903,6 +19956,7 @@ var feng3d;
             }
             var uvs = this.buildUVs();
             this.setVAData("a_position", vertices, 3);
+            this.setVAData("a_normal", normals, 3);
             this.setVAData("a_uv", uvs, 2);
             this.indices = indices;
         };
@@ -20430,7 +20484,7 @@ var feng3d;
         __extends(ParticleAnimator, _super);
         function ParticleAnimator() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this._isPlaying = false;
+            _this._isPlaying = true;
             /**
              * 粒子时间
              */
@@ -20508,6 +20562,10 @@ var feng3d;
             this.createUniformData("u_particleTime", function () { return _this.time; });
             //
             this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
+            if (this._isPlaying) {
+                this.preTime = Date.now();
+                feng3d.ticker.onframe(this.update, this);
+            }
             this.updateRenderState();
         };
         ParticleAnimator.prototype.update = function () {
@@ -24218,6 +24276,7 @@ var feng3d;
         createCapsule: createCapsule,
         createCone: createCone,
         createTorus: createTorus,
+        createTerrain: createTerrain,
         createParticle: createParticle,
         createCamera: createCamera,
         createPointLight: createPointLight,
@@ -24300,6 +24359,14 @@ var feng3d;
         var gameobject = feng3d.GameObject.create(name);
         var model = gameobject.addComponent(feng3d.MeshRenderer);
         model.geometry = new feng3d.TorusGeometry();
+        model.material = new feng3d.StandardMaterial();
+        return gameobject;
+    }
+    function createTerrain(name) {
+        if (name === void 0) { name = "Terrain"; }
+        var gameobject = feng3d.GameObject.create(name);
+        var model = gameobject.addComponent(feng3d.MeshRenderer);
+        model.geometry = new feng3d.TerrainGeometry();
         model.material = new feng3d.StandardMaterial();
         return gameobject;
     }
@@ -24426,10 +24493,17 @@ var feng3d;
         else if (feng3d.fstype == feng3d.FSType.indexedDB) {
             feng3d.storage.get(feng3d.DBname, feng3d.projectname, scriptPath, function (err, data) {
                 var content = data.data;
-                var reg = /(feng3d.(\w+)) = (\w+);/;
+                // var reg = /var ([a-zA-Z0-9_$]+) = \/\*\* @class \*\//;
+                var reg = new RegExp("var ([a-zA-Z0-9_$]+) = \\/\\*\\* @class \\*\\/");
                 var result = content.match(reg);
+                feng3d.assert(result && result[1], "脚本中找不到类定义！");
+                var classname = result[1];
+                //处理类定义放在 namespace 中 /([a-zA-Z0-9_$.]+Test)\s*=\s*Test/
+                reg = new RegExp("([a-zA-Z0-9_$.]+" + classname + ")\\s*=\\s*" + classname);
+                result = content.match(reg);
                 if (result)
-                    resultScript.className = result[1];
+                    classname = result[1];
+                resultScript.className = classname;
                 //
                 var windowEval = eval.bind(window);
                 windowEval(content);

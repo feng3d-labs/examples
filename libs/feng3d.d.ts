@@ -759,6 +759,14 @@ getset平均耗时比 17.3
     function watch(onChange: string): (target: any, propertyKey: string) => void;
 }
 declare namespace feng3d {
+    var ImageUtil: {
+        loadImage(url: string, callback: (image: HTMLImageElement) => void): void;
+        getImageData(image: HTMLImageElement): ImageData;
+        getImageDataFromUrl(url: string, callback: (imageData: ImageData) => void): void;
+        createImageData(width?: number, height?: number, fillcolor?: number): ImageData;
+    };
+}
+declare namespace feng3d {
     class RawData {
         createGameObject(raw: GameObjectRaw): GameObject;
         create(raw: GameObjectRaw): GameObject;
@@ -9658,7 +9666,6 @@ declare namespace feng3d {
         minElevation: number;
         private _minElevation;
         private _heightMap;
-        private _heightImage;
         /**
          * 创建高度地形 拥有segmentsW*segmentsH个顶点
          * @param    heightMap	高度图
@@ -9670,11 +9677,7 @@ declare namespace feng3d {
          * @param    maxElevation	最大地形高度
          * @param    minElevation	最小地形高度
          */
-        constructor(heightMapUrl: string, width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, maxElevation?: number, minElevation?: number);
-        /**
-         * 高度图加载完成
-         */
-        private onHeightMapLoad();
+        constructor(heightMapUrl?: string, width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, maxElevation?: number, minElevation?: number);
         /**
          * 创建顶点坐标
          */
@@ -10700,6 +10703,7 @@ declare namespace feng3d {
         createCapsule: (name?: string) => GameObject;
         createCone: (name?: string) => GameObject;
         createTorus: (name?: string) => GameObject;
+        createTerrain: (name?: string) => GameObject;
         createParticle: (name?: string) => GameObject;
         createCamera: (name?: string) => GameObject;
         createPointLight: (name?: string) => GameObject;

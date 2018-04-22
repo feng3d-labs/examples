@@ -1,7 +1,7 @@
 declare namespace feng3d {
-    class ScriptDemo extends ScriptComponent {
+    class ScriptDemo extends Script {
         cube: GameObject;
-        init(gameObject: GameObject): void;
+        init(): void;
         update(): void;
         /**
          * 销毁

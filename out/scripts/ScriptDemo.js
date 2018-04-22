@@ -15,8 +15,7 @@ var feng3d;
         function ScriptDemo() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        ScriptDemo.prototype.init = function (gameObject) {
-            _super.prototype.init.call(this, gameObject);
+        ScriptDemo.prototype.init = function () {
             var cube = this.cube = feng3d.GameObject.create();
             cube.transform.z = 3;
             cube.transform.y = -1;
@@ -39,12 +38,11 @@ var feng3d;
          * 销毁
          */
         ScriptDemo.prototype.dispose = function () {
-            _super.prototype.dispose.call(this);
             this.cube.dispose();
             this.cube = null;
         };
         return ScriptDemo;
-    }(feng3d.ScriptComponent));
+    }(feng3d.Script));
     feng3d.ScriptDemo = ScriptDemo;
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=ScriptDemo.js.map

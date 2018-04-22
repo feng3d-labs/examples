@@ -1,12 +1,11 @@
 namespace feng3d
 {
-    export class ScriptDemo extends ScriptComponent
+    export class ScriptDemo extends Script
     {
         cube: GameObject;
 
-        init(gameObject: GameObject)
+        init()
         {
-            super.init(gameObject);
             var cube = this.cube = GameObject.create();
             cube.transform.z = 3;
             cube.transform.y = -1;
@@ -35,7 +34,6 @@ namespace feng3d
          */
         dispose()
         {
-            super.dispose();
             this.cube.dispose();
             this.cube = null;
         }

@@ -1,6 +1,6 @@
 namespace feng3d
 {
-    export class ScriptDemo extends Script
+    export class ScriptDemo extends ScriptComponent
     {
         cube: GameObject;
 

@@ -11262,6 +11262,45 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
+     * Behaviours are Components that can be enabled or disabled.
+     *
+     * 行为
+     *
+     * 可以控制开关的组件
+     */
+    var Behaviour = /** @class */ (function (_super) {
+        __extends(Behaviour, _super);
+        function Behaviour() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            /**
+             * Enabled Behaviours are Updated, disabled Behaviours are not.
+             */
+            _this.enabled = false;
+            return _this;
+        }
+        Object.defineProperty(Behaviour.prototype, "isVisibleAndEnabled", {
+            /**
+             * Has the Behaviour had enabled called.
+             * 是否所在GameObject显示且该行为已启动。
+             */
+            get: function () {
+                var v = this.enabled && this.gameObject && this.gameObject.visible;
+                return v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        __decorate([
+            feng3d.oav(),
+            feng3d.serialize()
+        ], Behaviour.prototype, "enabled", void 0);
+        return Behaviour;
+    }(feng3d.Component));
+    feng3d.Behaviour = Behaviour;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
      * 渲染器
      * 所有渲染都由该渲染器执行
      */
@@ -14127,20 +14166,15 @@ var feng3d;
      * 3d对象脚本
      * @author feng 2017-03-11
      */
-    var Script = /** @class */ (function (_super) {
-        __extends(Script, _super);
-        function Script() {
+    var ScriptComponent = /** @class */ (function (_super) {
+        __extends(ScriptComponent, _super);
+        function ScriptComponent() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
             _this.flag = ScriptFlag.feng3d;
             _this._url = "";
-            _this._enabled = false;
-            /**
-             * Enabled Behaviours are Updated, disabled Behaviours are not.
-             */
-            _this.enabled = false;
             return _this;
         }
-        Object.defineProperty(Script.prototype, "url", {
+        Object.defineProperty(ScriptComponent.prototype, "url", {
             /**
              * 脚本路径
              */
@@ -14148,63 +14182,109 @@ var feng3d;
                 return this._url;
             },
             set: function (value) {
-                var _this = this;
                 if (this._url == value)
                     return;
                 this._url = value;
-                if (value && this.gameObject && feng3d.runEnvironment == feng3d.RunEnvironment.feng3d) {
-                    feng3d.GameObjectUtil.addScript(this.gameObject, value, function (scriptcomponent) {
-                        _this.scriptcomponent && _this.gameObject.removeComponent(_this.scriptcomponent);
-                        _this.scriptcomponent = scriptcomponent;
-                    });
-                }
+                this.initScript();
             },
             enumerable: true,
             configurable: true
         });
-        Script.prototype.init = function (gameObject) {
-            var _this = this;
+        ScriptComponent.prototype.init = function (gameObject) {
             _super.prototype.init.call(this, gameObject);
+            this.initScript();
+            this.enabled = this.enabled;
+        };
+        ScriptComponent.prototype.initScript = function () {
+            var _this = this;
             if (this._url && this.gameObject && feng3d.runEnvironment == feng3d.RunEnvironment.feng3d) {
-                feng3d.GameObjectUtil.addScript(this.gameObject, this._url, function (scriptcomponent) {
-                    _this.scriptcomponent = scriptcomponent;
+                feng3d.GameObjectUtil.addScript(this.gameObject, this._url, function (scriptClass) {
+                    _this._script = new scriptClass(_this);
                 });
             }
-            this.start();
         };
         /**
-         * 初始化时调用
+         * 每帧执行
          */
-        Script.prototype.start = function () {
-        };
-        /**
-         * 更新
-         */
-        Script.prototype.update = function () {
-        };
-        /**
-         * 销毁时调用
-         */
-        Script.prototype.end = function () {
+        ScriptComponent.prototype.update = function () {
+            this._script && this._script.update();
         };
         /**
          * 销毁
          */
-        Script.prototype.dispose = function () {
-            this.end();
+        ScriptComponent.prototype.dispose = function () {
             this.enabled = false;
+            this._script && this._script.dispose();
+            this._script = null;
             _super.prototype.dispose.call(this);
         };
         __decorate([
             feng3d.oav({ componentParam: { dragparam: { accepttype: "file_script" }, textEnabled: false } }),
             feng3d.serialize()
-        ], Script.prototype, "url", null);
-        __decorate([
-            feng3d.oav(),
-            feng3d.serialize()
-        ], Script.prototype, "enabled", void 0);
+        ], ScriptComponent.prototype, "url", null);
+        return ScriptComponent;
+    }(feng3d.Behaviour));
+    feng3d.ScriptComponent = ScriptComponent;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 3d对象脚本
+     */
+    var Script = /** @class */ (function () {
+        function Script(component) {
+            feng3d.assert(!!component);
+            this._component = component;
+            this.init();
+        }
+        Object.defineProperty(Script.prototype, "gameObject", {
+            /**
+             * The game object this component is attached to. A component is always attached to a game object.
+             */
+            get: function () {
+                return this._component.gameObject;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Script.prototype, "transform", {
+            /**
+             * The Transform attached to this GameObject (null if there is none attached).
+             */
+            get: function () {
+                return this.gameObject.transform;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Script.prototype, "component", {
+            /**
+             * 宿主组件
+             */
+            get: function () {
+                return this._component;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Use this for initialization
+         */
+        Script.prototype.init = function () {
+        };
+        /**
+         * Update is called once per frame
+         * 每帧执行一次
+         */
+        Script.prototype.update = function () {
+        };
+        /**
+         * 销毁
+         */
+        Script.prototype.dispose = function () {
+        };
         return Script;
-    }(feng3d.Component));
+    }());
     feng3d.Script = Script;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -14256,7 +14336,7 @@ var feng3d;
                 directionalLights: { cls: feng3d.DirectionalLight, list: new Array() },
                 skyboxs: { cls: feng3d.SkyBox, list: new Array() },
                 animations: { cls: feng3d.Animation, list: new Array() },
-                scripts: { cls: feng3d.Script, list: new Array() },
+                scripts: { cls: feng3d.ScriptComponent, list: new Array() },
             };
             var _this = this;
             collect(this.gameObject);
@@ -14275,7 +14355,7 @@ var feng3d;
                     element.update();
             });
             this.collectComponents.scripts.list.forEach(function (element) {
-                if (element.enabled && (_this.updateScriptFlag & element.flag))
+                if (element.isVisibleAndEnabled && (_this.updateScriptFlag & element.flag))
                     element.update();
             });
         };
@@ -15318,7 +15398,7 @@ var feng3d;
             /**
              * 最远距离
              */
-            _this._far = 1000;
+            _this._far = 2000;
             /**
              * 视窗缩放比例(width/height)，在渲染器中设置
              */
@@ -18904,7 +18984,7 @@ var feng3d;
             feng3d.serialize()
         ], Light.prototype, "castsShadows", void 0);
         return Light;
-    }(feng3d.Component));
+    }(feng3d.Behaviour));
     feng3d.Light = Light;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -20216,6 +20296,20 @@ var feng3d;
         return TerrainMergeMethod;
     }(feng3d.RenderDataHolder));
     feng3d.TerrainMergeMethod = TerrainMergeMethod;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * The Terrain component renders the terrain.
+     */
+    var Terrain = /** @class */ (function (_super) {
+        __extends(Terrain, _super);
+        function Terrain() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return Terrain;
+    }(feng3d.Behaviour));
+    feng3d.Terrain = Terrain;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -24365,6 +24459,7 @@ var feng3d;
     function createTerrain(name) {
         if (name === void 0) { name = "Terrain"; }
         var gameobject = feng3d.GameObject.create(name);
+        var terrain = gameobject.addComponent(feng3d.Terrain);
         var model = gameobject.addComponent(feng3d.MeshRenderer);
         model.geometry = new feng3d.TerrainGeometry();
         model.material = new feng3d.StandardMaterial();
@@ -24434,20 +24529,17 @@ var feng3d;
         var jspath = scriptPath.replace(/\.ts\b/, ".js");
         loadJs(jspath, function (resultScript) {
             var windowEval = eval.bind(window);
-            var componentClass = windowEval(resultScript.className);
-            var scriptcomponent = gameObject.addComponent(componentClass);
-            scriptcomponent.serializable = false;
-            scriptcomponent.enabled = true;
-            callback && callback(scriptcomponent);
+            var cls = windowEval(resultScript.className);
+            callback && callback(cls);
         });
     }
     function removeScript(gameObject, script) {
-        if (script instanceof feng3d.Script) {
+        if (script instanceof feng3d.ScriptComponent) {
             script.enabled = false;
             gameObject.removeComponent(script);
         }
         else {
-            var scripts = gameObject.getComponents(feng3d.Script);
+            var scripts = gameObject.getComponents(feng3d.ScriptComponent);
             while (scripts.length > 0) {
                 var scriptComponent = scripts[scripts.length - 1];
                 scripts.pop();
@@ -24900,7 +24992,7 @@ var feng3d;
             feng3d.oav()
         ], FPSControllerScript.prototype, "acceleration", void 0);
         return FPSControllerScript;
-    }(feng3d.Script));
+    }(feng3d.ScriptComponent));
     feng3d.FPSControllerScript = FPSControllerScript;
 })(feng3d || (feng3d = {}));
 var feng3d;

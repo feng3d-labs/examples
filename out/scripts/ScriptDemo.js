@@ -44,7 +44,7 @@ var feng3d;
             this.cube = null;
         };
         return ScriptDemo;
-    }(feng3d.Script));
+    }(feng3d.ScriptComponent));
     feng3d.ScriptDemo = ScriptDemo;
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=ScriptDemo.js.map

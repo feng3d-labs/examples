@@ -7760,16 +7760,19 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    /**
+     * 包围盒组件
+     */
     class BoundingComponent extends Component {
         showInInspector: boolean;
         serializable: boolean;
-        private _bounds;
-        private _worldBounds;
+        private _selfLocalBounds;
+        private _selfWorldBounds;
         init(gameObject: GameObject): void;
         /**
-         * 边界
+         * 自身局部包围盒
          */
-        readonly bounds: Box;
+        readonly selfLocalBounds: Box;
         /**
          * @inheritDoc
          */
@@ -7781,7 +7784,11 @@ declare namespace feng3d {
           */
         isIntersectingRay(ray3D: Ray3D): PickingCollisionVO;
         /**
-         * 世界边界
+         * 自身世界包围盒
+         */
+        readonly selfWorldBounds: Box;
+        /**
+         * 世界包围盒
          */
         readonly worldBounds: Box;
         /**
@@ -7900,7 +7907,7 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    class MeshRenderer extends Component {
+    class MeshRenderer extends Behaviour {
         readonly single: boolean;
         /**
          * Returns the instantiated Mesh assigned to the mesh filter.
@@ -9791,9 +9798,46 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
+     * The TerrainData class stores heightmaps, detail mesh positions, tree instances, and terrain texture alpha maps.
+     *
+     * The Terrain component links to the terrain data and renders it.
+     */
+    class TerrainData {
+        /**
+         * Width of the terrain in samples(Read Only).
+         */
+        readonly heightmapWidth: number;
+        /**
+         * Height of the terrain in samples(Read Only).
+         */
+        readonly heightmapHeight: number;
+        /**
+         * Resolution of the heightmap.
+         */
+        heightmapResolution: number;
+        /**
+         * The size of each heightmap sample.
+         */
+        readonly heightmapScale: Vector3;
+        /**
+         * The total size in world units of the terrain.
+         */
+        size: Vector3;
+    }
+}
+declare namespace feng3d {
+    /**
      * The Terrain component renders the terrain.
      */
-    class Terrain extends Behaviour {
+    class Terrain extends MeshRenderer {
+        /**
+         * 地形资源
+         */
+        assign: TerrainData;
+        /**
+         * 地形几何体数据
+         */
+        geometry: TerrainGeometry;
     }
 }
 declare namespace feng3d {

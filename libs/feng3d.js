@@ -6180,8 +6180,8 @@ var feng3d;
         function Box(min, max) {
             if (min === void 0) { min = new feng3d.Vector3(+Infinity, +Infinity, +Infinity); }
             if (max === void 0) { max = new feng3d.Vector3(-Infinity, -Infinity, -Infinity); }
-            this.min = min;
-            this.max = max;
+            this.min = min.clone();
+            this.max = max.clone();
         }
         /**
          * 从一组顶点初始化盒子
@@ -6226,8 +6226,8 @@ var feng3d;
          * @param max 最大值
          */
         Box.prototype.init = function (min, max) {
-            this.min = min;
-            this.max = max;
+            this.min = min.clone();
+            this.max = max.clone();
             return this;
         };
         /**
@@ -11575,8 +11575,8 @@ var feng3d;
         var meshRenderer = gameObject.getComponent(feng3d.MeshRenderer);
         if (meshRenderer) {
             var boundingComponent = gameObject.getComponent(feng3d.BoundingComponent);
-            if (boundingComponent.worldBounds) {
-                if (frustum.intersectsBox(boundingComponent.worldBounds))
+            if (boundingComponent.selfWorldBounds) {
+                if (frustum.intersectsBox(boundingComponent.selfWorldBounds))
                     meshRenderers.push(meshRenderer);
             }
         }
@@ -13376,6 +13376,9 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    /**
+     * 包围盒组件
+     */
     var BoundingComponent = /** @class */ (function (_super) {
         __extends(BoundingComponent, _super);
         function BoundingComponent() {
@@ -13389,14 +13392,14 @@ var feng3d;
             gameObject.on("boundsInvalid", this.onBoundsChange, this);
             gameObject.on("scenetransformChanged", this.invalidateSceneTransform, this);
         };
-        Object.defineProperty(BoundingComponent.prototype, "bounds", {
+        Object.defineProperty(BoundingComponent.prototype, "selfLocalBounds", {
             /**
-             * 边界
+             * 自身局部包围盒
              */
             get: function () {
-                if (!this._bounds)
+                if (!this._selfLocalBounds)
                     this.updateBounds();
-                return this._bounds;
+                return this._selfLocalBounds;
             },
             enumerable: true,
             configurable: true
@@ -13405,7 +13408,7 @@ var feng3d;
          * @inheritDoc
          */
         BoundingComponent.prototype.invalidateSceneTransform = function () {
-            this._worldBounds = null;
+            this._selfWorldBounds = null;
         };
         /**
           * 判断射线是否穿过对象
@@ -13413,7 +13416,7 @@ var feng3d;
           * @return
           */
         BoundingComponent.prototype.isIntersectingRay = function (ray3D) {
-            if (!this.bounds)
+            if (!this.selfLocalBounds)
                 return null;
             var localNormal = new feng3d.Vector3();
             //转换到当前实体坐标系空间
@@ -13421,7 +13424,7 @@ var feng3d;
             this.transform.worldToLocalMatrix.transformVector(ray3D.position, localRay.position);
             this.transform.worldToLocalMatrix.deltaTransformVector(ray3D.direction, localRay.direction);
             //检测射线与边界的碰撞
-            var rayEntryDistance = this.bounds.rayIntersection(localRay.position, localRay.direction, localNormal);
+            var rayEntryDistance = this.selfLocalBounds.rayIntersection(localRay.position, localRay.direction, localNormal);
             if (rayEntryDistance < 0)
                 return null;
             //保存碰撞数据
@@ -13436,14 +13439,31 @@ var feng3d;
             };
             return pickingCollisionVO;
         };
-        Object.defineProperty(BoundingComponent.prototype, "worldBounds", {
+        Object.defineProperty(BoundingComponent.prototype, "selfWorldBounds", {
             /**
-             * 世界边界
+             * 自身世界包围盒
              */
             get: function () {
-                if (!this._worldBounds)
+                if (!this._selfWorldBounds)
                     this.updateWorldBounds();
-                return this._worldBounds;
+                return this._selfWorldBounds;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BoundingComponent.prototype, "worldBounds", {
+            /**
+             * 世界包围盒
+             */
+            get: function () {
+                var box = this.selfWorldBounds;
+                if (!box)
+                    box = new feng3d.Box(this.transform.position, this.transform.position);
+                this.gameObject.children.forEach(function (element) {
+                    var ebox = element.getComponent(BoundingComponent).worldBounds;
+                    box.union(ebox);
+                });
+                return box;
             },
             enumerable: true,
             configurable: true
@@ -13452,16 +13472,16 @@ var feng3d;
          * 更新世界边界
          */
         BoundingComponent.prototype.updateWorldBounds = function () {
-            if (this.bounds && this.transform.localToWorldMatrix) {
-                this._worldBounds = this.bounds.applyMatrix3DTo(this.transform.localToWorldMatrix);
+            if (this.selfLocalBounds && this.transform.localToWorldMatrix) {
+                this._selfWorldBounds = this.selfLocalBounds.applyMatrix3DTo(this.transform.localToWorldMatrix);
             }
         };
         /**
          * 处理包围盒变换事件
          */
         BoundingComponent.prototype.onBoundsChange = function () {
-            this._bounds = null;
-            this._worldBounds = null;
+            this._selfLocalBounds = null;
+            this._selfWorldBounds = null;
         };
         /**
          * @inheritDoc
@@ -13469,7 +13489,7 @@ var feng3d;
         BoundingComponent.prototype.updateBounds = function () {
             var meshRenderer = this.gameObject.getComponent(feng3d.MeshRenderer);
             if (meshRenderer && meshRenderer.geometry)
-                this._bounds = meshRenderer.geometry.bounding;
+                this._selfLocalBounds = meshRenderer.geometry.bounding;
         };
         return BoundingComponent;
     }(feng3d.Component));
@@ -13786,10 +13806,7 @@ var feng3d;
     var MeshRenderer = /** @class */ (function (_super) {
         __extends(MeshRenderer, _super);
         function MeshRenderer() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this._geometry = new feng3d.CubeGeometry();
-            _this._material = new feng3d.StandardMaterial();
-            return _this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         Object.defineProperty(MeshRenderer.prototype, "single", {
             get: function () { return true; },
@@ -13840,6 +13857,10 @@ var feng3d;
         MeshRenderer.prototype.init = function (gameObject) {
             var _this = this;
             _super.prototype.init.call(this, gameObject);
+            if (!this.geometry)
+                this.geometry = new feng3d.CubeGeometry();
+            if (!this.material)
+                this.material = new feng3d.StandardMaterial();
             //
             this.createUniformData("u_modelMatrix", function () { return _this.transform.localToWorldMatrix; });
             this.createUniformData("u_ITModelMatrix", function () { return _this.transform.ITlocalToWorldMatrix; });
@@ -13864,7 +13885,7 @@ var feng3d;
             feng3d.serialize()
         ], MeshRenderer.prototype, "material", null);
         return MeshRenderer;
-    }(feng3d.Component));
+    }(feng3d.Behaviour));
     feng3d.MeshRenderer = MeshRenderer;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -19854,7 +19875,7 @@ var feng3d;
         function TerrainGeometry(heightMapUrl, width, height, depth, segmentsW, segmentsH, maxElevation, minElevation) {
             if (heightMapUrl === void 0) { heightMapUrl = null; }
             if (width === void 0) { width = 500; }
-            if (height === void 0) { height = 600; }
+            if (height === void 0) { height = 200; }
             if (depth === void 0) { depth = 500; }
             if (segmentsW === void 0) { segmentsW = 30; }
             if (segmentsH === void 0) { segmentsH = 30; }
@@ -20300,15 +20321,150 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
+     * The TerrainData class stores heightmaps, detail mesh positions, tree instances, and terrain texture alpha maps.
+     *
+     * The Terrain component links to the terrain data and renders it.
+     */
+    var TerrainData = /** @class */ (function () {
+        function TerrainData() {
+            /**
+             * Resolution of the heightmap.
+             */
+            this.heightmapResolution = 513;
+            /**
+             * The total size in world units of the terrain.
+             */
+            this.size = new feng3d.Vector3(500, 600, 500);
+            // /**
+            //  * Height of the alpha map.
+            //  * 混合贴图高度
+            //  * @see https://blog.csdn.net/qq_29523119/article/details/52776731
+            //  */
+            // alphamapHeight
+            // /**
+            //  * Number of alpha map layers.
+            //  */
+            // alphamapLayers
+            // /**
+            //  * Resolution of the alpha map.
+            //  */
+            // alphamapResolution
+            // /**
+            //  * Alpha map textures used by the Terrain. Used by Terrain Inspector for undo.
+            //  */
+            // alphamapTextures
+            // /**
+            //  * Width of the alpha map.
+            //  */
+            // alphamapWidth
+            // /**
+            //  * Resolution of the base map used for rendering far patches on the terrain.
+            //  */
+            // baseMapResolution
+            // /**
+            //  * Detail height of the TerrainData.
+            //  */
+            // detailHeight
+            // /**
+            //  * Contains the detail texture / meshes that the terrain has.
+            //  */
+            // detailPrototypes
+            // /**
+            //  * Detail Resolution of the TerrainData.
+            //  */
+            // detailResolution
+            // /**
+            //  * Detail width of the TerrainData.
+            //  */
+            // detailWidth
+            // /**
+            //  * Splat texture used by the terrain.
+            //  */
+            // splatPrototypes
+            // /**
+            //  * The thickness of the terrain used for collision detection.
+            //  */
+            // thickness
+            // /**
+            //  * Returns the number of tree instances.
+            //  */
+            // treeInstanceCount
+            // /**
+            //  * Contains the current trees placed in the terrain.
+            //  */
+            // treeInstances
+            // /**
+            //  * The list of tree prototypes this are the ones available in the inspector.
+            //  */
+            // treePrototypes
+            // /**
+            //  * Amount of waving grass in the terrain.
+            //  */
+            // wavingGrassAmount
+            // /**
+            //  * Speed of the waving grass.
+            //  */
+            // wavingGrassSpeed
+            // /**
+            //  * Strength of the waving grass in the terrain.
+            //  */
+            // wavingGrassStrength
+            // /**
+            //  * Color of the waving grass that the terrain has.
+            //  */
+            // wavingGrassTint
+        }
+        Object.defineProperty(TerrainData.prototype, "heightmapWidth", {
+            /**
+             * Width of the terrain in samples(Read Only).
+             */
+            get: function () {
+                return this.heightmapResolution;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainData.prototype, "heightmapHeight", {
+            /**
+             * Height of the terrain in samples(Read Only).
+             */
+            get: function () {
+                return this.heightmapResolution;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TerrainData.prototype, "heightmapScale", {
+            /**
+             * The size of each heightmap sample.
+             */
+            get: function () {
+                return this.size.divideNumberTo(this.heightmapResolution);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return TerrainData;
+    }());
+    feng3d.TerrainData = TerrainData;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
      * The Terrain component renders the terrain.
      */
     var Terrain = /** @class */ (function (_super) {
         __extends(Terrain, _super);
         function Terrain() {
-            return _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            /**
+             * 地形几何体数据
+             */
+            _this.geometry = new feng3d.TerrainGeometry();
+            return _this;
         }
         return Terrain;
-    }(feng3d.Behaviour));
+    }(feng3d.MeshRenderer));
     feng3d.Terrain = Terrain;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -24421,7 +24577,6 @@ var feng3d;
         var gameobject = feng3d.GameObject.create(name);
         var model = gameobject.addComponent(feng3d.MeshRenderer);
         model.geometry = new feng3d.CubeGeometry();
-        model.material = new feng3d.StandardMaterial();
         return gameobject;
     }
     function createPlane(name) {
@@ -24459,10 +24614,7 @@ var feng3d;
     function createTerrain(name) {
         if (name === void 0) { name = "Terrain"; }
         var gameobject = feng3d.GameObject.create(name);
-        var terrain = gameobject.addComponent(feng3d.Terrain);
-        var model = gameobject.addComponent(feng3d.MeshRenderer);
-        model.geometry = new feng3d.TerrainGeometry();
-        model.material = new feng3d.StandardMaterial();
+        gameobject.addComponent(feng3d.Terrain);
         return gameobject;
     }
     function createSphere(name) {

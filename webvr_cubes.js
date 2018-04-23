@@ -1,5 +1,7 @@
+/// <reference path="libs/feng3d.d.ts" />
 
-var clock = new THREE.Clock();
+
+var clock = new Clock();
 
 var container;
 var camera, scene, raycaster, renderer;
@@ -27,11 +29,14 @@ function init()
     info.innerHTML = '<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - interactive cubes';
     container.appendChild(info);
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x505050);
+    var engine = new feng3d.Engine();
+    scene = engine.scene;
+    scene.background.fromUnit(0x505050);
 
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
-    scene.add(camera);
+    var lens = engine.camera.lens = new feng3d.PerspectiveLens(70);
+    lens.aspectRatio = window.innerWidth / window.innerHeight;
+    lens.near = 0.1;
+    lens.far = 10;
 
     crosshair = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.02, 0.04, 32),

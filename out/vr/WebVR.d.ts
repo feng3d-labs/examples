@@ -6,7 +6,7 @@
  */
 declare var WEBVR: {
     createButton: (renderer: any) => HTMLButtonElement | HTMLAnchorElement;
-    checkAvailability: () => any;
+    checkAvailability: () => void;
     getMessageContainer: () => HTMLDivElement;
     getButton: () => HTMLDivElement;
     getVRDisplay: () => void;

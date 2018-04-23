@@ -77,7 +77,7 @@ var WEBVR = {
 
 			window.addEventListener( 'vrdisplayconnect', function ( event ) {
 
-				showEnterVR( event.display );
+				showEnterVR( (<any>event).display );
 
 			}, false );
 
@@ -89,13 +89,13 @@ var WEBVR = {
 
 			window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
 
-				button.textContent = event.display.isPresenting ? 'EXIT VR' : 'ENTER VR';
+				button.textContent = (<any>event).display.isPresenting ? 'EXIT VR' : 'ENTER VR';
 
 			}, false );
 
 			window.addEventListener( 'vrdisplayactivate', function ( event ) {
 
-				event.display.requestPresent( [ { source: renderer.domElement } ] );
+				(<any>event).display.requestPresent( [ { source: renderer.domElement } ] );
 
 			}, false );
 
@@ -138,7 +138,7 @@ var WEBVR = {
 
 	checkAvailability: function () {
 		console.warn( 'WEBVR.checkAvailability has been deprecated.' );
-		return new Promise( function () {} );
+		// return new Promise( function () {} );
 	},
 
 	getMessageContainer: function () {

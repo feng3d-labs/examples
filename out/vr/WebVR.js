@@ -85,7 +85,7 @@ var WEBVR = {
     // DEPRECATED
     checkAvailability: function () {
         console.warn('WEBVR.checkAvailability has been deprecated.');
-        return new Promise(function () { });
+        // return new Promise( function () {} );
     },
     getMessageContainer: function () {
         console.warn('WEBVR.getMessageContainer has been deprecated.');

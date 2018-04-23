@@ -1,10 +1,10 @@
 declare var clock: any;
-declare var container: any;
+declare var container: HTMLDivElement;
 declare var camera: feng3d.Camera, scene: feng3d.Scene3D, raycaster: any, renderer: any;
 declare var room: any;
 declare var isMouseDown: boolean;
 declare var INTERSECTED: any;
-declare var crosshair: any;
+declare var crosshair: feng3d.GameObject;
 declare function init(): void;
 declare function onMouseDown(): void;
 declare function onMouseUp(): void;

@@ -1,5 +1,4 @@
-/// <reference path="libs/feng3d.d.ts" />
-var clock = new Clock();
+var clock = new Clock(true);
 var container;
 var camera, scene, raycaster, renderer;
 var room;
@@ -21,7 +20,8 @@ function init() {
     var engine = new feng3d.Engine();
     scene = engine.scene;
     scene.background.fromUnit(0x505050);
-    var lens = engine.camera.lens = new feng3d.PerspectiveLens(70);
+    camera = engine.camera;
+    var lens = camera.lens = new feng3d.PerspectiveLens(70);
     lens.aspectRatio = window.innerWidth / window.innerHeight;
     lens.near = 0.1;
     lens.far = 10;

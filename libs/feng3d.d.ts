@@ -7079,11 +7079,16 @@ declare namespace feng3d {
          * Enabled Behaviours are Updated, disabled Behaviours are not.
          */
         enabled: boolean;
+        flag: ScriptFlag;
         /**
          * Has the Behaviour had enabled called.
          * 是否所在GameObject显示且该行为已启动。
          */
         readonly isVisibleAndEnabled: boolean;
+        /**
+         * 每帧执行
+         */
+        update(): void;
     }
 }
 declare namespace feng3d {
@@ -7995,13 +8000,13 @@ declare namespace feng3d {
     enum ScriptFlag {
         feng3d = 1,
         editor = 2,
+        all = 255,
     }
     /**
      * 3d对象脚本
      * @author feng 2017-03-11
      */
     class ScriptComponent extends Behaviour {
-        flag: ScriptFlag;
         /**
          * 脚本对象
          */
@@ -8122,6 +8127,10 @@ declare namespace feng3d {
             scripts: {
                 cls: typeof ScriptComponent;
                 list: ScriptComponent[];
+            };
+            behaviours: {
+                cls: typeof Behaviour;
+                list: Behaviour[];
             };
         };
         _mouseCheckObjects: {
@@ -9572,11 +9581,12 @@ declare namespace feng3d {
      * FPS模式控制器
      * @author feng 2016-12-19
      */
-    class FPSController extends Component {
+    class FPSController extends Behaviour {
         /**
          * 加速度
          */
         acceleration: number;
+        flag: ScriptFlag;
         /**
          * 按键记录
          */
@@ -10832,66 +10842,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-}
-declare namespace feng3d {
-    /**
-     * FPS模式控制器
-     * @author feng 2016-12-19
-     */
-    class FPSControllerScript extends Behaviour {
-        /**
-         * 加速度
-         */
-        acceleration: number;
-        /**
-         * 按键记录
-         */
-        private keyDownDic;
-        /**
-         * 按键方向字典
-         */
-        private keyDirectionDic;
-        /**
-         * 速度
-         */
-        private velocity;
-        /**
-         * 上次鼠标位置
-         */
-        private preMousePoint;
-        private ischange;
-        private _auto;
-        auto: boolean;
-        init(gameobject: GameObject): void;
-        onMousedown(): void;
-        onMouseup(): void;
-        /**
-         * 销毁
-         */
-        dispose(): void;
-        /**
-         * 手动应用更新到目标3D对象
-         */
-        update(): void;
-        private mousePoint;
-        /**
-         * 处理鼠标移动事件
-         */
-        private onMouseMove(event);
-        /**
-         * 键盘按下事件
-         */
-        private onKeydown(event);
-        /**
-         * 键盘弹起事件
-         */
-        private onKeyup(event);
-        /**
-         * 停止xyz方向运动
-         * @param direction     停止运动的方向
-         */
-        private stopDirectionVelocity(direction);
-    }
 }
 declare namespace feng3d {
     /**

@@ -11276,6 +11276,7 @@ var feng3d;
              * Enabled Behaviours are Updated, disabled Behaviours are not.
              */
             _this.enabled = true;
+            _this.flag = feng3d.ScriptFlag.all;
             return _this;
         }
         Object.defineProperty(Behaviour.prototype, "isVisibleAndEnabled", {
@@ -11290,6 +11291,11 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        /**
+         * 每帧执行
+         */
+        Behaviour.prototype.update = function () {
+        };
         __decorate([
             feng3d.oav(),
             feng3d.serialize()
@@ -14182,6 +14188,7 @@ var feng3d;
     (function (ScriptFlag) {
         ScriptFlag[ScriptFlag["feng3d"] = 1] = "feng3d";
         ScriptFlag[ScriptFlag["editor"] = 2] = "editor";
+        ScriptFlag[ScriptFlag["all"] = 255] = "all";
     })(ScriptFlag = feng3d.ScriptFlag || (feng3d.ScriptFlag = {}));
     /**
      * 3d对象脚本
@@ -14191,7 +14198,6 @@ var feng3d;
         __extends(ScriptComponent, _super);
         function ScriptComponent() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.flag = ScriptFlag.feng3d;
             _this._url = "";
             return _this;
         }
@@ -14357,6 +14363,7 @@ var feng3d;
                 directionalLights: { cls: feng3d.DirectionalLight, list: new Array() },
                 skyboxs: { cls: feng3d.SkyBox, list: new Array() },
                 animations: { cls: feng3d.Animation, list: new Array() },
+                behaviours: { cls: feng3d.Behaviour, list: new Array() },
                 scripts: { cls: feng3d.ScriptComponent, list: new Array() },
             };
             var _this = this;
@@ -14375,7 +14382,7 @@ var feng3d;
                 if (element.isplaying)
                     element.update();
             });
-            this.collectComponents.scripts.list.forEach(function (element) {
+            this.collectComponents.behaviours.list.forEach(function (element) {
                 if (element.isVisibleAndEnabled && (_this.updateScriptFlag & element.flag))
                     element.update();
             });
@@ -19415,6 +19422,7 @@ var feng3d;
              * 加速度
              */
             _this.acceleration = 0.001;
+            _this.flag = feng3d.ScriptFlag.feng3d;
             _this.ischange = false;
             return _this;
         }
@@ -19428,12 +19436,10 @@ var feng3d;
                 if (this._auto) {
                     feng3d.windowEventProxy.off("mousedown", this.onMousedown, this);
                     feng3d.windowEventProxy.off("mouseup", this.onMouseup, this);
-                    feng3d.ticker.offframe(this.update, this);
                     this.onMouseup();
                 }
                 this._auto = value;
                 if (this._auto) {
-                    feng3d.ticker.onframe(this.update, this);
                     feng3d.windowEventProxy.on("mousedown", this.onMousedown, this);
                     feng3d.windowEventProxy.on("mouseup", this.onMouseup, this);
                 }
@@ -19580,7 +19586,7 @@ var feng3d;
             feng3d.oav()
         ], FPSController.prototype, "acceleration", void 0);
         return FPSController;
-    }(feng3d.Component));
+    }(feng3d.Behaviour));
     feng3d.FPSController = FPSController;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -24968,184 +24974,6 @@ var feng3d;
         "shaders/wireframe.fragment.glsl": "precision mediump float;\r\n\r\nuniform vec4 u_wireframeColor;\r\n\r\nvoid main(void) {\r\n    gl_FragColor = u_wireframeColor;\r\n}",
         "shaders/wireframe.vertex.glsl": "precision mediump float;  \r\n\r\n//此处将填充宏定义\r\n#define macros\r\n\r\nattribute vec3 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_viewProjection;\r\n\r\n#ifdef HAS_SKELETON_ANIMATION\r\n    #include<modules/skeleton.vertex>\r\n#endif\r\n\r\n#ifdef HAS_PARTICLE_ANIMATOR\r\n    #include<modules/particle.vertex>\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec4 position = vec4(a_position,1.0);\r\n\r\n    #ifdef HAS_SKELETON_ANIMATION\r\n        position = skeletonAnimation(position);\r\n    #endif\r\n\r\n    #ifdef HAS_PARTICLE_ANIMATOR\r\n        position = particleAnimation(position);\r\n    #endif\r\n\r\n    gl_Position = u_viewProjection * u_modelMatrix * position;\r\n}"
     };
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * FPS模式控制器
-     * @author feng 2016-12-19
-     */
-    var FPSControllerScript = /** @class */ (function (_super) {
-        __extends(FPSControllerScript, _super);
-        function FPSControllerScript() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.ischange = false;
-            return _this;
-        }
-        Object.defineProperty(FPSControllerScript.prototype, "auto", {
-            get: function () {
-                return this._auto;
-            },
-            set: function (value) {
-                if (this._auto == value)
-                    return;
-                if (this._auto) {
-                    feng3d.windowEventProxy.off("mousedown", this.onMousedown, this);
-                    feng3d.windowEventProxy.off("mouseup", this.onMouseup, this);
-                    this.onMouseup();
-                }
-                this._auto = value;
-                if (this._auto) {
-                    feng3d.windowEventProxy.on("mousedown", this.onMousedown, this);
-                    feng3d.windowEventProxy.on("mouseup", this.onMouseup, this);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FPSControllerScript.prototype.init = function (gameobject) {
-            _super.prototype.init.call(this, gameobject);
-            this.keyDirectionDic = {};
-            this.keyDirectionDic["a"] = new feng3d.Vector3(-1, 0, 0); //左
-            this.keyDirectionDic["d"] = new feng3d.Vector3(1, 0, 0); //右
-            this.keyDirectionDic["w"] = new feng3d.Vector3(0, 0, 1); //前
-            this.keyDirectionDic["s"] = new feng3d.Vector3(0, 0, -1); //后
-            this.keyDirectionDic["e"] = new feng3d.Vector3(0, 1, 0); //上
-            this.keyDirectionDic["q"] = new feng3d.Vector3(0, -1, 0); //下
-            this.keyDownDic = {};
-            this.acceleration = 0.0005;
-            this.auto = true;
-            this.enabled = true;
-        };
-        FPSControllerScript.prototype.onMousedown = function () {
-            this.ischange = true;
-            this.preMousePoint = null;
-            this.mousePoint = null;
-            this.velocity = new feng3d.Vector3();
-            this.keyDownDic = {};
-            feng3d.windowEventProxy.on("keydown", this.onKeydown, this);
-            feng3d.windowEventProxy.on("keyup", this.onKeyup, this);
-            feng3d.windowEventProxy.on("mousemove", this.onMouseMove, this);
-        };
-        FPSControllerScript.prototype.onMouseup = function () {
-            this.ischange = false;
-            this.preMousePoint = null;
-            this.mousePoint = null;
-            feng3d.windowEventProxy.off("keydown", this.onKeydown, this);
-            feng3d.windowEventProxy.off("keyup", this.onKeyup, this);
-            feng3d.windowEventProxy.off("mousemove", this.onMouseMove, this);
-        };
-        /**
-         * 销毁
-         */
-        FPSControllerScript.prototype.dispose = function () {
-            this.auto = false;
-        };
-        /**
-         * 手动应用更新到目标3D对象
-         */
-        FPSControllerScript.prototype.update = function () {
-            if (!this.ischange)
-                return;
-            if (this.mousePoint && this.preMousePoint) {
-                //计算旋转
-                var offsetPoint = this.mousePoint.subTo(this.preMousePoint);
-                offsetPoint.x *= 0.15;
-                offsetPoint.y *= 0.15;
-                // this.targetObject.transform.rotate(Vector3.X_AXIS, offsetPoint.y, this.targetObject.transform.position);
-                // this.targetObject.transform.rotate(Vector3.Y_AXIS, offsetPoint.x, this.targetObject.transform.position);
-                var matrix3d = this.transform.localToWorldMatrix;
-                matrix3d.appendRotation(matrix3d.right, offsetPoint.y, matrix3d.position);
-                var up = feng3d.Vector3.Y_AXIS;
-                if (matrix3d.up.dot(up) < 0) {
-                    up = up.clone();
-                    up.scale(-1);
-                }
-                matrix3d.appendRotation(up, offsetPoint.x, matrix3d.position);
-                this.transform.localToWorldMatrix = matrix3d;
-                //
-                this.preMousePoint = this.mousePoint;
-                this.mousePoint = null;
-            }
-            //计算加速度
-            var accelerationVec = new feng3d.Vector3();
-            for (var key in this.keyDirectionDic) {
-                if (this.keyDownDic[key] == true) {
-                    var element = this.keyDirectionDic[key];
-                    accelerationVec.add(element);
-                }
-            }
-            accelerationVec.scale(this.acceleration);
-            //计算速度
-            this.velocity.add(accelerationVec);
-            var right = this.transform.rightVector;
-            var up = this.transform.upVector;
-            var forward = this.transform.forwardVector;
-            right.scale(this.velocity.x);
-            up.scale(this.velocity.y);
-            forward.scale(this.velocity.z);
-            //计算位移
-            var displacement = right.clone();
-            displacement.add(up);
-            displacement.add(forward);
-            this.transform.x += displacement.x;
-            this.transform.y += displacement.y;
-            this.transform.z += displacement.z;
-        };
-        /**
-         * 处理鼠标移动事件
-         */
-        FPSControllerScript.prototype.onMouseMove = function (event) {
-            this.mousePoint = new feng3d.Vector2(event.clientX, event.clientY);
-            if (this.preMousePoint == null) {
-                this.preMousePoint = this.mousePoint;
-                this.mousePoint = null;
-            }
-        };
-        /**
-         * 键盘按下事件
-         */
-        FPSControllerScript.prototype.onKeydown = function (event) {
-            var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
-            if (this.keyDirectionDic[boardKey] == null)
-                return;
-            if (!this.keyDownDic[boardKey])
-                this.stopDirectionVelocity(this.keyDirectionDic[boardKey]);
-            this.keyDownDic[boardKey] = true;
-        };
-        /**
-         * 键盘弹起事件
-         */
-        FPSControllerScript.prototype.onKeyup = function (event) {
-            var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
-            if (this.keyDirectionDic[boardKey] == null)
-                return;
-            this.keyDownDic[boardKey] = false;
-            this.stopDirectionVelocity(this.keyDirectionDic[boardKey]);
-        };
-        /**
-         * 停止xyz方向运动
-         * @param direction     停止运动的方向
-         */
-        FPSControllerScript.prototype.stopDirectionVelocity = function (direction) {
-            if (direction == null)
-                return;
-            if (direction.x != 0) {
-                this.velocity.x = 0;
-            }
-            if (direction.y != 0) {
-                this.velocity.y = 0;
-            }
-            if (direction.z != 0) {
-                this.velocity.z = 0;
-            }
-        };
-        __decorate([
-            feng3d.oav()
-        ], FPSControllerScript.prototype, "acceleration", void 0);
-        return FPSControllerScript;
-    }(feng3d.Behaviour));
-    feng3d.FPSControllerScript = FPSControllerScript;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

@@ -25,38 +25,53 @@ function init() {
     lens.aspectRatio = window.innerWidth / window.innerHeight;
     lens.near = 0.1;
     lens.far = 10;
+    camera.gameObject.addComponent(feng3d.FPSController);
+    scene.gameObject.addChild(camera.gameObject);
     crosshair = feng3d.GameObject.create("crosshair");
     var model = crosshair.addComponent(feng3d.MeshRenderer);
-    model.geometry = new feng3d.TorusGeometry(0.01, 0.002, 32, 8, false);
+    model.geometry = new feng3d.TorusGeometry(0.02, 0.004, 32, 8, false);
     var material = model.material = new feng3d.StandardMaterial();
     material.enableBlend = true;
     material.diffuseMethod.color.a = 0.5;
+    crosshair.transform.z = 2;
     engine.camera.gameObject.addChild(crosshair);
-    return;
-    room = new THREE.Mesh(new THREE.BoxBufferGeometry(6, 6, 6, 8, 8, 8), new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true }));
-    room.position.y = 3;
-    scene.add(room);
-    scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
-    var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(1, 1, 1).normalize();
-    scene.add(light);
-    var geometry = new THREE.BoxBufferGeometry(0.15, 0.15, 0.15);
+    room = feng3d.GameObject.create("room", function (gameobject) {
+        gameobject.addComponent(feng3d.MeshRenderer, function (meshRenderer) {
+            meshRenderer.geometry = new feng3d.CubeGeometry(6, 6, 6, 8, 8, 8);
+            var material = meshRenderer.material = new feng3d.StandardMaterial();
+            material.diffuseMethod.color.fromUnit(0x404040);
+            material.renderMode = feng3d.RenderMode.LINES;
+        });
+        gameobject.transform.y = 3;
+    });
+    scene.gameObject.addChild(room);
+    // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
+    var light = feng3d.GameObject.create("light", function (gameobject) {
+        gameobject.addComponent(feng3d.DirectionalLight, function (component) {
+            component.color.fromUnit(0xffffff);
+        });
+        gameobject.transform.rotation = new feng3d.Vector3(1, 1, 1).normalize();
+    });
+    scene.gameObject.addChild(light);
+    var geometry = new feng3d.CubeGeometry(0.15, 0.15, 0.15);
     for (var i = 0; i < 200; i++) {
-        var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }));
-        object.position.x = Math.random() * 4 - 2;
-        object.position.y = Math.random() * 4 - 2;
-        object.position.z = Math.random() * 4 - 2;
-        object.rotation.x = Math.random() * 2 * Math.PI;
-        object.rotation.y = Math.random() * 2 * Math.PI;
-        object.rotation.z = Math.random() * 2 * Math.PI;
-        object.scale.x = Math.random() + 0.5;
-        object.scale.y = Math.random() + 0.5;
-        object.scale.z = Math.random() + 0.5;
-        object.userData.velocity = new THREE.Vector3();
-        object.userData.velocity.x = Math.random() * 0.01 - 0.005;
-        object.userData.velocity.y = Math.random() * 0.01 - 0.005;
-        object.userData.velocity.z = Math.random() * 0.01 - 0.005;
-        room.add(object);
+        var object = feng3d.GameObject.create("box" + i, function (object) {
+            object.addComponent(feng3d.MeshRenderer, function (component) {
+                component.geometry = geometry;
+                var material = component.material = new feng3d.StandardMaterial();
+                material.diffuseMethod.color.fromUnit(Math.random() * 0xffffff);
+            });
+            object.transform.position = feng3d.Vector3.random().scale(4).subNumber(2);
+            object.transform.rotation = feng3d.Vector3.random().scale(2 * Math.PI);
+            object.scale.x = Math.random() + 0.5;
+            object.scale.y = Math.random() + 0.5;
+            object.scale.z = Math.random() + 0.5;
+            object.userData.velocity = new THREE.Vector3();
+            object.userData.velocity.x = Math.random() * 0.01 - 0.005;
+            object.userData.velocity.y = Math.random() * 0.01 - 0.005;
+            object.userData.velocity.z = Math.random() * 0.01 - 0.005;
+        });
+        room.addChild(object);
     }
     raycaster = new THREE.Raycaster();
     renderer = new THREE.WebGLRenderer({ antialias: true });

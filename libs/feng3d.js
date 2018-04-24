@@ -13599,11 +13599,34 @@ var feng3d;
             feng3d.debuger && feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
             this.canvas = canvas;
             this.scene = scene || feng3d.GameObject.create("scene").addComponent(feng3d.Scene3D);
-            this.camera = camera || feng3d.GameObject.create("camera").addComponent(feng3d.Camera);
+            this.camera = camera;
             this.start();
             this.renderContext = new feng3d.RenderContext();
             this.mouse3DManager = new feng3d.Mouse3DManager(canvas);
         }
+        Object.defineProperty(Engine.prototype, "camera", {
+            /**
+             * 摄像机
+             */
+            get: function () {
+                if (!this._camera) {
+                    var cameras = this.scene.getComponentsInChildren(feng3d.Camera);
+                    if (cameras.length == 0) {
+                        this._camera = feng3d.GameObject.create("defaultCamera").addComponent(feng3d.Camera);
+                        this.scene.gameObject.addChild(this._camera.gameObject);
+                    }
+                    else {
+                        this._camera = cameras[0];
+                    }
+                }
+                return this._camera;
+            },
+            set: function (v) {
+                this._camera = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Engine.prototype, "root", {
             /**
              * 根节点

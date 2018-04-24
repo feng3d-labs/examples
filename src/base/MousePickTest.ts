@@ -45,6 +45,5 @@ namespace feng3d
             var material = transform.getComponent(MeshRenderer).material = new ColorMaterial();
             material.color.fromUnit(Math.random() * (1 << 24));
         }
-
     });
 }

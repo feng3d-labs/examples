@@ -1,30 +1,53 @@
 namespace feng3d
 {
-
     /**
      * 测试3D容器
      */
-    var view3D = new Engine();
-    var scene = view3D.scene;
-
-    //初始化颜色材质
-    var cube = GameObjectFactory.createCube();
-    cube.transform.z = 5;
-    scene.gameObject.addChild(cube);
-
-    var colorMaterial = cube.getComponent(MeshRenderer).material = new ColorMaterial();
-
-    var cylinder = GameObjectFactory.createCylinder();
-    cylinder.transform.x = 2;
-    cube.addChild(cylinder);
-
-    //变化旋转与颜色
-    setInterval(function ()
+    export class Container3DTest extends Script
     {
-        cube.transform.ry += 1;
-    }, 15);
-    setInterval(function ()
-    {
-        colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
-    }, 1000);
+        cube: GameObject
+        colorMaterial: ColorMaterial
+        num = 0;
+
+        /**
+         * 初始化时调用
+         */
+        init()
+        {
+
+            //初始化颜色材质
+            this.cube = GameObjectFactory.createCube();
+            this.gameObject.addChild(this.cube);
+
+            this.colorMaterial = this.cube.getComponent(MeshRenderer).material = new ColorMaterial();
+
+            var cylinder = GameObjectFactory.createCylinder();
+            cylinder.transform.x = 2;
+            this.cube.addChild(cylinder);
+        }
+
+        /**
+         * 更新
+         */
+        update()
+        {
+            console.log("update")
+
+            //变化旋转与颜色
+            this.cube.transform.ry += 1;
+
+            this.num++;
+
+            if (this.num % 60 == 0)
+                this.colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
+        }
+
+        /**
+         * 销毁时调用
+         */
+        dispose()
+        {
+
+        }
+    }
 }

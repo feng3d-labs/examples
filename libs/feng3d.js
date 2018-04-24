@@ -24760,10 +24760,17 @@ var feng3d;
         if (feng3d.fstype == feng3d.FSType.http) {
             var loadPath = scriptPath + ("?version=" + Math.random());
             feng3d.Loader.loadText(loadPath, function (content) {
-                var reg = /(feng3d.(\w+)) = (\w+);/;
+                // var reg = /var ([a-zA-Z0-9_$]+) = \/\*\* @class \*\//;
+                var reg = new RegExp("var ([a-zA-Z0-9_$]+) = \\/\\*\\* @class \\*\\/");
                 var result = content.match(reg);
+                feng3d.assert(result && !!result[1], "脚本中找不到类定义！");
+                var classname = result[1];
+                //处理类定义放在 namespace 中 /([a-zA-Z0-9_$.]+Test)\s*=\s*Test/
+                reg = new RegExp("([a-zA-Z0-9_$.]+" + classname + ")\\s*=\\s*" + classname);
+                result = content.match(reg);
                 if (result)
-                    resultScript.className = result[1];
+                    classname = result[1];
+                resultScript.className = classname;
                 var scriptTag = document.getElementById(scriptPath);
                 var head = document.getElementsByTagName('head').item(0);
                 if (scriptTag)
@@ -24786,7 +24793,7 @@ var feng3d;
                 // var reg = /var ([a-zA-Z0-9_$]+) = \/\*\* @class \*\//;
                 var reg = new RegExp("var ([a-zA-Z0-9_$]+) = \\/\\*\\* @class \\*\\/");
                 var result = content.match(reg);
-                feng3d.assert(result && result[1], "脚本中找不到类定义！");
+                feng3d.assert(result && !!result[1], "脚本中找不到类定义！");
                 var classname = result[1];
                 //处理类定义放在 namespace 中 /([a-zA-Z0-9_$.]+Test)\s*=\s*Test/
                 reg = new RegExp("([a-zA-Z0-9_$.]+" + classname + ")\\s*=\\s*" + classname);

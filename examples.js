@@ -1,53 +1,10 @@
-loadjs([
-  `libs/feng3d.js`,
-], loadComplete);
-
-function loadjs(path, onload, onerror)
-{
-  if (typeof path == "string")
-  {
-    var script = document.createElement('script');
-    script.src = path;
-    script.onload = (ev) =>
-    {
-      if (onload)
-        onload(ev);
-      else
-      {
-        console.log(`${path} 加载完成`);
-      }
-    }
-    script.onerror = () =>
-    {
-      if (onerror)
-        onerror();
-      else
-      {
-        console.warn(`${path} 加载失败！`);
-      }
-    }
-    document.head.appendChild(script);
-  } else
-  {
-    if (path.length == 0)
-    {
-      onload();
-    } else
-    {
-      loadjs(path.shift(), () =>
-      {
-        loadjs(path, onload, onerror);
-      }, onerror);
-    }
-  }
-
-}
-
-function loadComplete()
+window.onload = function ()
 {
   var type = GetQueryString("type");
 
-  loadjs("out/" + type + ".js");
+  var script = document.createElement('script');
+  script.src = "out/" + type + ".js";
+  document.head.appendChild(script);
 
   function GetQueryString(name)
   {
@@ -57,4 +14,3 @@ function loadComplete()
     return null;
   }
 }
-

@@ -1,20 +1,40 @@
 namespace feng3d
 {
-    var engine = new Engine();
-    var scene3D = engine.scene;
+    export class ScriptTest extends feng3d.Script
+    {
+        /**
+         * 初始化时调用
+         */
+        init()
+        {
 
-    var sc = scene3D.gameObject.addComponent(ScriptComponent)
-    sc.url = "out/scripts/ScriptDemo.js";
+            var sc = this.gameObject.addScript("out/scripts/ScriptDemo.ts")
 
-    // windowEventProxy.on("keyup", (e) =>
-    // {
-    //     if (e.keyCode == 82)
-    //     {
-    //         GameObjectUtil.removeScript(scene3D.gameObject, path);
-    //         GameObjectUtil.addScript(scene3D.gameObject, path);
-    //     } else if (e.keyCode == 84)
-    //     {
-    //         GameObjectUtil.reloadJS(path);
-    //     }
-    // })
+            // windowEventProxy.on("keyup", (e) =>
+            // {
+            //     if (e.keyCode == 82)
+            //     {
+            //         GameObjectUtil.removeScript(scene3D.gameObject, path);
+            //         GameObjectUtil.addScript(scene3D.gameObject, path);
+            //     } else if (e.keyCode == 84)
+            //     {
+            //         GameObjectUtil.reloadJS(path);
+            //     }
+            // })
+        }
+        /**
+         * 更新
+         */
+        update()
+        {
+        }
+
+        /**
+        * 销毁时调用
+        */
+        dispose()
+        {
+
+        }
+    }
 }

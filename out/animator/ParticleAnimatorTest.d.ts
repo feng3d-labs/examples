@@ -1,9 +1,16 @@
-declare var acceleration: feng3d.Vector3;
-declare var view3D: feng3d.Engine;
-declare var camera: feng3d.Camera;
-declare var scene: feng3d.Scene3D;
-declare var particle: feng3d.GameObject;
-declare var meshRenderer: feng3d.MeshRenderer;
-declare var material: feng3d.StandardMaterial;
-declare var particleAnimator: feng3d.ParticleAnimator;
-declare var emission: feng3d.ParticleEmission;
+declare namespace feng3d {
+    class ParticleAnimatorTest extends feng3d.Script {
+        /**
+         * 初始化时调用
+         */
+        init(): void;
+        /**
+         * 更新
+         */
+        update(): void;
+        /**
+        * 销毁时调用
+        */
+        dispose(): void;
+    }
+}

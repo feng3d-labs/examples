@@ -1,2 +1,16 @@
-declare var view3D: feng3d.Engine;
-declare var camera: feng3d.Camera;
+declare namespace feng3d {
+    class SceneLoadTest extends feng3d.Script {
+        /**
+         * 初始化时调用
+         */
+        init(): void;
+        /**
+         * 更新
+         */
+        update(): void;
+        /**
+        * 销毁时调用
+        */
+        dispose(): void;
+    }
+}

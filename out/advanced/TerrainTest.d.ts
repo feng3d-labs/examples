@@ -1,9 +1,16 @@
-declare var view3D: feng3d.Engine;
-declare var scene: feng3d.Scene3D;
-declare var camera: feng3d.Camera;
-declare var root: string;
-declare var terrain: feng3d.GameObject;
-declare var meshRenderer: feng3d.MeshRenderer;
-declare var material: feng3d.StandardMaterial;
-declare var light1: feng3d.GameObject;
-declare var pointLight1: feng3d.PointLight;
+declare namespace feng3d {
+    class TerrainTest extends feng3d.Script {
+        /**
+         * 初始化时调用
+         */
+        init(): void;
+        /**
+         * 更新
+         */
+        update(): void;
+        /**
+        * 销毁时调用
+        */
+        dispose(): void;
+    }
+}

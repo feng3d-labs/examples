@@ -1,31 +1,53 @@
 namespace feng3d
 {
-    var view3D = new Engine();
-    var scene3D = view3D.scene;
+    export class FPSControllerTest extends feng3d.Script
+    {
+        /**
+         * 初始化时调用
+         */
+        init()
+        {
+            var scene = this.gameObject.scene;
+            var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
 
-    var cube = GameObjectFactory.createCube();
-    scene3D.gameObject.addChild(cube);
+            var cube = GameObjectFactory.createCube();
+            this.gameObject.addChild(cube);
 
-    var plane = GameObjectFactory.createPlane();
-    plane.transform.position = new Vector3(1.50, 0, 0);
-    plane.transform.rx = -90;
-    scene3D.gameObject.addChild(plane);
+            var plane = GameObjectFactory.createPlane();
+            plane.transform.position = new Vector3(1.50, 0, 0);
+            plane.transform.rx = -90;
+            this.gameObject.addChild(plane);
 
-    var sphere = GameObjectFactory.createSphere();
-    sphere.transform.position = new Vector3(-1.50, 0, 0);
-    scene3D.gameObject.addChild(sphere);
+            var sphere = GameObjectFactory.createSphere();
+            sphere.transform.position = new Vector3(-1.50, 0, 0);
+            this.gameObject.addChild(sphere);
 
-    var capsule = GameObjectFactory.createCapsule();
-    capsule.transform.position = new Vector3(3, 0, 0);
-    scene3D.gameObject.addChild(capsule);
+            var capsule = GameObjectFactory.createCapsule();
+            capsule.transform.position = new Vector3(3, 0, 0);
+            this.gameObject.addChild(capsule);
 
-    var cylinder = GameObjectFactory.createCylinder();
-    cylinder.transform.position = new Vector3(-3, 0, 0);
-    scene3D.gameObject.addChild(cylinder);
+            var cylinder = GameObjectFactory.createCylinder();
+            cylinder.transform.position = new Vector3(-3, 0, 0);
+            this.gameObject.addChild(cylinder);
 
-    var camera = view3D.camera;
-    camera.transform.z = -5;
-    camera.transform.lookAt(new Vector3());
-    //
-    camera.gameObject.addComponent(FPSController);
+            camera.transform.z = -5;
+            camera.transform.lookAt(new Vector3());
+            //
+            camera.gameObject.addComponent(FPSController);
+        }
+        /**
+         * 更新
+         */
+        update()
+        {
+        }
+
+        /**
+        * 销毁时调用
+        */
+        dispose()
+        {
+
+        }
+    }
 }

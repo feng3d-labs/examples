@@ -1,53 +1,50 @@
-namespace feng3d
+/**
+ * 测试3D容器
+ */
+class Container3DTest extends feng3d.Script
 {
+    cube: feng3d.GameObject
+    colorMaterial: feng3d.ColorMaterial
+    num = 0;
+
     /**
-     * 测试3D容器
+     * 初始化时调用
      */
-    export class Container3DTest extends Script
+    init()
     {
-        cube: GameObject
-        colorMaterial: ColorMaterial
-        num = 0;
 
-        /**
-         * 初始化时调用
-         */
-        init()
-        {
+        //初始化颜色材质
+        this.cube = feng3d.GameObjectFactory.createCube();
+        this.gameObject.addChild(this.cube);
 
-            //初始化颜色材质
-            this.cube = GameObjectFactory.createCube();
-            this.gameObject.addChild(this.cube);
+        this.colorMaterial = this.cube.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
 
-            this.colorMaterial = this.cube.getComponent(MeshRenderer).material = new ColorMaterial();
+        var cylinder = feng3d.GameObjectFactory.createCylinder();
+        cylinder.transform.x = 2;
+        this.cube.addChild(cylinder);
+    }
 
-            var cylinder = GameObjectFactory.createCylinder();
-            cylinder.transform.x = 2;
-            this.cube.addChild(cylinder);
-        }
+    /**
+     * 更新
+     */
+    update()
+    {
+        console.log("update")
 
-        /**
-         * 更新
-         */
-        update()
-        {
-            console.log("update")
+        //变化旋转与颜色
+        this.cube.transform.ry += 1;
 
-            //变化旋转与颜色
-            this.cube.transform.ry += 1;
+        this.num++;
 
-            this.num++;
+        if (this.num % 60 == 0)
+            this.colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
+    }
 
-            if (this.num % 60 == 0)
-                this.colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
-        }
+    /**
+     * 销毁时调用
+     */
+    dispose()
+    {
 
-        /**
-         * 销毁时调用
-         */
-        dispose()
-        {
-
-        }
     }
 }

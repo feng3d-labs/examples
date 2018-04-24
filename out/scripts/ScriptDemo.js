@@ -17,8 +17,7 @@ var feng3d;
         }
         ScriptDemo.prototype.init = function () {
             var cube = this.cube = feng3d.GameObject.create();
-            cube.transform.z = 3;
-            cube.transform.y = -1;
+            cube.transform.z = -7;
             this.gameObject.addChild(cube);
             var model = cube.addComponent(feng3d.MeshRenderer);
             model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);

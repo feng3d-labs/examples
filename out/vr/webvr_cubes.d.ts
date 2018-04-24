@@ -1,6 +1,6 @@
 declare var clock: any;
 declare var container: HTMLDivElement;
-declare var camera: feng3d.Camera, scene: feng3d.Scene3D, raycaster: any, renderer: any;
+declare var engine: feng3d.Engine, camera: feng3d.Camera, scene: feng3d.Scene3D;
 declare var room: feng3d.GameObject;
 declare var isMouseDown: boolean;
 declare var INTERSECTED: any;

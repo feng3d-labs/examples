@@ -4,7 +4,7 @@
 var clock = new Clock(true);
 
 var container: HTMLDivElement;
-var camera: feng3d.Camera, scene: feng3d.Scene3D, raycaster, renderer;
+var engine: feng3d.Engine, camera: feng3d.Camera, scene: feng3d.Scene3D;
 
 var room: feng3d.GameObject;
 var isMouseDown = false;
@@ -29,7 +29,7 @@ function init()
     info.innerHTML = '<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - interactive cubes';
     container.appendChild(info);
 
-    var engine = new feng3d.Engine();
+    engine = new feng3d.Engine();
     scene = engine.scene;
     scene.background.fromUnit(0x505050);
 
@@ -98,18 +98,16 @@ function init()
         room.addChild(object);
     }
 
-    raycaster = new THREE.Raycaster();
+    // renderer = new THREE.WebGLRenderer({ antialias: true });
+    // renderer.setPixelRatio(window.devicePixelRatio);
+    // renderer.setSize(window.innerWidth, window.innerHeight);
+    // renderer.vr.enabled = true;
+    // container.appendChild(renderer.domElement);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.vr.enabled = true;
-    container.appendChild(renderer.domElement);
-
-    renderer.domElement.addEventListener('mousedown', onMouseDown, false);
-    renderer.domElement.addEventListener('mouseup', onMouseUp, false);
-    renderer.domElement.addEventListener('touchstart', onMouseDown, false);
-    renderer.domElement.addEventListener('touchend', onMouseUp, false);
+    engine.canvas.addEventListener('mousedown', onMouseDown, false);
+    engine.canvas.addEventListener('mouseup', onMouseUp, false);
+    engine.canvas.addEventListener('touchstart', onMouseDown, false);
+    engine.canvas.addEventListener('touchend', onMouseUp, false);
 
     window.addEventListener('resize', onWindowResize, false);
 
@@ -118,7 +116,7 @@ function init()
     window.addEventListener('vrdisplaypointerrestricted', onPointerRestricted, false);
     window.addEventListener('vrdisplaypointerunrestricted', onPointerUnrestricted, false);
 
-    document.body.appendChild(WEBVR.createButton(renderer));
+    document.body.appendChild(WEBVR.createButton(engine.canvas));
 
 }
 
@@ -138,7 +136,7 @@ function onMouseUp()
 
 function onPointerRestricted()
 {
-    var pointerLockElement = renderer.domElement;
+    var pointerLockElement = engine.canvas;
     if (pointerLockElement && typeof (pointerLockElement.requestPointerLock) === 'function')
     {
         pointerLockElement.requestPointerLock();
@@ -149,7 +147,7 @@ function onPointerRestricted()
 function onPointerUnrestricted()
 {
     var currentPointerLockElement = document.pointerLockElement;
-    var expectedPointerLockElement = renderer.domElement;
+    var expectedPointerLockElement = engine.canvas;
     if (currentPointerLockElement && currentPointerLockElement === expectedPointerLockElement && typeof (document.exitPointerLock) === 'function')
     {
         document.exitPointerLock();
@@ -158,12 +156,9 @@ function onPointerUnrestricted()
 
 function onWindowResize()
 {
+    camera.lens.aspectRatio = window.innerWidth / window.innerHeight;
 
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
+    engine.setSize(window.innerWidth, window.innerHeight);
 }
 
 //
@@ -184,88 +179,87 @@ function render()
     {
 
         var cube = room.children[0];
-        room.remove(cube);
+        room.removeChild(cube);
 
-        cube.position.set(0, 0, - 0.75);
-        cube.position.applyQuaternion(camera.quaternion);
+        cube.transform.position = new feng3d.Vector3(0, 0, - 0.75).applyQuaternion(camera.transform.orientation);
         cube.userData.velocity.x = (Math.random() - 0.5) * 0.02 * delta;
         cube.userData.velocity.y = (Math.random() - 0.5) * 0.02 * delta;
         cube.userData.velocity.z = (Math.random() * 0.01 - 0.05) * delta;
-        cube.userData.velocity.applyQuaternion(camera.quaternion);
-        room.add(cube);
+        cube.userData.velocity.applyQuaternion(camera.transform.orientation);
+        room.addChild(cube);
 
     }
 
     // find intersections
 
-    raycaster.setFromCamera({ x: 0, y: 0 }, camera);
+    // raycaster.setFromCamera({ x: 0, y: 0 }, camera);
 
-    var intersects = raycaster.intersectObjects(room.children);
+    // var intersects = raycaster.intersectObjects(room.children);
 
-    if (intersects.length > 0)
-    {
+    // if (intersects.length > 0)
+    // {
 
-        if (INTERSECTED != intersects[0].object)
-        {
+    //     if (INTERSECTED != intersects[0].object)
+    //     {
 
-            if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+    //         if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
 
-            INTERSECTED = intersects[0].object;
-            INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-            INTERSECTED.material.emissive.setHex(0xff0000);
+    //         INTERSECTED = intersects[0].object;
+    //         INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+    //         INTERSECTED.material.emissive.setHex(0xff0000);
 
-        }
+    //     }
 
-    } else
-    {
+    // } else
+    // {
 
-        if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+    //     if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
 
-        INTERSECTED = undefined;
+    //     INTERSECTED = undefined;
 
-    }
+    // }
 
-    // Keep cubes inside room
+    // // Keep cubes inside room
 
-    for (var i = 0; i < room.children.length; i++)
-    {
+    // for (var i = 0; i < room.children.length; i++)
+    // {
 
-        var cube = room.children[i];
+    //     var cube = room.children[i];
 
-        cube.userData.velocity.multiplyScalar(1 - (0.001 * delta));
+    //     cube.userData.velocity.multiplyScalar(1 - (0.001 * delta));
 
-        cube.position.add(cube.userData.velocity);
+    //     cube.position.add(cube.userData.velocity);
 
-        if (cube.position.x < - 3 || cube.position.x > 3)
-        {
+    //     if (cube.position.x < - 3 || cube.position.x > 3)
+    //     {
 
-            cube.position.x = THREE.Math.clamp(cube.position.x, - 3, 3);
-            cube.userData.velocity.x = - cube.userData.velocity.x;
+    //         cube.position.x = THREE.Math.clamp(cube.position.x, - 3, 3);
+    //         cube.userData.velocity.x = - cube.userData.velocity.x;
 
-        }
+    //     }
 
-        if (cube.position.y < - 3 || cube.position.y > 3)
-        {
+    //     if (cube.position.y < - 3 || cube.position.y > 3)
+    //     {
 
-            cube.position.y = THREE.Math.clamp(cube.position.y, - 3, 3);
-            cube.userData.velocity.y = - cube.userData.velocity.y;
+    //         cube.position.y = THREE.Math.clamp(cube.position.y, - 3, 3);
+    //         cube.userData.velocity.y = - cube.userData.velocity.y;
 
-        }
+    //     }
 
-        if (cube.position.z < - 3 || cube.position.z > 3)
-        {
+    //     if (cube.position.z < - 3 || cube.position.z > 3)
+    //     {
 
-            cube.position.z = THREE.Math.clamp(cube.position.z, - 3, 3);
-            cube.userData.velocity.z = - cube.userData.velocity.z;
+    //         cube.position.z = THREE.Math.clamp(cube.position.z, - 3, 3);
+    //         cube.userData.velocity.z = - cube.userData.velocity.z;
 
-        }
+    //     }
 
-        cube.rotation.x += cube.userData.velocity.x * 2 * delta;
-        cube.rotation.y += cube.userData.velocity.y * 2 * delta;
-        cube.rotation.z += cube.userData.velocity.z * 2 * delta;
+    //     cube.rotation.x += cube.userData.velocity.x * 2 * delta;
+    //     cube.rotation.y += cube.userData.velocity.y * 2 * delta;
+    //     cube.rotation.z += cube.userData.velocity.z * 2 * delta;
 
-    }
+    // }
 
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
 
 }

@@ -10257,23 +10257,16 @@ var feng3d;
         };
         Shader.prototype.getMacroCode = function (macro) {
             var macroHeader = "";
-            var macroNames = Object.keys(macro.valueMacros);
+            var macroNames = Object.keys(macro);
             macroNames = macroNames.sort();
             macroNames.forEach(function (macroName) {
-                var value = macro.valueMacros[macroName];
-                macroHeader += "#define " + macroName + " " + value + "\n";
-            });
-            macroNames = Object.keys(macro.boolMacros);
-            macroNames = macroNames.sort();
-            macroNames.forEach(function (macroName) {
-                var value = macro.boolMacros[macroName];
-                value && (macroHeader += "#define " + macroName + "\n");
-            });
-            macroNames = Object.keys(macro.addMacros);
-            macroNames = macroNames.sort();
-            macroNames.forEach(function (macroName) {
-                var value = macro.addMacros[macroName];
-                macroHeader += "#define " + macroName + " " + value + "\n";
+                var value = macro[macroName];
+                if (typeof value == "boolean") {
+                    value && (macroHeader += "#define " + macroName + "\n");
+                }
+                else {
+                    macroHeader += "#define " + macroName + " " + value + "\n";
+                }
             });
             return macroHeader;
         };
@@ -10324,10 +10317,6 @@ var feng3d;
     var RenderAtomic = /** @class */ (function () {
         function RenderAtomic() {
             /**
-             * 渲染参数
-             */
-            this.renderParams = new feng3d.RenderParams();
-            /**
              * 属性数据列表
              */
             this.attributes = {};
@@ -10336,13 +10325,9 @@ var feng3d;
              */
             this.uniforms = {};
             /**
-             * 可渲染条件，当所有条件值均为true是可以渲染
-             */
-            this.renderableCondition = {};
-            /**
              * shader 中的 宏
              */
-            this.shaderMacro = { boolMacros: {}, valueMacros: {}, addMacros: {} };
+            this.shaderMacro = {};
             /**
              * macro是否失效
              */
@@ -10809,212 +10794,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    feng3d.renderdatacollector = {
-        collectRenderDataHolder: collectRenderDataHolder,
-        clearRenderDataHolder: clearRenderDataHolder,
-        getsetRenderDataFuncs: getsetRenderDataFuncs,
-        getclearRenderDataFuncs: getclearRenderDataFuncs,
-        collectRenderDataHolderFuncs: collectRenderDataHolderFuncs,
-        clearRenderDataHolderFuncs: clearRenderDataHolderFuncs,
-    };
-    function getsetRenderDataFuncs(renderDataHolder) {
-        var updaterenderDataFuncs = [];
-        var renderDatamap = renderDataHolder.renderDatamap;
-        for (var key in renderDatamap) {
-            if (renderDatamap.hasOwnProperty(key)) {
-                updaterenderDataFuncs.push(renderDatamap[key].setfunc);
-            }
-        }
-        return updaterenderDataFuncs;
-    }
-    function getclearRenderDataFuncs(renderDataHolder) {
-        var updaterenderDataFuncs = [];
-        var renderDatamap = renderDataHolder.renderDatamap;
-        for (var key in renderDatamap) {
-            if (renderDatamap.hasOwnProperty(key)) {
-                updaterenderDataFuncs.push(renderDatamap[key].clearfunc);
-            }
-        }
-        return updaterenderDataFuncs;
-    }
-    /**
-     * 收集渲染数据拥有者
-     * @param renderAtomic 渲染原子
-     */
-    function collectRenderDataHolderFuncs(renderDataHolder) {
-        var funcs = [];
-        funcs = funcs.concat(getsetRenderDataFuncs(renderDataHolder));
-        renderDataHolder.childrenRenderDataHolder.forEach(function (element) {
-            funcs = funcs.concat(collectRenderDataHolderFuncs(element));
-        });
-        return funcs;
-    }
-    /**
-     * 收集渲染数据拥有者
-     * @param renderAtomic 渲染原子
-     */
-    function clearRenderDataHolderFuncs(renderDataHolder) {
-        var funcs = [];
-        funcs = funcs.concat(getclearRenderDataFuncs(renderDataHolder));
-        renderDataHolder.childrenRenderDataHolder.forEach(function (element) {
-            funcs = funcs.concat(clearRenderDataHolderFuncs(element));
-        });
-        return funcs;
-    }
-    /**
-     * 收集渲染数据拥有者
-     * @param renderAtomic 渲染原子
-     */
-    function collectRenderDataHolder(renderDataHolder, renderAtomic) {
-        var funcs = collectRenderDataHolderFuncs(renderDataHolder);
-        funcs.forEach(function (element) {
-            element(renderAtomic);
-        });
-    }
-    /**
-     * 收集渲染数据拥有者
-     * @param renderAtomic 渲染原子
-     */
-    function clearRenderDataHolder(renderDataHolder, renderAtomic) {
-        var funcs = clearRenderDataHolderFuncs(renderDataHolder);
-        funcs.forEach(function (element) {
-            element(renderAtomic);
-        });
-    }
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 渲染数据拥有者
-     * @author feng 2016-6-7
-     */
-    var RenderDataHolder = /** @class */ (function (_super) {
-        __extends(RenderDataHolder, _super);
-        /**
-         * 创建GL数据缓冲
-         */
-        function RenderDataHolder() {
-            var _this = _super.call(this) || this;
-            _this._childrenRenderDataHolder = [];
-            _this.renderDatamap = {};
-            return _this;
-        }
-        Object.defineProperty(RenderDataHolder.prototype, "childrenRenderDataHolder", {
-            get: function () {
-                return this._childrenRenderDataHolder;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        RenderDataHolder.prototype.addRenderDataHolder = function (renderDataHolder) {
-            if (!renderDataHolder)
-                return;
-            if (this._childrenRenderDataHolder.indexOf(renderDataHolder) != -1)
-                return;
-            this._childrenRenderDataHolder.push(renderDataHolder);
-            renderDataHolder.on("renderdataChange", this.dispatchrenderdataChange, this);
-            this.dispatch("renderdataChange", feng3d.renderdatacollector.collectRenderDataHolderFuncs(renderDataHolder));
-        };
-        RenderDataHolder.prototype.removeRenderDataHolder = function (renderDataHolder) {
-            var index = this._childrenRenderDataHolder.indexOf(renderDataHolder);
-            if (index == -1)
-                return;
-            this._childrenRenderDataHolder.splice(index, 1);
-            renderDataHolder.off("renderdataChange", this.dispatchrenderdataChange, this);
-            this.dispatch("renderdataChange", feng3d.renderdatacollector.clearRenderDataHolderFuncs(renderDataHolder));
-        };
-        RenderDataHolder.prototype.dispatchrenderdataChange = function (event) {
-            this.dispatch(event.type, event.data);
-        };
-        /**
-         *
-         * @param name          数据名称
-         * @param setfunc       设置数据回调
-         * @param clearfunc     清理数据回调
-         */
-        RenderDataHolder.prototype.renderdataChange = function (name, setfunc, clearfunc) {
-            this.renderDatamap[name] = { setfunc: setfunc, clearfunc: clearfunc };
-            this.dispatch("renderdataChange", setfunc);
-        };
-        RenderDataHolder.prototype.createIndexBuffer = function (indices) {
-            this.renderdataChange("indices", function (renderData) {
-                renderData.indexBuffer = renderData.indexBuffer || new feng3d.Index();
-                renderData.indexBuffer.indices = indices;
-            }, function (renderData) {
-                delete renderData.indexBuffer;
-            });
-        };
-        RenderDataHolder.prototype.createUniformData = function (name, data) {
-            this.renderdataChange(name, function (renderData) { renderData.uniforms[name] = data; }, function (renderData) { delete renderData.uniforms[name]; });
-        };
-        RenderDataHolder.prototype.createAttributeRenderData = function (name, data, size, divisor) {
-            if (size === void 0) { size = 3; }
-            if (divisor === void 0) { divisor = 0; }
-            //
-            this.renderdataChange(name, function (renderData) {
-                var attributeRenderData = renderData.attributes[name] = renderData.attributes[name] || new feng3d.Attribute(name, data);
-                attributeRenderData.data = data;
-                attributeRenderData.size = size;
-                attributeRenderData.divisor = divisor;
-            }, function (renderData) {
-                delete renderData.attributes[name];
-            });
-        };
-        RenderDataHolder.prototype.createvertexCode = function (shadername) {
-            this.renderdataChange("shadername", function (renderData) {
-                renderData.shadername = shadername;
-            }, function (renderData) {
-            });
-        };
-        RenderDataHolder.prototype.createValueMacro = function (name, value) {
-            this.renderdataChange(name, function (renderData) {
-                if (renderData.shaderMacro.valueMacros[name] == value)
-                    return;
-                renderData.shaderMacro.valueMacros[name] = value;
-                renderData.macroInvalid = true;
-            }, function (renderData) {
-                delete renderData.shaderMacro.valueMacros[name];
-                renderData.macroInvalid = true;
-            });
-        };
-        RenderDataHolder.prototype.createBoolMacro = function (name, value) {
-            this.renderdataChange(name, function (renderData) {
-                if (renderData.shaderMacro.boolMacros[name] == value)
-                    return;
-                renderData.shaderMacro.boolMacros[name] = value;
-                renderData.macroInvalid = true;
-            }, function (renderData) {
-                delete renderData.shaderMacro.boolMacros[name];
-                renderData.macroInvalid = true;
-            });
-        };
-        RenderDataHolder.prototype.createAddMacro = function (name, value) {
-            this.renderdataChange(name, function (renderData) {
-                if (renderData.shaderMacro.addMacros[name] == value)
-                    return;
-                renderData.shaderMacro.addMacros[name] = value;
-                renderData.macroInvalid = true;
-            }, function (renderData) {
-                delete renderData.shaderMacro.addMacros[name];
-                renderData.macroInvalid = true;
-            });
-        };
-        RenderDataHolder.prototype.createInstanceCount = function (value) {
-            this.renderdataChange(name, function (renderData) { renderData.instanceCount = value; }, function (renderData) { delete renderData.instanceCount; });
-        };
-        RenderDataHolder.prototype.createShaderParam = function (name, value) {
-            this.renderdataChange(name, function (renderData) {
-                renderData.renderParams[name] = value;
-            }, function (renderData) {
-                delete renderData.renderParams[name];
-            });
-        };
-        return RenderDataHolder;
-    }(feng3d.EventDispatcher));
-    feng3d.RenderDataHolder = RenderDataHolder;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
     /**
      * 渲染环境
      * @author feng 2017-01-04
@@ -11034,22 +10813,16 @@ var feng3d;
             set: function (value) {
                 if (this._camera == value)
                     return;
-                if (this._camera)
-                    this.removeRenderDataHolder(this._camera);
                 this._camera = value;
-                if (this._camera)
-                    this.addRenderDataHolder(this._camera);
             },
             enumerable: true,
             configurable: true
         });
-        /**
-         * 更新渲染数据
-         */
-        RenderContext.prototype.updateRenderData1 = function () {
+        RenderContext.prototype.preRender = function (renderAtomic) {
+            this.camera.preRender(renderAtomic);
             var pointLights = this.scene3d.collectComponents.pointLights.list;
             var directionalLights = this.scene3d.collectComponents.directionalLights.list;
-            this.createValueMacro("NUM_LIGHT", pointLights.length + directionalLights.length);
+            renderAtomic.shaderMacro.NUM_LIGHT = pointLights.length + directionalLights.length;
             //收集点光源数据
             var pointLightPositions = [];
             var pointLightColors = [];
@@ -11063,17 +10836,17 @@ var feng3d;
                 pointLightRanges.push(pointLight.range);
             }
             //设置点光源数据
-            this.createValueMacro("NUM_POINTLIGHT", pointLights.length);
+            renderAtomic.shaderMacro.NUM_POINTLIGHT = pointLights.length;
             if (pointLights.length > 0) {
-                this.createAddMacro("A_NORMAL_NEED", 1);
-                this.createAddMacro("V_NORMAL_NEED", 1);
-                this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
-                this.createAddMacro("U_CAMERAMATRIX_NEED", 1);
+                renderAtomic.shaderMacro.A_NORMAL_NEED = 1;
+                renderAtomic.shaderMacro.V_NORMAL_NEED = 1;
+                renderAtomic.shaderMacro.GLOBAL_POSITION_NEED = 1;
+                renderAtomic.shaderMacro.U_CAMERAMATRIX_NEED = 1;
                 //
-                this.createUniformData("u_pointLightPositions", pointLightPositions);
-                this.createUniformData("u_pointLightColors", pointLightColors);
-                this.createUniformData("u_pointLightIntensitys", pointLightIntensitys);
-                this.createUniformData("u_pointLightRanges", pointLightRanges);
+                renderAtomic.uniforms.u_pointLightPositions = pointLightPositions;
+                renderAtomic.uniforms.u_pointLightColors = pointLightColors;
+                renderAtomic.uniforms.u_pointLightIntensitys = pointLightIntensitys;
+                renderAtomic.uniforms.u_pointLightRanges = pointLightRanges;
             }
             var directionalLightDirections = [];
             var directionalLightColors = [];
@@ -11084,21 +10857,20 @@ var feng3d;
                 directionalLightColors.push(directionalLight.color);
                 directionalLightIntensitys.push(directionalLight.intensity);
             }
-            this.createValueMacro("NUM_DIRECTIONALLIGHT", directionalLights.length);
+            renderAtomic.shaderMacro.NUM_DIRECTIONALLIGHT = directionalLights.length;
             if (directionalLights.length > 0) {
-                this.createAddMacro("A_NORMAL_NEED", 1);
-                this.createAddMacro("V_NORMAL_NEED", 1);
-                this.createAddMacro("U_CAMERAMATRIX_NEED", 1);
+                renderAtomic.shaderMacro.A_NORMAL_NEED = 1;
+                renderAtomic.shaderMacro.V_NORMAL_NEED = 1;
+                renderAtomic.shaderMacro.U_CAMERAMATRIX_NEED = 1;
                 //
-                this.createUniformData("u_directionalLightDirections", directionalLightDirections);
-                this.createUniformData("u_directionalLightColors", directionalLightColors);
-                this.createUniformData("u_directionalLightIntensitys", directionalLightIntensitys);
+                renderAtomic.uniforms.u_directionalLightDirections = directionalLightDirections;
+                renderAtomic.uniforms.u_directionalLightColors = directionalLightColors;
+                renderAtomic.uniforms.u_directionalLightIntensitys = directionalLightIntensitys;
             }
-            this.createUniformData("u_sceneAmbientColor", this.scene3d.ambientColor);
-            this.createUniformData("u_scaleByDepth", this.camera.getScaleByDepth(1));
+            renderAtomic.uniforms.u_sceneAmbientColor = this.scene3d.ambientColor;
         };
         return RenderContext;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.RenderContext = RenderContext;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -11268,7 +11040,7 @@ var feng3d;
             return null;
         };
         return Feng3dObject;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.Feng3dObject = Feng3dObject;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -11381,6 +11153,8 @@ var feng3d;
         Component.prototype.dispose = function () {
             this._gameObject = null;
         };
+        Component.prototype.preRender = function (renderAtomic) {
+        };
         __decorate([
             feng3d.serialize()
         ], Component.prototype, "tag", null);
@@ -11449,15 +11223,15 @@ var feng3d;
         function Renderer(gl) {
             feng3d.assert(!gl.renderer, gl + " " + gl.renderer + " \u5B58\u5728\uFF01");
             gl.renderer = this;
-            this.draw = function (renderAtomic) {
+            this.draw = function (renderAtomic, material) {
                 var shaderProgram = renderAtomic.shader.activeShaderProgram(gl);
                 if (!shaderProgram)
                     return;
                 //
-                activeShaderParams(renderAtomic.renderParams);
+                activeShaderParams(material.renderParams);
                 activeAttributes(renderAtomic, shaderProgram.attributes);
                 activeUniforms(renderAtomic, shaderProgram.uniforms);
-                dodraw(renderAtomic);
+                dodraw(renderAtomic, material.renderParams);
                 disableAttributes(shaderProgram.attributes);
             };
             function activeShaderParams(shaderParams) {
@@ -11603,9 +11377,8 @@ var feng3d;
             }
             /**
              */
-            function dodraw(renderAtomic) {
+            function dodraw(renderAtomic, renderParams) {
                 var instanceCount = ~~feng3d.lazy.getvalue(renderAtomic.instanceCount);
-                var renderParams = renderAtomic.renderParams;
                 var renderMode = gl.enums.getRenderModeValue(feng3d.lazy.getvalue(renderParams.renderMode));
                 var indexBuffer = renderAtomic.indexBuffer;
                 var vertexNum = 0;
@@ -11663,7 +11436,6 @@ var feng3d;
      * 渲染
      */
     function draw(renderContext, renderObjectflag) {
-        renderContext.updateRenderData1();
         var frustum = renderContext.camera.frustum;
         var meshRenderers = collectForwardRender(renderContext.scene3d.gameObject, frustum, renderObjectflag);
         var camerapos = renderContext.camera.transform.scenePosition;
@@ -11697,10 +11469,10 @@ var feng3d;
         // try
         // {
         //绘制
-        var renderAtomic = meshRenderer.getComponent(feng3d.RenderAtomicComponent);
-        feng3d.renderdatacollector.collectRenderDataHolder(renderContext, renderAtomic.renderAtomic);
-        renderAtomic.update();
-        gl.renderer.draw(renderAtomic.renderAtomic);
+        var renderAtomic = meshRenderer.gameObject.renderAtomic;
+        meshRenderer.gameObject.preRender(renderAtomic);
+        renderContext.preRender(renderAtomic);
+        gl.renderer.draw(renderAtomic, meshRenderer.material);
         // renderdatacollector.clearRenderDataHolder(renderContext, renderAtomic);
         // } catch (error)
         // {
@@ -11786,8 +11558,8 @@ var feng3d;
                 var object = meshRenderer.gameObject;
                 var u_objectID = this.objects.length;
                 this.objects[u_objectID] = object;
-                var renderAtomic = object.getComponent(feng3d.RenderAtomicComponent);
-                renderAtomic.renderAtomic.uniforms.u_objectID = u_objectID;
+                var renderAtomic = object.renderAtomic;
+                renderAtomic.uniforms.u_objectID = u_objectID;
                 // super.drawRenderables(renderContext, meshRenderer);
             }
         };
@@ -11801,7 +11573,7 @@ var feng3d;
             // super.drawGameObject(gl, renderAtomic, shader);
         };
         return MouseRenderer;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.MouseRenderer = MouseRenderer;
     feng3d.glMousePicker = new MouseRenderer();
 })(feng3d || (feng3d = {}));
@@ -11873,23 +11645,25 @@ var feng3d;
         for (var i = 0; i < unblenditems.length; i++) {
             var item = unblenditems[i].item;
             if (item.getComponent(OutLineComponent) || item.getComponent(feng3d.CartoonComponent)) {
-                var renderAtomic = item.getComponent(feng3d.RenderAtomicComponent);
-                drawGameObject(gl, renderAtomic.renderAtomic); //
+                var renderAtomic = item.gameObject.renderAtomic;
+                item.gameObject.preRender(renderAtomic);
+                var meshRenderer = item.getComponent(feng3d.MeshRenderer);
+                drawGameObject(gl, renderAtomic, meshRenderer.material); //
             }
         }
     }
     /**
      * 绘制3D对象
      */
-    function drawGameObject(gl, renderAtomic) {
+    function drawGameObject(gl, renderAtomic, material) {
         init();
         var oldshadername = renderAtomic.shadername;
-        var oldRenderParams = renderAtomic.renderParams;
-        renderAtomic.renderParams = renderParams;
-        gl.renderer.draw(renderAtomic);
+        var oldRenderParams = material.renderParams;
+        material.renderParams = renderParams;
+        gl.renderer.draw(renderAtomic, material);
         //
         renderAtomic.shadername = oldshadername;
-        renderAtomic.renderParams = oldRenderParams;
+        material.renderParams = oldRenderParams;
     }
     var OutLineComponent = /** @class */ (function (_super) {
         __extends(OutLineComponent, _super);
@@ -11901,12 +11675,13 @@ var feng3d;
             return _this;
         }
         OutLineComponent.prototype.init = function (gameobject) {
-            var _this = this;
             _super.prototype.init.call(this, gameobject);
-            //
-            this.createUniformData("u_outlineSize", function () { return _this.size; });
-            this.createUniformData("u_outlineColor", function () { return _this.color; });
-            this.createUniformData("u_outlineMorphFactor", function () { return _this.outlineMorphFactor; });
+        };
+        OutLineComponent.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.uniforms.u_outlineSize = function () { return _this.size; };
+            renderAtomic.uniforms.u_outlineColor = function () { return _this.color; };
+            renderAtomic.uniforms.u_outlineMorphFactor = function () { return _this.outlineMorphFactor; };
         };
         __decorate([
             feng3d.oav(),
@@ -11954,16 +11729,18 @@ var feng3d;
         for (var i = 0; i < unblenditems.length; i++) {
             var item = unblenditems[i].item;
             if (item.getComponent(WireframeComponent)) {
-                var renderAtomic = item.getComponent(feng3d.RenderAtomicComponent);
-                drawGameObject(gl, renderAtomic.renderAtomic); //
+                var renderAtomic = item.gameObject.renderAtomic;
+                item.gameObject.preRender(renderAtomic);
+                var meshRenderer = item.getComponent(feng3d.MeshRenderer);
+                drawGameObject(gl, renderAtomic, meshRenderer.material); //
             }
         }
     }
     /**
      * 绘制3D对象
      */
-    function drawGameObject(gl, renderAtomic) {
-        var renderMode = feng3d.lazy.getvalue(renderAtomic.renderParams.renderMode);
+    function drawGameObject(gl, renderAtomic, material) {
+        var renderMode = feng3d.lazy.getvalue(material.renderParams.renderMode);
         if (renderMode == feng3d.RenderMode.POINTS
             || renderMode == feng3d.RenderMode.LINES
             || renderMode == feng3d.RenderMode.LINE_LOOP
@@ -11971,8 +11748,8 @@ var feng3d;
             return;
         init();
         var oldshadername = renderAtomic.shadername;
-        var oldrenderParams = renderAtomic.renderParams;
-        renderAtomic.renderParams = renderParams;
+        var oldrenderParams = material.renderParams;
+        material.renderParams = renderParams;
         //
         var oldIndexBuffer = renderAtomic.indexBuffer;
         if (!renderAtomic.wireframeindexBuffer || renderAtomic.wireframeindexBuffer.count != 2 * oldIndexBuffer.count) {
@@ -11985,11 +11762,11 @@ var feng3d;
             renderAtomic.wireframeindexBuffer.indices = wireframeindices;
         }
         renderAtomic.indexBuffer = renderAtomic.wireframeindexBuffer;
-        gl.renderer.draw(renderAtomic);
+        gl.renderer.draw(renderAtomic, material);
         renderAtomic.indexBuffer = oldIndexBuffer;
         //
         renderAtomic.shadername = oldshadername;
-        renderAtomic.renderParams = oldrenderParams;
+        material.renderParams = oldrenderParams;
     }
     /**
      * 线框组件，将会对拥有该组件的对象绘制线框
@@ -12004,9 +11781,12 @@ var feng3d;
             return _this;
         }
         WireframeComponent.prototype.init = function (gameobject) {
-            var _this = this;
             _super.prototype.init.call(this, gameobject);
-            this.createUniformData("u_wireframeColor", function () { return _this.color; });
+        };
+        WireframeComponent.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            _super.prototype.preRender.call(this, renderAtomic);
+            renderAtomic.uniforms.u_wireframeColor = function () { return _this.color; };
         };
         __decorate([
             feng3d.oav()
@@ -12049,22 +11829,24 @@ var feng3d;
             },
             set: function (value) {
                 this._cartoon_Anti_aliasing = value;
-                this.createBoolMacro("cartoon_Anti_aliasing", value);
             },
             enumerable: true,
             configurable: true
         });
         CartoonComponent.prototype.init = function (gameObject) {
-            var _this = this;
             _super.prototype.init.call(this, gameObject);
-            this.createBoolMacro("IS_CARTOON", true);
-            this.createUniformData("u_diffuseSegment", function () { return _this.diffuseSegment; });
-            this.createUniformData("u_diffuseSegmentValue", function () { return _this.diffuseSegmentValue; });
-            this.createUniformData("u_specularSegment", function () { return _this.specularSegment; });
+        };
+        CartoonComponent.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.shaderMacro.cartoon_Anti_aliasing = this._cartoon_Anti_aliasing;
+            renderAtomic.shaderMacro.IS_CARTOON = true;
+            renderAtomic.uniforms.u_diffuseSegment = function () { return _this.diffuseSegment; };
+            renderAtomic.uniforms.u_diffuseSegmentValue = function () { return _this.diffuseSegmentValue; };
+            renderAtomic.uniforms.u_specularSegment = function () { return _this.specularSegment; };
             //
-            this.createUniformData("u_outlineSize", function () { return _this.outlineSize; });
-            this.createUniformData("u_outlineColor", function () { return _this.outlineColor; });
-            this.createUniformData("u_outlineMorphFactor", function () { return _this.outlineMorphFactor; });
+            renderAtomic.uniforms.u_outlineSize = function () { return _this.outlineSize; };
+            renderAtomic.uniforms.u_outlineColor = function () { return _this.outlineColor; };
+            renderAtomic.uniforms.u_outlineMorphFactor = function () { return _this.outlineMorphFactor; };
         };
         __decorate([
             feng3d.oav(),
@@ -12104,6 +11886,8 @@ var feng3d;
         draw: draw
     };
     var renderAtomic;
+    var renderParams;
+    var material;
     function init() {
         if (!renderAtomic) {
             renderAtomic = new feng3d.RenderAtomic();
@@ -12133,11 +11917,14 @@ var feng3d;
             //
             renderAtomic.shadername = "skybox";
             //
-            renderAtomic.renderParams.renderMode = feng3d.RenderMode.TRIANGLES;
-            renderAtomic.renderParams.enableBlend = false;
-            renderAtomic.renderParams.depthMask = true;
-            renderAtomic.renderParams.depthtest = true;
-            renderAtomic.renderParams.cullFace = feng3d.CullFace.NONE;
+            renderParams = new feng3d.RenderParams();
+            renderParams.renderMode = feng3d.RenderMode.TRIANGLES;
+            renderParams.enableBlend = false;
+            renderParams.depthMask = true;
+            renderParams.depthtest = true;
+            renderParams.cullFace = feng3d.CullFace.NONE;
+            material = new feng3d.Material();
+            material.renderParams = renderParams;
         }
     }
     /**
@@ -12157,18 +11944,16 @@ var feng3d;
         renderAtomic.uniforms.u_cameraMatrix = camera.transform.localToWorldMatrix;
         renderAtomic.uniforms.u_skyBoxSize = camera.lens.far / Math.sqrt(3);
         //
-        var skyboxRenderAtomic = skybox.getComponent(feng3d.RenderAtomicComponent);
-        skyboxRenderAtomic.update();
-        renderAtomic.uniforms.s_skyboxTexture = skyboxRenderAtomic.renderAtomic.uniforms.s_skyboxTexture;
-        gl.renderer.draw(renderAtomic);
+        var renderAtomic = skybox.gameObject.renderAtomic;
+        skybox.gameObject.preRender(renderAtomic);
+        renderAtomic.uniforms.s_skyboxTexture = renderAtomic.uniforms.s_skyboxTexture;
+        gl.renderer.draw(renderAtomic, material);
     }
     var SkyBox = /** @class */ (function (_super) {
         __extends(SkyBox, _super);
         function SkyBox() {
-            var _this = _super.call(this) || this;
+            return _super.call(this) || this;
             //
-            _this.createUniformData("s_skyboxTexture", function () { return _this.texture; });
-            return _this;
         }
         Object.defineProperty(SkyBox.prototype, "texture", {
             get: function () {
@@ -12184,6 +11969,10 @@ var feng3d;
         });
         SkyBox.prototype.init = function (gameObject) {
             _super.prototype.init.call(this, gameObject);
+        };
+        SkyBox.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.uniforms.s_skyboxTexture = function () { return _this.texture; };
         };
         __decorate([
             feng3d.serialize(),
@@ -12990,6 +12779,7 @@ var feng3d;
         function GameObject(name) {
             if (name === void 0) { name = "GameObject"; }
             var _this = _super.call(this) || this;
+            _this.renderAtomic = new feng3d.RenderAtomic();
             _this._children = [];
             /**
              * 是否可序列化
@@ -13024,7 +12814,6 @@ var feng3d;
             _this._components = [];
             _this.name = name;
             _this.addComponent(feng3d.Transform);
-            _this.addComponent(feng3d.RenderAtomicComponent);
             _this.addComponent(feng3d.BoundingComponent);
             _this.guid = feng3d.FMath.generateUUID();
             //
@@ -13348,7 +13137,6 @@ var feng3d;
             //派发移除组件事件
             this.dispatch("removedComponent", component);
             this._scene && this._scene._removeComponent(component);
-            this.removeRenderDataHolder(component);
             component.dispose();
             return component;
         };
@@ -13459,7 +13247,6 @@ var feng3d;
             //派发添加组件事件
             this.dispatch("addedComponent", component);
             this._scene && this._scene._addComponent(component);
-            this.addRenderDataHolder(component);
         };
         /**
          * 销毁
@@ -13479,6 +13266,11 @@ var feng3d;
             this.dispose();
             while (this.numChildren > 0)
                 this.getChildAt(0).dispose();
+        };
+        GameObject.prototype.preRender = function (renderAtomic) {
+            this._components.forEach(function (element) {
+                element.preRender(renderAtomic);
+            });
         };
         /**
          * 游戏对象池
@@ -13639,46 +13431,6 @@ var feng3d;
         return BoundingComponent;
     }(feng3d.Component));
     feng3d.BoundingComponent = BoundingComponent;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    // export interface RenderAtomicComponent extends RenderAtomic { }
-    var RenderAtomicComponent = /** @class */ (function (_super) {
-        __extends(RenderAtomicComponent, _super);
-        function RenderAtomicComponent() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.showInInspector = false;
-            _this.serializable = false;
-            _this.renderAtomic = new feng3d.RenderAtomic();
-            _this.changefuncs = [];
-            return _this;
-        }
-        Object.defineProperty(RenderAtomicComponent.prototype, "single", {
-            get: function () { return true; },
-            enumerable: true,
-            configurable: true
-        });
-        RenderAtomicComponent.prototype.init = function (gameObject) {
-            _super.prototype.init.call(this, gameObject);
-            feng3d.renderdatacollector.collectRenderDataHolder(this.gameObject, this.renderAtomic);
-            var uniforms = this.renderAtomic.uniforms;
-            uniforms.u_mvMatrix = function () { return feng3d.lazy.getvalue(uniforms.u_modelMatrix).clone().append(feng3d.lazy.getvalue(uniforms.u_viewMatrix)); };
-            uniforms.u_ITMVMatrix = function () { return feng3d.lazy.getvalue(uniforms.u_mvMatrix).clone().invert().transpose(); };
-            this.gameObject.on("renderdataChange", this.onrenderdataChange, this);
-        };
-        RenderAtomicComponent.prototype.update = function () {
-            var _this = this;
-            this.changefuncs.forEach(function (element) {
-                element(_this.renderAtomic);
-            });
-            this.changefuncs.length = 0;
-        };
-        RenderAtomicComponent.prototype.onrenderdataChange = function (event) {
-            this.changefuncs = this.changefuncs.concat(event.data);
-        };
-        return RenderAtomicComponent;
-    }(feng3d.Component));
-    feng3d.RenderAtomicComponent = RenderAtomicComponent;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -14008,12 +13760,10 @@ var feng3d;
                 if (this._geometry == value)
                     return;
                 if (this._geometry) {
-                    this.removeRenderDataHolder(this._geometry);
                     this._geometry.off("boundsInvalid", this.onBoundsInvalid, this);
                 }
                 this._geometry = value;
                 if (this._geometry) {
-                    this.addRenderDataHolder(this._geometry);
                     this._geometry.on("boundsInvalid", this.onBoundsInvalid, this);
                 }
             },
@@ -14029,25 +13779,27 @@ var feng3d;
             set: function (value) {
                 if (this._material == value)
                     return;
-                if (this._material)
-                    this.removeRenderDataHolder(this._material);
                 this._material = value;
-                if (this._material)
-                    this.addRenderDataHolder(this.material);
             },
             enumerable: true,
             configurable: true
         });
         MeshRenderer.prototype.init = function (gameObject) {
-            var _this = this;
             _super.prototype.init.call(this, gameObject);
             if (!this.geometry)
                 this.geometry = new feng3d.CubeGeometry();
             if (!this.material)
                 this.material = new feng3d.StandardMaterial();
+        };
+        MeshRenderer.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.uniforms.u_modelMatrix = function () { return _this.transform.localToWorldMatrix; };
+            renderAtomic.uniforms.u_ITModelMatrix = function () { return _this.transform.ITlocalToWorldMatrix; };
+            renderAtomic.uniforms.u_mvMatrix = function () { return feng3d.lazy.getvalue(renderAtomic.uniforms.u_modelMatrix).clone().append(feng3d.lazy.getvalue(renderAtomic.uniforms.u_viewMatrix)); };
+            renderAtomic.uniforms.u_ITMVMatrix = function () { return feng3d.lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose(); };
             //
-            this.createUniformData("u_modelMatrix", function () { return _this.transform.localToWorldMatrix; });
-            this.createUniformData("u_ITModelMatrix", function () { return _this.transform.ITlocalToWorldMatrix; });
+            this._geometry.preRender(renderAtomic);
+            this._material.preRender(renderAtomic);
         };
         /**
          * 销毁
@@ -14233,7 +13985,6 @@ var feng3d;
                 if (this._skinSkeleton == value)
                     return;
                 this._skinSkeleton = value;
-                this.createValueMacro("NUM_SKELETONJOINT", this._skinSkeleton.joints.length);
             },
             enumerable: true,
             configurable: true
@@ -14242,44 +13993,63 @@ var feng3d;
          * 创建一个骨骼动画类
          */
         SkinnedMeshRenderer.prototype.init = function (gameObject) {
-            var _this = this;
             _super.prototype.init.call(this, gameObject);
-            this.createUniformData("u_modelMatrix", function () {
-                if (_this.cacheSkeletonComponent)
-                    return _this.cacheSkeletonComponent.transform.localToWorldMatrix;
-                return _this.transform.localToWorldMatrix;
-            });
-            this.createUniformData("u_ITModelMatrix", function () {
-                if (_this.cacheSkeletonComponent)
-                    return _this.cacheSkeletonComponent.transform.ITlocalToWorldMatrix;
-                return _this.transform.ITlocalToWorldMatrix;
-            });
-            //
-            this.createUniformData("u_skeletonGlobalMatriices", function () {
-                if (!_this.cacheSkeletonComponent) {
-                    var gameObject = _this.gameObject;
+        };
+        Object.defineProperty(SkinnedMeshRenderer.prototype, "u_modelMatrix", {
+            get: function () {
+                if (this.cacheSkeletonComponent)
+                    return this.cacheSkeletonComponent.transform.localToWorldMatrix;
+                return this.transform.localToWorldMatrix;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SkinnedMeshRenderer.prototype, "u_ITModelMatrix", {
+            get: function () {
+                if (this.cacheSkeletonComponent)
+                    return this.cacheSkeletonComponent.transform.ITlocalToWorldMatrix;
+                return this.transform.ITlocalToWorldMatrix;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SkinnedMeshRenderer.prototype, "u_skeletonGlobalMatriices", {
+            get: function () {
+                if (!this.cacheSkeletonComponent) {
+                    var gameObject = this.gameObject;
                     var skeletonComponent = null;
                     while (gameObject && !skeletonComponent) {
                         skeletonComponent = gameObject.getComponent(feng3d.SkeletonComponent);
                         gameObject = gameObject.parent;
                     }
-                    _this.cacheSkeletonComponent = skeletonComponent;
+                    this.cacheSkeletonComponent = skeletonComponent;
                 }
-                if (_this._skinSkeleton && _this.cacheSkeletonComponent) {
-                    var joints = _this._skinSkeleton.joints;
-                    var globalMatrices = _this.cacheSkeletonComponent.globalMatrices;
+                if (this._skinSkeleton && this.cacheSkeletonComponent) {
+                    var joints = this._skinSkeleton.joints;
+                    var globalMatrices = this.cacheSkeletonComponent.globalMatrices;
                     for (var i = joints.length - 1; i >= 0; i--) {
-                        _this.skeletonGlobalMatriices[i] = globalMatrices[joints[i][0]];
-                        if (_this.initMatrix3d) {
-                            _this.skeletonGlobalMatriices[i] = _this.skeletonGlobalMatriices[i].clone()
-                                .prepend(_this.initMatrix3d);
+                        this.skeletonGlobalMatriices[i] = globalMatrices[joints[i][0]];
+                        if (this.initMatrix3d) {
+                            this.skeletonGlobalMatriices[i] = this.skeletonGlobalMatriices[i].clone()
+                                .prepend(this.initMatrix3d);
                         }
                     }
-                    return _this.skeletonGlobalMatriices;
+                    return this.skeletonGlobalMatriices;
                 }
                 return defaultglobalMatrices();
-            });
-            this.createBoolMacro("HAS_SKELETON_ANIMATION", true);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SkinnedMeshRenderer.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            _super.prototype.preRender.call(this, renderAtomic);
+            renderAtomic.uniforms.u_modelMatrix = function () { return _this.u_modelMatrix; };
+            renderAtomic.uniforms.u_ITModelMatrix = function () { return _this.u_ITModelMatrix; };
+            //
+            renderAtomic.uniforms.u_skeletonGlobalMatriices = function () { return _this.u_skeletonGlobalMatriices; };
+            renderAtomic.shaderMacro.HAS_SKELETON_ANIMATION = true;
+            renderAtomic.shaderMacro.NUM_SKELETONJOINT = this._skinSkeleton.joints.length;
         };
         /**
          * 销毁
@@ -14774,12 +14544,6 @@ var feng3d;
             _this._scaleV = 1;
             _this._autoAttributeDatas = {};
             _this._invalids = { index: true, a_uv: true, a_normal: true, a_tangent: true };
-            _this.createIndexBuffer(function () { return _this.indices; });
-            _this.createAttribute("a_position", 3);
-            _this.createAttribute("a_position", 3);
-            _this.createAttribute("a_uv", 2);
-            _this.createAttribute("a_normal", 2);
-            _this.createAttribute("a_tangent", 2);
             return _this;
         }
         Object.defineProperty(Geometry.prototype, "indices", {
@@ -14798,13 +14562,11 @@ var feng3d;
              * 更新顶点索引数据
              */
             set: function (value) {
-                var _this = this;
                 this._indices = value;
                 if (!this._attributes.a_normal)
                     this._invalids.a_normal = true;
                 if (!this._attributes.a_tangent)
                     this._invalids.a_tangent = true;
-                this.createIndexBuffer(function () { return _this.indices; });
             },
             enumerable: true,
             configurable: true
@@ -14871,13 +14633,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Geometry.prototype.createAttribute = function (vaId, size) {
-            var _this = this;
-            this.createAttributeRenderData(vaId, function () {
-                return _this.getVAData1(vaId);
-            }, size);
-            this.createBoolMacro(("HSA_" + vaId), true);
-        };
         /**
          * 几何体变脏
          */
@@ -14910,7 +14665,6 @@ var feng3d;
             if (data) {
                 this._attributes[vaId] = this._attributes[vaId] || { data: data, size: size };
                 this._attributes[vaId].data = data;
-                this.createAttribute(vaId, size);
             }
             else {
                 delete this._attributes[vaId];
@@ -15319,6 +15073,24 @@ var feng3d;
             for (var key in geometry._attributes) {
                 var attributeRenderData = geometry._attributes[key];
                 this.setVAData(key, attributeRenderData.data, attributeRenderData.size);
+            }
+        };
+        Geometry.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.indexBuffer = renderAtomic.indexBuffer || new feng3d.Index();
+            renderAtomic.indexBuffer.indices = function () { return _this.indices; };
+            var attributes = renderAtomic.attributes;
+            for (var vaId in this._attributes) {
+                if (this._attributes.hasOwnProperty(vaId)) {
+                    var element = this._attributes[vaId];
+                    //
+                    var attributeRenderData = attributes[vaId] = attributes[vaId] || new feng3d.Attribute(vaId, element.data);
+                    attributeRenderData.data = element.data;
+                    attributeRenderData.size = element.size;
+                    attributeRenderData.divisor = 0;
+                    //
+                    renderAtomic.shaderMacro["HSA_" + vaId] = true;
+                }
             }
         };
         return Geometry;
@@ -16195,19 +15967,12 @@ var feng3d;
          * 创建一个摄像机
          */
         Camera.prototype.init = function (gameObject) {
-            var _this = this;
             _super.prototype.init.call(this, gameObject);
             this.lens = this.lens || new feng3d.PerspectiveLens();
             this.gameObject.on("scenetransformChanged", this.onScenetransformChanged, this);
             this._viewProjectionDirty = true;
             this._frustumDirty = true;
             this._frustum = new feng3d.Frustum();
-            //
-            this.createUniformData("u_projectionMatrix", function () { return _this._lens.matrix; });
-            this.createUniformData("u_viewProjection", function () { return _this.viewProjection; });
-            this.createUniformData("u_viewMatrix", function () { return _this.transform.worldToLocalMatrix; });
-            this.createUniformData("u_cameraMatrix", function () { return _this.transform.localToWorldMatrix; });
-            this.createUniformData("u_skyBoxSize", function () { return _this._lens.far / Math.sqrt(3); });
         };
         /**
          * 处理镜头变化事件
@@ -16347,6 +16112,16 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        Camera.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            //
+            renderAtomic.uniforms.u_projectionMatrix = function () { return _this._lens.matrix; };
+            renderAtomic.uniforms.u_viewProjection = function () { return _this.viewProjection; };
+            renderAtomic.uniforms.u_viewMatrix = function () { return _this.transform.worldToLocalMatrix; };
+            renderAtomic.uniforms.u_cameraMatrix = function () { return _this.transform.localToWorldMatrix; };
+            renderAtomic.uniforms.u_skyBoxSize = function () { return _this._lens.far / Math.sqrt(3); };
+            renderAtomic.uniforms.u_scaleByDepth = this.getScaleByDepth(1);
+        };
         __decorate([
             feng3d.serialize(),
             feng3d.oav()
@@ -18577,18 +18352,29 @@ var feng3d;
              * 是否使用 viewRect
              */
             _this.useViewRect = false;
+            /**
+             * shader 中的 宏
+             */
+            _this.shaderMacro = {};
+            /**
+             * macro是否失效
+             */
+            _this.macroInvalid = true;
+            /**
+             * 渲染参数
+             */
+            _this.renderParams = new feng3d.RenderParams();
             _this.renderMode = feng3d.RenderMode.TRIANGLES;
-            _this.createShaderParam("cullFace", function () { return _this.cullFace; });
-            _this.createShaderParam("frontFace", function () { return _this.frontFace; });
-            _this.createShaderParam("enableBlend", function () { return _this.enableBlend; });
-            _this.createShaderParam("blendEquation", function () { return _this.blendEquation; });
-            _this.createShaderParam("sfactor", function () { return _this.sfactor; });
-            _this.createShaderParam("dfactor", function () { return _this.dfactor; });
-            _this.createShaderParam("depthtest", function () { return _this.depthtest; });
-            _this.createShaderParam("depthMask", function () { return _this.depthMask; });
-            _this.createShaderParam("viewRect", function () { return _this.viewRect; });
-            _this.createShaderParam("useViewRect", function () { return _this.useViewRect; });
-            _this.createUniformData("u_PointSize", function () { return _this.pointSize; });
+            _this.renderParams.cullFace = _this.cullFace;
+            _this.renderParams.frontFace = _this.frontFace;
+            _this.renderParams.enableBlend = function () { return _this.enableBlend; };
+            _this.renderParams.blendEquation = _this.blendEquation;
+            _this.renderParams.sfactor = _this.sfactor;
+            _this.renderParams.dfactor = _this.dfactor;
+            _this.renderParams.depthtest = _this.depthtest;
+            _this.renderParams.depthMask = _this.depthMask;
+            _this.renderParams.viewRect = _this.viewRect;
+            _this.renderParams.useViewRect = _this.useViewRect;
             return _this;
         }
         Object.defineProperty(Material.prototype, "renderMode", {
@@ -18600,8 +18386,8 @@ var feng3d;
             },
             set: function (value) {
                 this._renderMode = value;
-                this.createBoolMacro("IS_POINTS_MODE", this.renderMode == feng3d.RenderMode.POINTS);
-                this.createShaderParam("renderMode", this.renderMode);
+                this.shaderMacro.IS_POINTS_MODE = this.renderMode == feng3d.RenderMode.POINTS;
+                this.renderParams.renderMode = this.renderMode;
             },
             enumerable: true,
             configurable: true
@@ -18614,7 +18400,6 @@ var feng3d;
                 if (this._shaderName == value)
                     return;
                 this._shaderName = value;
-                this.createvertexCode(this._shaderName);
             },
             enumerable: true,
             configurable: true
@@ -18647,6 +18432,11 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        Material.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.uniforms.u_PointSize = function () { return _this.pointSize; };
+            renderAtomic.shadername = this.shaderName;
+        };
         __decorate([
             feng3d.serialize(feng3d.RenderMode.TRIANGLES),
             feng3d.oav({ component: "OAVEnum", componentParam: { enumClass: feng3d.RenderMode } })
@@ -18697,7 +18487,7 @@ var feng3d;
             feng3d.ov({ component: "OVMaterial" })
         ], Material);
         return Material;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.Material = Material;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -18716,10 +18506,14 @@ var feng3d;
             _this.color = new feng3d.Color();
             _this.shaderName = "point";
             _this.renderMode = feng3d.RenderMode.POINTS;
-            //
-            _this.createUniformData("u_color", function () { return _this.color; });
             return _this;
+            //
         }
+        PointMaterial.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            _super.prototype.preRender.call(this, renderAtomic);
+            renderAtomic.uniforms.u_color = function () { return _this.color; };
+        };
         __decorate([
             feng3d.oav(),
             feng3d.serialize()
@@ -18745,8 +18539,6 @@ var feng3d;
             var _this = _super.call(this) || this;
             _this.shaderName = "color";
             _this.color = color || new feng3d.Color();
-            //
-            _this.createUniformData("u_diffuseInput", function () { return _this.color; });
             return _this;
         }
         Object.defineProperty(ColorMaterial.prototype, "color", {
@@ -18766,6 +18558,11 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        ColorMaterial.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            _super.prototype.preRender.call(this, renderAtomic);
+            renderAtomic.uniforms.u_diffuseInput = function () { return _this.color; };
+        };
         __decorate([
             feng3d.serialize(),
             feng3d.oav()
@@ -18791,7 +18588,6 @@ var feng3d;
             _this._color = new feng3d.Color();
             _this.shaderName = "segment";
             _this.renderMode = feng3d.RenderMode.LINES;
-            _this.createUniformData("u_segmentColor", function () { return _this.color; });
             return _this;
         }
         Object.defineProperty(SegmentMaterial.prototype, "color", {
@@ -18811,6 +18607,11 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        SegmentMaterial.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            _super.prototype.preRender.call(this, renderAtomic);
+            renderAtomic.uniforms.u_segmentColor = function () { return _this.color; };
+        };
         return SegmentMaterial;
     }(feng3d.Material));
     feng3d.SegmentMaterial = SegmentMaterial;
@@ -18827,9 +18628,6 @@ var feng3d;
             var _this = _super.call(this) || this;
             _this.color = new feng3d.Color();
             _this.shaderName = "texture";
-            //
-            _this.createUniformData("u_color", function () { return _this.color; });
-            _this.createUniformData("s_texture", function () { return _this.texture; });
             return _this;
         }
         Object.defineProperty(TextureMaterial.prototype, "texture", {
@@ -18847,6 +18645,12 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        TextureMaterial.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            _super.prototype.preRender.call(this, renderAtomic);
+            renderAtomic.uniforms.u_color = function () { return _this.color; };
+            renderAtomic.uniforms.s_texture = function () { return _this.texture; };
+        };
         __decorate([
             feng3d.oav(),
             feng3d.serialize()
@@ -18909,7 +18713,7 @@ var feng3d;
              * 是否开启混合
              */
             get: function () {
-                return this._enableBlend || this.diffuseMethod.color.a != 1.0;
+                return this._enableBlend || (this.diffuseMethod && this.diffuseMethod.color.a != 1.0);
             },
             set: function (value) {
                 this._enableBlend = value;
@@ -18917,42 +18721,41 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        StandardMaterial.prototype.onmethodchange = function (property, oldvalue, newvalue) {
-            this.removeRenderDataHolder(oldvalue);
-            this.addRenderDataHolder(newvalue);
+        StandardMaterial.prototype.preRender = function (renderAtomic) {
+            _super.prototype.preRender.call(this, renderAtomic);
+            this.diffuseMethod.preRender(renderAtomic);
+            this.normalMethod.preRender(renderAtomic);
+            this.specularMethod.preRender(renderAtomic);
+            this.ambientMethod.preRender(renderAtomic);
+            this.envMapMethod.preRender(renderAtomic);
+            this.fogMethod.preRender(renderAtomic);
+            this.terrainMethod.preRender(renderAtomic);
         };
         __decorate([
-            feng3d.watch("onmethodchange"),
             feng3d.serialize(),
             feng3d.oav()
         ], StandardMaterial.prototype, "diffuseMethod", void 0);
         __decorate([
-            feng3d.watch("onmethodchange"),
             feng3d.serialize(),
             feng3d.oav()
         ], StandardMaterial.prototype, "normalMethod", void 0);
         __decorate([
-            feng3d.watch("onmethodchange"),
             feng3d.serialize(),
             feng3d.oav()
         ], StandardMaterial.prototype, "specularMethod", void 0);
         __decorate([
-            feng3d.watch("onmethodchange"),
             feng3d.serialize(),
             feng3d.oav()
         ], StandardMaterial.prototype, "ambientMethod", void 0);
         __decorate([
-            feng3d.watch("onmethodchange"),
             feng3d.serialize(),
             feng3d.oav()
         ], StandardMaterial.prototype, "envMapMethod", void 0);
         __decorate([
-            feng3d.watch("onmethodchange"),
             feng3d.serialize(),
             feng3d.oav()
         ], StandardMaterial.prototype, "fogMethod", void 0);
         __decorate([
-            feng3d.watch("onmethodchange"),
             feng3d.serialize(),
             feng3d.oav()
         ], StandardMaterial.prototype, "terrainMethod", void 0);
@@ -18984,10 +18787,6 @@ var feng3d;
             _this.alphaThreshold = 0;
             _this.difuseTexture = new feng3d.Texture2D(diffuseUrl);
             _this.color = new feng3d.Color(1, 1, 1, 1);
-            //
-            _this.createUniformData("u_diffuse", function () { return _this.color; });
-            _this.createUniformData("s_diffuse", function () { return _this.difuseTexture; });
-            _this.createUniformData("u_alphaThreshold", function () { return _this.alphaThreshold; });
             return _this;
         }
         Object.defineProperty(DiffuseMethod.prototype, "difuseTexture", {
@@ -19000,18 +18799,18 @@ var feng3d;
             set: function (value) {
                 if (this._difuseTexture == value)
                     return;
-                if (this._difuseTexture)
-                    this._difuseTexture.off("loaded", this.ontextureChanged, this);
                 this._difuseTexture = value;
-                if (this._difuseTexture)
-                    this._difuseTexture.on("loaded", this.ontextureChanged, this);
-                this.ontextureChanged();
             },
             enumerable: true,
             configurable: true
         });
-        DiffuseMethod.prototype.ontextureChanged = function () {
-            this.createBoolMacro("HAS_DIFFUSE_SAMPLER", this.difuseTexture.checkRenderData());
+        DiffuseMethod.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.shaderMacro.HAS_DIFFUSE_SAMPLER = this.difuseTexture && this.difuseTexture.checkRenderData();
+            //
+            renderAtomic.uniforms.u_diffuse = function () { return _this.color; };
+            renderAtomic.uniforms.s_diffuse = function () { return _this.difuseTexture; };
+            renderAtomic.uniforms.u_alphaThreshold = function () { return _this.alphaThreshold; };
         };
         __decorate([
             feng3d.serialize(),
@@ -19026,7 +18825,7 @@ var feng3d;
             feng3d.oav()
         ], DiffuseMethod.prototype, "alphaThreshold", void 0);
         return DiffuseMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.DiffuseMethod = DiffuseMethod;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -19044,8 +18843,6 @@ var feng3d;
             if (normalUrl === void 0) { normalUrl = ""; }
             var _this = _super.call(this) || this;
             _this.normalTexture = new feng3d.Texture2D(normalUrl);
-            //
-            _this.createUniformData("s_normal", function () { return _this.normalTexture; });
             return _this;
         }
         Object.defineProperty(NormalMethod.prototype, "normalTexture", {
@@ -19058,25 +18855,23 @@ var feng3d;
             set: function (value) {
                 if (this._normalTexture == value)
                     return;
-                if (this._normalTexture)
-                    this._normalTexture.off("loaded", this.onTextureChanged, this);
                 this._normalTexture = value;
-                if (this._normalTexture)
-                    this._normalTexture.on("loaded", this.onTextureChanged, this);
-                this.onTextureChanged();
             },
             enumerable: true,
             configurable: true
         });
-        NormalMethod.prototype.onTextureChanged = function () {
-            this.createBoolMacro("HAS_NORMAL_SAMPLER", this.normalTexture.checkRenderData());
+        NormalMethod.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            //
+            renderAtomic.uniforms.s_normal = function () { return _this.normalTexture; };
+            renderAtomic.shaderMacro.HAS_NORMAL_SAMPLER = this.normalTexture.checkRenderData();
         };
         __decorate([
             feng3d.serialize(),
             feng3d.oav()
         ], NormalMethod.prototype, "normalTexture", null);
         return NormalMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.NormalMethod = NormalMethod;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -19102,10 +18897,6 @@ var feng3d;
              */
             _this.glossiness = 50;
             _this.specularTexture = new feng3d.Texture2D(specularUrl);
-            //
-            _this.createUniformData("s_specular", function () { return _this.specularTexture; });
-            _this.createUniformData("u_specular", function () { return _this.specularColor; });
-            _this.createUniformData("u_glossiness", function () { return _this.glossiness; });
             return _this;
         }
         Object.defineProperty(SpecularMethod.prototype, "specularTexture", {
@@ -19142,7 +18933,14 @@ var feng3d;
             configurable: true
         });
         SpecularMethod.prototype.onTextureChanged = function () {
-            this.createBoolMacro("HAS_SPECULAR_SAMPLER", this.specularTexture.checkRenderData());
+        };
+        SpecularMethod.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            //
+            renderAtomic.uniforms.s_specular = function () { return _this.specularTexture; };
+            renderAtomic.uniforms.u_specular = function () { return _this.specularColor; };
+            renderAtomic.uniforms.u_glossiness = function () { return _this.glossiness; };
+            renderAtomic.shaderMacro.HAS_SPECULAR_SAMPLER = this.specularTexture.checkRenderData();
         };
         __decorate([
             feng3d.serialize()
@@ -19154,7 +18952,7 @@ var feng3d;
             feng3d.serialize(50)
         ], SpecularMethod.prototype, "glossiness", void 0);
         return SpecularMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.SpecularMethod = SpecularMethod;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -19173,9 +18971,6 @@ var feng3d;
             var _this = _super.call(this) || this;
             _this.ambientTexture = new feng3d.Texture2D(ambientUrl);
             _this.color = color || new feng3d.Color();
-            //
-            _this.createUniformData("u_ambient", function () { return _this._color; });
-            _this.createUniformData("s_ambient", function () { return _this._ambientTexture; });
             return _this;
         }
         Object.defineProperty(AmbientMethod.prototype, "ambientTexture", {
@@ -19188,12 +18983,7 @@ var feng3d;
             set: function (value) {
                 if (this._ambientTexture == value)
                     return;
-                if (this._ambientTexture)
-                    this._ambientTexture.off("loaded", this.onTextureChanged, this);
                 this._ambientTexture = value;
-                if (this._ambientTexture)
-                    this._ambientTexture.on("loaded", this.onTextureChanged, this);
-                this.onTextureChanged();
             },
             enumerable: true,
             configurable: true
@@ -19211,8 +19001,11 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        AmbientMethod.prototype.onTextureChanged = function () {
-            this.createBoolMacro("HAS_AMBIENT_SAMPLER", this._ambientTexture && this._ambientTexture.checkRenderData());
+        AmbientMethod.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.uniforms.u_ambient = function () { return _this._color; };
+            renderAtomic.uniforms.s_ambient = function () { return _this._ambientTexture; };
+            renderAtomic.shaderMacro.HAS_AMBIENT_SAMPLER = this._ambientTexture && this._ambientTexture.checkRenderData();
         };
         __decorate([
             feng3d.serialize(),
@@ -19223,7 +19016,7 @@ var feng3d;
             feng3d.oav()
         ], AmbientMethod.prototype, "color", null);
         return AmbientMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.AmbientMethod = AmbientMethod;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -19260,18 +19053,20 @@ var feng3d;
             _this.maxDistance = maxDistance;
             _this.density = density;
             _this.mode = mode;
-            //
-            _this.createUniformData("u_fogColor", function () { return _this.fogColor; });
-            _this.createUniformData("u_fogMinDistance", function () { return _this.minDistance; });
-            _this.createUniformData("u_fogMaxDistance", function () { return _this.maxDistance; });
-            _this.createUniformData("u_fogDensity", function () { return _this.density; });
-            _this.createUniformData("u_fogMode", function () { return _this.mode; });
-            _this.createBoolMacro("HAS_FOG_METHOD", _this.enable);
-            _this.createAddMacro("V_GLOBAL_POSITION_NEED", 1);
             return _this;
         }
         FogMethod.prototype.enableChanged = function () {
-            this.createBoolMacro("HAS_FOG_METHOD", this.enable);
+        };
+        FogMethod.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            //
+            renderAtomic.uniforms.u_fogColor = function () { return _this.fogColor; };
+            renderAtomic.uniforms.u_fogMinDistance = function () { return _this.minDistance; };
+            renderAtomic.uniforms.u_fogMaxDistance = function () { return _this.maxDistance; };
+            renderAtomic.uniforms.u_fogDensity = function () { return _this.density; };
+            renderAtomic.uniforms.u_fogMode = function () { return _this.mode; };
+            renderAtomic.shaderMacro.HAS_FOG_METHOD = this.enable;
+            renderAtomic.shaderMacro.GLOBAL_POSITION_NEED = 1;
         };
         __decorate([
             feng3d.watch("enableChanged"),
@@ -19299,7 +19094,7 @@ var feng3d;
             feng3d.oav()
         ], FogMethod.prototype, "mode", void 0);
         return FogMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.FogMethod = FogMethod;
     /**
      * 雾模式
@@ -19330,13 +19125,14 @@ var feng3d;
              * 反射率
              */
             _this.reflectivity = 1;
-            //
-            _this.createUniformData("s_envMap", function () { return _this.cubeTexture; });
-            _this.createUniformData("u_reflectivity", function () { return _this.reflectivity; });
             return _this;
+            //
         }
-        EnvMapMethod.prototype.enableChanged = function () {
-            this.createBoolMacro("HAS_ENV_METHOD", !!this.cubeTexture);
+        EnvMapMethod.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.uniforms.s_envMap = function () { return _this.cubeTexture; };
+            renderAtomic.uniforms.u_reflectivity = function () { return _this.reflectivity; };
+            renderAtomic.shaderMacro.HAS_ENV_METHOD = !!this.cubeTexture;
         };
         __decorate([
             feng3d.watch("enableChanged"),
@@ -19348,7 +19144,7 @@ var feng3d;
             feng3d.oav()
         ], EnvMapMethod.prototype, "reflectivity", void 0);
         return EnvMapMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.EnvMapMethod = EnvMapMethod;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -20380,12 +20176,6 @@ var feng3d;
             _this.splatTexture3.minFilter = feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR;
             _this.splatTexture3.wrapS = feng3d.TextureWrap.REPEAT;
             _this.splatTexture3.wrapT = feng3d.TextureWrap.REPEAT;
-            //
-            _this.createUniformData("s_blendTexture", function () { return _this.blendTexture; });
-            _this.createUniformData("s_splatTexture1", function () { return _this.splatTexture1; });
-            _this.createUniformData("s_splatTexture2", function () { return _this.splatTexture2; });
-            _this.createUniformData("s_splatTexture3", function () { return _this.splatTexture3; });
-            _this.createUniformData("u_splatRepeats", function () { return _this.splatRepeats; });
             return _this;
         }
         Object.defineProperty(TerrainMethod.prototype, "splatTexture1", {
@@ -20395,11 +20185,7 @@ var feng3d;
             set: function (value) {
                 if (this._splatTexture1 == value)
                     return;
-                if (this._splatTexture1)
-                    this._splatTexture1.off("loaded", this.ontextureChanged, this);
                 this._splatTexture1 = value;
-                if (this._splatTexture1)
-                    this._splatTexture1.on("loaded", this.ontextureChanged, this);
             },
             enumerable: true,
             configurable: true
@@ -20411,11 +20197,7 @@ var feng3d;
             set: function (value) {
                 if (this._splatTexture2 == value)
                     return;
-                if (this._splatTexture2)
-                    this._splatTexture2.off("loaded", this.ontextureChanged, this);
                 this._splatTexture2 = value;
-                if (this._splatTexture2)
-                    this._splatTexture2.on("loaded", this.ontextureChanged, this);
             },
             enumerable: true,
             configurable: true
@@ -20427,11 +20209,7 @@ var feng3d;
             set: function (value) {
                 if (this._splatTexture3 == value)
                     return;
-                if (this._splatTexture3)
-                    this._splatTexture3.off("loaded", this.ontextureChanged, this);
                 this._splatTexture3 = value;
-                if (this._splatTexture3)
-                    this._splatTexture3.on("loaded", this.ontextureChanged, this);
             },
             enumerable: true,
             configurable: true
@@ -20443,11 +20221,7 @@ var feng3d;
             set: function (value) {
                 if (this._blendTexture == value)
                     return;
-                if (this._blendTexture)
-                    this._blendTexture.off("loaded", this.ontextureChanged, this);
                 this._blendTexture = value;
-                if (this._blendTexture)
-                    this._blendTexture.on("loaded", this.ontextureChanged, this);
             },
             enumerable: true,
             configurable: true
@@ -20462,14 +20236,21 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        TerrainMethod.prototype.ontextureChanged = function () {
-            this.createBoolMacro("HAS_TERRAIN_METHOD", this.blendTexture.checkRenderData()
-                && this.splatTexture1.checkRenderData()
-                && this.splatTexture2.checkRenderData()
-                && this.splatTexture3.checkRenderData());
+        TerrainMethod.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.uniforms.s_blendTexture = function () { return _this.blendTexture; };
+            renderAtomic.uniforms.s_splatTexture1 = function () { return _this.splatTexture1; };
+            renderAtomic.uniforms.s_splatTexture2 = function () { return _this.splatTexture2; };
+            renderAtomic.uniforms.s_splatTexture3 = function () { return _this.splatTexture3; };
+            renderAtomic.uniforms.u_splatRepeats = function () { return _this.splatRepeats; };
+            renderAtomic.shaderMacro.HAS_TERRAIN_METHOD =
+                this.blendTexture.checkRenderData()
+                    && this.splatTexture1.checkRenderData()
+                    && this.splatTexture2.checkRenderData()
+                    && this.splatTexture3.checkRenderData();
         };
         return TerrainMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.TerrainMethod = TerrainMethod;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -20495,24 +20276,6 @@ var feng3d;
             _this.splatMergeTexture.wrapS = feng3d.TextureWrap.REPEAT;
             _this.splatMergeTexture.wrapT = feng3d.TextureWrap.REPEAT;
             _this.splatRepeats = splatRepeats;
-            //
-            _this.createUniformData("s_blendTexture", _this.blendTexture);
-            _this.createUniformData("s_splatMergeTexture", _this.splatMergeTexture);
-            _this.createUniformData("u_splatMergeTextureSize", _this.splatMergeTexture.size);
-            _this.createUniformData("u_splatRepeats", _this.splatRepeats);
-            //
-            _this.createUniformData("u_imageSize", new feng3d.Vector2(2048.0, 1024.0));
-            _this.createUniformData("u_tileSize", new feng3d.Vector2(512.0, 512.0));
-            _this.createUniformData("u_maxLod", 7);
-            _this.createUniformData("u_uvPositionScale", 0.001);
-            _this.createUniformData("u_tileOffset", [
-                new feng3d.Vector4(0.5, 0.5, 0.0, 0.0),
-                new feng3d.Vector4(0.5, 0.5, 0.5, 0.0),
-                new feng3d.Vector4(0.5, 0.5, 0.0, 0.5),
-            ]);
-            _this.createUniformData("u_lod0vec", new feng3d.Vector4(0.5, 1, 0, 0));
-            _this.createBoolMacro("HAS_TERRAIN_METHOD", true);
-            _this.createBoolMacro("USE_TERRAIN_MERGE", true);
             return _this;
         }
         Object.defineProperty(TerrainMergeMethod.prototype, "splatMergeTexture", {
@@ -20545,8 +20308,27 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        TerrainMergeMethod.prototype.preRender = function (renderAtomic) {
+            renderAtomic.uniforms.s_blendTexture = this.blendTexture;
+            renderAtomic.uniforms.s_splatMergeTexture = this.splatMergeTexture;
+            renderAtomic.uniforms.u_splatMergeTextureSize = this.splatMergeTexture.size;
+            renderAtomic.uniforms.u_splatRepeats = this.splatRepeats;
+            //
+            renderAtomic.uniforms.u_imageSize = new feng3d.Vector2(2048.0, 1024.0);
+            renderAtomic.uniforms.u_tileSize = new feng3d.Vector2(512.0, 512.0);
+            renderAtomic.uniforms.u_maxLod = 7;
+            renderAtomic.uniforms.u_uvPositionScale = 0.001;
+            renderAtomic.uniforms.u_tileOffset = [
+                new feng3d.Vector4(0.5, 0.5, 0.0, 0.0),
+                new feng3d.Vector4(0.5, 0.5, 0.5, 0.0),
+                new feng3d.Vector4(0.5, 0.5, 0.0, 0.5),
+            ];
+            renderAtomic.uniforms.u_lod0vec = new feng3d.Vector4(0.5, 1, 0, 0);
+            renderAtomic.shaderMacro.HAS_TERRAIN_METHOD = true;
+            renderAtomic.shaderMacro.USE_TERRAIN_MERGE = true;
+        };
         return TerrainMergeMethod;
-    }(feng3d.RenderDataHolder));
+    }(feng3d.EventDispatcher));
     feng3d.TerrainMergeMethod = TerrainMergeMethod;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -20735,23 +20517,20 @@ var feng3d;
      * 粒子动画组件
      * @author feng 2017-01-09
      */
-    var ParticleComponent = /** @class */ (function (_super) {
-        __extends(ParticleComponent, _super);
+    var ParticleComponent = /** @class */ (function () {
         function ParticleComponent() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
             /**
              * 是否开启
              */
-            _this.enable = true;
+            this.enable = true;
             /**
              * 优先级
              */
-            _this.priority = 0;
+            this.priority = 0;
             /**
              * 数据是否变脏
              */
-            _this.isDirty = true;
-            return _this;
+            this.isDirty = true;
         }
         ParticleComponent.prototype.invalidate = function () {
             this.isDirty = true;
@@ -20778,7 +20557,7 @@ var feng3d;
             feng3d.serialize()
         ], ParticleComponent.prototype, "priority", void 0);
         return ParticleComponent;
-    }(feng3d.RenderDataHolder));
+    }());
     feng3d.ParticleComponent = ParticleComponent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -21036,13 +20815,7 @@ var feng3d;
             configurable: true
         });
         ParticleAnimator.prototype.init = function (gameObject) {
-            var _this = this;
             _super.prototype.init.call(this, gameObject);
-            this.createInstanceCount(function () { return _this.numParticles; });
-            //
-            this.createUniformData("u_particleTime", function () { return _this.time; });
-            //
-            this.createBoolMacro("HAS_PARTICLE_ANIMATOR", true);
             if (this._isPlaying) {
                 this.preTime = Date.now();
                 feng3d.ticker.onframe(this.update, this);
@@ -21065,18 +20838,6 @@ var feng3d;
                 this.generateParticles();
                 this._isDirty = false;
             }
-            for (var key in this.particleGlobal) {
-                if (this.particleGlobal.hasOwnProperty(key)) {
-                    var element = this.particleGlobal[key];
-                    if (element) {
-                        this.createUniformData(("u_particle_" + key), element);
-                        this.createBoolMacro(("D_u_particle_" + key), true);
-                    }
-                    else {
-                        this.createBoolMacro(("D_u_particle_" + key), false);
-                    }
-                }
-            }
         };
         ParticleAnimator.prototype.invalidate = function () {
             this._isDirty = true;
@@ -21086,11 +20847,6 @@ var feng3d;
          */
         ParticleAnimator.prototype.generateParticles = function () {
             var generateFunctions = this.generateFunctions.concat();
-            //清理宏定义
-            for (var attribute in this._attributes) {
-                var vector3DData = this._attributes[attribute];
-                this.createBoolMacro(("D_" + attribute), false);
-            }
             this._attributes = {};
             for (var key in this.animations) {
                 if (this.animations.hasOwnProperty(key)) {
@@ -21110,12 +20866,6 @@ var feng3d;
                     element.generate(particle);
                 });
                 this.collectionParticle(particle);
-            }
-            //更新宏定义
-            for (var attribute in this._attributes) {
-                var vector3DData = this._attributes[attribute];
-                this.createAttributeRenderData(attribute, vector3DData, vector3DData.length / this.numParticles, 1);
-                this.createBoolMacro(("D_" + attribute), true);
             }
         };
         /**
@@ -21159,6 +20909,36 @@ var feng3d;
             }
             else {
                 throw new Error("\u65E0\u6CD5\u5904\u7406" + feng3d.ClassUtils.getQualifiedClassName(data) + "\u7C92\u5B50\u5C5E\u6027");
+            }
+        };
+        ParticleAnimator.prototype.preRender = function (renderAtomic) {
+            var _this = this;
+            renderAtomic.instanceCount = function () { return _this.numParticles; };
+            //
+            renderAtomic.uniforms.u_particleTime = function () { return _this.time; };
+            //
+            renderAtomic.shaderMacro.HAS_PARTICLE_ANIMATOR = true;
+            //
+            for (var key in this.particleGlobal) {
+                if (this.particleGlobal.hasOwnProperty(key)) {
+                    var element = this.particleGlobal[key];
+                    if (element) {
+                        renderAtomic.uniforms["u_particle_" + key] = element;
+                        renderAtomic.shaderMacro["D_u_particle_" + key] = true;
+                    }
+                    else {
+                        renderAtomic.shaderMacro["D_u_particle_" + key] = false;
+                    }
+                }
+            }
+            //更新宏定义
+            for (var attribute in this._attributes) {
+                var vector3DData = this._attributes[attribute];
+                var attributeRenderData = renderAtomic.attributes[name] = renderAtomic.attributes[name] || new feng3d.Attribute(name, vector3DData);
+                attributeRenderData.data = vector3DData;
+                attributeRenderData.size = vector3DData.length / this.numParticles;
+                attributeRenderData.divisor = 1;
+                renderAtomic.shaderMacro["D_" + attribute] = true;
             }
         };
         __decorate([

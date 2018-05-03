@@ -39,7 +39,7 @@ var Container3DTest = /** @class */ (function (_super) {
         this.cube.transform.ry += 1;
         this.num++;
         if (this.num % 60 == 0)
-            this.colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
+            this.colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1), true);
     };
     /**
      * 销毁时调用

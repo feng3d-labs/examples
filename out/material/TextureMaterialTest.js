@@ -37,7 +37,7 @@ var feng3d;
             var textureMaterial = model.material = new feng3d.TextureMaterial();
             //
             // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
-            var texture = textureMaterial.texture = new feng3d.Texture2D('resources/m.png');
+            var texture = textureMaterial.uniforms.s_texture = new feng3d.Texture2D('resources/m.png');
             texture.flipY = false;
         };
         /**

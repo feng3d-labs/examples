@@ -49,7 +49,7 @@ namespace feng3d
                 if (transform.getComponent(MeshRenderer))
                 {
                     var material = transform.getComponent(MeshRenderer).material = new ColorMaterial();
-                    material.color.fromUnit(Math.random() * (1 << 24));
+                    material.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 24));
                 }
             });
         }

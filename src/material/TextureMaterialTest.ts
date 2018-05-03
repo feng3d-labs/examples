@@ -30,7 +30,7 @@ namespace feng3d
             var textureMaterial = model.material = new TextureMaterial();
             //
             // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
-            var texture = textureMaterial.texture = new Texture2D('resources/m.png');
+            var texture = textureMaterial.uniforms.s_texture = new Texture2D('resources/m.png');
             texture.flipY = false;
         }
         /**

@@ -51,7 +51,7 @@ var feng3d;
                 var transform = event.target;
                 if (transform.getComponent(feng3d.MeshRenderer)) {
                     var material = transform.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
-                    material.color.fromUnit(Math.random() * (1 << 24));
+                    material.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 24));
                 }
             });
         };

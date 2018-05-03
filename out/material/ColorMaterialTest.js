@@ -32,7 +32,7 @@ var feng3d;
                 cube.transform.ry += 1;
             }, 15);
             setInterval(function () {
-                colorMaterial.color.fromUnit(Math.random() * (1 << 32 - 1), true);
+                colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1), true);
             }, 1000);
         };
         /**

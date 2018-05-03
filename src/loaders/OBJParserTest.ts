@@ -31,7 +31,7 @@ namespace feng3d
             material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
             material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
             // var material = new ColorMaterial();
-            material.cullFace = CullFace.NONE;
+            material.renderParams.cullFace = CullFace.NONE;
 
             ObjLoader.load(objUrl, function (gameObject: GameObject)
             {

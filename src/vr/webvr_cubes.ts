@@ -54,7 +54,7 @@ namespace feng3d
                 var model = crosshair.addComponent(feng3d.MeshRenderer);
                 model.geometry = new feng3d.TorusGeometry(0.02, 0.004, 32, 8, false);
                 var material = model.material = new feng3d.StandardMaterial();
-                material.enableBlend = true;
+                material.renderParams.enableBlend = true;
                 material.diffuseMethod.color.a = 0.5;
                 crosshair.transform.z = 2;
                 camera.gameObject.addChild(crosshair);
@@ -66,7 +66,7 @@ namespace feng3d
                         meshRenderer.geometry = new feng3d.CubeGeometry(6, 6, 6, 8, 8, 8);
                         var material = meshRenderer.material = new feng3d.StandardMaterial();
                         material.diffuseMethod.color.fromUnit(0x404040);
-                        material.renderMode = feng3d.RenderMode.LINES;
+                        material.renderParams.renderMode = feng3d.RenderMode.LINES;
                     });
                     gameobject.transform.y = 3;
                 });

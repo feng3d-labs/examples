@@ -63,7 +63,7 @@ var feng3d;
                 planeMaterial["specular"] = 10;
                 particleMaterial = new feng3d.StandardMaterial("resources/blue.png");
                 particleMaterial.diffuseMethod.difuseTexture.format = feng3d.TextureFormat.RGBA;
-                particleMaterial.enableBlend = true;
+                particleMaterial.renderParams.enableBlend = true;
             }
             function initParticles(particleAnimator) {
                 particleAnimator.animations.billboard.enable = true;

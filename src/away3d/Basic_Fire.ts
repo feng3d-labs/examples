@@ -67,7 +67,7 @@ namespace feng3d
                 planeMaterial["specular"] = 10;
                 particleMaterial = new StandardMaterial("resources/blue.png");
                 particleMaterial.diffuseMethod.difuseTexture.format = TextureFormat.RGBA;
-                particleMaterial.enableBlend = true;
+                particleMaterial.renderParams.enableBlend = true;
             }
 
             function initParticles(particleAnimator: ParticleAnimator)

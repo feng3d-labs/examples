@@ -35,7 +35,7 @@ namespace feng3d
 
             textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
 
-            textureMaterial.enableBlend = true;
+            textureMaterial.renderParams.enableBlend = true;
             textureMaterial.diffuseMethod.color.a = 0.2;
         }
         /**

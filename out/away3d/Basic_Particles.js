@@ -36,7 +36,7 @@ var feng3d;
             meshRenderer.geometry = new feng3d.PlaneGeometry(0.10, 0.10, 1, 1, false);
             var material = meshRenderer.material = new feng3d.StandardMaterial("resources/blue.png");
             material.diffuseMethod.difuseTexture.format = feng3d.TextureFormat.RGBA;
-            material.enableBlend = true;
+            material.renderParams.enableBlend = true;
             var particleAnimator = _particleMesh.addComponent(feng3d.ParticleAnimator);
             particleAnimator.numParticles = 20000;
             //通过函数来创建粒子初始状态

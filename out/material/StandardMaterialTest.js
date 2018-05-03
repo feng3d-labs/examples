@@ -40,7 +40,7 @@ var feng3d;
             textureMaterial.diffuseMethod.difuseTexture.format = feng3d.TextureFormat.RGBA;
             // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
             textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
-            textureMaterial.enableBlend = true;
+            textureMaterial.renderParams.enableBlend = true;
             textureMaterial.diffuseMethod.color.a = 0.2;
         };
         /**

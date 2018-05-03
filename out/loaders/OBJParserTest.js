@@ -36,7 +36,7 @@ var feng3d;
             material.normalMethod.normalTexture.url = "resources/head_normals.jpg";
             material.specularMethod.specularTexture.url = "resources/head_specular.jpg";
             // var material = new ColorMaterial();
-            material.cullFace = feng3d.CullFace.NONE;
+            material.renderParams.cullFace = feng3d.CullFace.NONE;
             feng3d.ObjLoader.load(objUrl, function (gameObject) {
                 object = gameObject;
                 object.transform.sx = 20;

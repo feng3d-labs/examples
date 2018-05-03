@@ -37,10 +37,10 @@ namespace feng3d
             camera.lens = new PerspectiveLens(90);
 
             var torusMaterial = new StandardMaterial();
-            torusMaterial.specularMethod.specular = 0.5;
-            torusMaterial.ambientMethod.color.fromUnit(0x111111);
-            torusMaterial.ambientMethod.color.a = 0.25;
-            torusMaterial.envMapMethod.cubeTexture = cubeTexture;
+            torusMaterial.uniforms.u_specular.a = 0.5;
+            torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
+            torusMaterial.uniforms.u_ambient.a = 0.25;
+            torusMaterial.uniforms.s_envMap = cubeTexture;
 
             var torus = GameObject.create("torus");
             var model = torus.addComponent(MeshRenderer);

@@ -47,15 +47,15 @@ var feng3d;
             });
             function initObjects() {
                 var material = new feng3d.StandardMaterial();
-                material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
-                material.normalMethod.normalTexture.url = 'resources/head_normals.jpg';
-                material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
-                material.diffuseMethod.difuseTexture.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-                material.diffuseMethod.difuseTexture.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
-                material.normalMethod.normalTexture.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-                material.normalMethod.normalTexture.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
-                material.specularMethod.specularTexture.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-                material.specularMethod.specularTexture.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_diffuse.url = 'resources/head_diffuse.jpg';
+                material.uniforms.s_normal.url = 'resources/head_normals.jpg';
+                material.uniforms.s_specular.url = 'resources/head_specular.jpg';
+                material.uniforms.s_diffuse.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_diffuse.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_normal.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_normal.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_specular.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_specular.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
                 //初始化立方体
                 var plane = feng3d.GameObject.create();
                 plane.transform.y = -1;

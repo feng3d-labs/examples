@@ -38,7 +38,7 @@ var BillboardTest = /** @class */ (function (_super) {
         var textureMaterial = model.material = new feng3d.StandardMaterial();
         // textureMaterial.cullFace = CullFace.NONE;
         //
-        var texture = textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
+        var texture = textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';
         // var texture = textureMaterial.texture = new ImageDataTexture();
         // var canvas2D = document.createElement("canvas");
         // canvas2D.width = 256;

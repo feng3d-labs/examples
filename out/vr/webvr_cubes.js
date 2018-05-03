@@ -52,14 +52,14 @@ var feng3d;
                 model.geometry = new feng3d.TorusGeometry(0.02, 0.004, 32, 8, false);
                 var material = model.material = new feng3d.StandardMaterial();
                 material.renderParams.enableBlend = true;
-                material.diffuseMethod.color.a = 0.5;
+                material.uniforms.u_diffuse.a = 0.5;
                 crosshair.transform.z = 2;
                 camera.gameObject.addChild(crosshair);
                 room = feng3d.GameObject.create("room", function (gameobject) {
                     gameobject.addComponent(feng3d.MeshRenderer, function (meshRenderer) {
                         meshRenderer.geometry = new feng3d.CubeGeometry(6, 6, 6, 8, 8, 8);
                         var material = meshRenderer.material = new feng3d.StandardMaterial();
-                        material.diffuseMethod.color.fromUnit(0x404040);
+                        material.uniforms.u_diffuse.fromUnit(0x404040);
                         material.renderParams.renderMode = feng3d.RenderMode.LINES;
                     });
                     gameobject.transform.y = 3;
@@ -79,7 +79,7 @@ var feng3d;
                         object.addComponent(feng3d.MeshRenderer, function (component) {
                             component.geometry = geometry;
                             var material = component.material = new feng3d.StandardMaterial();
-                            material.diffuseMethod.color.fromUnit(Math.random() * 0xffffff);
+                            material.uniforms.u_diffuse.fromUnit(Math.random() * 0xffffff);
                         });
                         object.transform.position = feng3d.Vector3.random().scale(4).subNumber(2);
                         object.transform.rotation = feng3d.Vector3.random().scale(2 * Math.PI);

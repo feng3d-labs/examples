@@ -16,7 +16,7 @@ namespace feng3d
             model.geometry = new CubeGeometry(1, 1, 1, 1, 1, 1, false);
             //材质
             var material = model.material = new StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = 'resources/m.png';
+            material.uniforms.s_diffuse.url = 'resources/m.png';
 
             material.fogMethod.enable = true;
             material.fogMethod.fogColor = new Color(1, 1, 0);

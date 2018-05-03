@@ -62,7 +62,7 @@ var feng3d;
                 planeMaterial = new feng3d.StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
                 planeMaterial["specular"] = 10;
                 particleMaterial = new feng3d.StandardMaterial("resources/blue.png");
-                particleMaterial.diffuseMethod.difuseTexture.format = feng3d.TextureFormat.RGBA;
+                particleMaterial.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
                 particleMaterial.renderParams.enableBlend = true;
             }
             function initParticles(particleAnimator) {

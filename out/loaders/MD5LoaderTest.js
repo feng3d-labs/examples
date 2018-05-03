@@ -46,9 +46,9 @@ var feng3d;
                     var model = child.getComponent(feng3d.MeshRenderer);
                     if (model) {
                         var material = model.material;
-                        material.diffuseMethod.difuseTexture.url = "resources/hellknight/hellknight_diffuse.jpg";
-                        material.normalMethod.normalTexture.url = "resources/hellknight/hellknight_normals.png";
-                        material.specularMethod.specularTexture.url = "resources/hellknight/hellknight_specular.png";
+                        material.uniforms.s_diffuse.url = "resources/hellknight/hellknight_diffuse.jpg";
+                        material.uniforms.s_normal.url = "resources/hellknight/hellknight_normals.png";
+                        material.uniforms.s_specular.url = "resources/hellknight/hellknight_specular.png";
                     }
                 }
             }

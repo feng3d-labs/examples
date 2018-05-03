@@ -44,15 +44,15 @@ namespace feng3d
             function initObjects()
             {
                 var material = new StandardMaterial();
-                material.diffuseMethod.difuseTexture.url = 'resources/head_diffuse.jpg';
-                material.normalMethod.normalTexture.url = 'resources/head_normals.jpg';
-                material.specularMethod.specularTexture.url = 'resources/head_specular.jpg';
-                material.diffuseMethod.difuseTexture.wrapS = TextureWrap.MIRRORED_REPEAT;
-                material.diffuseMethod.difuseTexture.wrapT = TextureWrap.MIRRORED_REPEAT;
-                material.normalMethod.normalTexture.wrapS = TextureWrap.MIRRORED_REPEAT;
-                material.normalMethod.normalTexture.wrapT = TextureWrap.MIRRORED_REPEAT;
-                material.specularMethod.specularTexture.wrapS = TextureWrap.MIRRORED_REPEAT;
-                material.specularMethod.specularTexture.wrapT = TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_diffuse.url = 'resources/head_diffuse.jpg';
+                material.uniforms.s_normal.url = 'resources/head_normals.jpg';
+                material.uniforms.s_specular.url = 'resources/head_specular.jpg';
+                material.uniforms.s_diffuse.wrapS = TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_diffuse.wrapT = TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_normal.wrapS = TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_normal.wrapT = TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_specular.wrapS = TextureWrap.MIRRORED_REPEAT;
+                material.uniforms.s_specular.wrapT = TextureWrap.MIRRORED_REPEAT;
 
                 //初始化立方体
                 var plane = GameObject.create();

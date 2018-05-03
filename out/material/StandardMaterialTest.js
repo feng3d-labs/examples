@@ -35,13 +35,13 @@ var feng3d;
             // model.geometry = new PlaneGeometry();
             //材质
             var textureMaterial = model.material = new feng3d.StandardMaterial();
-            textureMaterial.diffuseMethod.difuseTexture.url = 'resources/m.png';
-            // textureMaterial.diffuseMethod.difuseTexture.url = 'resources/nonpowerof2.png';
-            textureMaterial.diffuseMethod.difuseTexture.format = feng3d.TextureFormat.RGBA;
+            textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';
+            // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
+            textureMaterial.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
             // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
-            textureMaterial.diffuseMethod.difuseTexture.anisotropy = 16;
+            textureMaterial.uniforms.s_diffuse.anisotropy = 16;
             textureMaterial.renderParams.enableBlend = true;
-            textureMaterial.diffuseMethod.color.a = 0.2;
+            textureMaterial.uniforms.u_diffuse.a = 0.2;
         };
         /**
          * 更新

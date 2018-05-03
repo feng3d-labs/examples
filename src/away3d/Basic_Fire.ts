@@ -66,7 +66,7 @@ namespace feng3d
                 planeMaterial = new StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
                 planeMaterial["specular"] = 10;
                 particleMaterial = new StandardMaterial("resources/blue.png");
-                particleMaterial.diffuseMethod.difuseTexture.format = TextureFormat.RGBA;
+                particleMaterial.uniforms.s_diffuse.format = TextureFormat.RGBA;
                 particleMaterial.renderParams.enableBlend = true;
             }
 

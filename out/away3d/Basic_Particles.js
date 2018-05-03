@@ -35,7 +35,7 @@ var feng3d;
             var meshRenderer = _particleMesh.addComponent(feng3d.MeshRenderer);
             meshRenderer.geometry = new feng3d.PlaneGeometry(0.10, 0.10, 1, 1, false);
             var material = meshRenderer.material = new feng3d.StandardMaterial("resources/blue.png");
-            material.diffuseMethod.difuseTexture.format = feng3d.TextureFormat.RGBA;
+            material.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
             material.renderParams.enableBlend = true;
             var particleAnimator = _particleMesh.addComponent(feng3d.ParticleAnimator);
             particleAnimator.numParticles = 20000;

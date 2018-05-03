@@ -23,7 +23,7 @@ var feng3d;
             model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
             //材质
             var material = model.material = new feng3d.StandardMaterial();
-            material.diffuseMethod.difuseTexture.url = 'resources/m.png';
+            material.uniforms.s_diffuse.url = 'resources/m.png';
             material.fogMethod.enable = true;
             material.fogMethod.fogColor = new feng3d.Color(1, 1, 0);
             material.fogMethod.minDistance = 2;

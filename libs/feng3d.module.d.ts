@@ -763,12 +763,6 @@ declare namespace feng3d {
         create(raw: GameObjectRaw): GameObject;
     }
     var rawData: RawData;
-    interface GameObjectRaw {
-        __class__: "feng3d.GameObject";
-        name?: string;
-        children?: GameObjectRaw[];
-        components?: ComponentRaw[];
-    }
     type GeometryRaw = SegmentGeometryRaw | PlaneGeometryRaw | CubeGeometryRaw | SphereGeometryRaw | CapsuleGeometryRaw | CylinderGeometryRaw | ConeGeometryRaw | TorusGeometryRaw;
     interface TransformRaw {
         __class__: "feng3d.Transform";
@@ -980,11 +974,6 @@ declare namespace feng3d {
         SegmentMaterialRaw: SegmentMaterialRaw;
         StandardMaterialRaw: StandardMaterialRaw;
     }
-    interface ComponentRawMap {
-        TransformRaw: TransformRaw;
-        MeshRendererRaw: MeshRendererRaw;
-    }
-    type ComponentRaw = ValueOf<ComponentRawMap>;
 }
 declare namespace feng3d {
     /**
@@ -1289,7 +1278,14 @@ declare namespace feng3d {
          */
         fromVector2(vector: Vector2, z?: number): this;
         fromArray(array: ArrayLike<number>, offset?: number): this;
+        /**
+         * 转换为Vector2
+         */
         toVector2(vector?: Vector2): Vector2;
+        /**
+         * 转换为Vector4
+         */
+        toVector4(vector4?: Vector4): Vector4;
         /**
          * 加上指定向量得到新向量
          * @param v 加向量
@@ -3526,7 +3522,7 @@ declare namespace feng3d {
      * 颜色
      * @author feng 2016-09-24
      */
-    class Color {
+    class Color3 {
         /**
          * 红[0,1]
          */
@@ -3540,39 +3536,34 @@ declare namespace feng3d {
          */
         b: number;
         /**
-         * 透明度[0,1]
-         */
-        a: number;
-        /**
          * 构建颜色
          * @param r     红[0,1]
          * @param g     绿[0,1]
          * @param b     蓝[0,1]
-         * @param a     透明度[0,1]
          */
-        constructor(r?: number, g?: number, b?: number, a?: number);
-        setTo(r: number, g: number, b: number, a?: number): this;
+        constructor(r?: number, g?: number, b?: number);
+        setTo(r: number, g: number, b: number): this;
         /**
          * 通过
          * @param color
-         * @param hasAlpha
          */
-        fromUnit(color: number, hasAlpha?: boolean): this;
-        toInt(hasAlpha?: boolean): number;
+        fromUnit(color: number): this;
+        toInt(): number;
         /**
          * 输出16进制字符串
          */
-        toHexString(hasAlpha?: boolean): string;
+        toHexString(): string;
         /**
          * 混合颜色
          * @param color 混入的颜色
          * @param rate  混入比例
          */
-        mix(color: Color, rate?: number): this;
+        mix(color: Color3, rate?: number): this;
         /**
          * 拷贝
          */
-        copyFrom(color: Color): this;
+        copyFrom(color: Color3): this;
+        toVector3(vector3?: Vector3): Vector3;
         /**
          * 输出字符串
          */
@@ -6313,7 +6304,7 @@ declare namespace feng3d {
          * 世界投影矩阵
          */
         u_viewProjection: Matrix4x4;
-        u_diffuseInput: Color;
+        u_diffuseInput: Color3;
         /**
          * 透明阈值，用于透明检测
          */
@@ -6407,7 +6398,7 @@ declare namespace feng3d {
         /**
          * 点光源颜色数组
          */
-        u_pointLightColors: Color[];
+        u_pointLightColors: Color3[];
         /**
          * 点光源光照强度数组
          */
@@ -6425,7 +6416,7 @@ declare namespace feng3d {
         /**
          * 方向光源颜色数组
          */
-        u_directionalLightColors: Color[];
+        u_directionalLightColors: Color3[];
         /**
          * 方向光源光照强度数组
          */
@@ -6433,19 +6424,19 @@ declare namespace feng3d {
         /**
          * 场景环境光
          */
-        u_sceneAmbientColor: Color;
+        u_sceneAmbientColor: Color3;
         /**
          * 基本颜色
          */
-        u_diffuse: Color;
+        u_diffuse: Color3;
         /**
          * 镜面反射颜色
          */
-        u_specular: Color;
+        u_specular: Color3;
         /**
          * 环境颜色
          */
-        u_ambient: Color;
+        u_ambient: Color3;
         /**
          * 高光系数
          */
@@ -6481,7 +6472,7 @@ declare namespace feng3d {
         /**
          * 雾颜色
          */
-        u_fogColor: Color;
+        u_fogColor: Color3;
         /**
          * 雾最近距离
          */
@@ -6513,7 +6504,7 @@ declare namespace feng3d {
         /**
          * 线框颜色
          */
-        u_wireframeColor: Color;
+        u_wireframeColor: Color3;
     }
 }
 declare namespace feng3d {
@@ -7255,7 +7246,7 @@ declare namespace feng3d {
     };
     class OutLineComponent extends Component {
         size: number;
-        color: Color;
+        color: any;
         outlineMorphFactor: number;
         init(gameobject: GameObject): void;
         preRender(renderAtomic: RenderAtomic): void;
@@ -7268,7 +7259,7 @@ declare namespace feng3d {
         /**
          * 描边颜色
          */
-        u_outlineColor: Color;
+        u_outlineColor: Color3;
         /**
          * 描边形态因子
          * (0.0，1.0):0.0表示延法线方向，1.0表示延顶点方向
@@ -7299,7 +7290,7 @@ declare namespace feng3d {
     class WireframeComponent extends Component {
         serializable: boolean;
         showInInspector: boolean;
-        color: Color;
+        color: Color3;
         init(gameobject: GameObject): void;
         preRender(renderAtomic: RenderAtomic): void;
     }
@@ -7314,7 +7305,7 @@ declare namespace feng3d {
      */
     class CartoonComponent extends Component {
         outlineSize: number;
-        outlineColor: Color;
+        outlineColor: any;
         outlineMorphFactor: number;
         /**
          * 半兰伯特值diff，分段值 4个(0.0,1.0)
@@ -7632,6 +7623,17 @@ declare namespace feng3d {
     enum GameObjectFlag {
         feng3d = 1,
         editor = 2,
+    }
+    interface ComponentRawMap {
+        TransformRaw: TransformRaw;
+        MeshRendererRaw: MeshRendererRaw;
+    }
+    type ComponentRaw = ValueOf<ComponentRawMap>;
+    interface GameObjectRaw {
+        __class__?: "feng3d.GameObject";
+        name?: string;
+        children?: GameObjectRaw[];
+        components?: ComponentRaw[];
     }
     /**
      * Base class for all entities in feng3d scenes.
@@ -8163,14 +8165,14 @@ declare namespace feng3d {
          * 是否编辑器模式
          */
         iseditor: boolean;
-        /**
+        /**W
          * 背景颜色
          */
-        background: Color;
+        background: any;
         /**
          * 环境光强度
          */
-        ambientColor: Color;
+        ambientColor: Color3;
         /**
          * 指定更新脚本标记，用于过滤需要调用update的脚本
          */
@@ -8451,14 +8453,14 @@ declare namespace feng3d {
      */
     class PointInfo {
         position: Vector3;
-        color: Color;
+        color: Color3;
         normal: Vector3;
         uv: Vector2;
         /**
          * 创建点
          * @param position 坐标
          */
-        constructor(position?: Vector3, color?: Color, uv?: Vector2, normal?: Vector3);
+        constructor(position?: Vector3, color?: Color3, uv?: Vector2, normal?: Vector3);
     }
 }
 declare namespace feng3d {
@@ -8506,8 +8508,8 @@ declare namespace feng3d {
     class Segment {
         start: Vector3;
         end: Vector3;
-        startColor: Color;
-        endColor: Color;
+        startColor: Vector4;
+        endColor: Vector4;
         /**
          * 创建线段
          * @param start 起点坐标
@@ -8516,7 +8518,7 @@ declare namespace feng3d {
          * @param colorEnd 终点颜色
          * @param thickness 线段厚度
          */
-        constructor(start: Vector3, end: Vector3, colorStart?: Color, colorEnd?: Color);
+        constructor(start: Vector3, end: Vector3, colorStart?: Vector4, colorEnd?: Vector4);
     }
 }
 declare namespace feng3d {
@@ -9231,7 +9233,7 @@ declare namespace feng3d {
         /**
          * 颜色
          */
-        u_color: Color;
+        u_color: Color3;
     }
 }
 declare namespace feng3d {
@@ -9246,19 +9248,19 @@ declare namespace feng3d {
          * @param color 颜色
          * @param alpha 透明的
          */
-        constructor(color?: Color);
+        constructor(color?: Color3);
         preRender(renderAtomic: RenderAtomic): void;
     }
     class ColorUniforms {
         /**
          * 颜色
          */
-        u_diffuseInput: Color;
+        u_diffuseInput: Color3;
     }
 }
 declare namespace feng3d {
     interface Uniforms {
-        u_segmentColor: Color;
+        u_segmentColor: Color3;
     }
     /**
      * 线段材质
@@ -9276,7 +9278,8 @@ declare namespace feng3d {
         /**
          * 颜色
          */
-        u_segmentColor: Color;
+        u_segmentColor: Color3;
+        u_segmentAlpha: number;
     }
 }
 declare namespace feng3d {
@@ -9292,7 +9295,7 @@ declare namespace feng3d {
         /**
          * 颜色
          */
-        u_color: Color;
+        u_color: Color3;
         /**
          * 纹理数据
          */
@@ -9322,7 +9325,7 @@ declare namespace feng3d {
         /**
          * 基本颜色
          */
-        u_diffuse: Color;
+        u_diffuse: any;
         /**
          * 透明阈值，透明度小于该值的像素被片段着色器丢弃
          */
@@ -9338,7 +9341,7 @@ declare namespace feng3d {
         /**
          * 镜面反射颜色
          */
-        u_specular: Color;
+        u_specular: Color3;
         /**
          * 高光系数
          */
@@ -9350,7 +9353,7 @@ declare namespace feng3d {
         /**
          * 颜色
          */
-        u_ambient: Color;
+        u_ambient: Color3;
         /**
          * 环境映射贴图
          */
@@ -9376,7 +9379,7 @@ declare namespace feng3d {
         /**
          * 基本颜色
          */
-        color: Color;
+        color: any;
         /**
          * 透明阈值，透明度小于该值的像素被片段着色器丢弃
          */
@@ -9420,11 +9423,11 @@ declare namespace feng3d {
         /**
          * 镜面反射颜色
          */
-        specularColor: Color;
+        specularColor: Color3;
         /**
          * 镜面反射光反射强度
          */
-        specular: number;
+        specular: any;
         /**
          * 高光系数
          */
@@ -9451,12 +9454,12 @@ declare namespace feng3d {
         /**
          * 颜色
          */
-        color: Color;
+        color: Color3;
         private _color;
         /**
          * 构建
          */
-        constructor(ambientUrl?: string, color?: Color);
+        constructor(ambientUrl?: string, color?: Color3);
         preRender(renderAtomic: RenderAtomic): void;
     }
 }
@@ -9477,7 +9480,7 @@ declare namespace feng3d {
         /**
          * 雾的颜色
          */
-        fogColor: Color;
+        fogColor: Color3;
         density: number;
         /**
          * 雾模式
@@ -9489,7 +9492,7 @@ declare namespace feng3d {
          * @param maxDistance   雾远距离
          * @param density       雾浓度
          */
-        constructor(fogColor?: Color, minDistance?: number, maxDistance?: number, density?: number, mode?: FogMode);
+        constructor(fogColor?: Color3, minDistance?: number, maxDistance?: number, density?: number, mode?: FogMode);
         private enableChanged();
         preRender(renderAtomic: RenderAtomic): void;
     }
@@ -9558,7 +9561,7 @@ declare namespace feng3d {
         /**
          * 颜色
          */
-        color: Color;
+        color: Color3;
         /**
          * 光照强度
          */
@@ -9966,7 +9969,7 @@ declare namespace feng3d {
         /**
          * 颜色
          */
-        color: Color;
+        color: Color3;
     }
 }
 declare namespace feng3d {

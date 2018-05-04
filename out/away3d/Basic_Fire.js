@@ -76,7 +76,7 @@ var feng3d;
                 particleAnimator.numParticles = 500;
                 particleAnimator.generateFunctions.push({
                     generate: function (particle) {
-                        particle.color = new feng3d.Color(1, 0, 0, 1).mix(new feng3d.Color(0, 1, 0, 1), particle.index / particle.total);
+                        particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
                         particle.birthTime = Math.random() * 5;
                         particle.lifetime = Math.random() * 4 + 0.1;
                         var degree1 = Math.random() * Math.PI * 2;

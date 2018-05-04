@@ -40,7 +40,7 @@ var feng3d;
             //变化旋转
             setInterval(function () {
                 gameObject.transform.ry += 1;
-                pointMaterial.pointSize = 1 + 5 * Math.sin(gameObject.transform.ry / 30);
+                pointMaterial.uniforms.u_PointSize = 1 + 5 * Math.sin(gameObject.transform.ry / 30);
             }, 15);
         };
         /**

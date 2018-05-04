@@ -40,10 +40,21 @@ namespace feng3d
 
             function initMaterials()
             {
-                planeMaterial = new StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
-                sphereMaterial = new StandardMaterial("resources/beachball_diffuse.jpg", "", "resources/beachball_specular.jpg");
-                cubeMaterial = new StandardMaterial("resources/trinket_diffuse.jpg", "resources/trinket_normal.jpg", "resources/trinket_specular.jpg");
-                torusMaterial = new StandardMaterial("resources/weave_diffuse.jpg", "resources/weave_normal.jpg", "resources/weave_diffuse.jpg");
+                planeMaterial = new StandardMaterial();
+                planeMaterial.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
+                planeMaterial.uniforms.s_normal.url = "resources/floor_normal.jpg";
+                planeMaterial.uniforms.s_specular.url = "resources/floor_specular.jpg";
+                sphereMaterial = new StandardMaterial();
+                sphereMaterial.uniforms.s_diffuse.url = "resources/beachball_diffuse.jpg";
+                sphereMaterial.uniforms.s_specular.url = "resources/beachball_specular.jpg";
+                cubeMaterial = new StandardMaterial();
+                cubeMaterial.uniforms.s_diffuse.url = "resources/trinket_diffuse.jpg";
+                cubeMaterial.uniforms.s_normal.url = "resources/trinket_normal.jpg";
+                cubeMaterial.uniforms.s_specular.url = "resources/trinket_specular.jpg";
+                torusMaterial = new StandardMaterial();
+                cubeMaterial.uniforms.s_diffuse.url = "resources/weave_diffuse.jpg";
+                cubeMaterial.uniforms.s_normal.url = "resources/weave_normal.jpg";
+                cubeMaterial.uniforms.s_specular.url = "resources/weave_diffuse.jpg";
             }
 
             function initLights()

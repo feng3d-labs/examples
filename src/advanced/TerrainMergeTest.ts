@@ -21,7 +21,9 @@ namespace feng3d
             var terrain = feng3d.GameObject.create("terrain");
             var meshRenderer = terrain.addComponent(feng3d.MeshRenderer);
             meshRenderer.geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg');
-            var material = new feng3d.StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
+            var material = new feng3d.StandardMaterial();
+            material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
+            material.uniforms.s_normal.url = root + "terrain_normals.jpg";
 
             // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3(50, 50, 50));
             // material.terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png', root + 'test1.jpg', new Vector3(50, 50, 50));

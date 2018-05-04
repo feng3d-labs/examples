@@ -20,7 +20,8 @@ namespace feng3d
             var plane = GameObject.create();
             var model = plane.addComponent(MeshRenderer);
             model.geometry = new PlaneGeometry(7, 7);
-            var material = model.material = new StandardMaterial("resources/floor_diffuse.jpg");
+            var material = model.material = new StandardMaterial();
+            material.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
             scene.gameObject.addChild(plane);
 
             ticker.onframe(() =>

@@ -59,9 +59,13 @@ var feng3d;
                 scene.gameObject.addChild(gameObject);
             }
             function initMaterials() {
-                planeMaterial = new feng3d.StandardMaterial("resources/floor_diffuse.jpg", "resources/floor_normal.jpg", "resources/floor_specular.jpg");
+                planeMaterial = new feng3d.StandardMaterial();
+                planeMaterial.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
+                planeMaterial.uniforms.s_normal.url = "resources/floor_normal.jpg";
+                planeMaterial.uniforms.s_specular.url = "resources/floor_specular.jpg";
                 planeMaterial["specular"] = 10;
-                particleMaterial = new feng3d.StandardMaterial("resources/blue.png");
+                particleMaterial = new feng3d.StandardMaterial();
+                particleMaterial.uniforms.s_diffuse.url = "resources/blue.png";
                 particleMaterial.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
                 particleMaterial.renderParams.enableBlend = true;
             }

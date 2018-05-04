@@ -27,7 +27,8 @@ namespace feng3d
             // _particleMesh.geometry = new PointGeometry();
             var meshRenderer = _particleMesh.addComponent(MeshRenderer);
             meshRenderer.geometry = new PlaneGeometry(0.10, 0.10, 1, 1, false);
-            var material = meshRenderer.material = new StandardMaterial("resources/blue.png");
+            var material = meshRenderer.material = new StandardMaterial();
+            material.uniforms.s_diffuse.url = "resources/blue.png";
             material.uniforms.s_diffuse.format = TextureFormat.RGBA;
             material.renderParams.enableBlend = true;
             var particleAnimator = _particleMesh.addComponent(ParticleAnimator);

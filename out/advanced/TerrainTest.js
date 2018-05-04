@@ -31,7 +31,9 @@ var feng3d;
             var meshRenderer = terrain.addComponent(feng3d.MeshRenderer);
             // meshRenderer.geometry = new feng3d.TerrainGeometry();
             meshRenderer.geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg', 500, 100, 500);
-            var material = new feng3d.StandardMaterial(root + 'terrain_diffuse.jpg', root + "terrain_normals.jpg");
+            var material = new feng3d.StandardMaterial();
+            material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
+            material.uniforms.s_normal.url = root + "terrain_normals.jpg";
             //
             material.terrainMethod.blendTexture.url = root + 'terrain_splats.png';
             material.terrainMethod.splatTexture1.url = root + 'beach.jpg';

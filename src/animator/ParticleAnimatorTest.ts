@@ -46,7 +46,7 @@ namespace feng3d
             particleAnimator.generateFunctions.push({
                 generate: (particle) =>
                 {
-                    particle.color = new feng3d.Color(1, 0, 0, 1).mix(new feng3d.Color(0, 1, 0, 1), particle.index / particle.total);
+                    particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
                 }, priority: 0
             });
             particleAnimator.isPlaying = true;

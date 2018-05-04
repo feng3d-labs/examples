@@ -83,7 +83,7 @@ namespace feng3d
                 particleAnimator.generateFunctions.push({
                     generate: (particle) =>
                     {
-                        particle.color = new Color(1, 0, 0, 1).mix(new Color(0, 1, 0, 1), particle.index / particle.total);
+                        particle.color = new Color4(1, 0, 0, 1).mix(new Color4(0, 1, 0, 1), particle.index / particle.total);
 
                         particle.birthTime = Math.random() * 5;
                         particle.lifetime = Math.random() * 4 + 0.1;

@@ -46,7 +46,7 @@ var feng3d;
                 gameobject.transform.ry += 1;
             }, 15);
             setInterval(function () {
-                colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1), true);
+                colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
             }, 1000);
         };
         /**

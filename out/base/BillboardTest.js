@@ -20,7 +20,7 @@ var BillboardTest = /** @class */ (function (_super) {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         camera.gameObject.addComponent(feng3d.FPSController);
-        scene.background.setTo(0.3, 0.3, 0.3);
+        scene.background.setTo(0.3, 0.3, 0.3, 1);
         var cube = feng3d.GameObjectFactory.createCube();
         cube.transform.z = 3;
         scene.gameObject.addChild(cube);

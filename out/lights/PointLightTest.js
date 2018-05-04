@@ -78,21 +78,21 @@ var feng3d;
             }
             function initLights() {
                 //
-                var lightColor0 = new Color(1, 0, 0, 1);
+                var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
                 var meshRenderer = light0.addComponent(feng3d.MeshRenderer);
                 meshRenderer.geometry = new feng3d.SphereGeometry(0.05);
                 //初始化点光源
                 var pointLight0 = light0.addComponent(feng3d.PointLight);
-                pointLight0.color = lightColor0;
+                pointLight0.color = lightColor0.toColor3();
                 meshRenderer.material = new feng3d.ColorMaterial(lightColor0);
                 scene.gameObject.addChild(light0);
                 //
-                var lightColor1 = new Color(0, 1, 0, 1);
+                var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
                 meshRenderer = light1.addComponent(feng3d.MeshRenderer);
                 meshRenderer.geometry = new feng3d.SphereGeometry(0.05);
                 //初始化点光源
                 var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
-                pointLight1.color = lightColor1;
+                pointLight1.color = lightColor1.toColor3();
                 meshRenderer.material = new feng3d.ColorMaterial(lightColor1);
                 scene.gameObject.addChild(light1);
             }

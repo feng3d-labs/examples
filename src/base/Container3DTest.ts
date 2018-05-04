@@ -37,7 +37,7 @@ class Container3DTest extends feng3d.Script
         this.num++;
 
         if (this.num % 60 == 0)
-            this.colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1), true);
+            this.colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
     }
 
     /**

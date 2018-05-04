@@ -44,7 +44,7 @@ var feng3d;
             var light1 = feng3d.GameObject.create();
             var pointLight1 = light1.addComponent(feng3d.PointLight);
             // pointLight1.range = 1000;
-            pointLight1.color = new feng3d.Color(1, 1, 0, 1);
+            pointLight1.color = new feng3d.Color3(1, 1, 0);
             light1.transform.y = 3;
             // scene.transform.addChild(light1);
             //

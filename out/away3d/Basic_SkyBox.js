@@ -44,7 +44,7 @@ var feng3d;
             camera.transform.lookAt(new feng3d.Vector3());
             camera.lens = new feng3d.PerspectiveLens(90);
             var torusMaterial = new feng3d.StandardMaterial();
-            torusMaterial.uniforms.u_specular.a = 0.5;
+            // torusMaterial.uniforms.u_specular.a = 0.5;
             torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
             torusMaterial.uniforms.u_ambient.a = 0.25;
             torusMaterial.uniforms.s_envMap = cubeTexture;

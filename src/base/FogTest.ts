@@ -19,7 +19,7 @@ namespace feng3d
             material.uniforms.s_diffuse.url = 'resources/m.png';
 
             material.fogMethod.enable = true;
-            material.fogMethod.fogColor = new Color(1, 1, 0);
+            material.fogMethod.fogColor = new Color3(1, 1, 0);
             material.fogMethod.minDistance = 2;
             material.fogMethod.maxDistance = 3;
 

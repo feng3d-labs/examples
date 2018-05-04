@@ -24,10 +24,10 @@ var feng3d;
             //材质
             var material = model.material = new feng3d.StandardMaterial();
             material.uniforms.s_diffuse.url = 'resources/m.png';
-            material.fogMethod.enable = true;
-            material.fogMethod.fogColor = new feng3d.Color3(1, 1, 0);
-            material.fogMethod.minDistance = 2;
-            material.fogMethod.maxDistance = 3;
+            material.uniforms.u_fogMode = feng3d.FogMode.LINEAR;
+            material.uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
+            material.uniforms.u_fogMinDistance = 2;
+            material.uniforms.u_fogMaxDistance = 3;
         };
         ScriptDemo.prototype.update = function () {
             this.cube.transform.ry += 1;

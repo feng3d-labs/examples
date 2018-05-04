@@ -16,10 +16,10 @@ namespace feng3d
             var material = model.material = new StandardMaterial();
             material.uniforms.s_diffuse.url = 'resources/m.png';
 
-            material.fogMethod.enable = true;
-            material.fogMethod.fogColor = new Color3(1, 1, 0);
-            material.fogMethod.minDistance = 2;
-            material.fogMethod.maxDistance = 3;
+            material.uniforms.u_fogMode = FogMode.LINEAR;
+            material.uniforms.u_fogColor = new Color3(1, 1, 0);
+            material.uniforms.u_fogMinDistance = 2;
+            material.uniforms.u_fogMaxDistance = 3;
         }
 
         update()

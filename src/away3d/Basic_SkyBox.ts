@@ -38,8 +38,8 @@ namespace feng3d
 
             var torusMaterial = new StandardMaterial();
             // torusMaterial.uniforms.u_specular.a = 0.5;
-            torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
-            torusMaterial.uniforms.u_ambient.a = 0.25;
+            // torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
+            // torusMaterial.uniforms.u_ambient.a = 0.25;
             torusMaterial.uniforms.s_envMap = cubeTexture;
 
             var torus = GameObject.create("torus");

@@ -56,9 +56,9 @@ var feng3d;
                 cubeMaterial.uniforms.s_normal.url = "resources/trinket_normal.jpg";
                 cubeMaterial.uniforms.s_specular.url = "resources/trinket_specular.jpg";
                 torusMaterial = new feng3d.StandardMaterial();
-                cubeMaterial.uniforms.s_diffuse.url = "resources/weave_diffuse.jpg";
-                cubeMaterial.uniforms.s_normal.url = "resources/weave_normal.jpg";
-                cubeMaterial.uniforms.s_specular.url = "resources/weave_diffuse.jpg";
+                torusMaterial.uniforms.s_diffuse.url = "resources/weave_diffuse.jpg";
+                torusMaterial.uniforms.s_normal.url = "resources/weave_normal.jpg";
+                torusMaterial.uniforms.s_specular.url = "resources/weave_diffuse.jpg";
             }
             function initLights() {
                 scene.ambientColor.a = 0.2;

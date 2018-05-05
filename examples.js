@@ -5,14 +5,14 @@ window.onload = function ()
   var type = GetQueryString("type");
 
   var scene = feng3d.GameObject.create("Untitled").addComponent(feng3d.Scene3D)
-  scene.background = new feng3d.Color(0.408, 0.38, 0.357, 1.0);
+  scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
   var camera = feng3d.GameObject.create("Main Camera").addComponent(feng3d.Camera);
   camera.transform.position = new feng3d.Vector3(0, 1, -10);
   scene.gameObject.addChild(camera.gameObject);
 
   var engine = new feng3d.Engine(null, scene, camera);
-  scene.gameObject.addComponent(feng3d.ScriptComponent).url = "out/" + type + ".ts";
+  scene.gameObject.addComponent(feng3d.ScriptComponent).script = "out/" + type + ".ts";
 
   function GetQueryString(name)
   {

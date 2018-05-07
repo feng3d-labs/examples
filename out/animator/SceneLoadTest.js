@@ -20,7 +20,7 @@ var feng3d;
          */
         SceneLoadTest.prototype.init = function () {
             var view3D = new feng3d.Engine();
-            feng3d.Loader.loadText("resources/scene/Untitled.scene", function (content) {
+            feng3d.Loader.loadText("resources/scene/Untitled.scene.json", function (content) {
                 var json = JSON.parse(content);
                 var sceneobject = feng3d.serialization.deserialize(json);
                 var scene = sceneobject.getComponent(feng3d.Scene3D);

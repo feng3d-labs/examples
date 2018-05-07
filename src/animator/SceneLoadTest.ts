@@ -10,7 +10,7 @@ namespace feng3d
 
             var view3D = new feng3d.Engine();
 
-            feng3d.Loader.loadText("resources/scene/Untitled.scene", (content) =>
+            feng3d.Loader.loadText("resources/scene/Untitled.scene.json", (content) =>
             {
                 var json = JSON.parse(content);
                 var sceneobject = serialization.deserialize(json);

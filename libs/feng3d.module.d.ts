@@ -884,18 +884,6 @@ declare namespace feng3d {
         z?: number;
         w?: number;
     }
-    interface TextureInfoRaw {
-        anisotropy?: number;
-        flipY?: boolean;
-        format?: TextureFormat;
-        generateMipmap?: boolean;
-        magFilter?: TextureMagFilter;
-        minFilter?: TextureMinFilter;
-        premulAlpha?: boolean;
-        type?: TextureDataType;
-        wrapS?: TextureWrap;
-        wrapT?: TextureWrap;
-    }
     interface Texture2DRaw extends TextureInfoRaw {
         "__class__": "feng3d.Texture2D";
         url?: "";
@@ -951,9 +939,7 @@ declare namespace feng3d {
 declare var SERIALIZE_KEY: string;
 declare namespace feng3d {
     var serialization: {
-        defaultvaluedontsave: boolean;
-        compress: boolean;
-        serialize: (target: any) => SerializeVO;
+        serialize: (target: any) => any;
         deserialize: (result: any) => any;
         getSerializableMembers: (object: Object, serializableMembers?: {
             [propertyname: string]: any;
@@ -962,12 +948,6 @@ declare namespace feng3d {
         };
         clone: (target: any) => any;
     };
-    interface SerializeVO {
-        defaultvaluedontsave: boolean;
-        compress: boolean;
-        strings: string[];
-        value: any;
-    }
 }
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -6502,11 +6482,23 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    interface TextureInfoRaw {
+        anisotropy?: number;
+        flipY?: boolean;
+        format?: TextureFormat;
+        generateMipmap?: boolean;
+        magFilter?: TextureMagFilter;
+        minFilter?: TextureMinFilter;
+        premulAlpha?: boolean;
+        type?: TextureDataType;
+        wrapS?: TextureWrap;
+        wrapT?: TextureWrap;
+    }
     /**
      * 纹理信息
      * @author feng 2016-12-20
      */
-    abstract class TextureInfo extends EventDispatcher {
+    abstract class TextureInfo {
         /**
          * 纹理类型
          */
@@ -6515,27 +6507,22 @@ declare namespace feng3d {
          * 格式
          */
         format: TextureFormat;
-        protected _format: TextureFormat;
         /**
          * 数据类型
          */
         type: TextureDataType;
-        private _type;
         /**
          * 是否生成mipmap
          */
         generateMipmap: boolean;
-        private _generateMipmap;
         /**
          * 对图像进行Y轴反转。默认值为false
          */
         flipY: boolean;
-        private _flipY;
         /**
          * 将图像RGB颜色值得每一个分量乘以A。默认为false
          */
         premulAlpha: boolean;
-        private _premulAlpha;
         minFilter: TextureMinFilter;
         magFilter: TextureMagFilter;
         /**
@@ -6570,6 +6557,7 @@ declare namespace feng3d {
          * 是否失效
          */
         private _invalid;
+        constructor(raw?: TextureInfoRaw);
         /**
          * 判断数据是否满足渲染需求
          */
@@ -8901,6 +8889,9 @@ declare namespace feng3d {
 declare namespace feng3d {
 }
 declare namespace feng3d {
+    class MaterialFactory {
+    }
+    var materialFactory: MaterialFactory;
     /**
      * 材质
      * @author feng 2016-05-02
@@ -9007,8 +8998,10 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    interface IStandardMaterial {
-        uniforms: StandardUniforms;
+    interface MaterialFactory {
+        create(shader: "standard"): Material & {
+            uniforms: StandardUniforms;
+        };
     }
     /**
      * 标准材质
@@ -9100,6 +9093,9 @@ declare namespace feng3d {
         u_fogMode: FogMode;
         constructor();
     }
+    var Mat: {
+        standard: typeof StandardUniforms;
+    };
 }
 declare namespace feng3d {
     /**
@@ -9425,6 +9421,22 @@ declare namespace feng3d {
          */
         constructor();
         preRender(renderAtomic: RenderAtomic): void;
+    }
+    interface MaterialFactory {
+        create(shader: "terrain"): Material & {
+            uniforms: TerrainUniforms;
+        };
+    }
+    class TerrainUniforms extends StandardUniforms {
+        s_splatTexture1: Texture2D;
+        s_splatTexture2: Texture2D;
+        s_splatTexture3: Texture2D;
+        s_blendTexture: Texture2D;
+        u_splatRepeats: Vector4;
+        /**
+         * 构建材质
+         */
+        constructor();
     }
 }
 declare namespace feng3d {

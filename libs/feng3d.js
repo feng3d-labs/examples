@@ -1866,14 +1866,6 @@ var SERIALIZE_KEY = "__serialize__";
 });
 (function (feng3d) {
     feng3d.serialization = {
-        /**
-         * 默认数据不保存
-         */
-        defaultvaluedontsave: true,
-        /**
-         * 是否压缩
-         */
-        compress: false,
         serialize: serialize,
         deserialize: deserialize,
         getSerializableMembers: getSerializableMembers,
@@ -1904,31 +1896,15 @@ var SERIALIZE_KEY = "__serialize__";
         memberslist = memberslist.sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
         return memberslist;
     }
-    var defaultSerializeVO = {
-        defaultvaluedontsave: true,
-        compress: false,
-        strings: [],
-        value: null
-    };
     function serialize(target) {
-        var result = {
-            defaultvaluedontsave: feng3d.serialization.defaultvaluedontsave,
-            compress: feng3d.serialization.compress,
-            strings: [],
-            value: null
-        };
-        result.value = _serialize(target, result);
+        var result = _serialize(target);
         return result;
     }
     function deserialize(result) {
-        if (result.value)
-            var object = _deserialize(result.value, result);
-        else
-            var object = _deserialize(result);
+        var object = _deserialize(result);
         return object;
     }
-    function _serialize(target, serializeVO) {
-        serializeVO = serializeVO || defaultSerializeVO;
+    function _serialize(target) {
         //基础类型
         if (target == undefined
             || target == null
@@ -1947,7 +1923,7 @@ var SERIALIZE_KEY = "__serialize__";
         if (target.constructor === Array) {
             var arr = [];
             for (var i = 0; i < target.length; i++) {
-                arr[i] = _serialize(target[i], serializeVO);
+                arr[i] = _serialize(target[i]);
             }
             return arr;
         }
@@ -1956,7 +1932,7 @@ var SERIALIZE_KEY = "__serialize__";
             for (var key in target) {
                 if (target.hasOwnProperty(key)) {
                     if (target[key] !== undefined) {
-                        object[key] = _serialize(target[key], serializeVO);
+                        object[key] = _serialize(target[key]);
                     }
                 }
             }
@@ -1964,33 +1940,23 @@ var SERIALIZE_KEY = "__serialize__";
         }
         var className = feng3d.ClassUtils.getQualifiedClassName(target);
         var object = {};
-        if (serializeVO.compress) {
-            var typeIndex = serializeVO.strings.indexOf(className);
-            if (typeIndex == -1) {
-                typeIndex = serializeVO.strings.length;
-                serializeVO.strings.push(className);
-            }
-            object["-1"] = typeIndex;
-        }
-        else
-            object[CLASS_KEY] = className;
+        object[CLASS_KEY] = className;
         if (target["serialize"])
             return target["serialize"](object);
         //使用默认序列化
         var serializableMembers = getSortSerializableMembers(target);
         for (var i = 0; i < serializableMembers.length; i++) {
             var property = serializableMembers[i][0];
-            var objectproperty = serializeVO.compress ? i : property;
-            if (serializeVO.defaultvaluedontsave && target[property] === serializableMembers[i][1])
+            var objectproperty = property;
+            if (target[property] === serializableMembers[i][1])
                 continue;
             if (target[property] !== undefined) {
-                object[objectproperty] = _serialize(target[property], serializeVO);
+                object[objectproperty] = _serialize(target[property]);
             }
         }
         return object;
     }
-    function _deserialize(object, serializeVO) {
-        serializeVO = serializeVO || defaultSerializeVO;
+    function _deserialize(object) {
         //基础类型
         if (object == undefined
             || object == null
@@ -2002,7 +1968,7 @@ var SERIALIZE_KEY = "__serialize__";
         if (object.constructor == Array) {
             var arr = [];
             object.forEach(function (element) {
-                arr.push(_deserialize(element, serializeVO));
+                arr.push(_deserialize(element));
             });
             return arr;
         }
@@ -2013,15 +1979,11 @@ var SERIALIZE_KEY = "__serialize__";
             return f;
         }
         //处理普通Object
-        var className;
-        if (serializeVO.compress)
-            className = serializeVO.strings[object["-1"]];
-        else
-            className = object[CLASS_KEY];
+        var className = object[CLASS_KEY];
         if (className == undefined) {
             var target = {};
             for (var key in object) {
-                target[key] = _deserialize(object[key], serializeVO);
+                target[key] = _deserialize(object[key]);
             }
             return target;
         }
@@ -2038,9 +2000,9 @@ var SERIALIZE_KEY = "__serialize__";
         var serializableMembers = getSortSerializableMembers(target);
         for (var i = 0; i < serializableMembers.length; i++) {
             var property = serializableMembers[i][0];
-            var objectproperty = serializeVO.compress ? i : property;
+            var objectproperty = property;
             if (object[objectproperty] !== undefined) {
-                target[property] = _deserialize(object[objectproperty], serializeVO);
+                target[property] = _deserialize(object[objectproperty]);
             }
         }
         return target;
@@ -10230,84 +10192,51 @@ var feng3d;
      * 纹理信息
      * @author feng 2016-12-20
      */
-    var TextureInfo = /** @class */ (function (_super) {
-        __extends(TextureInfo, _super);
-        function TextureInfo() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this._format = feng3d.TextureFormat.RGB;
-            _this._type = feng3d.TextureDataType.UNSIGNED_BYTE;
-            _this._generateMipmap = false;
-            _this._flipY = false;
-            _this._premulAlpha = false;
-            _this.minFilter = feng3d.TextureMinFilter.LINEAR;
-            _this.magFilter = feng3d.TextureMagFilter.LINEAR;
-            /**
-             * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
-             */
-            _this.wrapS = feng3d.TextureWrap.REPEAT;
-            /**
-             * 表示y轴的纹理回环方式。 magFilter和minFilter表示过滤的方式，这是OpenGL的基本概念，我将在下面讲一下，目前你不用担心它的使用。当您不设置的时候，它会取默认值，所以，我们这里暂时不理睬他。
-             */
-            _this.wrapT = feng3d.TextureWrap.REPEAT;
-            /**
-             * 各向异性过滤。使用各向异性过滤能够使纹理的效果更好，但是会消耗更多的内存、CPU、GPU时间。默认为0。
-             */
-            _this.anisotropy = 0;
-            /**
-             * 纹理缓冲
-             */
-            _this._textureMap = new Map();
-            /**
-             * 是否失效
-             */
-            _this._invalid = true;
-            return _this;
-        }
-        Object.defineProperty(TextureInfo.prototype, "format", {
+    var TextureInfo = /** @class */ (function () {
+        function TextureInfo(raw) {
             /**
              * 格式
              */
-            get: function () { return this._format; },
-            set: function (value) { this._format = value; this.invalidate(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(TextureInfo.prototype, "type", {
+            this.format = feng3d.TextureFormat.RGB;
             /**
              * 数据类型
              */
-            get: function () { return this._type; },
-            set: function (value) { this._type = value; this.invalidate(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(TextureInfo.prototype, "generateMipmap", {
+            this.type = feng3d.TextureDataType.UNSIGNED_BYTE;
             /**
              * 是否生成mipmap
              */
-            get: function () { return this._generateMipmap; },
-            set: function (value) { this._generateMipmap = value; this.invalidate(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(TextureInfo.prototype, "flipY", {
+            this.generateMipmap = false;
             /**
              * 对图像进行Y轴反转。默认值为false
              */
-            get: function () { return this._flipY; },
-            set: function (value) { this._flipY = value; this.invalidate(); },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(TextureInfo.prototype, "premulAlpha", {
+            this.flipY = false;
             /**
              * 将图像RGB颜色值得每一个分量乘以A。默认为false
              */
-            get: function () { return this._premulAlpha; },
-            set: function (value) { this._premulAlpha = value; this.invalidate(); },
-            enumerable: true,
-            configurable: true
-        });
+            this.premulAlpha = false;
+            this.minFilter = feng3d.TextureMinFilter.LINEAR;
+            this.magFilter = feng3d.TextureMagFilter.LINEAR;
+            /**
+             * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
+             */
+            this.wrapS = feng3d.TextureWrap.REPEAT;
+            /**
+             * 表示y轴的纹理回环方式。 magFilter和minFilter表示过滤的方式，这是OpenGL的基本概念，我将在下面讲一下，目前你不用担心它的使用。当您不设置的时候，它会取默认值，所以，我们这里暂时不理睬他。
+             */
+            this.wrapT = feng3d.TextureWrap.REPEAT;
+            /**
+             * 各向异性过滤。使用各向异性过滤能够使纹理的效果更好，但是会消耗更多的内存、CPU、GPU时间。默认为0。
+             */
+            this.anisotropy = 0;
+            /**
+             * 纹理缓冲
+             */
+            this._textureMap = new Map();
+            /**
+             * 是否失效
+             */
+            this._invalid = true;
+        }
         /**
          * 判断数据是否满足渲染需求
          */
@@ -10385,7 +10314,7 @@ var feng3d;
                 gl.bindTexture(textureType, texture);
                 //设置纹理图片
                 this.initTexture(gl);
-                if (this._generateMipmap) {
+                if (this.generateMipmap) {
                     gl.generateMipmap(textureType);
                 }
                 this._textureMap.set(gl, texture);
@@ -10396,8 +10325,8 @@ var feng3d;
          * 初始化纹理
          */
         TextureInfo.prototype.initTexture = function (gl) {
-            var format = gl[this._format];
-            var type = gl[this._type];
+            var format = gl[this.format];
+            var type = gl[this.type];
             switch (this._textureType) {
                 case feng3d.TextureType.TEXTURE_CUBE_MAP:
                     var pixels = this._activePixels;
@@ -10429,24 +10358,29 @@ var feng3d;
         };
         __decorate([
             feng3d.serialize(feng3d.TextureFormat.RGB),
+            feng3d.watch("invalidate"),
             feng3d.oav({ component: "OAVEnum", componentParam: { enumClass: feng3d.TextureFormat } })
-        ], TextureInfo.prototype, "format", null);
+        ], TextureInfo.prototype, "format", void 0);
         __decorate([
             feng3d.serialize(feng3d.TextureDataType.UNSIGNED_BYTE),
+            feng3d.watch("invalidate"),
             feng3d.oav({ component: "OAVEnum", componentParam: { enumClass: feng3d.TextureDataType } })
-        ], TextureInfo.prototype, "type", null);
+        ], TextureInfo.prototype, "type", void 0);
         __decorate([
             feng3d.serialize(false),
+            feng3d.watch("invalidate"),
             feng3d.oav()
-        ], TextureInfo.prototype, "generateMipmap", null);
+        ], TextureInfo.prototype, "generateMipmap", void 0);
         __decorate([
             feng3d.serialize(false),
+            feng3d.watch("invalidate"),
             feng3d.oav()
-        ], TextureInfo.prototype, "flipY", null);
+        ], TextureInfo.prototype, "flipY", void 0);
         __decorate([
             feng3d.serialize(false),
+            feng3d.watch("invalidate"),
             feng3d.oav()
-        ], TextureInfo.prototype, "premulAlpha", null);
+        ], TextureInfo.prototype, "premulAlpha", void 0);
         __decorate([
             feng3d.serialize(feng3d.TextureMinFilter.LINEAR),
             feng3d.oav({ component: "OAVEnum", componentParam: { enumClass: feng3d.TextureMinFilter } })
@@ -10468,7 +10402,7 @@ var feng3d;
             feng3d.oav()
         ], TextureInfo.prototype, "anisotropy", void 0);
         return TextureInfo;
-    }(feng3d.EventDispatcher));
+    }());
     feng3d.TextureInfo = TextureInfo;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -10660,6 +10594,10 @@ var feng3d;
             "standard": {
                 "fragment": "precision mediump float;\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\nvarying vec3 v_tangent;\r\nvarying vec3 v_bitangent;\r\n\r\nuniform mat4 u_cameraMatrix;\r\n\r\nuniform float u_alphaThreshold;\r\n//漫反射\r\nuniform vec4 u_diffuse;\r\nuniform sampler2D s_diffuse;\r\n\r\n//法线贴图\r\nuniform sampler2D s_normal;\r\n\r\n//镜面反射\r\nuniform vec3 u_specular;\r\nuniform float u_glossiness;\r\nuniform sampler2D s_specular;\r\n\r\nuniform vec4 u_sceneAmbientColor;\r\n\r\n//环境\r\nuniform vec4 u_ambient;\r\nuniform sampler2D s_ambient;\r\n\r\n#ifdef HAS_TERRAIN_METHOD\r\n    #include<terrain.fragment>\r\n#endif\r\n\r\n#include<lightShading.fragment>\r\n\r\n#include<fog.fragment>\r\n\r\n#include<envmap.fragment>\r\n\r\n#ifdef HAS_PARTICLE_ANIMATOR\r\n    #include<particle.fragment>\r\n#endif\r\n\r\nvoid main(void)\r\n{\r\n    vec4 finalColor = vec4(1.0,1.0,1.0,1.0);\r\n\r\n    //获取法线\r\n    vec3 normal = texture2D(s_normal,v_uv).xyz * 2.0 - 1.0;\r\n    normal = normalize(normal.x * v_tangent + normal.y * v_bitangent + normal.z * v_normal);\r\n\r\n    // vec3 normal = v_normal;\r\n\r\n    //获取漫反射基本颜色\r\n    vec4 diffuseColor = u_diffuse;\r\n    diffuseColor = diffuseColor * texture2D(s_diffuse, v_uv);\r\n\r\n    if(diffuseColor.w < u_alphaThreshold)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    #ifdef HAS_TERRAIN_METHOD\r\n        diffuseColor = terrainMethod(diffuseColor, v_uv);\r\n    #endif\r\n\r\n    //环境光\r\n    vec3 ambientColor = u_ambient.w * u_ambient.xyz * u_sceneAmbientColor.xyz * u_sceneAmbientColor.w;\r\n    ambientColor = ambientColor * texture2D(s_ambient, v_uv).xyz;\r\n\r\n    finalColor = diffuseColor;\r\n\r\n    //渲染灯光\r\n    //获取高光值\r\n    float glossiness = u_glossiness;\r\n    //获取镜面反射基本颜色\r\n    vec3 specularColor = u_specular;\r\n    #ifdef HAS_SPECULAR_SAMPLER\r\n        vec4 specularMapColor = texture2D(s_specular, v_uv);\r\n        specularColor.xyz = specularMapColor.xyz;\r\n        glossiness = glossiness * specularMapColor.w;\r\n    #endif\r\n    \r\n    finalColor.xyz = lightShading(normal, diffuseColor.xyz, specularColor, ambientColor, glossiness);\r\n\r\n    finalColor = envmapMethod(finalColor);\r\n\r\n    #ifdef HAS_PARTICLE_ANIMATOR\r\n        finalColor = particleAnimation(finalColor);\r\n    #endif\r\n\r\n    finalColor = fogMethod(finalColor);\r\n\r\n    gl_FragColor = finalColor;\r\n}",
                 "vertex": "precision mediump float;  \r\n\r\n//坐标属性\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\nattribute vec3 a_normal;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_ITModelMatrix;\r\nuniform mat4 u_viewProjection;\r\nuniform float u_scaleByDepth;\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\nattribute vec3 a_tangent;\r\n\r\nvarying vec3 v_tangent;\r\nvarying vec3 v_bitangent;\r\n\r\n#ifdef HAS_SKELETON_ANIMATION\r\n    #include<skeleton.vertex>\r\n#endif\r\n\r\nuniform float u_PointSize;\r\n\r\n#ifdef HAS_PARTICLE_ANIMATOR\r\n    #include<particle.vertex>\r\n#endif\r\n\r\nvoid main(void) {\r\n\r\n    vec4 position = vec4(a_position,1.0);\r\n\r\n    #ifdef HAS_SKELETON_ANIMATION\r\n        position = skeletonAnimation(position);\r\n    #endif\r\n    \r\n    #ifdef HAS_PARTICLE_ANIMATOR\r\n        position = particleAnimation(position);\r\n    #endif\r\n\r\n    vec3 normal = a_normal;\r\n\r\n    //获取全局坐标\r\n    vec4 globalPosition = u_modelMatrix * position;\r\n    //计算投影坐标\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    //输出全局坐标\r\n    v_globalPosition = globalPosition.xyz;\r\n    //输出uv\r\n    v_uv = a_uv;\r\n\r\n    //计算法线\r\n    v_normal = normalize((u_ITModelMatrix * vec4(normal,0.0)).xyz);\r\n    v_tangent = normalize((u_modelMatrix * vec4(a_tangent,0.0)).xyz);\r\n    v_bitangent = cross(v_normal,v_tangent);\r\n    \r\n    gl_PointSize = u_PointSize;\r\n}"
+            },
+            "terrain": {
+                "fragment": "precision mediump float;\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\nvarying vec3 v_tangent;\r\nvarying vec3 v_bitangent;\r\n\r\nuniform mat4 u_cameraMatrix;\r\n\r\nuniform float u_alphaThreshold;\r\n//漫反射\r\nuniform vec4 u_diffuse;\r\nuniform sampler2D s_diffuse;\r\n\r\n//法线贴图\r\nuniform sampler2D s_normal;\r\n\r\n//镜面反射\r\nuniform vec3 u_specular;\r\nuniform float u_glossiness;\r\nuniform sampler2D s_specular;\r\n\r\nuniform vec4 u_sceneAmbientColor;\r\n\r\n//环境\r\nuniform vec4 u_ambient;\r\nuniform sampler2D s_ambient;\r\n\r\n#include<terrain.fragment>\r\n\r\n#include<lightShading.fragment>\r\n\r\n#include<fog.fragment>\r\n\r\n#include<envmap.fragment>\r\n\r\nvoid main(void)\r\n{\r\n    vec4 finalColor = vec4(1.0,1.0,1.0,1.0);\r\n\r\n    //获取法线\r\n    vec3 normal = texture2D(s_normal,v_uv).xyz * 2.0 - 1.0;\r\n    normal = normalize(normal.x * v_tangent + normal.y * v_bitangent + normal.z * v_normal);\r\n\r\n    // vec3 normal = v_normal;\r\n\r\n    //获取漫反射基本颜色\r\n    vec4 diffuseColor = u_diffuse;\r\n    diffuseColor = diffuseColor * texture2D(s_diffuse, v_uv);\r\n\r\n    if(diffuseColor.w < u_alphaThreshold)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    diffuseColor = terrainMethod(diffuseColor, v_uv);\r\n\r\n    //环境光\r\n    vec3 ambientColor = u_ambient.w * u_ambient.xyz * u_sceneAmbientColor.xyz * u_sceneAmbientColor.w;\r\n    ambientColor = ambientColor * texture2D(s_ambient, v_uv).xyz;\r\n\r\n    finalColor = diffuseColor;\r\n\r\n    //渲染灯光\r\n    //获取高光值\r\n    float glossiness = u_glossiness;\r\n    //获取镜面反射基本颜色\r\n    vec3 specularColor = u_specular;\r\n    #ifdef HAS_SPECULAR_SAMPLER\r\n        vec4 specularMapColor = texture2D(s_specular, v_uv);\r\n        specularColor.xyz = specularMapColor.xyz;\r\n        glossiness = glossiness * specularMapColor.w;\r\n    #endif\r\n    \r\n    finalColor.xyz = lightShading(normal, diffuseColor.xyz, specularColor, ambientColor, glossiness);\r\n\r\n    finalColor = envmapMethod(finalColor);\r\n\r\n    finalColor = fogMethod(finalColor);\r\n\r\n    gl_FragColor = finalColor;\r\n}",
+                "vertex": "precision mediump float;  \r\n\r\n//坐标属性\r\nattribute vec3 a_position;\r\nattribute vec2 a_uv;\r\nattribute vec3 a_normal;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_ITModelMatrix;\r\nuniform mat4 u_viewProjection;\r\nuniform float u_scaleByDepth;\r\n\r\nvarying vec2 v_uv;\r\nvarying vec3 v_globalPosition;\r\nvarying vec3 v_normal;\r\n\r\nattribute vec3 a_tangent;\r\n\r\nvarying vec3 v_tangent;\r\nvarying vec3 v_bitangent;\r\n\r\nuniform float u_PointSize;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 position = vec4(a_position,1.0);\r\n\r\n    vec3 normal = a_normal;\r\n\r\n    //获取全局坐标\r\n    vec4 globalPosition = u_modelMatrix * position;\r\n    //计算投影坐标\r\n    gl_Position = u_viewProjection * globalPosition;\r\n    //输出全局坐标\r\n    v_globalPosition = globalPosition.xyz;\r\n    //输出uv\r\n    v_uv = a_uv;\r\n\r\n    //计算法线\r\n    v_normal = normalize((u_ITModelMatrix * vec4(normal,0.0)).xyz);\r\n    v_tangent = normalize((u_modelMatrix * vec4(a_tangent,0.0)).xyz);\r\n    v_bitangent = cross(v_normal,v_tangent);\r\n    \r\n    gl_PointSize = u_PointSize;\r\n}"
             },
             "texture": {
                 "fragment": "precision mediump float;\r\n\r\nuniform sampler2D s_texture;\r\nvarying vec2 v_uv;\r\n\r\nuniform vec4 u_color;\r\n\r\nvoid main(void) {\r\n\r\n    vec4 color = texture2D(s_texture, v_uv);\r\n    gl_FragColor = color * u_color;\r\n}\r\n",
@@ -17995,11 +17933,22 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var MaterialFactory = /** @class */ (function () {
+        function MaterialFactory() {
+        }
+        MaterialFactory.prototype.create = function (shader) {
+            var material = new Material();
+            material.shaderName = shader;
+            return material;
+        };
+        return MaterialFactory;
+    }());
+    feng3d.MaterialFactory = MaterialFactory;
+    feng3d.materialFactory = new MaterialFactory();
     /**
      * 材质
      * @author feng 2016-05-02
      */
-    // @ov({ component: "OVMaterial" })
     var Material = /** @class */ (function (_super) {
         __extends(Material, _super);
         function Material() {
@@ -18216,7 +18165,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var a;
     /**
      * 标准材质
      * @author feng 2016-05-02
@@ -18394,6 +18342,10 @@ var feng3d;
     }());
     feng3d.StandardUniforms = StandardUniforms;
     feng3d.shaderConfig.shaders["standard"].cls = StandardUniforms;
+    feng3d.Mat = {
+        standard: StandardUniforms,
+    };
+    feng3d.Mat.standard;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -19437,6 +19389,56 @@ var feng3d;
         return TerrainMethod;
     }(feng3d.EventDispatcher));
     feng3d.TerrainMethod = TerrainMethod;
+    var TerrainUniforms = /** @class */ (function (_super) {
+        __extends(TerrainUniforms, _super);
+        /**
+         * 构建材质
+         */
+        function TerrainUniforms() {
+            var _this = _super.call(this) || this;
+            _this.s_splatTexture1 = new feng3d.Texture2D();
+            _this.s_splatTexture2 = new feng3d.Texture2D();
+            _this.s_splatTexture3 = new feng3d.Texture2D();
+            _this.s_blendTexture = new feng3d.Texture2D();
+            _this.u_splatRepeats = new feng3d.Vector4(1, 1, 1, 1);
+            _this.s_splatTexture1.generateMipmap = true;
+            _this.s_splatTexture1.minFilter = feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR;
+            _this.s_splatTexture1.wrapS = feng3d.TextureWrap.REPEAT;
+            _this.s_splatTexture1.wrapT = feng3d.TextureWrap.REPEAT;
+            _this.s_splatTexture2.generateMipmap = true;
+            _this.s_splatTexture2.minFilter = feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR;
+            _this.s_splatTexture2.wrapS = feng3d.TextureWrap.REPEAT;
+            _this.s_splatTexture2.wrapT = feng3d.TextureWrap.REPEAT;
+            _this.s_splatTexture3.generateMipmap = true;
+            _this.s_splatTexture3.minFilter = feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR;
+            _this.s_splatTexture3.wrapS = feng3d.TextureWrap.REPEAT;
+            _this.s_splatTexture3.wrapT = feng3d.TextureWrap.REPEAT;
+            return _this;
+        }
+        __decorate([
+            feng3d.serialize(),
+            feng3d.oav({ block: "terrain" })
+        ], TerrainUniforms.prototype, "s_splatTexture1", void 0);
+        __decorate([
+            feng3d.serialize(),
+            feng3d.oav({ block: "terrain" })
+        ], TerrainUniforms.prototype, "s_splatTexture2", void 0);
+        __decorate([
+            feng3d.serialize(),
+            feng3d.oav({ block: "terrain" })
+        ], TerrainUniforms.prototype, "s_splatTexture3", void 0);
+        __decorate([
+            feng3d.serialize(),
+            feng3d.oav({ block: "terrain" })
+        ], TerrainUniforms.prototype, "s_blendTexture", void 0);
+        __decorate([
+            feng3d.serialize(),
+            feng3d.oav({ block: "terrain" })
+        ], TerrainUniforms.prototype, "u_splatRepeats", void 0);
+        return TerrainUniforms;
+    }(feng3d.StandardUniforms));
+    feng3d.TerrainUniforms = TerrainUniforms;
+    feng3d.shaderConfig.shaders["terrain"].cls = TerrainUniforms;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

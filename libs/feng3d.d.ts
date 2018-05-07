@@ -881,7 +881,7 @@ declare namespace feng3d {
         w?: number;
     }
     interface Texture2DRaw extends TextureInfoRaw {
-        "__class__": "feng3d.Texture2D";
+        __class__?: "feng3d.Texture2D";
         url?: "";
     }
     interface TerrainMethodRaw {
@@ -925,25 +925,20 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    var serialization: Serialization;
     /**
      * 序列化装饰器，被装饰属性将被序列化
      * @param {*} target                序列化原型
      * @param {string} propertyKey      序列化属性
      */
-    function serialize(defaultvalue?: any): (target: any, propertyKey: string) => void;
-}
-declare var SERIALIZE_KEY: string;
-declare namespace feng3d {
-    var serialization: {
-        serialize: (target: any) => any;
-        deserialize: (result: any) => any;
-        getSerializableMembers: (object: Object, serializableMembers?: {
-            [propertyname: string]: any;
-        }) => {
-            [propertyname: string]: any;
-        };
-        clone: (target: any) => any;
-    };
+    function serialize(target: any, propertyKey: string): void;
+    class Serialization {
+        serialize(target: any): any;
+        deserialize(object: any): any;
+        setValue(target: Object, object: Object): void;
+        setPropertyValue(target: Object, object: Object, property: string): void;
+        clone<T>(target: T): T;
+    }
 }
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -6489,6 +6484,7 @@ declare namespace feng3d {
         type?: TextureDataType;
         wrapS?: TextureWrap;
         wrapT?: TextureWrap;
+        noPixels?: ImageData | ImageData[] | HTMLImageElement | HTMLImageElement[];
     }
     /**
      * 纹理信息
@@ -8842,7 +8838,7 @@ declare namespace feng3d {
          * 纹理尺寸
          */
         readonly size: Vector2;
-        constructor();
+        constructor(raw?: Texture2DRaw);
         /**
          * 判断数据是否满足渲染需求
          */
@@ -9005,12 +9001,10 @@ declare namespace feng3d {
      */
     class StandardMaterial extends Material {
         uniforms: StandardUniforms;
-        terrainMethod: TerrainMethod;
         /**
          * 构建
          */
         constructor();
-        preRender(renderAtomic: RenderAtomic): void;
     }
     /**
      * 雾模式
@@ -9087,11 +9081,7 @@ declare namespace feng3d {
          * 雾模式
          */
         u_fogMode: FogMode;
-        constructor();
     }
-    var Mat: {
-        standard: typeof StandardUniforms;
-    };
 }
 declare namespace feng3d {
     /**
@@ -9402,22 +9392,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    /**
-     * 地形材质
-     * @author feng 2016-04-28
-     */
-    class TerrainMethod extends EventDispatcher {
-        s_splatTexture1: Texture2D;
-        s_splatTexture2: Texture2D;
-        s_splatTexture3: Texture2D;
-        s_blendTexture: Texture2D;
-        u_splatRepeats: Vector4;
-        /**
-         * 构建材质
-         */
-        constructor();
-        preRender(renderAtomic: RenderAtomic): void;
-    }
     interface MaterialFactory {
         create(shader: "terrain"): Material & {
             uniforms: TerrainUniforms;
@@ -9429,10 +9403,6 @@ declare namespace feng3d {
         s_splatTexture3: Texture2D;
         s_blendTexture: Texture2D;
         u_splatRepeats: Vector4;
-        /**
-         * 构建材质
-         */
-        constructor();
     }
 }
 declare namespace feng3d {

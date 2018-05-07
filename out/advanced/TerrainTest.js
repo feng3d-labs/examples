@@ -31,15 +31,15 @@ var feng3d;
             var meshRenderer = terrain.addComponent(feng3d.MeshRenderer);
             // meshRenderer.geometry = new feng3d.TerrainGeometry();
             meshRenderer.geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg', 500, 100, 500);
-            var material = new feng3d.StandardMaterial();
+            var material = feng3d.materialFactory.create("terrain");
             material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
             material.uniforms.s_normal.url = root + "terrain_normals.jpg";
             //
-            material.terrainMethod.s_blendTexture.url = root + 'terrain_splats.png';
-            material.terrainMethod.s_splatTexture1.url = root + 'beach.jpg';
-            material.terrainMethod.s_splatTexture2.url = root + 'grass.jpg';
-            material.terrainMethod.s_splatTexture3.url = root + 'rock.jpg';
-            material.terrainMethod.u_splatRepeats = new feng3d.Vector4(1, 50, 50, 50);
+            material.uniforms.s_blendTexture.url = root + 'terrain_splats.png';
+            material.uniforms.s_splatTexture1.url = root + 'beach.jpg';
+            material.uniforms.s_splatTexture2.url = root + 'grass.jpg';
+            material.uniforms.s_splatTexture3.url = root + 'rock.jpg';
+            material.uniforms.u_splatRepeats = new feng3d.Vector4(1, 50, 50, 50);
             meshRenderer.material = material;
             scene.gameObject.addChild(terrain);
             //初始化光源

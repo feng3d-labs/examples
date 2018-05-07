@@ -36,7 +36,7 @@ namespace feng3d
             camera.transform.lookAt(new Vector3());
             camera.lens = new PerspectiveLens(90);
 
-            var torusMaterial = new StandardMaterial();
+            var torusMaterial = materialFactory.create("standard");
             // torusMaterial.uniforms.u_specular.a = 0.5;
             // torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
             // torusMaterial.uniforms.u_ambient.a = 0.25;

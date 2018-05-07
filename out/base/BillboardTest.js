@@ -35,7 +35,7 @@ var BillboardTest = /** @class */ (function (_super) {
         //材质
         var model = gameObject.getComponent(feng3d.MeshRenderer);
         model.geometry = new feng3d.PlaneGeometry(40, 40, 1, 1, false);
-        var textureMaterial = model.material = new feng3d.StandardMaterial();
+        var textureMaterial = model.material = feng3d.materialFactory.create("standard");
         // textureMaterial.cullFace = CullFace.NONE;
         //
         var texture = textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';

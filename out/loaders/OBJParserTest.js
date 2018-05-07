@@ -31,7 +31,7 @@ var feng3d;
             }, 15);
             // var objUrl = "resources/cube.obj";
             var objUrl = "resources/head.obj";
-            var material = new feng3d.StandardMaterial();
+            var material = feng3d.materialFactory.create("standard");
             material.uniforms.s_diffuse.url = "resources/head_diffuse.jpg";
             material.uniforms.s_normal.url = "resources/head_normals.jpg";
             material.uniforms.s_specular.url = "resources/head_specular.jpg";

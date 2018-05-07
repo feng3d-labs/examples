@@ -27,7 +27,7 @@ namespace feng3d
             model.geometry = new CubeGeometry(1, 1, 1, 1, 1, 1, false);
             // model.geometry = new PlaneGeometry();
             //材质
-            var textureMaterial = model.material = new StandardMaterial();
+            var textureMaterial = model.material = materialFactory.create("standard");
             textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';
             // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
             textureMaterial.uniforms.s_diffuse.format = TextureFormat.RGBA;

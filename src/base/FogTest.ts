@@ -15,7 +15,7 @@ namespace feng3d
             var model = cube.addComponent(MeshRenderer);
             model.geometry = new CubeGeometry(1, 1, 1, 1, 1, 1, false);
             //材质
-            var material = model.material = new StandardMaterial();
+            var material = model.material = materialFactory.create("standard");
             material.uniforms.s_diffuse.url = 'resources/m.png';
 
             material.uniforms.u_fogMode = FogMode.LINEAR;

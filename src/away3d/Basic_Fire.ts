@@ -63,12 +63,12 @@ namespace feng3d
 
             function initMaterials()
             {
-                planeMaterial = new StandardMaterial();
+                planeMaterial = materialFactory.create("standard");
                 planeMaterial.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
                 planeMaterial.uniforms.s_normal.url = "resources/floor_normal.jpg";
                 planeMaterial.uniforms.s_specular.url = "resources/floor_specular.jpg";
                 planeMaterial["specular"] = 10;
-                particleMaterial = new StandardMaterial();
+                particleMaterial = materialFactory.create("standard");
                 particleMaterial.uniforms.s_diffuse.url = "resources/blue.png";
                 particleMaterial.uniforms.s_diffuse.format = TextureFormat.RGBA;
                 particleMaterial.renderParams.enableBlend = true;

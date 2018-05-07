@@ -18,7 +18,7 @@ namespace feng3d
             var particle = feng3d.GameObject.create("particle");
             var meshRenderer = particle.addComponent(feng3d.MeshRenderer);
             meshRenderer.geometry = new feng3d.PointGeometry();
-            var material = meshRenderer.material = new feng3d.StandardMaterial();
+            var material = meshRenderer.material = materialFactory.create("standard");
             material.renderParams.renderMode = feng3d.RenderMode.POINTS;
             particle.transform.y = -1;
             scene.gameObject.addChild(particle);

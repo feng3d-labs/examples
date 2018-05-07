@@ -22,7 +22,7 @@ var feng3d;
             var model = cube.addComponent(feng3d.MeshRenderer);
             model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
             //材质
-            var material = model.material = new feng3d.StandardMaterial();
+            var material = model.material = feng3d.materialFactory.create("standard");
             material.uniforms.s_diffuse.url = 'resources/m.png';
             material.uniforms.u_fogMode = feng3d.FogMode.LINEAR;
             material.uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);

@@ -26,7 +26,7 @@ namespace feng3d
             // var objUrl = "resources/cube.obj";
             var objUrl = "resources/head.obj";
 
-            var material = new StandardMaterial();
+            var material = materialFactory.create("standard");
             material.uniforms.s_diffuse.url = "resources/head_diffuse.jpg";
             material.uniforms.s_normal.url = "resources/head_normals.jpg";
             material.uniforms.s_specular.url = "resources/head_specular.jpg";

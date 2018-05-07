@@ -28,7 +28,7 @@ var feng3d;
             var plane = feng3d.GameObject.create();
             var model = plane.addComponent(feng3d.MeshRenderer);
             model.geometry = new feng3d.PlaneGeometry(7, 7);
-            var material = model.material = new feng3d.StandardMaterial();
+            var material = model.material = feng3d.materialFactory.create("standard");
             material.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
             scene.gameObject.addChild(plane);
             feng3d.ticker.onframe(function () {

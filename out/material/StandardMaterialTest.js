@@ -34,7 +34,7 @@ var feng3d;
             model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
             // model.geometry = new PlaneGeometry();
             //材质
-            var textureMaterial = model.material = new feng3d.StandardMaterial();
+            var textureMaterial = model.material = feng3d.materialFactory.create("standard");
             textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';
             // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
             textureMaterial.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;

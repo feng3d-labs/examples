@@ -34,7 +34,7 @@ var feng3d;
             // _particleMesh.geometry = new PointGeometry();
             var meshRenderer = _particleMesh.addComponent(feng3d.MeshRenderer);
             meshRenderer.geometry = new feng3d.PlaneGeometry(0.10, 0.10, 1, 1, false);
-            var material = meshRenderer.material = new feng3d.StandardMaterial();
+            var material = meshRenderer.material = feng3d.materialFactory.create("standard");
             material.uniforms.s_diffuse.url = "resources/blue.png";
             material.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
             material.renderParams.enableBlend = true;

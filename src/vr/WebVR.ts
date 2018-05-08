@@ -99,7 +99,7 @@ var WEBVR = {
 
 			}, false );
 
-			navigator.getVRDisplays()
+			navigator["getVRDisplays"]()
 				.then( function ( displays ) {
 
 					if ( displays.length > 0 ) {

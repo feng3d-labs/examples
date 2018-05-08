@@ -60,7 +60,7 @@ var WEBVR = {
             window.addEventListener('vrdisplayactivate', function (event) {
                 event.display.requestPresent([{ source: renderer.domElement }]);
             }, false);
-            navigator.getVRDisplays()
+            navigator["getVRDisplays"]()
                 .then(function (displays) {
                 if (displays.length > 0) {
                     showEnterVR(displays[0]);

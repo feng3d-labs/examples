@@ -34,12 +34,9 @@ var feng3d;
             model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
             // model.geometry = new PlaneGeometry();
             //材质
-            var textureMaterial = model.material = new feng3d.TextureMaterial();
-            //
-            // var texture = textureMaterial.texture = new Texture2D('resources/sky.jpg');
-            var texture = textureMaterial.uniforms.s_texture = new feng3d.Texture2D();
-            texture.url = 'resources/m.png';
-            texture.flipY = false;
+            model.material = feng3d.materialFactory.create("texture", {
+                uniforms: { s_texture: { url: 'resources/m.png', flipY: false } }
+            });
         };
         /**
          * 更新

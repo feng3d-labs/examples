@@ -40,7 +40,7 @@ var feng3d;
             gameobject.transform.y = -1;
             scene.gameObject.addChild(gameobject);
             //初始化颜色材质
-            var colorMaterial = model.material = new feng3d.ColorMaterial();
+            var colorMaterial = model.material = feng3d.materialFactory.create("color");
             //变化旋转与颜色
             setInterval(function () {
                 gameobject.transform.ry += 1;

@@ -48,7 +48,7 @@ namespace feng3d
                 var transform = <Transform>event.target;
                 if (transform.getComponent(MeshRenderer))
                 {
-                    var material = transform.getComponent(MeshRenderer).material = new ColorMaterial();
+                    var material = transform.getComponent(MeshRenderer).material = materialFactory.create("color");
                     material.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 24));
                 }
             });

@@ -35,7 +35,7 @@ namespace feng3d
             scene.gameObject.addChild(gameobject);
 
             //初始化颜色材质
-            var colorMaterial = model.material = new ColorMaterial();
+            var colorMaterial = model.material = materialFactory.create("color");
 
             //变化旋转与颜色
             setInterval(function ()

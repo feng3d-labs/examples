@@ -35,7 +35,7 @@ var feng3d;
             material.uniforms.s_diffuse.url = "resources/head_diffuse.jpg";
             material.uniforms.s_normal.url = "resources/head_normals.jpg";
             material.uniforms.s_specular.url = "resources/head_specular.jpg";
-            // var material = new ColorMaterial();
+            // var material = materialFactory.create("color");
             material.renderParams.cullFace = feng3d.CullFace.NONE;
             feng3d.ObjLoader.load(objUrl, function (gameObject) {
                 object = gameObject;

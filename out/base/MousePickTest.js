@@ -50,7 +50,7 @@ var feng3d;
             scene.gameObject.on("click", function (event) {
                 var transform = event.target;
                 if (transform.getComponent(feng3d.MeshRenderer)) {
-                    var material = transform.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
+                    var material = transform.getComponent(feng3d.MeshRenderer).material = feng3d.materialFactory.create("color");
                     material.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 24));
                 }
             });

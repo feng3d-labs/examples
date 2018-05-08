@@ -88,7 +88,7 @@ namespace feng3d
                 //初始化点光源
                 var pointLight0 = light0.addComponent(PointLight);
                 pointLight0.color = lightColor0.toColor3();
-                meshRenderer.material = new ColorMaterial(lightColor0);
+                meshRenderer.material = materialFactory.create("color", { uniforms: { u_diffuseInput: lightColor0 } });
                 scene.gameObject.addChild(light0);
 
                 //
@@ -98,7 +98,7 @@ namespace feng3d
                 //初始化点光源
                 var pointLight1 = light1.addComponent(DirectionalLight);
                 pointLight1.color = lightColor1.toColor3();
-                meshRenderer.material = new ColorMaterial(lightColor1);
+                meshRenderer.material = materialFactory.create("color", { uniforms: { u_diffuseInput: lightColor1 } });
                 scene.gameObject.addChild(light1);
             }
 

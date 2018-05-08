@@ -17,7 +17,7 @@ namespace feng3d
             scene.gameObject.addChild(cube);
 
             //初始化颜色材质
-            var colorMaterial = cube.getComponent(MeshRenderer).material = new ColorMaterial();
+            var colorMaterial = cube.getComponent(MeshRenderer).material = materialFactory.create("color");
 
             //变化旋转与颜色
             setInterval(function ()

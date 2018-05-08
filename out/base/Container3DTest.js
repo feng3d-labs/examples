@@ -25,7 +25,7 @@ var Container3DTest = /** @class */ (function (_super) {
         //初始化颜色材质
         this.cube = feng3d.GameObjectFactory.createCube();
         this.gameObject.addChild(this.cube);
-        this.colorMaterial = this.cube.getComponent(feng3d.MeshRenderer).material = new feng3d.ColorMaterial();
+        this.colorMaterial = this.cube.getComponent(feng3d.MeshRenderer).material = feng3d.materialFactory.create("color");
         var cylinder = feng3d.GameObjectFactory.createCylinder();
         cylinder.transform.x = 2;
         this.cube.addChild(cylinder);

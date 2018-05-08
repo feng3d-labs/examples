@@ -84,7 +84,7 @@ var feng3d;
                 //初始化点光源
                 var pointLight0 = light0.addComponent(feng3d.PointLight);
                 pointLight0.color = lightColor0.toColor3();
-                meshRenderer.material = new feng3d.ColorMaterial(lightColor0);
+                meshRenderer.material = feng3d.materialFactory.create("color", { uniforms: { u_diffuseInput: lightColor0 } });
                 scene.gameObject.addChild(light0);
                 //
                 var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
@@ -93,7 +93,7 @@ var feng3d;
                 //初始化点光源
                 var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
                 pointLight1.color = lightColor1.toColor3();
-                meshRenderer.material = new feng3d.ColorMaterial(lightColor1);
+                meshRenderer.material = feng3d.materialFactory.create("color", { uniforms: { u_diffuseInput: lightColor1 } });
                 scene.gameObject.addChild(light1);
             }
             function setPointLightPosition() {

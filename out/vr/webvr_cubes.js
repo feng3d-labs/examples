@@ -55,37 +55,46 @@ var feng3d;
                 material.uniforms.u_diffuse.a = 0.5;
                 crosshair.transform.z = 2;
                 camera.gameObject.addChild(crosshair);
-                room = feng3d.GameObject.create("room", function (gameobject) {
-                    gameobject.addComponent(feng3d.MeshRenderer, function (meshRenderer) {
-                        meshRenderer.geometry = new feng3d.CubeGeometry(6, 6, 6, 8, 8, 8);
-                        var material = meshRenderer.material = feng3d.materialFactory.create("standard");
-                        material.uniforms.u_diffuse.fromUnit(0x404040);
-                        material.renderParams.renderMode = feng3d.RenderMode.LINES;
-                    });
-                    gameobject.transform.y = 3;
+                room = feng3d.GameObject.create("room", {
+                    components: [
+                        { __class__: "feng3d.Transform", y: 3 },
+                        {
+                            __class__: "feng3d.MeshRenderer",
+                            geometry: {
+                                __class__: "feng3d.CubeGeometry",
+                                width: 6, height: 6, depth: 6,
+                                segmentsW: 8, segmentsH: 8, segmentsD: 8,
+                            },
+                            material: {
+                                __class__: "feng3d.Material",
+                                shaderName: "standard",
+                                uniforms: { u_diffuse: { r: 0.25, g: 0.25, b: 0.25 } },
+                                renderParams: { renderMode: feng3d.RenderMode.LINES },
+                            }
+                        }
+                    ]
                 });
                 scene.gameObject.addChild(room);
                 // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
-                var light = feng3d.GameObject.create("light", function (gameobject) {
-                    gameobject.addComponent(feng3d.DirectionalLight, function (component) {
-                        component.color.fromUnit(0xffffff);
-                    });
-                    gameobject.transform.rotation = new feng3d.Vector3(1, 1, 1).normalize();
+                var light = feng3d.GameObject.create("light", {
+                    components: [
+                        { __class__: "feng3d.Transform", rx: 0.577, ry: 0.577, rz: 0.577 },
+                        { __class__: "feng3d.DirectionalLight" }
+                    ],
                 });
                 scene.gameObject.addChild(light);
                 var geometry = new feng3d.CubeGeometry(0.15, 0.15, 0.15);
                 for (var i = 0; i < 200; i++) {
-                    var object = feng3d.GameObject.create("box" + i, function (object) {
-                        object.addComponent(feng3d.MeshRenderer, function (component) {
-                            component.geometry = geometry;
-                            var material = component.material = feng3d.materialFactory.create("standard");
-                            material.uniforms.u_diffuse.fromUnit(Math.random() * 0xffffff);
-                        });
-                        object.transform.position = feng3d.Vector3.random().scale(4).subNumber(2);
-                        object.transform.rotation = feng3d.Vector3.random().scale(2 * Math.PI);
-                        object.transform.scale = feng3d.Vector3.random().addNumber(0.5);
-                        object.userData.velocity = feng3d.Vector3.random().scale(0.01).subNumber(0.005);
+                    var object = feng3d.GameObject.create("box" + i);
+                    object.addComponent(feng3d.MeshRenderer, function (component) {
+                        component.geometry = geometry;
+                        var material = component.material = feng3d.materialFactory.create("standard");
+                        material.uniforms.u_diffuse.fromUnit(Math.random() * 0xffffff);
                     });
+                    object.transform.position = feng3d.Vector3.random().scale(4).subNumber(2);
+                    object.transform.rotation = feng3d.Vector3.random().scale(2 * Math.PI);
+                    object.transform.scale = feng3d.Vector3.random().addNumber(0.5);
+                    object.userData.velocity = feng3d.Vector3.random().scale(0.01).subNumber(0.005);
                     room.addChild(object);
                 }
                 // renderer = new THREE.WebGLRenderer({ antialias: true });

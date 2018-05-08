@@ -6141,6 +6141,7 @@ declare namespace feng3d {
          * 是否使用 viewRect
          */
         useViewRect: boolean;
+        constructor(raw?: Partial<RenderParams>);
     }
 }
 declare namespace feng3d {
@@ -8866,7 +8867,13 @@ declare namespace feng3d {
      * @author feng 2016-05-02
      */
     class Material {
+        /**
+         * shader名称
+         */
         shaderName: string;
+        /**
+         * Uniform数据
+         */
         uniforms: {};
         /**
          * 渲染参数
@@ -8887,11 +8894,9 @@ declare namespace feng3d {
      * @author feng 2017-01-11
      */
     class PointMaterial extends Material {
+        shaderName: string;
         uniforms: PointUniforms;
-        /**
-         * 构建颜色材质
-         */
-        constructor();
+        renderParams: RenderParams;
     }
     class PointUniforms {
         /**
@@ -8939,12 +8944,25 @@ declare namespace feng3d {
      * 目前webgl不支持修改线条宽度，参考：https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/lineWidth
      * @author feng 2016-10-15
      */
-    class SegmentMaterial extends Material {
+    type SegmentMaterial = Material & {
         uniforms: SegmentUniforms;
+    };
+    interface MaterialFactory {
+        create(shader: "segment", raw?: SegmentMaterialRaw): SegmentMaterial;
+    }
+    interface MaterialRawMap {
+        segment: SegmentMaterialRaw;
+    }
+    interface SegmentMaterialRaw extends MaterialBaseRaw {
+        shaderName?: "segment";
+        uniforms?: SegmentUniformsRaw;
+    }
+    interface SegmentUniformsRaw {
+        __class__?: "feng3d.SegmentUniforms";
         /**
-         * 构建线段材质
+         * 颜色
          */
-        constructor();
+        u_segmentColor?: Color4 | Color4Raw;
     }
     class SegmentUniforms {
         /**

@@ -18,7 +18,7 @@ namespace feng3d
 
             //初始化材质
             var meshRenderer = segment.addComponent(MeshRenderer);
-            meshRenderer.material = new SegmentMaterial();
+            meshRenderer.material = materialFactory.create("segment", { renderParams: { renderMode: RenderMode.LINES } });
             var segmentGeometry = meshRenderer.geometry = new SegmentGeometry();
 
             var length = 200;

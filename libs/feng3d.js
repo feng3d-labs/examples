@@ -9972,7 +9972,7 @@ var feng3d;
      * @author feng 2016-12-14
      */
     var RenderParams = /** @class */ (function () {
-        function RenderParams() {
+        function RenderParams(raw) {
             /**
             * 渲染模式，默认RenderMode.TRIANGLES
             */
@@ -10019,6 +10019,8 @@ var feng3d;
              * 是否使用 viewRect
              */
             this.useViewRect = false;
+            if (raw)
+                feng3d.serialization.setValue(this, raw);
         }
         __decorate([
             feng3d.serialize,
@@ -18080,6 +18082,9 @@ var feng3d;
      */
     var Material = /** @class */ (function () {
         function Material(raw) {
+            /**
+             * Uniform数据
+             */
             this.uniforms = {};
             /**
              * 渲染参数
@@ -18112,9 +18117,7 @@ var feng3d;
             feng3d.watch("onShaderChanged")
         ], Material.prototype, "shaderName", void 0);
         __decorate([
-            feng3d.serialize
-            // @oav({ component: "OAVMaterialData" })
-            ,
+            feng3d.serialize,
             feng3d.oav({ component: "OAVObjectView" })
         ], Material.prototype, "uniforms", void 0);
         __decorate([
@@ -18133,16 +18136,12 @@ var feng3d;
      */
     var PointMaterial = /** @class */ (function (_super) {
         __extends(PointMaterial, _super);
-        /**
-         * 构建颜色材质
-         */
         function PointMaterial() {
-            var _this = _super.call(this) || this;
-            _this.uniforms = new PointUniforms();
+            var _this = _super !== null && _super.apply(this, arguments) || this;
             _this.shaderName = "point";
-            _this.renderParams.renderMode = feng3d.RenderMode.POINTS;
+            _this.uniforms = new PointUniforms();
+            _this.renderParams = new feng3d.RenderParams({ renderMode: feng3d.RenderMode.POINTS });
             return _this;
-            //
         }
         return PointMaterial;
     }(feng3d.Material));
@@ -18191,30 +18190,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    /**
-     * 线段材质
-     * 目前webgl不支持修改线条宽度，参考：https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/lineWidth
-     * @author feng 2016-10-15
-     */
-    var SegmentMaterial = /** @class */ (function (_super) {
-        __extends(SegmentMaterial, _super);
-        /**
-         * 构建线段材质
-         */
-        function SegmentMaterial() {
-            var _this = _super.call(this) || this;
-            _this.uniforms = new SegmentUniforms();
-            _this.shaderName = "segment";
-            _this.renderParams.renderMode = feng3d.RenderMode.LINES;
-            return _this;
-        }
-        return SegmentMaterial;
-    }(feng3d.Material));
-    feng3d.SegmentMaterial = SegmentMaterial;
-    // export interface SegmentMaterialRaw extends MaterialBaseRaw
-    // {
-    //     __class__: "feng3d.SegmentMaterial";
-    // }
     var SegmentUniforms = /** @class */ (function () {
         function SegmentUniforms() {
             /**
@@ -23700,7 +23675,7 @@ var feng3d;
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3(), new feng3d.Vector3(this.lineLength, 0, 0), new feng3d.Color4(1, 0, 0), new feng3d.Color4(1, 0, 0)));
             var meshRenderer = xLine.addComponent(feng3d.MeshRenderer);
             meshRenderer.geometry = segmentGeometry;
-            meshRenderer.material = new feng3d.SegmentMaterial();
+            meshRenderer.material = feng3d.materialFactory.create("segment", { renderParams: { renderMode: feng3d.RenderMode.LINES } });
             this.tridentObject.addChild(xLine);
             //
             var yLine = feng3d.GameObject.create("yLine");
@@ -23709,7 +23684,7 @@ var feng3d;
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3(), new feng3d.Vector3(0, this.lineLength, 0), new feng3d.Color4(0, 1, 0), new feng3d.Color4(0, 1, 0)));
             meshRenderer = yLine.addComponent(feng3d.MeshRenderer);
-            meshRenderer.material = new feng3d.SegmentMaterial();
+            meshRenderer.material = feng3d.materialFactory.create("segment", { renderParams: { renderMode: feng3d.RenderMode.LINES } });
             meshRenderer.geometry = segmentGeometry;
             this.tridentObject.addChild(yLine);
             //
@@ -23719,7 +23694,7 @@ var feng3d;
             var segmentGeometry = new feng3d.SegmentGeometry();
             segmentGeometry.addSegment(new feng3d.Segment(new feng3d.Vector3(), new feng3d.Vector3(0, 0, this.lineLength), new feng3d.Color4(0, 0, 1), new feng3d.Color4(0, 0, 1)));
             meshRenderer = zLine.addComponent(feng3d.MeshRenderer);
-            meshRenderer.material = new feng3d.SegmentMaterial();
+            meshRenderer.material = feng3d.materialFactory.create("segment", { renderParams: { renderMode: feng3d.RenderMode.LINES } });
             meshRenderer.geometry = segmentGeometry;
             this.tridentObject.addChild(zLine);
             //

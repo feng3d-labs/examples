@@ -23,7 +23,7 @@ var feng3d;
             var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
             var canvas = document.getElementById("glcanvas");
             var pointGeometry = new feng3d.PointGeometry();
-            var pointMaterial = new feng3d.PointMaterial();
+            var pointMaterial = feng3d.materialFactory.create("point", { renderParams: { renderMode: feng3d.RenderMode.POINTS } });
             var gameObject = feng3d.GameObject.create("plane");
             var meshRenderer = gameObject.addComponent(feng3d.MeshRenderer);
             meshRenderer.geometry = pointGeometry;

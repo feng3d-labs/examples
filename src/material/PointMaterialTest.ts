@@ -13,7 +13,7 @@ namespace feng3d
             var canvas = document.getElementById("glcanvas");
 
             var pointGeometry = new PointGeometry();
-            var pointMaterial = new PointMaterial();
+            var pointMaterial = materialFactory.create("point", { renderParams: { renderMode: RenderMode.POINTS } });
             var gameObject = GameObject.create("plane");
             var meshRenderer = gameObject.addComponent(MeshRenderer);
             meshRenderer.geometry = pointGeometry;

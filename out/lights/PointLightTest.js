@@ -60,14 +60,14 @@ var feng3d;
                 var plane = feng3d.GameObject.create();
                 plane.transform.y = -1;
                 var model = plane.addComponent(feng3d.MeshRenderer);
-                var geometry = model.geometry = new feng3d.PlaneGeometry(10, 10);
+                var geometry = model.geometry = new feng3d.PlaneGeometry({ width: 10, height: 10 });
                 geometry.scaleUV(2, 2);
                 model.material = material;
                 scene.gameObject.addChild(plane);
                 var cube = feng3d.GameObject.create();
                 var model = cube.addComponent(feng3d.MeshRenderer);
                 model.material = material;
-                model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
+                model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
                 model.geometry.scaleUV(2, 2);
                 scene.gameObject.addChild(cube);
             }
@@ -80,7 +80,7 @@ var feng3d;
                 //
                 var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
                 var meshRenderer = light0.addComponent(feng3d.MeshRenderer);
-                meshRenderer.geometry = new feng3d.SphereGeometry(0.05);
+                meshRenderer.geometry = new feng3d.SphereGeometry({ radius: 0.05 });
                 //初始化点光源
                 var pointLight0 = light0.addComponent(feng3d.PointLight);
                 pointLight0.color = lightColor0.toColor3();
@@ -89,7 +89,7 @@ var feng3d;
                 //
                 var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
                 meshRenderer = light1.addComponent(feng3d.MeshRenderer);
-                meshRenderer.geometry = new feng3d.SphereGeometry(0.05);
+                meshRenderer.geometry = new feng3d.SphereGeometry({ radius: 0.05 });
                 //初始化点光源
                 var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
                 pointLight1.color = lightColor1.toColor3();

@@ -58,7 +58,7 @@ namespace feng3d
                 var plane = GameObject.create();
                 plane.transform.y = -1;
                 var model = plane.addComponent(MeshRenderer);
-                var geometry = model.geometry = new PlaneGeometry(10, 10);
+                var geometry = model.geometry = new PlaneGeometry({ width: 10, height: 10 });
                 geometry.scaleUV(2, 2);
                 model.material = material;
                 scene.gameObject.addChild(plane);
@@ -66,7 +66,7 @@ namespace feng3d
                 var cube = GameObject.create();
                 var model = cube.addComponent(MeshRenderer);
                 model.material = material;
-                model.geometry = new CubeGeometry(1, 1, 1, 1, 1, 1, false);
+                model.geometry = new CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
                 model.geometry.scaleUV(2, 2);
                 scene.gameObject.addChild(cube);
             }
@@ -84,7 +84,7 @@ namespace feng3d
                 //
                 var lightColor0 = new Color4(1, 0, 0, 1);
                 var meshRenderer = light0.addComponent(MeshRenderer);
-                meshRenderer.geometry = new SphereGeometry(0.05);
+                meshRenderer.geometry = new SphereGeometry({ radius: 0.05 });
                 //初始化点光源
                 var pointLight0 = light0.addComponent(PointLight);
                 pointLight0.color = lightColor0.toColor3();
@@ -94,7 +94,7 @@ namespace feng3d
                 //
                 var lightColor1 = new Color4(0, 1, 0, 1);
                 meshRenderer = light1.addComponent(MeshRenderer);
-                meshRenderer.geometry = new SphereGeometry(0.05);
+                meshRenderer.geometry = new SphereGeometry({ radius: 0.05 });
                 //初始化点光源
                 var pointLight1 = light1.addComponent(DirectionalLight);
                 pointLight1.color = lightColor1.toColor3();

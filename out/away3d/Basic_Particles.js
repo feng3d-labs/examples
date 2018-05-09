@@ -33,7 +33,7 @@ var feng3d;
             _particleMesh = feng3d.GameObject.create("particle");
             // _particleMesh.geometry = new PointGeometry();
             var meshRenderer = _particleMesh.addComponent(feng3d.MeshRenderer);
-            meshRenderer.geometry = new feng3d.PlaneGeometry(0.10, 0.10, 1, 1, false);
+            meshRenderer.geometry = new feng3d.PlaneGeometry({ width: 0.10, height: 0.10, segmentsH: 1, segmentsW: 1, yUp: false });
             var material = meshRenderer.material = feng3d.materialFactory.create("standard");
             material.uniforms.s_diffuse.url = "resources/blue.png";
             material.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;

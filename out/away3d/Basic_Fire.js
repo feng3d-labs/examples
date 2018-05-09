@@ -89,12 +89,12 @@ var feng3d;
                         particle.velocity = new feng3d.Vector3(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                     }, priority: 0
                 });
-                particleGeometry = new feng3d.PlaneGeometry(0.10, 0.10, 1, 1, false);
+                particleGeometry = new feng3d.PlaneGeometry({ width: 0.10, height: 0.10, segmentsW: 1, segmentsH: 1, yUp: false });
             }
             function initObjects() {
                 plane = feng3d.GameObject.create();
                 var model = plane.addComponent(feng3d.MeshRenderer);
-                model.geometry = new feng3d.PlaneGeometry(10, 10);
+                model.geometry = new feng3d.PlaneGeometry({ width: 10, height: 10 });
                 model.geometry.scaleUV(2, 2);
                 model.material = planeMaterial;
                 plane.transform.y = -0.20;

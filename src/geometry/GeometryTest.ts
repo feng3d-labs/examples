@@ -19,7 +19,7 @@ namespace feng3d
             geometry.addGeometry(new PlaneGeometry());
             var matrix3D = new Matrix4x4();
             matrix3D.appendTranslation(0, 0.50, 0);
-            geometry.addGeometry(new SphereGeometry(50), matrix3D);
+            geometry.addGeometry(new SphereGeometry({ radius: 50 }), matrix3D);
 
             matrix3D.appendTranslation(0, 0.50, 0);
             var addGeometry = new CubeGeometry();

@@ -79,14 +79,14 @@ namespace feng3d
             {
                 plane = GameObject.create();
                 var model = plane.addComponent(MeshRenderer);
-                var geometry: Geometry = model.geometry = new PlaneGeometry(10, 10);
+                var geometry: Geometry = model.geometry = new PlaneGeometry({ width: 10, height: 10 });
                 model.material = planeMaterial;
                 geometry.scaleUV(2, 2);
                 plane.transform.y = -0.20;
                 scene.gameObject.addChild(plane);
                 sphere = GameObject.create();
                 var model = sphere.addComponent(MeshRenderer);
-                model.geometry = new SphereGeometry(1.50, 40, 20)
+                model.geometry = new SphereGeometry({ radius: 1.50, segmentsW: 40, segmentsH: 20 })
                 model.material = sphereMaterial;
                 sphere.transform.x = 3;
                 sphere.transform.y = 1.60;
@@ -94,7 +94,7 @@ namespace feng3d
                 scene.gameObject.addChild(sphere);
                 cube = GameObject.create();
                 var model = cube.addComponent(MeshRenderer);
-                model.geometry = new CubeGeometry(2, 2, 2, 1, 1, 1, false);
+                model.geometry = new CubeGeometry({ width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
                 model.material = cubeMaterial;
                 cube.transform.x = 3.00;
                 cube.transform.y = 1.60;
@@ -102,7 +102,7 @@ namespace feng3d
                 scene.gameObject.addChild(cube);
                 torus = GameObject.create();
                 var model = torus.addComponent(MeshRenderer);
-                geometry = model.geometry = new TorusGeometry(1.50, 0.60, 40, 20);
+                geometry = model.geometry = new TorusGeometry({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
                 model.material = torusMaterial;
                 geometry.scaleUV(10, 5);
                 torus.transform.x = -2.50;

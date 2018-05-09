@@ -20,7 +20,7 @@ var feng3d;
             cube.transform.z = -7;
             this.gameObject.addChild(cube);
             var model = cube.addComponent(feng3d.MeshRenderer);
-            model.geometry = new feng3d.CubeGeometry(1, 1, 1, 1, 1, 1, false);
+            model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             //材质
             var material = model.material = feng3d.materialFactory.create("standard");
             material.uniforms.s_diffuse.url = 'resources/m.png';

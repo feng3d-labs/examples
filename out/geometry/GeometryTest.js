@@ -28,7 +28,7 @@ var feng3d;
             geometry.addGeometry(new feng3d.PlaneGeometry());
             var matrix3D = new feng3d.Matrix4x4();
             matrix3D.appendTranslation(0, 0.50, 0);
-            geometry.addGeometry(new feng3d.SphereGeometry(50), matrix3D);
+            geometry.addGeometry(new feng3d.SphereGeometry({ radius: 50 }), matrix3D);
             matrix3D.appendTranslation(0, 0.50, 0);
             var addGeometry = new feng3d.CubeGeometry();
             geometry.addGeometry(addGeometry, matrix3D);

@@ -50,7 +50,7 @@ var feng3d;
             torusMaterial.uniforms.s_envMap = cubeTexture;
             var torus = feng3d.GameObject.create("torus");
             var model = torus.addComponent(feng3d.MeshRenderer);
-            model.geometry = new feng3d.TorusGeometry(1.50, 0.60, 40, 20);
+            model.geometry = new feng3d.TorusGeometry({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
             scene.gameObject.addChild(torus);
             feng3d.ticker.onframe(function () {

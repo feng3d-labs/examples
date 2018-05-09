@@ -97,14 +97,14 @@ namespace feng3d
                         particle.velocity = new Vector3(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
                     }, priority: 0
                 });
-                particleGeometry = new PlaneGeometry(0.10, 0.10, 1, 1, false);
+                particleGeometry = new PlaneGeometry({ width: 0.10, height: 0.10, segmentsW: 1, segmentsH: 1, yUp: false });
             }
 
             function initObjects()
             {
                 plane = GameObject.create();
                 var model = plane.addComponent(MeshRenderer);
-                model.geometry = new PlaneGeometry(10, 10);
+                model.geometry = new PlaneGeometry({ width: 10, height: 10 });
                 model.geometry.scaleUV(2, 2);
                 model.material = planeMaterial;
                 plane.transform.y = -0.20;

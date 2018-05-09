@@ -26,7 +26,7 @@ class BillboardTest extends feng3d.Script
 
         //材质
         var model = gameObject.getComponent(feng3d.MeshRenderer);
-        model.geometry = new feng3d.PlaneGeometry(40, 40, 1, 1, false);
+        model.geometry = new feng3d.PlaneGeometry({ width: 40, height: 40, segmentsW: 1, segmentsH: 1, yUp: false });
         var textureMaterial = model.material = feng3d.materialFactory.create("standard");
         // textureMaterial.cullFace = CullFace.NONE;
         //

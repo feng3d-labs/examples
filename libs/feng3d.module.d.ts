@@ -8559,38 +8559,46 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    /**
+     * 平面几何体原始数据
+     */
     interface PlaneGeometryRaw {
-        __class__: "feng3d.PlaneGeometry";
-        height?: number;
-        segmentsH?: number;
-        segmentsW?: number;
+        __class__?: "feng3d.PlaneGeometry";
+        /**
+         * 宽度
+         */
         width?: number;
+        /**
+         * 高度
+         */
+        height?: number;
+        /**
+         * 横向分割数
+         */
+        segmentsW?: number;
+        /**
+         * 纵向分割数
+         */
+        segmentsH?: number;
+        /**
+         * 是否朝上
+         */
         yUp?: boolean;
     }
     /**
-     * 立方体几何体
+     * 平面几何体
      * @author feng 2016-09-12
      */
-    class PlaneGeometry extends Geometry {
+    class PlaneGeometry extends Geometry implements PlaneGeometryRaw {
         width: number;
-        private _width;
         height: number;
-        private _height;
         segmentsW: number;
-        private _segmentsW;
         segmentsH: number;
-        private _segmentsH;
         yUp: boolean;
-        private _yUp;
         /**
          * 创建平面几何体
-         * @param width 宽度
-         * @param height 高度
-         * @param segmentsW 横向分割数
-         * @param segmentsH 纵向分割数
-         * @param yUp 正面朝向 true:Y+ false:Z+
          */
-        constructor(width?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean);
+        constructor(raw?: PlaneGeometryRaw);
         /**
          * 构建几何体数据
          */
@@ -8634,46 +8642,56 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    /**
+     * 立方体几何体原始数据
+     */
     interface CubeGeometryRaw {
-        __class__: "feng3d.CubeGeometry";
-        depth?: number;
-        height?: number;
-        segmentsD?: number;
-        segmentsH?: number;
-        segmentsW?: number;
-        tile6?: boolean;
+        __class__?: "feng3d.CubeGeometry";
+        /**
+         * 宽度
+         */
         width?: number;
+        /**
+         * 高度
+         */
+        height?: number;
+        /**
+         * 深度
+         */
+        depth?: number;
+        /**
+         * 宽度方向分割数
+         */
+        segmentsW?: number;
+        /**
+         * 高度方向分割数
+         */
+        segmentsH?: number;
+        /**
+         * 深度方向分割数
+         */
+        segmentsD?: number;
+        /**
+         * 是否为6块贴图，默认true。
+         */
+        tile6?: boolean;
     }
     /**
      * 立方体几何体
      * @author feng 2016-09-12
      */
-    class CubeGeometry extends Geometry {
+    class CubeGeometry extends Geometry implements CubeGeometryRaw {
         width: number;
-        private _width;
         height: number;
-        private _height;
         depth: number;
-        private _depth;
         segmentsW: number;
-        private _segmentsW;
         segmentsH: number;
-        private _segmentsH;
         segmentsD: number;
-        private _segmentsD;
         tile6: boolean;
-        private _tile6;
         /**
          * 创建立方几何体
-         * @param   width           宽度，默认为1。
-         * @param   height          高度，默认为1。
-         * @param   depth           深度，默认为1。
-         * @param   segmentsW       宽度方向分割，默认为1。
-         * @param   segmentsH       高度方向分割，默认为1。
-         * @param   segmentsD       深度方向分割，默认为1。
-         * @param   tile6           是否为6块贴图，默认true。
          */
-        constructor(width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, segmentsD?: number, tile6?: boolean);
+        constructor(raw?: CubeGeometryRaw);
         protected buildGeometry(): void;
         /**
          * 构建坐标
@@ -8717,34 +8735,41 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    /**
+     * 球体几何体原始数据
+     */
     interface SphereGeometryRaw {
-        __class__: "feng3d.SphereGeometry";
+        __class__?: "feng3d.SphereGeometry";
+        /**
+         * 球体半径
+         */
         radius?: number;
-        segmentsH?: number;
+        /**
+         * 横向分割数
+         */
         segmentsW?: number;
+        /**
+         * 纵向分割数
+         */
+        segmentsH?: number;
+        /**
+         * 是否朝上
+         */
         yUp?: boolean;
     }
     /**
      * 球体几何体
      * @author DawnKing 2016-09-12
      */
-    class SphereGeometry extends Geometry {
+    class SphereGeometry extends Geometry implements SphereGeometryRaw {
         radius: number;
-        private _radius;
         segmentsW: number;
-        private _segmentsW;
         segmentsH: number;
-        private _segmentsH;
         yUp: boolean;
-        private _yUp;
         /**
          * 创建球形几何体
-         * @param radius 球体半径
-         * @param segmentsW 横向分割数
-         * @param segmentsH 纵向分割数
-         * @param yUp 正面朝向 true:Y+ false:Z+
          */
-        constructor(radius?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean);
+        constructor(raw?: SphereGeometryRaw);
         /**
          * 构建几何体数据
          * @param this.radius 球体半径
@@ -8769,29 +8794,42 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    /**
+     * 胶囊体几何体原始数据
+     */
     interface CapsuleGeometryRaw {
-        __class__: "feng3d.CapsuleGeometry";
-        height?: number;
+        __class__?: "feng3d.CapsuleGeometry";
+        /**
+         * 胶囊体半径
+         */
         radius?: number;
+        /**
+         * 胶囊体高度
+         */
+        height?: number;
+        /**
+         * 横向分割数
+         */
         segmentsH?: number;
+        /**
+         * 纵向分割数
+         */
         segmentsW?: number;
+        /**
+         * 正面朝向 true:Y+ false:Z+
+         */
         yUp?: boolean;
     }
     /**
      * 胶囊体几何体
      * @author DawnKing 2016-09-12
      */
-    class CapsuleGeometry extends Geometry {
+    class CapsuleGeometry extends Geometry implements CapsuleGeometryRaw {
         radius: number;
-        private _radius;
         height: number;
-        private _height;
         segmentsW: number;
-        private _segmentsW;
         segmentsH: number;
-        private _segmentsH;
         yUp: boolean;
-        private _yUp;
         /**
          * 创建胶囊几何体
          * @param radius 胶囊体半径
@@ -8800,7 +8838,7 @@ declare namespace feng3d {
          * @param segmentsH 纵向分割数
          * @param yUp 正面朝向 true:Y+ false:Z+
          */
-        constructor(radius?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean);
+        constructor(raw?: CapsuleGeometryRaw);
         /**
          * 构建几何体数据
          * @param radius 胶囊体半径
@@ -8826,23 +8864,53 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
+    /**
+     * 圆柱体几何体原始数据
+     */
     interface CylinderGeometryRaw {
-        __class__: "feng3d.CylinderGeometry";
-        bottomClosed?: boolean;
-        bottomRadius?: number;
-        height?: number;
-        segmentsH?: number;
-        segmentsW?: number;
-        surfaceClosed?: boolean;
-        topClosed?: boolean;
+        __class__?: "feng3d.CylinderGeometry";
+        /**
+         * 顶部半径
+         */
         topRadius?: number;
+        /**
+         * 底部半径
+         */
+        bottomRadius?: number;
+        /**
+         * 高度
+         */
+        height?: number;
+        /**
+         * 横向分割数
+         */
+        segmentsW?: number;
+        /**
+         * 纵向分割数
+         */
+        segmentsH?: number;
+        /**
+         * 顶部是否封口
+         */
+        topClosed?: boolean;
+        /**
+         * 底部是否封口
+         */
+        bottomClosed?: boolean;
+        /**
+         * 侧面是否封口
+         */
+        surfaceClosed?: boolean;
+        /**
+         * 是否朝上
+         */
         yUp?: boolean;
     }
     /**
      * 圆柱体几何体
      * @author DawnKing 2016-09-12
      */
-    class CylinderGeometry extends Geometry {
+    class CylinderGeometry extends Geometry implements CylinderGeometryRaw {
         topRadius: number;
         bottomRadius: number;
         height: number;
@@ -8855,7 +8923,7 @@ declare namespace feng3d {
         /**
          * 创建圆柱体
          */
-        constructor(topRadius?: number, bottomRadius?: number, height?: number, segmentsW?: number, segmentsH?: number, topClosed?: boolean, bottomClosed?: boolean, surfaceClosed?: boolean, yUp?: boolean);
+        constructor(raw?: CylinderGeometryRaw);
         /**
          * 构建几何体数据
          */
@@ -8877,31 +8945,44 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     interface ConeGeometryRaw {
-        __class__: "feng3d.ConeGeometry";
-        bottomClosed?: boolean;
+        __class__?: "feng3d.ConeGeometry";
+        /**
+         * 底部半径
+         */
         bottomRadius?: number;
+        /**
+         * 高度
+         */
         height?: number;
-        segmentsH?: number;
+        /**
+         * 横向分割数
+         */
         segmentsW?: number;
-        surfaceClosed?: boolean;
-        topClosed?: boolean;
-        topRadius?: number;
+        /**
+         * 纵向分割数
+         */
+        segmentsH?: number;
+        /**
+         * 底部是否封口
+         */
+        bottomClosed?: boolean;
+        /**
+         * 是否朝上
+         */
         yUp?: boolean;
     }
     /**
      * 圆锥体
      * @author feng 2017-02-07
      */
-    class ConeGeometry extends CylinderGeometry {
+    class ConeGeometry extends CylinderGeometry implements ConeGeometryRaw {
+        topRadius: number;
+        topClosed: boolean;
+        surfaceClosed: boolean;
         /**
          * 创建圆锥体
-         * @param radius 底部半径
-         * @param height 高度
-         * @param segmentsW
-         * @param segmentsH
-         * @param yUp
          */
-        constructor(radius?: number, height?: number, segmentsW?: number, segmentsH?: number, closed?: boolean, yUp?: boolean);
+        constructor(raw?: ConeGeometryRaw);
     }
 }
 declare namespace feng3d {
@@ -8915,6 +8996,10 @@ declare namespace feng3d {
          */
         radius?: number;
         /**
+         * 管道半径
+         */
+        tubeRadius?: number;
+        /**
          * 半径方向分割数
          */
         segmentsR?: number;
@@ -8922,10 +9007,6 @@ declare namespace feng3d {
          * 管道方向分割数
          */
         segmentsT?: number;
-        /**
-         * 管道半径
-         */
-        tubeRadius?: number;
         /**
          * 是否朝上
          */
@@ -8942,13 +9023,8 @@ declare namespace feng3d {
         yUp: boolean;
         /**
          * 创建<code>Torus</code>实例
-         * @param radius						圆环半径
-         * @param tubeRadius					管道半径
-         * @param segmentsR						横向段数
-         * @param segmentsT						纵向段数
-         * @param yUp							Y轴是否朝上
          */
-        constructor(radius?: number, tubeRadius?: number, segmentsR?: number, segmentsT?: number, yUp?: boolean);
+        constructor(raw?: TorusGeometryRaw);
         protected _vertexPositionData: number[];
         protected _vertexNormalData: number[];
         protected _vertexTangentData: number[];

@@ -44,7 +44,7 @@ namespace feng3d
 
             var torus = GameObject.create("torus");
             var model = torus.addComponent(MeshRenderer);
-            model.geometry = new TorusGeometry(1.50, 0.60, 40, 20);
+            model.geometry = new TorusGeometry({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
             scene.gameObject.addChild(torus);
 

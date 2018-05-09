@@ -13,7 +13,7 @@ namespace feng3d
             this.gameObject.addChild(cube);
 
             var model = cube.addComponent(MeshRenderer);
-            model.geometry = new CubeGeometry(1, 1, 1, 1, 1, 1, false);
+            model.geometry = new CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             //材质
             var material = model.material = materialFactory.create("standard");
             material.uniforms.s_diffuse.url = 'resources/m.png';

@@ -20,7 +20,7 @@ namespace feng3d
             var terrain = feng3d.GameObject.create("terrain");
             var meshRenderer = terrain.addComponent(feng3d.MeshRenderer);
             // meshRenderer.geometry = new feng3d.TerrainGeometry();
-            meshRenderer.geometry = new feng3d.TerrainGeometry(root + 'terrain_heights.jpg', 500, 100, 500);
+            meshRenderer.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg', width: 500, height: 100, depth: 500 });
             var material = materialFactory.create("terrain");
 
             material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';

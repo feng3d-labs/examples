@@ -2386,7 +2386,7 @@ var feng3d;
             var _this = this;
             var mode = 0;
             var container = document.createElement('div');
-            container.style.cssText = 'position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000';
+            container.style.cssText = 'position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;';
             container.addEventListener('click', function (event) {
                 event.preventDefault();
                 showPanel(++mode % container.children.length);
@@ -13139,19 +13139,16 @@ var feng3d;
         ], GameObject.prototype, "serializable", void 0);
         __decorate([
             feng3d.serialize,
-            feng3d.oav()
+            feng3d.oav({ component: "OAVGameObjectName" })
         ], GameObject.prototype, "name", void 0);
         __decorate([
-            feng3d.serialize,
-            feng3d.oav()
+            feng3d.serialize
         ], GameObject.prototype, "visible", void 0);
         __decorate([
-            feng3d.serialize,
-            feng3d.oav()
+            feng3d.serialize
         ], GameObject.prototype, "mouseEnabled", void 0);
         __decorate([
-            feng3d.serialize,
-            feng3d.oav()
+            feng3d.serialize
         ], GameObject.prototype, "navigationArea", void 0);
         __decorate([
             feng3d.serialize

@@ -22,7 +22,7 @@ var feng3d;
             var scene = this.gameObject.scene;
             var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
             var canvas = document.getElementById("glcanvas");
-            var cube = feng3d.GameObjectFactory.createCube();
+            var cube = feng3d.gameObjectFactory.createCube();
             cube.transform.z = 3;
             scene.gameObject.addChild(cube);
             //初始化颜色材质

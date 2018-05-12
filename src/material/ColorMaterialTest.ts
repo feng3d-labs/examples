@@ -12,7 +12,7 @@ namespace feng3d
             var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
             var canvas = document.getElementById("glcanvas");
 
-            var cube = GameObjectFactory.createCube();
+            var cube = gameObjectFactory.createCube();
             cube.transform.z = 3;
             scene.gameObject.addChild(cube);
 

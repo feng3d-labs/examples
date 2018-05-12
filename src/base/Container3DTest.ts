@@ -14,12 +14,12 @@ class Container3DTest extends feng3d.Script
     {
 
         //初始化颜色材质
-        this.cube = feng3d.GameObjectFactory.createCube();
+        this.cube = feng3d.gameObjectFactory.createCube();
         this.gameObject.addChild(this.cube);
 
         this.colorMaterial = this.cube.getComponent(feng3d.MeshRenderer).material = feng3d.materialFactory.create("color");
 
-        var cylinder = feng3d.GameObjectFactory.createCylinder();
+        var cylinder = feng3d.gameObjectFactory.createCylinder();
         cylinder.transform.x = 2;
         this.cube.addChild(cylinder);
     }

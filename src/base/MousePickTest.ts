@@ -18,27 +18,27 @@ namespace feng3d
             camera.transform.lookAt(new Vector3());
             camera.gameObject.addComponent(FPSController);
 
-            var cube = GameObjectFactory.createCube();
+            var cube = gameObjectFactory.createCube();
             cube.mouseEnabled = true;
             scene.gameObject.addChild(cube);
 
-            var plane = GameObjectFactory.createPlane();
+            var plane = gameObjectFactory.createPlane();
             plane.transform.position = new Vector3(1.50, 0, 0);
             plane.transform.rx = -90;
             plane.mouseEnabled = true;
             scene.gameObject.addChild(plane);
 
-            var sphere = GameObjectFactory.createSphere();
+            var sphere = gameObjectFactory.createSphere();
             sphere.transform.position = new Vector3(-1.50, 0, 0);
             sphere.mouseEnabled = true;
             scene.gameObject.addChild(sphere);
 
-            var capsule = GameObjectFactory.createCapsule();
+            var capsule = gameObjectFactory.createCapsule();
             capsule.transform.position = new Vector3(3, 0, 0);
             capsule.mouseEnabled = true;
             scene.gameObject.addChild(capsule);
 
-            var cylinder = GameObjectFactory.createCylinder();
+            var cylinder = gameObjectFactory.createCylinder();
             cylinder.transform.position = new Vector3(-3, 0, 0);
             cylinder.mouseEnabled = true;
             scene.gameObject.addChild(cylinder);

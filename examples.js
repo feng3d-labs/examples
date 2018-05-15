@@ -12,7 +12,7 @@ window.onload = function ()
   scene.gameObject.addChild(camera.gameObject);
 
   var engine = new feng3d.Engine(null, scene, camera);
-  scene.gameObject.addComponent(feng3d.ScriptComponent).script = "out/" + type + ".ts";
+  scene.gameObject.addComponent(feng3d.ScriptComponent).script = type.split("/").pop();
 
   function GetQueryString(name)
   {

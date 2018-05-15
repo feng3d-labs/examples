@@ -1,38 +1,35 @@
-namespace feng3d
+class SceneLoadTest extends feng3d.Script
 {
-    export class SceneLoadTest extends feng3d.Script
+    /**
+     * 初始化时调用
+     */
+    init()
     {
-        /**
-         * 初始化时调用
-         */
-        init()
+
+        var view3D = new feng3d.Engine();
+
+        feng3d.Loader.loadText("resources/scene/Untitled.scene.json", (content) =>
         {
+            var json = JSON.parse(content);
+            var sceneobject = feng3d.serialization.deserialize(json);
+            var scene = sceneobject.getComponent(feng3d.Scene3D);
+            scene.initCollectComponents();
 
-            var view3D = new feng3d.Engine();
+            view3D.scene = scene;
+        });
+    }
+    /**
+     * 更新
+     */
+    update()
+    {
+    }
 
-            feng3d.Loader.loadText("resources/scene/Untitled.scene.json", (content) =>
-            {
-                var json = JSON.parse(content);
-                var sceneobject = serialization.deserialize(json);
-                var scene = sceneobject.getComponent(Scene3D);
-                scene.initCollectComponents();
+    /**
+    * 销毁时调用
+    */
+    dispose()
+    {
 
-                view3D.scene = scene;
-            });
-        }
-        /**
-         * 更新
-         */
-        update()
-        {
-        }
-
-        /**
-        * 销毁时调用
-        */
-        dispose()
-        {
-
-        }
     }
 }

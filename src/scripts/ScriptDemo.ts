@@ -1,40 +1,37 @@
-namespace feng3d
+class ScriptDemo extends feng3d.Script
 {
-    export class ScriptDemo extends Script
+    cube: feng3d.GameObject;
+
+    init()
     {
-        cube: GameObject;
+        var cube = this.cube = feng3d.GameObject.create();
+        cube.transform.z = -7;
+        this.gameObject.addChild(cube);
 
-        init()
-        {
-            var cube = this.cube = GameObject.create();
-            cube.transform.z = -7;
-            this.gameObject.addChild(cube);
+        var model = cube.addComponent(feng3d.MeshRenderer);
+        model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+        //材质
+        var material = model.material = feng3d.materialFactory.create("standard");
+        material.uniforms.s_diffuse.url = 'resources/m.png';
 
-            var model = cube.addComponent(MeshRenderer);
-            model.geometry = new CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
-            //材质
-            var material = model.material = materialFactory.create("standard");
-            material.uniforms.s_diffuse.url = 'resources/m.png';
+        material.uniforms.u_fogMode = feng3d.FogMode.LINEAR;
+        material.uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
+        material.uniforms.u_fogMinDistance = 2;
+        material.uniforms.u_fogMaxDistance = 3;
+    }
 
-            material.uniforms.u_fogMode = FogMode.LINEAR;
-            material.uniforms.u_fogColor = new Color3(1, 1, 0);
-            material.uniforms.u_fogMinDistance = 2;
-            material.uniforms.u_fogMaxDistance = 3;
-        }
+    update()
+    {
+        this.cube.transform.ry += 1;
+        // log("this.cube.transform.ry: " + this.cube.transform.ry);
+    }
 
-        update()
-        {
-            this.cube.transform.ry += 1;
-            // log("this.cube.transform.ry: " + this.cube.transform.ry);
-        }
-
-        /**
-         * 销毁
-         */
-        dispose()
-        {
-            this.cube.dispose();
-            this.cube = null;
-        }
+    /**
+     * 销毁
+     */
+    dispose()
+    {
+        this.cube.dispose();
+        this.cube = null;
     }
 }

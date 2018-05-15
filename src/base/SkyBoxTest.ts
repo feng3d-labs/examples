@@ -1,46 +1,43 @@
-namespace feng3d
+class SkyBoxTest extends feng3d.Script
 {
-    export class SkyBoxTest extends feng3d.Script
+    /**
+     * 初始化时调用
+     */
+    init()
     {
-        /**
-         * 初始化时调用
-         */
-        init()
-        {
-            var scene = this.gameObject.scene;
-            var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
-            
-            camera.transform.z = -5;
-            camera.transform.lookAt(new Vector3());
-            camera.gameObject.addComponent(FPSController);
-            //
+        var scene = this.gameObject.scene;
+        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
 
-            var skybox = GameObject.create("skybox");
-            var model = skybox.addComponent(SkyBox);
-            model.texture = new TextureCube([
-                'resources/skybox/px.jpg',
-                'resources/skybox/py.jpg',
-                'resources/skybox/pz.jpg',
-                'resources/skybox/nx.jpg',
-                'resources/skybox/ny.jpg',
-                'resources/skybox/nz.jpg'
-            ]
-            );
-            scene.gameObject.addChild(skybox);
-        }
-        /**
-         * 更新
-         */
-        update()
-        {
-        }
+        camera.transform.z = -5;
+        camera.transform.lookAt(new feng3d.Vector3());
+        camera.gameObject.addComponent(feng3d.FPSController);
+        //
 
-        /**
-        * 销毁时调用
-        */
-        dispose()
-        {
+        var skybox = feng3d.GameObject.create("skybox");
+        var model = skybox.addComponent(feng3d.SkyBox);
+        model.texture = new feng3d.TextureCube([
+            'resources/skybox/px.jpg',
+            'resources/skybox/py.jpg',
+            'resources/skybox/pz.jpg',
+            'resources/skybox/nx.jpg',
+            'resources/skybox/ny.jpg',
+            'resources/skybox/nz.jpg'
+        ]
+        );
+        scene.gameObject.addChild(skybox);
+    }
+    /**
+     * 更新
+     */
+    update()
+    {
+    }
 
-        }
+    /**
+    * 销毁时调用
+    */
+    dispose()
+    {
+
     }
 }

@@ -5,7 +5,8 @@
 		"sourceMap": true,
 		"experimentalDecorators": true,
 		"declaration": true,
-		"outDir": "out"
+		// "outDir": "out"
+		"outFile": "out/examples.js"
 	},
 	"include": [
 		"libs/feng3d.d.ts",

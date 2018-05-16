@@ -1513,7 +1513,7 @@ var SegmentMaterialTest = /** @class */ (function (_super) {
             }
             else {
                 var vec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
-                segmentGeometry.addSegment(new feng3d.Segment(preVec, vec));
+                segmentGeometry.segments.push({ start: preVec, end: vec });
                 preVec = vec;
             }
         }

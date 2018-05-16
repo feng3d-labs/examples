@@ -3613,6 +3613,8 @@ declare namespace feng3d {
      * @author feng 2016-09-24
      */
     class Color3 {
+        static WHITE: Color3;
+        static BLACK: Color3;
         /**
          * 红[0,1]
          */
@@ -3829,6 +3831,8 @@ declare namespace feng3d {
      * @author feng 2016-09-24
      */
     class Color4 {
+        static WHITE: Color4;
+        static BLACK: Color4;
         /**
          * 红[0,1]
          */
@@ -8175,7 +8179,7 @@ declare namespace feng3d {
         /**
          * 几何体变脏
          */
-        protected invalidateGeometry(): void;
+        invalidateGeometry(): void;
         /**
          * 更新几何体
          */
@@ -8338,56 +8342,38 @@ declare namespace feng3d {
      * @author feng 2016-10-16
      */
     class SegmentGeometry extends Geometry {
-        private segments_;
+        /**
+         * 线段列表
+         * 修改数组内数据时需要手动调用 invalidateGeometry();
+         */
+        segments: Segment[];
         constructor();
-        /**
-         * 添加线段
-         * @param segment		            线段数据
-         */
-        addSegment(segment: Segment): void;
-        /**
-         * 设置线段
-         * @param segment		            线段数据
-         * @param index		                线段索引
-         */
-        setSegmentAt(segment: Segment, index: number): void;
         /**
          * 更新几何体
          */
         protected buildGeometry(): void;
-        /**
-         * 获取线段数据
-         * @param index 		线段索引
-         * @return				线段数据
-         */
-        getSegment(index: number): Segment;
-        /**
-         * 移除所有线段
-         */
-        removeAllSegments(): void;
-        /**
-         * 线段列表
-         */
-        readonly segments: Segment[];
     }
     /**
      * 线段
      * @author feng 2016-10-16
      */
-    class Segment {
-        start: Vector3;
-        end: Vector3;
-        startColor: Color4;
-        endColor: Color4;
+    interface Segment {
         /**
-         * 创建线段
-         * @param start 起点坐标
-         * @param end 终点坐标
-         * @param colorStart 起点颜色
-         * @param colorEnd 终点颜色
-         * @param thickness 线段厚度
+         * 起点坐标
          */
-        constructor(start: Vector3, end: Vector3, colorStart?: Color4, colorEnd?: Color4);
+        start?: Vector3;
+        /**
+         * 终点坐标
+         */
+        end?: Vector3;
+        /**
+         * 起点颜色
+         */
+        startColor?: Color4;
+        /**
+         * 线段厚度
+         */
+        endColor?: Color4;
     }
 }
 declare namespace feng3d {
@@ -9885,7 +9871,7 @@ declare namespace feng3d {
         /**
          * 几何体变脏
          */
-        protected invalidateGeometry(propertyKey?: string, oldValue?: any, newValue?: any): void;
+        invalidateGeometry(propertyKey?: string, oldValue?: any, newValue?: any): void;
         /**
          * 创建顶点坐标
          */

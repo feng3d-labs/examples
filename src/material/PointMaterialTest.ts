@@ -24,7 +24,7 @@ class PointMaterialTest extends feng3d.Script
         {
             var angle = x / length * Math.PI;
             var vec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
-            pointGeometry.addPoint(new feng3d.PointInfo(vec));
+            pointGeometry.points.push({ position: vec });
         }
 
         //变化旋转

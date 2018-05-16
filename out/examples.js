@@ -1464,7 +1464,7 @@ var PointMaterialTest = /** @class */ (function (_super) {
         for (var x = -length; x <= length; x = x + 4) {
             var angle = x / length * Math.PI;
             var vec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
-            pointGeometry.addPoint(new feng3d.PointInfo(vec));
+            pointGeometry.points.push({ position: vec });
         }
         //变化旋转
         setInterval(function () {

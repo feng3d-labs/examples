@@ -1,7 +1,7 @@
 interface FireVO
 {
     mesh: feng3d.GameObject;
-    animator: feng3d.ParticleAnimator;
+    particleSystem: feng3d.ParticleSystem;
     light?: feng3d.PointLight;
     strength: number;
 }
@@ -72,17 +72,17 @@ class Basic_Fire extends feng3d.Script
             particleMaterial.renderParams.enableBlend = true;
         }
 
-        function initParticles(particleAnimator: feng3d.ParticleAnimator)
+        function initParticles(particleSystem: feng3d.ParticleSystem)
         {
-            particleAnimator.animations.billboard.enable = true;
-            particleAnimator.animations.billboard.camera = camera.getComponent(feng3d.Camera);
+            particleSystem.animations.billboard.enable = true;
+            particleSystem.animations.billboard.camera = camera.getComponent(feng3d.Camera);
             // fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3(0, 80, 0)));
             // fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
             // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
             //通过函数来创建粒子初始状态
-            particleAnimator.numParticles = 500;
-            particleAnimator.generateFunctions.push({
+            particleSystem.numParticles = 500;
+            particleSystem.generateFunctions.push({
                 generate: (particle) =>
                 {
                     particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
@@ -110,16 +110,15 @@ class Basic_Fire extends feng3d.Script
             for (var i = 0; i < NUM_FIRES; i++)
             {
                 var particleMesh = feng3d.GameObject.create();
-                var model = particleMesh.addComponent(feng3d.MeshRenderer);
-                model.geometry = particleGeometry;
-                model.material = particleMaterial;
-                var particleAnimator = particleMesh.addComponent(feng3d.ParticleAnimator);
-                initParticles(particleAnimator);
+                var particleSystem = particleMesh.addComponent(feng3d.ParticleSystem);
+                particleSystem.geometry = particleGeometry;
+                particleSystem.material = particleMaterial;
+                initParticles(particleSystem);
                 var degree = i / NUM_FIRES * Math.PI * 2;
                 particleMesh.transform.x = Math.sin(degree) * 4;
                 particleMesh.transform.z = Math.cos(degree) * 4;
                 particleMesh.transform.y = 0.05;
-                fireObjects.push({ mesh: particleMesh, animator: particleAnimator, strength: 0 });
+                fireObjects.push({ mesh: particleMesh, particleSystem: particleSystem, strength: 0 });
                 scene.gameObject.addChild(particleMesh);
             }
             timer = feng3d.ticker.repeat(1000, fireObjects.length, onTimer, this).start();

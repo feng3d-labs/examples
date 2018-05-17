@@ -138,32 +138,28 @@ var ParticleAnimatorTest = /** @class */ (function (_super) {
         camera.transform.lookAt(new feng3d.Vector3());
         camera.gameObject.addComponent(feng3d.FPSController);
         var particle = feng3d.GameObject.create("particle");
-        var meshRenderer = particle.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = new feng3d.PointGeometry();
-        var material = meshRenderer.material = feng3d.materialFactory.create("standard");
-        material.renderParams.renderMode = feng3d.RenderMode.POINTS;
+        var particleSystem = particle.addComponent(feng3d.ParticleSystem);
         particle.transform.y = -1;
         scene.gameObject.addChild(particle);
-        var particleAnimator = particle.addComponent(feng3d.ParticleAnimator);
-        particleAnimator.cycle = 10;
-        particleAnimator.numParticles = 1000;
+        particleSystem.cycle = 10;
+        particleSystem.numParticles = 1000;
         //发射组件
-        var emission = particleAnimator.animations.emission;
+        var emission = particleSystem.animations.emission;
         //每秒发射数量
         emission.rate = 50;
         //批量发射
         emission.bursts.push({ time: 1, particles: 100 }, { time: 2, particles: 100 }, { time: 3, particles: 100 }, { time: 4, particles: 100 }, { time: 5, particles: 100 });
         //通过组件来创建粒子初始状态
-        particleAnimator.animations.position.enable = true;
-        particleAnimator.animations.velocity.enable = true;
-        particleAnimator.particleGlobal.acceleration = acceleration;
+        particleSystem.animations.position.enable = true;
+        particleSystem.animations.velocity.enable = true;
+        particleSystem.particleGlobal.acceleration = acceleration;
         //通过函数来创建粒子初始状态
-        particleAnimator.generateFunctions.push({
+        particleSystem.generateFunctions.push({
             generate: function (particle) {
                 particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
             }, priority: 0
         });
-        particleAnimator.isPlaying = true;
+        particleSystem.isPlaying = true;
     };
     /**
      * 更新
@@ -266,16 +262,16 @@ var Basic_Fire = /** @class */ (function (_super) {
             particleMaterial.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
             particleMaterial.renderParams.enableBlend = true;
         }
-        function initParticles(particleAnimator) {
-            particleAnimator.animations.billboard.enable = true;
-            particleAnimator.animations.billboard.camera = camera.getComponent(feng3d.Camera);
+        function initParticles(particleSystem) {
+            particleSystem.animations.billboard.enable = true;
+            particleSystem.animations.billboard.camera = camera.getComponent(feng3d.Camera);
             // fireAnimationSet["addAnimation"](new ParticleScaleNode(ParticlePropertiesMode.GLOBAL, false, false, 2.5, 0.5));
             // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.GLOBAL, new Vector3(0, 80, 0)));
             // fireAnimationSet["addAnimation"](new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, true, false, false, new flash.ColorTransform(0, 0, 0, 1, 0xFF, 0x33, 0x01), new flash.ColorTransform(0, 0, 0, 1, 0x99)));
             // fireAnimationSet["addAnimation"](new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
             //通过函数来创建粒子初始状态
-            particleAnimator.numParticles = 500;
-            particleAnimator.generateFunctions.push({
+            particleSystem.numParticles = 500;
+            particleSystem.generateFunctions.push({
                 generate: function (particle) {
                     particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
                     particle.birthTime = Math.random() * 5;
@@ -298,16 +294,15 @@ var Basic_Fire = /** @class */ (function (_super) {
             scene.gameObject.addChild(plane);
             for (var i = 0; i < NUM_FIRES; i++) {
                 var particleMesh = feng3d.GameObject.create();
-                var model = particleMesh.addComponent(feng3d.MeshRenderer);
-                model.geometry = particleGeometry;
-                model.material = particleMaterial;
-                var particleAnimator = particleMesh.addComponent(feng3d.ParticleAnimator);
-                initParticles(particleAnimator);
+                var particleSystem = particleMesh.addComponent(feng3d.ParticleSystem);
+                particleSystem.geometry = particleGeometry;
+                particleSystem.material = particleMaterial;
+                initParticles(particleSystem);
                 var degree = i / NUM_FIRES * Math.PI * 2;
                 particleMesh.transform.x = Math.sin(degree) * 4;
                 particleMesh.transform.z = Math.cos(degree) * 4;
                 particleMesh.transform.y = 0.05;
-                fireObjects.push({ mesh: particleMesh, animator: particleAnimator, strength: 0 });
+                fireObjects.push({ mesh: particleMesh, particleSystem: particleSystem, strength: 0 });
                 scene.gameObject.addChild(particleMesh);
             }
             timer = feng3d.ticker.repeat(1000, fireObjects.length, onTimer, this).start();
@@ -401,16 +396,19 @@ var Basic_Particles = /** @class */ (function (_super) {
         // _particleAnimationSet["initParticleFunc"] = flash.bind(initParticleFunc, this);
         _particleMesh = feng3d.GameObject.create("particle");
         // _particleMesh.geometry = new PointGeometry();
-        var meshRenderer = _particleMesh.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = new feng3d.PlaneGeometry({ width: 0.10, height: 0.10, segmentsH: 1, segmentsW: 1, yUp: false });
-        var material = meshRenderer.material = feng3d.materialFactory.create("standard");
-        material.uniforms.s_diffuse.url = "resources/blue.png";
-        material.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
-        material.renderParams.enableBlend = true;
-        var particleAnimator = _particleMesh.addComponent(feng3d.ParticleAnimator);
-        particleAnimator.numParticles = 20000;
+        var particleSystem = _particleMesh.addComponent(feng3d.ParticleSystem);
+        particleSystem.geometry = new feng3d.PlaneGeometry({ width: 0.10, height: 0.10, segmentsH: 1, segmentsW: 1, yUp: false });
+        particleSystem.material = feng3d.materialFactory.create("particle", {
+            uniforms: {
+                s_diffuse: {
+                    url: "resources/blue.png", format: feng3d.TextureFormat.RGBA
+                }
+            },
+            renderParams: { enableBlend: true }
+        });
+        particleSystem.numParticles = 20000;
         //通过函数来创建粒子初始状态
-        particleAnimator.generateFunctions.push({
+        particleSystem.generateFunctions.push({
             generate: function (particle) {
                 particle.birthTime = Math.random() * 5 - 5;
                 particle.lifetime = 5;
@@ -420,9 +418,9 @@ var Basic_Particles = /** @class */ (function (_super) {
                 particle.velocity = new feng3d.Vector3(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
             }, priority: 0
         });
-        particleAnimator.animations.billboard.enable = true;
-        particleAnimator.animations.billboard.camera = camera.getComponent(feng3d.Camera);
-        particleAnimator.cycle = 10;
+        particleSystem.animations.billboard.enable = true;
+        particleSystem.animations.billboard.camera = camera.getComponent(feng3d.Camera);
+        particleSystem.cycle = 10;
         scene.gameObject.addChild(_particleMesh);
     };
     /**

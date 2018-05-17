@@ -22,17 +22,20 @@ class Basic_Particles extends feng3d.Script
 
         _particleMesh = feng3d.GameObject.create("particle");
         // _particleMesh.geometry = new PointGeometry();
-        var meshRenderer = _particleMesh.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = new feng3d.PlaneGeometry({ width: 0.10, height: 0.10, segmentsH: 1, segmentsW: 1, yUp: false });
-        var material = meshRenderer.material = feng3d.materialFactory.create("standard");
-        material.uniforms.s_diffuse.url = "resources/blue.png";
-        material.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
-        material.renderParams.enableBlend = true;
-        var particleAnimator = _particleMesh.addComponent(feng3d.ParticleAnimator);
+        var particleSystem = _particleMesh.addComponent(feng3d.ParticleSystem);
+        particleSystem.geometry = new feng3d.PlaneGeometry({ width: 0.10, height: 0.10, segmentsH: 1, segmentsW: 1, yUp: false });
+        particleSystem.material = feng3d.materialFactory.create("particle", {
+            uniforms: {
+                s_diffuse: {
+                    url: "resources/blue.png", format: feng3d.TextureFormat.RGBA
+                }
+            },
+            renderParams: { enableBlend: true }
+        });
 
-        particleAnimator.numParticles = 20000;
+        particleSystem.numParticles = 20000;
         //通过函数来创建粒子初始状态
-        particleAnimator.generateFunctions.push({
+        particleSystem.generateFunctions.push({
             generate: (particle) =>
             {
                 particle.birthTime = Math.random() * 5 - 5;
@@ -43,9 +46,9 @@ class Basic_Particles extends feng3d.Script
                 particle.velocity = new feng3d.Vector3(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
             }, priority: 0
         });
-        particleAnimator.animations.billboard.enable = true;
-        particleAnimator.animations.billboard.camera = camera.getComponent(feng3d.Camera);
-        particleAnimator.cycle = 10;
+        particleSystem.animations.billboard.enable = true;
+        particleSystem.animations.billboard.camera = camera.getComponent(feng3d.Camera);
+        particleSystem.cycle = 10;
         scene.gameObject.addChild(_particleMesh);
     }
     /**

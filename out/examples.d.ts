@@ -56,7 +56,7 @@ declare class SceneLoadTest extends feng3d.Script {
 }
 interface FireVO {
     mesh: feng3d.GameObject;
-    animator: feng3d.ParticleAnimator;
+    particleSystem: feng3d.ParticleSystem;
     light?: feng3d.PointLight;
     strength: number;
 }

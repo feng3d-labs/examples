@@ -14,18 +14,14 @@ class ParticleAnimatorTest extends feng3d.Script
         camera.gameObject.addComponent(feng3d.FPSController);
 
         var particle = feng3d.GameObject.create("particle");
-        var meshRenderer = particle.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = new feng3d.PointGeometry();
-        var material = meshRenderer.material = feng3d.materialFactory.create("standard");
-        material.renderParams.renderMode = feng3d.RenderMode.POINTS;
+        var particleSystem = particle.addComponent(feng3d.ParticleSystem);
         particle.transform.y = -1;
         scene.gameObject.addChild(particle);
 
-        var particleAnimator = particle.addComponent(feng3d.ParticleAnimator);
-        particleAnimator.cycle = 10;
-        particleAnimator.numParticles = 1000;
+        particleSystem.cycle = 10;
+        particleSystem.numParticles = 1000;
         //发射组件
-        var emission = particleAnimator.animations.emission;
+        var emission = particleSystem.animations.emission;
         //每秒发射数量
         emission.rate = 50;
         //批量发射
@@ -37,17 +33,17 @@ class ParticleAnimatorTest extends feng3d.Script
             { time: 5, particles: 100 },
         );
         //通过组件来创建粒子初始状态
-        particleAnimator.animations.position.enable = true;
-        particleAnimator.animations.velocity.enable = true;
-        particleAnimator.particleGlobal.acceleration = acceleration;
+        particleSystem.animations.position.enable = true;
+        particleSystem.animations.velocity.enable = true;
+        particleSystem.particleGlobal.acceleration = acceleration;
         //通过函数来创建粒子初始状态
-        particleAnimator.generateFunctions.push({
+        particleSystem.generateFunctions.push({
             generate: (particle) =>
             {
                 particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
             }, priority: 0
         });
-        particleAnimator.isPlaying = true;
+        particleSystem.isPlaying = true;
     }
     /**
      * 更新

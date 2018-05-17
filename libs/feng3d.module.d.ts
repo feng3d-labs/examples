@@ -10408,7 +10408,24 @@ declare namespace feng3d {
      * 索引数据文件系统
      */
     class IndexedDBfs extends IndexedDBReadFS implements ReadWriteFS {
+        /**
+         * 获取文件信息
+         * @param path 文件路径
+         * @param callback 回调函数
+         */
+        stat(path: string, callback: (err: Error, stats: FileInfo) => void): void;
+        /**
+         * 读取文件夹中文件列表
+         * @param path 路径
+         * @param callback 回调函数
+         */
         readdir(path: string, callback: (err: Error, files: string[]) => void): void;
+        /**
+         * 新建文件夹
+         * @param path 文件夹路径
+         * @param callback 回调函数
+         */
+        mkdir(path: string, callback: (err: Error) => void): void;
         /**
          * 删除文件
          * @param path 文件路径
@@ -10422,26 +10439,9 @@ declare namespace feng3d {
          * @param callback 回调函数
          */
         writeFile(path: string, data: ArrayBuffer, callback?: (err: Error) => void): void;
-        hasProject(projectname: string, callback: (has: boolean) => void): void;
-        getProjectList(callback: (err: Error | null, projects: string[] | null) => void): void;
-        initproject(projectname1: string, callback: () => void): void;
-        stat(path: string, callback: (err: Error | null, stats: FileInfo | null) => void): void;
-        /**
-         * 读取文件为字符串
-         */
-        readFileAsString(path: string, callback: (err: Error | null, data: string | null) => void): void;
-        mkdir(path: string, callback: (err: Error | null) => void): void;
         rename(oldPath: string, newPath: string, callback: (err: Error | null) => void): void;
         move(src: string, dest: string, callback?: (err: Error | null) => void): void;
         remove(path: string, callback?: (err: Error | null) => void): void;
-        /**
-         * 获取文件绝对路径
-         */
-        getAbsolutePath(path: string, callback: (err: Error | null, absolutePath: string | null) => void): void;
-        /**
-         * 获取指定文件下所有文件路径列表
-         */
-        getAllfilepathInFolder(dirpath: string, callback: (err: Error | null, filepaths: string[] | null) => void): void;
     }
     type FileInfo = {
         path: string;
@@ -10499,11 +10499,15 @@ declare namespace feng3d {
          */
         readFile(path: string, callback: (err, data: ArrayBuffer) => void): void;
         /**
+         * 读取文件为字符串
+         */
+        readFileAsString(path: string, callback: (err: Error | null, data: string | null) => void): void;
+        /**
          * 加载图片
          * @param path 图片路径
          * @param callback 加载完成回调
          */
-        loadImage(path: string, callback: (err: Error, img: HTMLImageElement) => void): void;
+        readFileAsImage(path: string, callback: (err: Error, img: HTMLImageElement) => void): void;
     }
     class ReadWriteAssets extends ReadAssets implements ReadWriteFS {
         /**
@@ -10512,11 +10516,23 @@ declare namespace feng3d {
         fs: IndexedDBfs;
         constructor(readWriteFS?: ReadWriteFS);
         /**
+         * 获取文件信息
+         * @param path 文件路径
+         * @param callback 回调函数
+         */
+        stat(path: string, callback: (err: Error, stats: FileInfo) => void): void;
+        /**
          * 读取文件夹中文件列表
          * @param path 路径
          * @param callback 回调函数
          */
         readdir(path: string, callback: (err: Error, files: string[]) => void): void;
+        /**
+         * 新建文件夹
+         * @param path 文件夹路径
+         * @param callback 回调函数
+         */
+        mkdir(path: string, callback: (err: Error) => void): void;
         /**
          * 删除文件
          * @param path 文件路径
@@ -10530,26 +10546,18 @@ declare namespace feng3d {
          * @param callback 回调函数
          */
         writeFile(path: string, data: ArrayBuffer, callback?: (err: Error) => void): void;
-        hasProject(projectname: string, callback: (has: boolean) => void): void;
-        getProjectList(callback: (err: Error | null, projects: string[] | null) => void): void;
-        initproject(projectname: string, callback: () => void): void;
-        stat(path: string, callback: (err: Error | null, stats: FileInfo | null) => void): void;
-        /**
-         * 读取文件为字符串
-         */
-        readFileAsString(path: string, callback: (err: Error | null, data: string | null) => void): void;
-        mkdir(path: string, callback: (err: Error | null) => void): void;
         rename(oldPath: string, newPath: string, callback: (err: Error | null) => void): void;
         move(src: string, dest: string, callback?: ((err: Error | null) => void) | undefined): void;
         remove(path: string, callback?: ((err: Error | null) => void) | undefined): void;
         /**
-         * 获取文件绝对路径
-         */
-        getAbsolutePath(path: string, callback: (err: Error | null, absolutePath: string | null) => void): void;
-        /**
          * 获取指定文件下所有文件路径列表
          */
-        getAllfilepathInFolder(dirpath: string, callback: (err: Error | null, filepaths: string[] | null) => void): void;
+        getAllfilepathInFolder(dirpath: string, callback: (err: Error, filepaths: string[]) => void): void;
+        /**
+         * 是否为文件夹
+         * @param path 文件路径
+         */
+        isDir(path: string): boolean;
     }
     /**
      * 可读文件系统
@@ -10571,11 +10579,23 @@ declare namespace feng3d {
      */
     interface ReadWriteFS extends ReadFS {
         /**
+         * 获取文件信息
+         * @param path 文件路径
+         * @param callback 回调函数
+         */
+        stat(path: string, callback: (err: Error, stats: FileInfo) => void): void;
+        /**
          * 读取文件夹中文件列表
          * @param path 路径
          * @param callback 回调函数
          */
         readdir(path: string, callback: (err: Error, files: string[]) => void): void;
+        /**
+         * 新建文件夹
+         * @param path 文件夹路径
+         * @param callback 回调函数
+         */
+        mkdir(path: string, callback: (err: Error) => void): void;
         /**
          * 删除文件
          * @param path 文件路径
@@ -10589,26 +10609,9 @@ declare namespace feng3d {
          * @param callback 回调函数
          */
         writeFile(path: string, data: ArrayBuffer, callback?: (err: Error) => void): void;
-        hasProject(projectname: string, callback: (has: boolean) => void): void;
-        getProjectList(callback: (err: Error | null, projects: string[] | null) => void): void;
-        initproject(projectname: string, callback: () => void): void;
-        stat(path: string, callback: (err: Error | null, stats: FileInfo | null) => void): void;
-        /**
-         * 读取文件为字符串
-         */
-        readFileAsString(path: string, callback: (err: Error | null, data: string | null) => void): void;
-        mkdir(path: string, callback: (err: Error | null) => void): void;
         rename(oldPath: string, newPath: string, callback: (err: Error | null) => void): void;
         move(src: string, dest: string, callback?: ((err: Error | null) => void) | undefined): void;
         remove(path: string, callback?: ((err: Error | null) => void) | undefined): void;
-        /**
-         * 获取文件绝对路径
-         */
-        getAbsolutePath(path: string, callback: (err: Error | null, absolutePath: string | null) => void): void;
-        /**
-         * 获取指定文件下所有文件路径列表
-         */
-        getAllfilepathInFolder(dirpath: string, callback: (err: Error | null, filepaths: string[] | null) => void): void;
     }
 }
 declare namespace feng3d {

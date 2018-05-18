@@ -10363,7 +10363,7 @@ declare namespace feng3d {
         getObjectStoreNames(dbname: string, callback: (err: Error | null, objectStoreNames: string[]) => void): void;
         createObjectStore(dbname: string, objectStroreName: string, callback?: (err) => void): void;
         deleteObjectStore(dbname: string, objectStroreName: string, callback?: (err) => void): void;
-        getAllKeys(dbname: string, objectStroreName: string, callback?: (err: Error | null, keys: string[] | null) => void): void;
+        getAllKeys(dbname: string, objectStroreName: string, callback?: (err: Error, keys: string[]) => void): void;
         get(dbname: string, objectStroreName: string, key: string | number, callback?: (err: Error | null, data: any) => void): void;
         set(dbname: string, objectStroreName: string, key: string | number, data: any, callback?: (err: Error | null) => void): void;
         delete(dbname: string, objectStroreName: string, key: string | number, callback?: (err?: Error) => void): void;
@@ -10372,13 +10372,13 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
-     * 索引数据资源
+     * 索引数据文件系统
      */
-    var indexedDBReadFS: IndexedDBReadFS;
+    var indexedDBfs: IndexedDBfs;
     /**
-     * 索引数据资源
+     * 索引数据文件系统
      */
-    class IndexedDBReadFS implements ReadFS {
+    class IndexedDBfs implements ReadWriteFS {
         readonly type: FSType;
         /**
          * 数据库名称
@@ -10395,15 +10395,12 @@ declare namespace feng3d {
          * @param callback 读取完成回调 当err不为null时表示读取失败
          */
         readFile(path: string, callback: (err: Error, data: ArrayBuffer) => void): void;
-    }
-    /**
-     * 索引数据文件系统
-     */
-    var indexedDBfs: IndexedDBfs;
-    /**
-     * 索引数据文件系统
-     */
-    class IndexedDBfs extends IndexedDBReadFS implements ReadWriteFS {
+        /**
+         * 获取文件绝对路径
+         * @param path （相对）路径
+         * @param callback 回调函数
+         */
+        getAbsolutePath(path: string, callback: (err: Error, absolutePath: string) => void): void;
         /**
          * 获取文件信息
          * @param path 文件路径
@@ -10435,9 +10432,11 @@ declare namespace feng3d {
          * @param callback 回调函数
          */
         writeFile(path: string, data: ArrayBuffer, callback?: (err: Error) => void): void;
-        rename(oldPath: string, newPath: string, callback: (err: Error | null) => void): void;
-        move(src: string, dest: string, callback?: (err: Error | null) => void): void;
-        remove(path: string, callback?: (err: Error | null) => void): void;
+        /**
+         * 获取所有文件路径
+         * @param callback 回调函数
+         */
+        getAllPaths(callback: (err: Error, allPaths: string[]) => void): void;
     }
     type FileInfo = {
         path: string;
@@ -10456,13 +10455,24 @@ declare namespace feng3d {
      * Http可读文件系统
      */
     class HttpReadFS implements ReadFS {
+        /**
+         * 根路径
+         */
+        rootPath: string;
         readonly type: FSType;
+        constructor();
         /**
          * 读取文件
          * @param path 路径
          * @param callback 读取完成回调 当err不为null时表示读取失败
          */
         readFile(path: string, callback: (err, data: ArrayBuffer) => void): void;
+        /**
+         * 获取文件绝对路径
+         * @param path （相对）路径
+         * @param callback 回调函数
+         */
+        getAbsolutePath(path: string, callback: (err: Error, absolutePath: string) => void): void;
     }
 }
 declare namespace feng3d {
@@ -10494,6 +10504,12 @@ declare namespace feng3d {
          * @param callback 读取完成回调 当err不为null时表示读取失败
          */
         readFile(path: string, callback: (err, data: ArrayBuffer) => void): void;
+        /**
+         * 获取文件绝对路径
+         * @param path （相对）路径
+         * @param callback 回调函数
+         */
+        getAbsolutePath(path: string, callback: (err: Error, absolutePath: string) => void): void;
         /**
          * 读取文件为字符串
          */
@@ -10542,13 +10558,74 @@ declare namespace feng3d {
          * @param callback 回调函数
          */
         writeFile(path: string, data: ArrayBuffer, callback?: (err: Error) => void): void;
-        rename(oldPath: string, newPath: string, callback: (err: Error | null) => void): void;
-        move(src: string, dest: string, callback?: ((err: Error | null) => void) | undefined): void;
-        remove(path: string, callback?: ((err: Error | null) => void) | undefined): void;
+        /**
+         * 获取所有文件路径
+         * @param callback 回调函数
+         */
+        getAllPaths(callback: (err: Error, allPaths: string[]) => void): void;
         /**
          * 获取指定文件下所有文件路径列表
          */
         getAllfilepathInFolder(dirpath: string, callback: (err: Error, filepaths: string[]) => void): void;
+        /**
+         * 复制文件
+         * @param src    源路径
+         * @param dest    目标路径
+         * @param callback 回调函数
+         */
+        copyFile(src: string, dest: string, callback: (err: Error) => void): void;
+        /**
+         * 移动文件
+         * @param src 源路径
+         * @param dest 目标路径
+         * @param callback 回调函数
+         */
+        moveFile(src: string, dest: string, callback: (err: Error) => void): void;
+        /**
+         * 重命名文件
+         * @param oldPath 老路径
+         * @param newPath 新路径
+         * @param callback 回调函数
+         */
+        renameFile(oldPath: string, newPath: string, callback: (err: Error) => void): void;
+        /**
+         * 移动一组文件
+         * @param movelists 移动列表
+         * @param callback 回调函数
+         */
+        moveFiles(movelists: [string, string][], callback: (err: Error) => void): void;
+        /**
+         * 复制一组文件
+         * @param copylists 复制列表
+         * @param callback 回调函数
+         */
+        copyFiles(copylists: [string, string][], callback: (err: Error) => void): void;
+        /**
+         * 删除一组文件
+         * @param deletelists 删除列表
+         * @param callback 回调函数
+         */
+        deleteFiles(deletelists: string[], callback: (err: Error) => void): void;
+        /**
+         * 重命名文件(夹)
+         * @param oldPath 老路径
+         * @param newPath 新路径
+         * @param callback 回调函数
+         */
+        rename(oldPath: string, newPath: string, callback: (err: Error) => void): void;
+        /**
+         * 移动文件(夹)
+         * @param src 源路径
+         * @param dest 目标路径
+         * @param callback 回调函数
+         */
+        move(src: string, dest: string, callback: (err: Error) => void): void;
+        /**
+         * 删除文件(夹)
+         * @param path 路径
+         * @param callback 回调函数
+         */
+        delete(path: string, callback: (err: Error) => void): void;
         /**
          * 是否为文件夹
          * @param path 文件路径
@@ -10569,6 +10646,12 @@ declare namespace feng3d {
          * @param callback 读取完成回调 当err不为null时表示读取失败
          */
         readFile(path: string, callback: (err, data: ArrayBuffer) => void): any;
+        /**
+         * 获取文件绝对路径
+         * @param path （相对）路径
+         * @param callback 回调函数
+         */
+        getAbsolutePath(path: string, callback: (err: Error, absolutePath: string) => void): void;
     }
     /**
      * 可读写文件系统
@@ -10599,15 +10682,12 @@ declare namespace feng3d {
          */
         deleteFile(path: string, callback: (err) => void): void;
         /**
-         * 写文件
+         * 写(新建)文件
          * @param path 文件路径
          * @param data 文件数据
          * @param callback 回调函数
          */
         writeFile(path: string, data: ArrayBuffer, callback?: (err: Error) => void): void;
-        rename(oldPath: string, newPath: string, callback: (err: Error | null) => void): void;
-        move(src: string, dest: string, callback?: ((err: Error | null) => void) | undefined): void;
-        remove(path: string, callback?: ((err: Error | null) => void) | undefined): void;
     }
 }
 declare namespace feng3d {

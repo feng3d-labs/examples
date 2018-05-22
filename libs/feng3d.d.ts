@@ -268,34 +268,34 @@ declare namespace feng3d {
     /**
      * 全局事件
      */
-    var globalEvent: GlobalEventDispatcher;
-    interface GlobalEventMap {
+    var feng3dDispatcher: Feng3dDispatcher;
+    interface Feng3dEventMap {
         /**
          * shader资源发生变化
          */
-        shaderChanged: any;
+        "assets.shaderChanged": any;
         /**
          * 脚本发生变化
          */
-        scriptChanged: any;
+        "assets.scriptChanged": any;
         /**
          * 图片资源发生变化
          */
-        imageAssetsChanged: {
+        "assets.imageAssetsChanged": {
             url: string;
         };
     }
-    interface GlobalEventDispatcher {
-        once<K extends keyof GlobalEventMap>(type: K, listener: (event: Event<GlobalEventMap[K]>) => void, thisObject?: any, priority?: number): void;
-        dispatch<K extends keyof GlobalEventMap>(type: K, data?: GlobalEventMap[K], bubbles?: boolean): any;
-        has<K extends keyof GlobalEventMap>(type: K): boolean;
-        on<K extends keyof GlobalEventMap>(type: K, listener: (event: Event<GlobalEventMap[K]>) => any, thisObject?: any, priority?: number, once?: boolean): any;
-        off<K extends keyof GlobalEventMap>(type?: K, listener?: (event: Event<GlobalEventMap[K]>) => any, thisObject?: any): any;
+    interface Feng3dDispatcher {
+        once<K extends keyof Feng3dEventMap>(type: K, listener: (event: Event<Feng3dEventMap[K]>) => void, thisObject?: any, priority?: number): void;
+        dispatch<K extends keyof Feng3dEventMap>(type: K, data?: Feng3dEventMap[K], bubbles?: boolean): any;
+        has<K extends keyof Feng3dEventMap>(type: K): boolean;
+        on<K extends keyof Feng3dEventMap>(type: K, listener: (event: Event<Feng3dEventMap[K]>) => any, thisObject?: any, priority?: number, once?: boolean): any;
+        off<K extends keyof Feng3dEventMap>(type?: K, listener?: (event: Event<Feng3dEventMap[K]>) => any, thisObject?: any): any;
     }
     /**
      * 全局事件
      */
-    class GlobalEventDispatcher extends EventDispatcher {
+    class Feng3dDispatcher extends EventDispatcher {
     }
 }
 declare namespace feng3d {
@@ -363,6 +363,9 @@ declare namespace feng3d {
     /**
      * 观察装饰器，观察被装饰属性的变化
      *
+     * @param onChange 属性变化回调  例如参数为“onChange”时，回调将会调用this.onChange(property, oldValue, newValue)
+     * @see https://gitee.com/feng3d/feng3d/issues/IGIK0
+     *
      * 使用@watch后会自动生成一个带"_"的属性，例如 属性"a"会生成"_a"
      *
      * 通过使用 eval 函数 生成出 与自己手动写的set get 一样的函数，性能已经接近 手动写的get set函数。
@@ -420,10 +423,8 @@ getset平均耗时比 17.3
      *
      * 注：不适用eval的情况下，chrome表现最好的，与此次测试结果差不多；在nodejs与firfox上将会出现比使用eval情况下消耗的（40-400）倍，其中详细原因不明，求高人解释！
      *
-     * @param onChange 属性变化回调
-     * @see https://gitee.com/feng3d/feng3d/issues/IGIK0
      */
-    function watch(onChange: string): (target: any, propertyKey: string) => void;
+    function watch(onChange: string): (target: any, property: string) => void;
     var watcher: Watcher;
     class Watcher {
         /**
@@ -7436,61 +7437,7 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     type ComponentConstructor<T> = (new () => T);
-    interface Mouse3DEventMap {
-        /**
-         * 鼠标移出对象
-         */
-        mouseout: any;
-        /**
-         * 鼠标移入对象
-         */
-        mouseover: any;
-        /**
-         * 鼠标在对象上移动
-         */
-        mousemove: any;
-        /**
-         * 鼠标左键按下
-         */
-        mousedown: any;
-        /**
-         * 鼠标左键弹起
-         */
-        mouseup: any;
-        /**
-         * 单击
-         */
-        click: any;
-        /**
-         * 鼠标中键按下
-         */
-        middlemousedown: any;
-        /**
-         * 鼠标中键弹起
-         */
-        middlemouseup: any;
-        /**
-         * 鼠标中键单击
-         */
-        middleclick: any;
-        /**
-         * 鼠标右键按下
-         */
-        rightmousedown: any;
-        /**
-         * 鼠标右键弹起
-         */
-        rightmouseup: any;
-        /**
-         * 鼠标右键单击
-         */
-        rightclick: any;
-        /**
-         * 鼠标双击
-         */
-        dblclick: any;
-    }
-    interface GameObjectEventMap extends Mouse3DEventMap {
+    interface GameObjectEventMap {
         /**
          * 添加子组件事件
          */
@@ -11284,12 +11231,96 @@ declare namespace feng3d {
      * @author feng 2014-4-29
      */
     class Mouse3DManager {
-        draw: (scene3d: Scene3D, camera: Camera, viewRect: Rectangle) => void;
-        catchMouseMove: (value: any) => void;
-        getSelectedGameObject: () => GameObject;
-        setEnable: (value: boolean) => void;
-        getEnable: () => boolean;
+        private mouseX;
+        private mouseY;
+        private selectedGameObject;
+        private mouseEventTypes;
+        /**
+         * 鼠标按下时的对象，用于与鼠标弹起时对象做对比，如果相同触发click
+         */
+        private preMouseDownGameObject;
+        /**
+         * 统计处理click次数，判断是否达到dblclick
+         */
+        private gameObjectClickNum;
+        private _catchMouseMove;
+        private enable;
+        private canvas;
+        /**
+         * 渲染
+         */
+        draw(scene3d: Scene3D, camera: Camera, viewRect: Rectangle): void;
+        /**
+         * 是否捕捉鼠标移动，默认false。
+         */
+        catchMouseMove(value: any): void;
+        getSelectedGameObject(): GameObject;
+        setEnable(value: boolean): void;
+        getEnable(): boolean;
         constructor(canvas: HTMLCanvasElement);
+        /**
+         * 监听鼠标事件收集事件类型
+         */
+        onMouseEvent(event: MouseEvent): void;
+        pick(scene3d: Scene3D, camera: Camera): void;
+        /**
+         * 设置选中对象
+         */
+        setSelectedGameObject(value: GameObject): void;
+    }
+    interface GameObjectEventMap {
+        /**
+         * 鼠标移出对象
+         */
+        mouseout: any;
+        /**
+         * 鼠标移入对象
+         */
+        mouseover: any;
+        /**
+         * 鼠标在对象上移动
+         */
+        mousemove: any;
+        /**
+         * 鼠标左键按下
+         */
+        mousedown: any;
+        /**
+         * 鼠标左键弹起
+         */
+        mouseup: any;
+        /**
+         * 单击
+         */
+        click: any;
+        /**
+         * 鼠标中键按下
+         */
+        middlemousedown: any;
+        /**
+         * 鼠标中键弹起
+         */
+        middlemouseup: any;
+        /**
+         * 鼠标中键单击
+         */
+        middleclick: any;
+        /**
+         * 鼠标右键按下
+         */
+        rightmousedown: any;
+        /**
+         * 鼠标右键弹起
+         */
+        rightmouseup: any;
+        /**
+         * 鼠标右键单击
+         */
+        rightclick: any;
+        /**
+         * 鼠标双击
+         */
+        dblclick: any;
     }
 }
 declare namespace feng3d {

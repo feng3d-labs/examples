@@ -417,15 +417,15 @@ var feng3d;
     /**
      * 全局事件
      */
-    var GlobalEventDispatcher = /** @class */ (function (_super) {
-        __extends(GlobalEventDispatcher, _super);
-        function GlobalEventDispatcher() {
+    var Feng3dDispatcher = /** @class */ (function (_super) {
+        __extends(Feng3dDispatcher, _super);
+        function Feng3dDispatcher() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        return GlobalEventDispatcher;
+        return Feng3dDispatcher;
     }(feng3d.EventDispatcher));
-    feng3d.GlobalEventDispatcher = GlobalEventDispatcher;
-    feng3d.globalEvent = new GlobalEventDispatcher();
+    feng3d.Feng3dDispatcher = Feng3dDispatcher;
+    feng3d.feng3dDispatcher = new Feng3dDispatcher();
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -889,6 +889,9 @@ var feng3d;
     /**
      * 观察装饰器，观察被装饰属性的变化
      *
+     * @param onChange 属性变化回调  例如参数为“onChange”时，回调将会调用this.onChange(property, oldValue, newValue)
+     * @see https://gitee.com/feng3d/feng3d/issues/IGIK0
+     *
      * 使用@watch后会自动生成一个带"_"的属性，例如 属性"a"会生成"_a"
      *
      * 通过使用 eval 函数 生成出 与自己手动写的set get 一样的函数，性能已经接近 手动写的get set函数。
@@ -946,12 +949,10 @@ getset平均耗时比 17.3
      *
      * 注：不适用eval的情况下，chrome表现最好的，与此次测试结果差不多；在nodejs与firfox上将会出现比使用eval情况下消耗的（40-400）倍，其中详细原因不明，求高人解释！
      *
-     * @param onChange 属性变化回调
-     * @see https://gitee.com/feng3d/feng3d/issues/IGIK0
      */
     function watch(onChange) {
-        return function (target, propertyKey) {
-            var key = "_" + propertyKey;
+        return function (target, property) {
+            var key = "_" + property;
             var get;
             // get = function () { return this[key]; };
             eval("get = function (){return this." + key + "}");
@@ -964,8 +965,8 @@ getset平均耗时比 17.3
             //     this[key] = value;
             //     this[onChange](propertyKey, oldValue, this[key]);
             // };
-            eval("set = function (value){\n                if (this." + key + " == value)\n                    return;\n                var oldValue = this." + key + ";\n                this." + key + " = value;\n                this." + onChange + "(\"" + propertyKey + "\", oldValue, this." + key + ");\n            }");
-            Object.defineProperty(target, propertyKey, {
+            eval("set = function (value){\n                if (this." + key + " == value)\n                    return;\n                var oldValue = this." + key + ";\n                this." + key + " = value;\n                this." + onChange + "(\"" + property + "\", oldValue, value);\n            }");
+            Object.defineProperty(target, property, {
                 get: get,
                 set: set,
                 enumerable: true,
@@ -10786,7 +10787,7 @@ var feng3d;
      */
     var ShaderLib = /** @class */ (function () {
         function ShaderLib() {
-            feng3d.globalEvent.on("shaderChanged", this.onShaderChanged, this);
+            feng3d.feng3dDispatcher.on("assets.shaderChanged", this.onShaderChanged, this);
         }
         Object.defineProperty(ShaderLib.prototype, "shaderConfig", {
             get: function () {
@@ -17165,7 +17166,7 @@ var feng3d;
             _this.url = "";
             _this._textureType = feng3d.TextureType.TEXTURE_2D;
             _this.noPixels = _this.noPixels || feng3d.imageDatas.white;
-            feng3d.globalEvent.on("imageAssetsChanged", _this.onImageAssetsChanged, _this);
+            feng3d.feng3dDispatcher.on("assets.imageAssetsChanged", _this.onImageAssetsChanged, _this);
             return _this;
         }
         Object.defineProperty(Texture2D.prototype, "size", {
@@ -17376,7 +17377,7 @@ var feng3d;
              */
             this.renderParams = new feng3d.RenderParams();
             feng3d.serialization.setValue(this, raw);
-            feng3d.globalEvent.on("shaderChanged", this.onShaderChanged, this);
+            feng3d.feng3dDispatcher.on("assets.shaderChanged", this.onShaderChanged, this);
         }
         Material.prototype.preRender = function (renderAtomic) {
             for (var key in this.uniforms) {
@@ -23567,164 +23568,152 @@ var feng3d;
     var Mouse3DManager = /** @class */ (function () {
         function Mouse3DManager(canvas) {
             //
-            var mouseX = 0;
-            var mouseY = 0;
-            var selectedGameObject;
-            var mouseEventTypes = [];
-            /**
-             * 鼠标按下时的对象，用于与鼠标弹起时对象做对比，如果相同触发click
-             */
-            var preMouseDownGameObject;
-            /**
-             * 统计处理click次数，判断是否达到dblclick
-             */
-            var gameObjectClickNum;
-            var _catchMouseMove = false;
-            var enable = false;
-            this.draw = draw;
-            this.catchMouseMove = catchMouseMove;
-            this.getSelectedGameObject = getSelectedGameObject;
-            this.setEnable = setEnable;
-            this.getEnable = getEnable;
+            this.mouseX = 0;
+            this.mouseY = 0;
+            this.mouseEventTypes = [];
+            this._catchMouseMove = false;
+            this.enable = false;
             //
-            setEnable(true);
-            function setEnable(value) {
-                if (enable) {
-                    feng3d.windowEventProxy.off("click", onMouseEvent, null);
-                    feng3d.windowEventProxy.off("dblclick", onMouseEvent, null);
-                    feng3d.windowEventProxy.off("mousedown", onMouseEvent, null);
-                    feng3d.windowEventProxy.off("mouseup", onMouseEvent, null);
-                }
-                enable = value;
-                if (enable) {
-                    feng3d.windowEventProxy.on("click", onMouseEvent, null);
-                    feng3d.windowEventProxy.on("dblclick", onMouseEvent, null);
-                    feng3d.windowEventProxy.on("mousedown", onMouseEvent, null);
-                    feng3d.windowEventProxy.on("mouseup", onMouseEvent, null);
-                }
-            }
-            function getEnable() {
-                return enable;
-            }
-            /**
-             * 是否捕捉鼠标移动，默认false。
-             */
-            function catchMouseMove(value) {
-                if (_catchMouseMove == value)
-                    return;
-                if (_catchMouseMove) {
-                    feng3d.windowEventProxy.off("mousemove", onMouseEvent, null);
-                }
-                _catchMouseMove = value;
-                if (_catchMouseMove) {
-                    feng3d.windowEventProxy.on("mousemove", onMouseEvent, null);
-                }
-            }
-            /**
-             * 监听鼠标事件收集事件类型
-             */
-            function onMouseEvent(event) {
-                var canvasRect = canvas.getBoundingClientRect();
-                var bound = new feng3d.Rectangle(canvasRect.left, canvasRect.top, canvasRect.width, canvasRect.height);
-                if (!bound.contains(feng3d.windowEventProxy.clientX, feng3d.windowEventProxy.clientY))
-                    return;
-                var type = event.type;
-                // 处理鼠标中键与右键
-                if (event instanceof MouseEvent) {
-                    if (["click", "mousedown", "mouseup"].indexOf(event.type) != -1) {
-                        type = ["", "middle", "right"][event.button] + event.type;
-                    }
-                }
-                if (mouseEventTypes.indexOf(type) == -1)
-                    mouseEventTypes.push(type);
-                mouseX = event.clientX;
-                mouseY = event.clientY;
-            }
-            /**
-             * 渲染
-             */
-            function draw(scene3d, camera, viewRect) {
-                if (!viewRect.contains(mouseX, mouseY))
-                    return;
-                if (mouseEventTypes.length == 0)
-                    return;
-                var mouseCollisionEntitys = scene3d.mouseCheckObjects;
-                if (mouseCollisionEntitys.length == 0)
-                    return;
-                pick(scene3d, camera);
-            }
-            function pick(scene3d, camera) {
-                var mouseRay3D = camera.getMouseRay3D();
-                //计算得到鼠标射线相交的物体
-                var mouseCollisionEntitys = scene3d.mouseCheckObjects;
-                var pickingCollisionVO = null;
-                for (var i = 0; i < mouseCollisionEntitys.length; i++) {
-                    var entitys = mouseCollisionEntitys[i].objects;
-                    pickingCollisionVO = feng3d.raycaster.pick(mouseRay3D, entitys);
-                    if (pickingCollisionVO)
-                        break;
-                }
-                var gameobject = pickingCollisionVO && pickingCollisionVO.gameObject;
-                if (gameobject)
-                    setSelectedGameObject(gameobject);
-                else
-                    setSelectedGameObject(scene3d.gameObject);
-            }
-            /**
-             * 设置选中对象
-             */
-            function setSelectedGameObject(value) {
-                if (selectedGameObject != value) {
-                    if (selectedGameObject)
-                        selectedGameObject.dispatch("mouseout", null, true);
-                    if (value)
-                        value.dispatch("mouseover", null, true);
-                }
-                selectedGameObject = value;
-                if (selectedGameObject) {
-                    mouseEventTypes.forEach(function (element) {
-                        switch (element) {
-                            case "mousedown":
-                                if (preMouseDownGameObject != selectedGameObject) {
-                                    gameObjectClickNum = 0;
-                                    preMouseDownGameObject = selectedGameObject;
-                                }
-                                selectedGameObject.dispatch(element, null, true);
-                                break;
-                            case "mouseup":
-                                if (selectedGameObject == preMouseDownGameObject) {
-                                    gameObjectClickNum++;
-                                }
-                                else {
-                                    gameObjectClickNum = 0;
-                                    preMouseDownGameObject = null;
-                                }
-                                selectedGameObject.dispatch(element, null, true);
-                                break;
-                            case "mousemove":
-                                selectedGameObject.dispatch(element, null, true);
-                                break;
-                            case "click":
-                                if (gameObjectClickNum > 0)
-                                    selectedGameObject.dispatch(element, null, true);
-                                break;
-                            case "dblclick":
-                                if (gameObjectClickNum > 1)
-                                    selectedGameObject.dispatch(element, null, true);
-                                break;
-                        }
-                    });
-                }
-                else {
-                    gameObjectClickNum = 0;
-                    preMouseDownGameObject = null;
-                }
-                mouseEventTypes.length = 0;
-            }
-            function getSelectedGameObject() {
-                return selectedGameObject;
-            }
+            this.setEnable(true);
+            this.canvas = canvas;
         }
+        /**
+         * 渲染
+         */
+        Mouse3DManager.prototype.draw = function (scene3d, camera, viewRect) {
+            if (!viewRect.contains(this.mouseX, this.mouseY))
+                return;
+            if (this.mouseEventTypes.length == 0)
+                return;
+            var mouseCollisionEntitys = scene3d.mouseCheckObjects;
+            if (mouseCollisionEntitys.length == 0)
+                return;
+            this.pick(scene3d, camera);
+        };
+        /**
+         * 是否捕捉鼠标移动，默认false。
+         */
+        Mouse3DManager.prototype.catchMouseMove = function (value) {
+            if (this._catchMouseMove == value)
+                return;
+            if (this._catchMouseMove) {
+                feng3d.windowEventProxy.off("mousemove", this.onMouseEvent, this);
+            }
+            this._catchMouseMove = value;
+            if (this._catchMouseMove) {
+                feng3d.windowEventProxy.on("mousemove", this.onMouseEvent, this);
+            }
+        };
+        Mouse3DManager.prototype.getSelectedGameObject = function () {
+            return this.selectedGameObject;
+        };
+        Mouse3DManager.prototype.setEnable = function (value) {
+            if (this.enable) {
+                feng3d.windowEventProxy.off("click", this.onMouseEvent, this);
+                feng3d.windowEventProxy.off("dblclick", this.onMouseEvent, this);
+                feng3d.windowEventProxy.off("mousedown", this.onMouseEvent, this);
+                feng3d.windowEventProxy.off("mouseup", this.onMouseEvent, this);
+            }
+            this.enable = value;
+            if (this.enable) {
+                feng3d.windowEventProxy.on("click", this.onMouseEvent, this);
+                feng3d.windowEventProxy.on("dblclick", this.onMouseEvent, this);
+                feng3d.windowEventProxy.on("mousedown", this.onMouseEvent, this);
+                feng3d.windowEventProxy.on("mouseup", this.onMouseEvent, this);
+            }
+        };
+        Mouse3DManager.prototype.getEnable = function () {
+            return this.enable;
+        };
+        /**
+         * 监听鼠标事件收集事件类型
+         */
+        Mouse3DManager.prototype.onMouseEvent = function (event) {
+            var canvasRect = this.canvas.getBoundingClientRect();
+            var bound = new feng3d.Rectangle(canvasRect.left, canvasRect.top, canvasRect.width, canvasRect.height);
+            if (!bound.contains(feng3d.windowEventProxy.clientX, feng3d.windowEventProxy.clientY))
+                return;
+            var type = event.type;
+            // 处理鼠标中键与右键
+            if (event instanceof MouseEvent) {
+                if (["click", "mousedown", "mouseup"].indexOf(event.type) != -1) {
+                    type = ["", "middle", "right"][event.button] + event.type;
+                }
+            }
+            if (this.mouseEventTypes.indexOf(type) == -1)
+                this.mouseEventTypes.push(type);
+            this.mouseX = event.clientX;
+            this.mouseY = event.clientY;
+        };
+        Mouse3DManager.prototype.pick = function (scene3d, camera) {
+            var mouseRay3D = camera.getMouseRay3D();
+            //计算得到鼠标射线相交的物体
+            var mouseCollisionEntitys = scene3d.mouseCheckObjects;
+            var pickingCollisionVO = null;
+            for (var i = 0; i < mouseCollisionEntitys.length; i++) {
+                var entitys = mouseCollisionEntitys[i].objects;
+                pickingCollisionVO = feng3d.raycaster.pick(mouseRay3D, entitys);
+                if (pickingCollisionVO)
+                    break;
+            }
+            var gameobject = pickingCollisionVO && pickingCollisionVO.gameObject;
+            if (gameobject)
+                this.setSelectedGameObject(gameobject);
+            else
+                this.setSelectedGameObject(scene3d.gameObject);
+        };
+        /**
+         * 设置选中对象
+         */
+        Mouse3DManager.prototype.setSelectedGameObject = function (value) {
+            var _this = this;
+            if (this.selectedGameObject != value) {
+                if (this.selectedGameObject)
+                    this.selectedGameObject.dispatch("mouseout", null, true);
+                if (value)
+                    value.dispatch("mouseover", null, true);
+            }
+            this.selectedGameObject = value;
+            if (this.selectedGameObject) {
+                this.mouseEventTypes.forEach(function (element) {
+                    switch (element) {
+                        case "mousedown":
+                            if (_this.preMouseDownGameObject != _this.selectedGameObject) {
+                                _this.gameObjectClickNum = 0;
+                                _this.preMouseDownGameObject = _this.selectedGameObject;
+                            }
+                            _this.selectedGameObject.dispatch(element, null, true);
+                            break;
+                        case "mouseup":
+                            if (_this.selectedGameObject == _this.preMouseDownGameObject) {
+                                _this.gameObjectClickNum++;
+                            }
+                            else {
+                                _this.gameObjectClickNum = 0;
+                                _this.preMouseDownGameObject = null;
+                            }
+                            _this.selectedGameObject.dispatch(element, null, true);
+                            break;
+                        case "mousemove":
+                            _this.selectedGameObject.dispatch(element, null, true);
+                            break;
+                        case "click":
+                            if (_this.gameObjectClickNum > 0)
+                                _this.selectedGameObject.dispatch(element, null, true);
+                            break;
+                        case "dblclick":
+                            if (_this.gameObjectClickNum > 1)
+                                _this.selectedGameObject.dispatch(element, null, true);
+                            break;
+                    }
+                });
+            }
+            else {
+                this.gameObjectClickNum = 0;
+                this.preMouseDownGameObject = null;
+            }
+            this.mouseEventTypes.length = 0;
+        };
         return Mouse3DManager;
     }());
     feng3d.Mouse3DManager = Mouse3DManager;

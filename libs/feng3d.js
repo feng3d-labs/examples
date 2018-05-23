@@ -16483,10 +16483,25 @@ var feng3d;
          */
         function PlaneGeometry(raw) {
             var _this = _super.call(this) || this;
+            /**
+             * 宽度
+             */
             _this.width = 1;
+            /**
+             * 高度
+             */
             _this.height = 1;
+            /**
+             * 横向分割数
+             */
             _this.segmentsW = 1;
+            /**
+             * 纵向分割数
+             */
             _this.segmentsH = 1;
+            /**
+             * 是否朝上
+             */
             _this.yUp = true;
             _this.name = "Plane";
             feng3d.serialization.setValue(_this, raw);
@@ -16688,12 +16703,33 @@ var feng3d;
          */
         function CubeGeometry(raw) {
             var _this = _super.call(this) || this;
+            /**
+             * 宽度
+             */
             _this.width = 1;
+            /**
+             * 高度
+             */
             _this.height = 1;
+            /**
+             * 深度
+             */
             _this.depth = 1;
+            /**
+             * 宽度方向分割数
+             */
             _this.segmentsW = 1;
+            /**
+             * 高度方向分割数
+             */
             _this.segmentsH = 1;
+            /**
+             * 深度方向分割数
+             */
             _this.segmentsD = 1;
+            /**
+             * 是否为6块贴图，默认true。
+             */
             _this.tile6 = true;
             _this.name = "Cube";
             feng3d.serialization.setValue(_this, raw);
@@ -17096,9 +17132,21 @@ var feng3d;
          */
         function SphereGeometry(raw) {
             var _this = _super.call(this) || this;
+            /**
+             * 球体半径
+             */
             _this.radius = 0.5;
+            /**
+             * 横向分割数
+             */
             _this.segmentsW = 16;
+            /**
+             * 纵向分割数
+             */
             _this.segmentsH = 12;
+            /**
+             * 是否朝上
+             */
             _this.yUp = true;
             _this.name = "Sphere";
             feng3d.serialization.setValue(_this, raw);
@@ -17278,10 +17326,25 @@ var feng3d;
          */
         function CapsuleGeometry(raw) {
             var _this = _super.call(this) || this;
+            /**
+             * 胶囊体半径
+             */
             _this.radius = 0.5;
+            /**
+             * 胶囊体高度
+             */
             _this.height = 1;
+            /**
+             * 横向分割数
+             */
             _this.segmentsW = 16;
+            /**
+             * 纵向分割数
+             */
             _this.segmentsH = 15;
+            /**
+             * 正面朝向 true:Y+ false:Z+
+             */
             _this.yUp = true;
             _this.name = "Capsule";
             feng3d.serialization.setValue(_this, raw);
@@ -17462,14 +17525,41 @@ var feng3d;
          */
         function CylinderGeometry(raw) {
             var _this = _super.call(this) || this;
+            /**
+             * 顶部半径
+             */
             _this.topRadius = 0.5;
+            /**
+             * 底部半径
+             */
             _this.bottomRadius = 0.5;
+            /**
+             * 高度
+             */
             _this.height = 2;
+            /**
+             * 横向分割数
+             */
             _this.segmentsW = 16;
+            /**
+             * 纵向分割数
+             */
             _this.segmentsH = 1;
+            /**
+             * 顶部是否封口
+             */
             _this.topClosed = true;
+            /**
+             * 底部是否封口
+             */
             _this.bottomClosed = true;
+            /**
+             * 侧面是否封口
+             */
             _this.surfaceClosed = true;
+            /**
+             * 是否朝上
+             */
             _this.yUp = true;
             _this.name = "Cylinder";
             feng3d.serialization.setValue(_this, raw);
@@ -17792,8 +17882,17 @@ var feng3d;
          */
         function ConeGeometry(raw) {
             var _this = _super.call(this, raw) || this;
+            /**
+             * 底部半径 private
+             */
             _this.topRadius = 0;
+            /**
+             * 顶部是否封口 private
+             */
             _this.topClosed = false;
+            /**
+             * 侧面是否封口 private
+             */
             _this.surfaceClosed = true;
             _this.name = "Cone";
             return _this;
@@ -17814,10 +17913,25 @@ var feng3d;
          */
         function TorusGeometry(raw) {
             var _this = _super.call(this) || this;
+            /**
+             * 半径
+             */
             _this.radius = 0.5;
+            /**
+             * 管道半径
+             */
             _this.tubeRadius = 0.1;
+            /**
+             * 半径方向分割数
+             */
             _this.segmentsR = 16;
+            /**
+             * 管道方向分割数
+             */
             _this.segmentsT = 8;
+            /**
+             * 是否朝上
+             */
             _this.yUp = true;
             _this._vertexPositionStride = 3;
             _this._vertexNormalStride = 3;

@@ -1097,21 +1097,6 @@ declare namespace feng3d {
 interface Performance {
     memory: any;
 }
-interface Element {
-    style: {
-        display;
-        cssText;
-        cursor;
-        position;
-        top;
-        width;
-        height;
-        textAlign;
-        opacity;
-        left;
-        textDecoration;
-    };
-}
 declare namespace feng3d {
     class Stats {
         static instance: Stats;
@@ -6901,7 +6886,7 @@ declare namespace feng3d {
          * 是否使用 viewRect
          */
         useViewRect: boolean;
-        constructor(raw?: Partial<RenderParams>);
+        constructor(raw?: gPartial<RenderParams>);
     }
 }
 declare namespace feng3d {
@@ -7099,40 +7084,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    interface TextureInfoRaw {
-        /**
-         * 各向异性过滤。使用各向异性过滤能够使纹理的效果更好，但是会消耗更多的内存、CPU、GPU时间。默认为0。
-         */
-        anisotropy?: number;
-        /**
-         * 对图像进行Y轴反转。默认值为false
-         */
-        flipY?: boolean;
-        /**
-         * 格式
-         */
-        format?: TextureFormat;
-        /**
-         * 是否生成mipmap
-         */
-        generateMipmap?: boolean;
-        magFilter?: TextureMagFilter;
-        minFilter?: TextureMinFilter;
-        premulAlpha?: boolean;
-        type?: TextureDataType;
-        /**
-         * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
-         */
-        wrapS?: TextureWrap;
-        /**
-         * 表示y轴的纹理回环方式。 magFilter和minFilter表示过滤的方式，这是OpenGL的基本概念，我将在下面讲一下，目前你不用担心它的使用。当您不设置的时候，它会取默认值，所以，我们这里暂时不理睬他。
-         */
-        wrapT?: TextureWrap;
-        /**
-         * 当贴图数据未加载好等情况时代替使用
-         */
-        noPixels?: ImageData | ImageData[] | HTMLImageElement | HTMLImageElement[];
-    }
     /**
      * 纹理信息
      * @author feng 2016-12-20
@@ -7200,7 +7151,7 @@ declare namespace feng3d {
          * 是否为2的幂贴图
          */
         readonly isPowerOfTwo: boolean;
-        constructor(raw?: TextureInfoRaw);
+        constructor(raw?: gPartial<TextureInfo>);
         /**
          * 判断数据是否满足渲染需求
          */
@@ -7940,12 +7891,6 @@ declare namespace feng3d {
         feng3d = 1,
         editor = 2,
     }
-    interface GameObjectRaw {
-        __class__?: "feng3d.GameObject";
-        name?: string;
-        children?: GameObjectRaw[];
-        components?: ComponentRaw[];
-    }
     /**
      * Base class for all entities in feng3d scenes.
      */
@@ -8014,7 +7959,7 @@ declare namespace feng3d {
         /**
          * 构建3D对象
          */
-        constructor(raw: GameObjectRaw);
+        constructor(raw: gPartial<GameObject>);
         find(name: string): GameObject | null;
         contains(child: GameObject): boolean;
         addChild(child: GameObject): GameObject;
@@ -8128,7 +8073,7 @@ declare namespace feng3d {
          * @param name
          */
         static find(name: string): GameObject;
-        static create(name?: string, raw?: GameObjectRaw): GameObject;
+        static create(name?: string, raw?: gPartial<GameObject>): GameObject;
         /**
          * 组件列表
          */
@@ -8298,8 +8243,8 @@ declare namespace feng3d {
     }
     interface MeshRendererRaw {
         __class__: "feng3d.MeshRenderer";
-        geometry?: GeometryRaw;
-        material?: MaterialRaw;
+        geometry?: Geometrys;
+        material?: ValueOf<MaterialRawMap>;
     }
     class MeshRenderer extends Behaviour {
         readonly single: boolean;
@@ -8477,7 +8422,9 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    type GeometryRaw = SegmentGeometryRaw | PlaneGeometryRaw | CubeGeometryRaw | SphereGeometryRaw | CapsuleGeometryRaw | CylinderGeometryRaw | ConeGeometryRaw | TorusGeometryRaw;
+    type Geometrys = gPartial<SegmentGeometry> & {
+        __class__: "feng3d.SegmentGeometry";
+    } | gPartial<PlaneGeometry> | gPartial<CubeGeometry> | gPartial<SphereGeometry> | gPartial<CapsuleGeometry> | gPartial<CylinderGeometry> | gPartial<ConeGeometry> | gPartial<TorusGeometry>;
     interface GeometryEventMap {
         /**
          * 包围盒失效
@@ -8975,45 +8922,34 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
-     * 平面几何体原始数据
-     */
-    interface PlaneGeometryRaw {
-        __class__?: "feng3d.PlaneGeometry";
-        /**
-         * 宽度
-         */
-        width?: number;
-        /**
-         * 高度
-         */
-        height?: number;
-        /**
-         * 横向分割数
-         */
-        segmentsW?: number;
-        /**
-         * 纵向分割数
-         */
-        segmentsH?: number;
-        /**
-         * 是否朝上
-         */
-        yUp?: boolean;
-    }
-    /**
      * 平面几何体
      * @author feng 2016-09-12
      */
-    class PlaneGeometry extends Geometry implements PlaneGeometryRaw {
+    class PlaneGeometry extends Geometry {
+        /**
+         * 宽度
+         */
         width: number;
+        /**
+         * 高度
+         */
         height: number;
+        /**
+         * 横向分割数
+         */
         segmentsW: number;
+        /**
+         * 纵向分割数
+         */
         segmentsH: number;
+        /**
+         * 是否朝上
+         */
         yUp: boolean;
         /**
          * 创建平面几何体
          */
-        constructor(raw?: PlaneGeometryRaw);
+        constructor(raw?: gPartial<PlaneGeometry>);
         /**
          * 构建几何体数据
          */
@@ -9058,55 +8994,42 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
-     * 立方体几何体原始数据
-     */
-    interface CubeGeometryRaw {
-        __class__?: "feng3d.CubeGeometry";
-        /**
-         * 宽度
-         */
-        width?: number;
-        /**
-         * 高度
-         */
-        height?: number;
-        /**
-         * 深度
-         */
-        depth?: number;
-        /**
-         * 宽度方向分割数
-         */
-        segmentsW?: number;
-        /**
-         * 高度方向分割数
-         */
-        segmentsH?: number;
-        /**
-         * 深度方向分割数
-         */
-        segmentsD?: number;
-        /**
-         * 是否为6块贴图，默认true。
-         */
-        tile6?: boolean;
-    }
-    /**
      * 立方体几何体
      * @author feng 2016-09-12
      */
-    class CubeGeometry extends Geometry implements CubeGeometryRaw {
+    class CubeGeometry extends Geometry {
+        /**
+         * 宽度
+         */
         width: number;
+        /**
+         * 高度
+         */
         height: number;
+        /**
+         * 深度
+         */
         depth: number;
+        /**
+         * 宽度方向分割数
+         */
         segmentsW: number;
+        /**
+         * 高度方向分割数
+         */
         segmentsH: number;
+        /**
+         * 深度方向分割数
+         */
         segmentsD: number;
+        /**
+         * 是否为6块贴图，默认true。
+         */
         tile6: boolean;
         /**
          * 创建立方几何体
          */
-        constructor(raw?: CubeGeometryRaw);
+        constructor(raw?: gPartial<CubeGeometry>);
         protected buildGeometry(): void;
         /**
          * 构建坐标
@@ -9151,40 +9074,30 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
-     * 球体几何体原始数据
-     */
-    interface SphereGeometryRaw {
-        __class__?: "feng3d.SphereGeometry";
-        /**
-         * 球体半径
-         */
-        radius?: number;
-        /**
-         * 横向分割数
-         */
-        segmentsW?: number;
-        /**
-         * 纵向分割数
-         */
-        segmentsH?: number;
-        /**
-         * 是否朝上
-         */
-        yUp?: boolean;
-    }
-    /**
      * 球体几何体
      * @author DawnKing 2016-09-12
      */
-    class SphereGeometry extends Geometry implements SphereGeometryRaw {
+    class SphereGeometry extends Geometry {
+        /**
+         * 球体半径
+         */
         radius: number;
+        /**
+         * 横向分割数
+         */
         segmentsW: number;
+        /**
+         * 纵向分割数
+         */
         segmentsH: number;
+        /**
+         * 是否朝上
+         */
         yUp: boolean;
         /**
          * 创建球形几何体
          */
-        constructor(raw?: SphereGeometryRaw);
+        constructor(raw?: gPartial<SphereGeometry>);
         /**
          * 构建几何体数据
          * @param this.radius 球体半径
@@ -9210,40 +9123,29 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
-     * 胶囊体几何体原始数据
-     */
-    interface CapsuleGeometryRaw {
-        __class__?: "feng3d.CapsuleGeometry";
-        /**
-         * 胶囊体半径
-         */
-        radius?: number;
-        /**
-         * 胶囊体高度
-         */
-        height?: number;
-        /**
-         * 横向分割数
-         */
-        segmentsH?: number;
-        /**
-         * 纵向分割数
-         */
-        segmentsW?: number;
-        /**
-         * 正面朝向 true:Y+ false:Z+
-         */
-        yUp?: boolean;
-    }
-    /**
      * 胶囊体几何体
      * @author DawnKing 2016-09-12
      */
-    class CapsuleGeometry extends Geometry implements CapsuleGeometryRaw {
+    class CapsuleGeometry extends Geometry {
+        /**
+         * 胶囊体半径
+         */
         radius: number;
+        /**
+         * 胶囊体高度
+         */
         height: number;
+        /**
+         * 横向分割数
+         */
         segmentsW: number;
+        /**
+         * 纵向分割数
+         */
         segmentsH: number;
+        /**
+         * 正面朝向 true:Y+ false:Z+
+         */
         yUp: boolean;
         /**
          * 创建胶囊几何体
@@ -9253,7 +9155,7 @@ declare namespace feng3d {
          * @param segmentsH 纵向分割数
          * @param yUp 正面朝向 true:Y+ false:Z+
          */
-        constructor(raw?: CapsuleGeometryRaw);
+        constructor(raw?: gPartial<CapsuleGeometry>);
         /**
          * 构建几何体数据
          * @param radius 胶囊体半径
@@ -9280,65 +9182,50 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
-     * 圆柱体几何体原始数据
-     */
-    interface CylinderGeometryRaw {
-        __class__?: "feng3d.CylinderGeometry";
-        /**
-         * 顶部半径
-         */
-        topRadius?: number;
-        /**
-         * 底部半径
-         */
-        bottomRadius?: number;
-        /**
-         * 高度
-         */
-        height?: number;
-        /**
-         * 横向分割数
-         */
-        segmentsW?: number;
-        /**
-         * 纵向分割数
-         */
-        segmentsH?: number;
-        /**
-         * 顶部是否封口
-         */
-        topClosed?: boolean;
-        /**
-         * 底部是否封口
-         */
-        bottomClosed?: boolean;
-        /**
-         * 侧面是否封口
-         */
-        surfaceClosed?: boolean;
-        /**
-         * 是否朝上
-         */
-        yUp?: boolean;
-    }
-    /**
      * 圆柱体几何体
      * @author DawnKing 2016-09-12
      */
-    class CylinderGeometry extends Geometry implements CylinderGeometryRaw {
+    class CylinderGeometry extends Geometry {
+        /**
+         * 顶部半径
+         */
         topRadius: number;
+        /**
+         * 底部半径
+         */
         bottomRadius: number;
+        /**
+         * 高度
+         */
         height: number;
+        /**
+         * 横向分割数
+         */
         segmentsW: number;
+        /**
+         * 纵向分割数
+         */
         segmentsH: number;
+        /**
+         * 顶部是否封口
+         */
         topClosed: boolean;
+        /**
+         * 底部是否封口
+         */
         bottomClosed: boolean;
+        /**
+         * 侧面是否封口
+         */
         surfaceClosed: boolean;
+        /**
+         * 是否朝上
+         */
         yUp: boolean;
         /**
          * 创建圆柱体
          */
-        constructor(raw?: CylinderGeometryRaw);
+        constructor(raw?: gPartial<CylinderGeometry>);
         /**
          * 构建几何体数据
          */
@@ -9360,89 +9247,57 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
     /**
-     * 圆锥体原始数据
-     */
-    interface ConeGeometryRaw {
-        __class__?: "feng3d.ConeGeometry";
-        /**
-         * 底部半径
-         */
-        bottomRadius?: number;
-        /**
-         * 高度
-         */
-        height?: number;
-        /**
-         * 横向分割数
-         */
-        segmentsW?: number;
-        /**
-         * 纵向分割数
-         */
-        segmentsH?: number;
-        /**
-         * 底部是否封口
-         */
-        bottomClosed?: boolean;
-        /**
-         * 是否朝上
-         */
-        yUp?: boolean;
-    }
-    /**
      * 圆锥体
      * @author feng 2017-02-07
      */
-    class ConeGeometry extends CylinderGeometry implements ConeGeometryRaw {
+    class ConeGeometry extends CylinderGeometry {
+        /**
+         * 底部半径 private
+         */
         topRadius: number;
+        /**
+         * 顶部是否封口 private
+         */
         topClosed: boolean;
+        /**
+         * 侧面是否封口 private
+         */
         surfaceClosed: boolean;
         /**
          * 创建圆锥体
          */
-        constructor(raw?: ConeGeometryRaw);
+        constructor(raw?: gPartial<ConeGeometry>);
     }
 }
 declare namespace feng3d {
     /**
-     * 圆环几何体原始数据
+     * 圆环几何体
      */
-    interface TorusGeometryRaw {
-        __class__?: "feng3d.TorusGeometry";
+    class TorusGeometry extends Geometry {
         /**
          * 半径
          */
-        radius?: number;
+        radius: number;
         /**
          * 管道半径
          */
-        tubeRadius?: number;
+        tubeRadius: number;
         /**
          * 半径方向分割数
          */
-        segmentsR?: number;
+        segmentsR: number;
         /**
          * 管道方向分割数
          */
-        segmentsT?: number;
+        segmentsT: number;
         /**
          * 是否朝上
          */
-        yUp?: boolean;
-    }
-    /**
-     * 圆环几何体
-     */
-    class TorusGeometry extends Geometry implements TorusGeometryRaw {
-        radius: number;
-        tubeRadius: number;
-        segmentsR: number;
-        segmentsT: number;
         yUp: boolean;
         /**
          * 创建<code>Torus</code>实例
          */
-        constructor(raw?: TorusGeometryRaw);
+        constructor(raw?: gPartial<TorusGeometry>);
         protected _vertexPositionData: number[];
         protected _vertexNormalData: number[];
         protected _vertexTangentData: number[];
@@ -9476,13 +9331,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    interface Texture2DRaw extends TextureInfoRaw {
-        __class__?: "feng3d.Texture2D";
-        /**
-         * 纹理路径
-         */
-        url?: string;
-    }
     var imageDatas: {
         black: ImageData;
         white: ImageData;
@@ -9502,7 +9350,7 @@ declare namespace feng3d {
          * 纹理尺寸
          */
         readonly size: Vector2;
-        constructor(raw?: Texture2DRaw);
+        constructor(raw?: gPartial<Texture2D>);
         /**
          * 判断数据是否满足渲染需求
          */
@@ -9512,15 +9360,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    interface TextureCubeRaw extends TextureInfoRaw {
-        __class__: "feng3d.TextureCube";
-        negative_x_url?: string;
-        negative_y_url?: string;
-        negative_z_url?: string;
-        positive_x_url?: string;
-        positive_y_url?: string;
-        positive_z_url?: string;
-    }
     /**
      * 立方体纹理
      * @author feng 2016-12-28
@@ -9555,18 +9394,6 @@ declare namespace feng3d {
 declare namespace feng3d {
 }
 declare namespace feng3d {
-    interface MaterialRawMap {
-    }
-    type MaterialRaw = ValueOf<MaterialRawMap>;
-    /**
-     * 基础材质原始数据
-     */
-    interface MaterialBaseRaw {
-        __class__?: "feng3d.Material";
-        shaderName?: string;
-        uniforms?: Object;
-        renderParams?: Partial<RenderParams>;
-    }
     /**
      * 材质工厂
      */
@@ -9594,7 +9421,7 @@ declare namespace feng3d {
          * 渲染程序
          */
         shader: Shader;
-        constructor(raw?: MaterialRaw);
+        constructor(raw?: gPartial<Material>);
         preRender(renderAtomic: RenderAtomic): void;
         private onShaderChanged();
     }
@@ -9608,28 +9435,10 @@ declare namespace feng3d {
         uniforms: PointUniforms;
     };
     interface MaterialFactory {
-        create(shader: "point", raw?: PointMaterialRaw): PointMaterial;
+        create(shader: "point", raw?: gPartial<PointMaterial>): PointMaterial;
     }
     interface MaterialRawMap {
-        point: PointMaterialRaw;
-    }
-    interface PointMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "point";
-        uniforms?: PointUniformsRaw;
-    }
-    interface PointUniformsRaw {
-        /**
-         * 类全名
-         */
-        __class__?: "feng3d.SegmentUniforms";
-        /**
-         * 颜色
-         */
-        u_color?: Color4 | Color4Raw;
-        /**
-         * 点绘制时点的尺寸
-         */
-        u_PointSize?: number;
+        point: gPartial<PointMaterial>;
     }
     class PointUniforms {
         /**
@@ -9651,18 +9460,10 @@ declare namespace feng3d {
         uniforms: ColorUniforms;
     };
     interface MaterialFactory {
-        create(shader: "color", raw?: ColorMaterialRaw): ColorMaterial;
+        create(shader: "color", raw?: gPartial<ColorMaterial>): ColorMaterial;
     }
     interface MaterialRawMap {
-        color: ColorMaterialRaw;
-    }
-    interface ColorMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "color";
-        uniforms?: ColorUniformsRaw;
-    }
-    interface ColorUniformsRaw {
-        __class__?: "feng3d.ColorUniforms";
-        u_diffuseInput?: Color4 | Color4Raw;
+        color: gPartial<ColorMaterial>;
     }
     class ColorUniforms {
         /**
@@ -9681,24 +9482,10 @@ declare namespace feng3d {
         uniforms: SegmentUniforms;
     };
     interface MaterialFactory {
-        create(shader: "segment", raw?: SegmentMaterialRaw): SegmentMaterial;
+        create(shader: "segment", raw?: gPartial<SegmentMaterial>): SegmentMaterial;
     }
     interface MaterialRawMap {
-        segment: SegmentMaterialRaw;
-    }
-    interface SegmentMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "segment";
-        uniforms?: SegmentUniformsRaw;
-    }
-    interface SegmentUniformsRaw {
-        /**
-         * 类全名
-         */
-        __class__?: "feng3d.SegmentUniforms";
-        /**
-         * 颜色
-         */
-        u_segmentColor?: Color4 | Color4Raw;
+        segment: gPartial<SegmentMaterial>;
     }
     class SegmentUniforms {
         /**
@@ -9716,19 +9503,10 @@ declare namespace feng3d {
         uniforms: TextureUniforms;
     };
     interface MaterialFactory {
-        create(shader: "texture", raw?: TextureMaterialRaw): TextureMaterial;
+        create(shader: "texture", raw?: gPartial<TextureMaterial>): TextureMaterial;
     }
     interface MaterialRawMap {
-        texture: TextureMaterialRaw;
-    }
-    interface TextureMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "texture";
-        uniforms?: TextureUniformsRaw;
-    }
-    interface TextureUniformsRaw {
-        __class__?: "feng3d.TextureUniforms";
-        u_color?: Color4 | Color4Raw;
-        s_texture?: Texture2D | Texture2DRaw;
+        texture: gPartial<TextureMaterial>;
     }
     class TextureUniforms {
         /**
@@ -9741,31 +9519,18 @@ declare namespace feng3d {
         s_texture: Texture2D;
     }
 }
+interface Object {
+    __class__: string;
+}
 declare namespace feng3d {
     type StandardMaterial = Material & {
         uniforms: StandardUniforms;
     };
     interface MaterialFactory {
-        create(shader: "standard", raw?: StandardMaterialRaw): StandardMaterial;
+        create(shader: "standard", raw?: gPartial<StandardMaterial>): StandardMaterial;
     }
     interface MaterialRawMap {
-        standard: StandardMaterialRaw;
-    }
-    interface StandardMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "standard";
-        uniforms?: StandardUniformsRaw;
-    }
-    interface StandardUniformsRaw {
-        __class__?: "feng3d.StandardUniforms";
-        s_ambient?: Texture2DRaw;
-        s_diffuse?: Texture2DRaw;
-        s_envMap?: TextureCubeRaw;
-        s_normal?: Texture2DRaw;
-        s_specular?: Texture2DRaw;
-        u_ambient?: Color3Raw;
-        u_diffuse?: Color3Raw;
-        u_reflectivity?: number;
-        u_specular?: Color3Raw;
+        standard: gPartial<StandardMaterial>;
     }
     /**
      * 雾模式
@@ -10217,31 +9982,7 @@ declare namespace feng3d {
         uniforms: TerrainUniforms;
     };
     interface MaterialFactory {
-        create(shader: "terrain", raw?: TerrainMaterialRaw): TerrainMaterial;
-    }
-    interface MaterialRawMap {
-        terrain: TerrainMaterialRaw;
-    }
-    interface TerrainMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "terrain";
-        uniforms?: TerrainUniformsRaw;
-    }
-    interface TerrainUniformsRaw {
-        __class__?: "feng3d.TerrainUniforms";
-        s_ambient?: Texture2DRaw;
-        s_diffuse?: Texture2DRaw;
-        s_envMap?: TextureCubeRaw;
-        s_normal?: Texture2DRaw;
-        s_specular?: Texture2DRaw;
-        u_ambient?: Color3Raw;
-        u_diffuse?: Color3Raw;
-        u_reflectivity?: number;
-        u_specular?: Color3Raw;
-        s_splatTexture1: Texture2D | Texture2DRaw;
-        s_splatTexture2: Texture2D | Texture2DRaw;
-        s_splatTexture3: Texture2D | Texture2DRaw;
-        s_blendTexture: Texture2D | Texture2DRaw;
-        u_splatRepeats: Vector4;
+        create(shader: "terrain", raw?: gPartial<TerrainMaterial>): TerrainMaterial;
     }
     class TerrainUniforms extends StandardUniforms {
         s_splatTexture1: Texture2D;
@@ -10569,26 +10310,10 @@ declare namespace feng3d {
         uniforms: ParticleUniforms;
     };
     interface MaterialFactory {
-        create(shader: "particle", raw?: ParticleMaterialRaw): ParticleMaterial;
+        create(shader: "particle", raw?: gPartial<ParticleMaterial>): ParticleMaterial;
     }
     interface MaterialRawMap {
-        particle: ParticleMaterialRaw;
-    }
-    interface ParticleMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "particle";
-        uniforms?: ParticleUniformsRaw;
-    }
-    interface ParticleUniformsRaw {
-        __class__?: "feng3d.ParticleUniforms";
-        s_ambient?: Texture2DRaw;
-        s_diffuse?: Texture2DRaw;
-        s_envMap?: TextureCubeRaw;
-        s_normal?: Texture2DRaw;
-        s_specular?: Texture2DRaw;
-        u_ambient?: Color3Raw;
-        u_diffuse?: Color3Raw;
-        u_reflectivity?: number;
-        u_specular?: Color3Raw;
+        particle: gPartial<ParticleMaterial>;
     }
     class ParticleUniforms extends StandardUniforms {
     }
@@ -10685,26 +10410,10 @@ declare namespace feng3d {
         uniforms: SkeletonUniforms;
     };
     interface MaterialFactory {
-        create(shader: "skeleton", raw?: SkeletonMaterialRaw): SkeletonMaterial;
+        create(shader: "skeleton", raw?: gPartial<SkeletonMaterial>): SkeletonMaterial;
     }
     interface MaterialRawMap {
-        skeleton: SkeletonMaterialRaw;
-    }
-    interface SkeletonMaterialRaw extends MaterialBaseRaw {
-        shaderName?: "skeleton";
-        uniforms?: SkeletonUniformsRaw;
-    }
-    interface SkeletonUniformsRaw {
-        __class__?: "feng3d.SkeletonUniforms";
-        s_ambient?: Texture2DRaw;
-        s_diffuse?: Texture2DRaw;
-        s_envMap?: TextureCubeRaw;
-        s_normal?: Texture2DRaw;
-        s_specular?: Texture2DRaw;
-        u_ambient?: Color3Raw;
-        u_diffuse?: Color3Raw;
-        u_reflectivity?: number;
-        u_specular?: Color3Raw;
+        skeleton: gPartial<SkeletonMaterial>;
     }
     class SkeletonUniforms extends StandardUniforms {
     }
@@ -11493,6 +11202,9 @@ declare namespace feng3d {
 }
 declare namespace feng3d {
 }
+declare type gPartial<T> = {
+    [P in keyof T]?: gPartial<T[P]>;
+};
 declare namespace feng3d {
     /**
      * 运行环境枚举

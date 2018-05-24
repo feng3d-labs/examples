@@ -575,7 +575,7 @@ var Basic_SkyBox = /** @class */ (function (_super) {
         });
         var skybox = feng3d.GameObject.create("skybox");
         var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
-        skyboxComponent.texture = cubeTexture;
+        skyboxComponent.s_skyboxTexture = cubeTexture;
         scene.gameObject.addChild(skybox);
         camera.transform.z = -6;
         camera.transform.lookAt(new feng3d.Vector3());
@@ -935,7 +935,7 @@ var SkyBoxTest = /** @class */ (function (_super) {
         //
         var skybox = feng3d.GameObject.create("skybox");
         var model = skybox.addComponent(feng3d.SkyBox);
-        model.texture = new feng3d.TextureCube({
+        model.s_skyboxTexture = new feng3d.TextureCube({
             positive_x_url: 'resources/skybox/px.jpg',
             positive_y_url: 'resources/skybox/py.jpg',
             positive_z_url: 'resources/skybox/pz.jpg',

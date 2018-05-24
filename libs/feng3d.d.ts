@@ -1013,6 +1013,7 @@ declare namespace feng3d {
          * 先构造Image对象，src为dataURL，图片onload之后绘制到canvas
          */
         dataURLDrawCanvas(dataurl: string, canvas: HTMLCanvasElement, callback: (img: HTMLImageElement) => void): void;
+        dataURLToArrayBuffer(dataurl: string, callback: (arraybuffer: ArrayBuffer) => void): void;
         arrayBufferToDataURL(arrayBuffer: ArrayBuffer, callback: (dataurl: string) => void): void;
         dataURLToImage(dataurl: string, callback: (img: HTMLImageElement) => void): void;
         arrayBufferToImage(arrayBuffer: ArrayBuffer, callback: (img: HTMLImageElement) => void): void;
@@ -1543,6 +1544,14 @@ declare namespace feng3d {
          * json文件
          */
         json = "json",
+        /**
+         * 纹理
+         */
+        texture2d = "texture2d.json",
+        /**
+         * 立方体纹理
+         */
+        texturecube = "texturecube.json",
         /**
          * 材质
          */
@@ -7631,14 +7640,33 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    var skyboxRenderer: {
-        draw: (gl: GL, scene3d: Scene3D, camera: Camera, renderObjectflag: GameObjectFlag) => void;
-    };
+    /**
+     * 天空盒组件
+     */
     class SkyBox extends Component {
-        texture: TextureCube;
+        s_skyboxTexture: TextureCube;
         constructor();
         init(gameObject: GameObject): void;
         preRender(renderAtomic: RenderAtomic): void;
+    }
+}
+declare namespace feng3d {
+    /**
+     * 天空盒渲染器
+     */
+    var skyboxRenderer: SkyboxRenderer;
+    /**
+     * 天空盒渲染器
+     */
+    class SkyboxRenderer {
+        private renderAtomic;
+        private renderParams;
+        private shader;
+        init(): void;
+        /**
+         * 渲染
+         */
+        draw(gl: GL, scene3d: Scene3D, camera: Camera, renderObjectflag: GameObjectFlag): void;
     }
 }
 declare namespace feng3d {

@@ -20,7 +20,7 @@ class Basic_SkyBox extends feng3d.Script
 
         var skybox = feng3d.GameObject.create("skybox");
         var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
-        skyboxComponent.texture = cubeTexture;
+        skyboxComponent.s_skyboxTexture = cubeTexture;
         scene.gameObject.addChild(skybox);
 
         camera.transform.z = -6;

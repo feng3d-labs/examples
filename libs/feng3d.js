@@ -2875,7 +2875,7 @@ var feng3d;
          */
         IndexedDBfs.prototype.readFile = function (path, callback) {
             feng3d.storage.get(this.DBname, this.projectname, path, function (err, data) {
-                callback(null, data);
+                callback(err, data);
             });
         };
         /**
@@ -3393,6 +3393,18 @@ var feng3d;
          * gif图片
          */
         AssetExtension["gif"] = "gif";
+        /**
+         * mp3声音
+         */
+        AssetExtension["mp3"] = "mp3";
+        /**
+         * ogg声音
+         */
+        AssetExtension["ogg"] = "ogg";
+        /**
+         * wav声音
+         */
+        AssetExtension["wav"] = "wav";
         /**
          * ts文件
          */
@@ -19358,6 +19370,363 @@ var feng3d;
         return false;
     }
 })(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 声音监听器
+     */
+    var AudioListener = /** @class */ (function (_super) {
+        __extends(AudioListener, _super);
+        function AudioListener() {
+            var _this = _super.call(this) || this;
+            _this.enabled = true;
+            _this._volume = 1;
+            _this.gain = feng3d.audioCtx.createGain();
+            _this.gain.connect(feng3d.audioCtx.destination);
+            _this.enabledChanged();
+            return _this;
+        }
+        Object.defineProperty(AudioListener.prototype, "volume", {
+            /**
+             * 音量
+             */
+            get: function () {
+                return this._volume;
+            },
+            set: function (v) {
+                this._volume = v;
+                this.gain.gain.setTargetAtTime(v, feng3d.audioCtx.currentTime, 0.01);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        AudioListener.prototype.init = function (gameObject) {
+            _super.prototype.init.call(this, gameObject);
+            this.gameObject.on("scenetransformChanged", this.onScenetransformChanged, this);
+            this.onScenetransformChanged();
+        };
+        AudioListener.prototype.onScenetransformChanged = function () {
+            var scenePosition = this.transform.scenePosition;
+            //
+            var listener = feng3d.audioCtx.listener;
+            if (listener.positionX) {
+                listener.positionX.value = scenePosition.x;
+                listener.positionY.value = scenePosition.y;
+                listener.positionZ.value = scenePosition.z;
+            }
+            else {
+                listener.setPosition(scenePosition.x, scenePosition.y, scenePosition.z);
+            }
+        };
+        AudioListener.prototype.enabledChanged = function () {
+            if (!this.gain)
+                return;
+            if (this.enabled) {
+                feng3d.globalGain.connect(this.gain);
+            }
+            else {
+                feng3d.globalGain.disconnect(this.gain);
+            }
+        };
+        __decorate([
+            feng3d.watch("enabledChanged")
+        ], AudioListener.prototype, "enabled", void 0);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioListener.prototype, "volume", null);
+        return AudioListener;
+    }(feng3d.Behaviour));
+    feng3d.AudioListener = AudioListener;
+})(feng3d || (feng3d = {}));
+(function () {
+    window["AudioContext"] = window["AudioContext"] || window["webkitAudioContext"];
+    var audioCtx = feng3d.audioCtx = new AudioContext();
+    var globalGain = feng3d.globalGain = audioCtx.createGain();
+    // 新增无音Gain，避免没有AudioListener组件时暂停声音播放进度
+    var zeroGain = audioCtx.createGain();
+    zeroGain.connect(audioCtx.destination);
+    globalGain.connect(zeroGain);
+    zeroGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
+    //
+    var listener = audioCtx.listener;
+    audioCtx.createGain();
+    if (listener.forwardX) {
+        listener.forwardX.value = 0;
+        listener.forwardY.value = 0;
+        listener.forwardZ.value = -1;
+        listener.upX.value = 0;
+        listener.upY.value = 1;
+        listener.upZ.value = 0;
+    }
+    else {
+        listener.setOrientation(0, 0, -1, 0, 1, 0);
+    }
+})();
+var feng3d;
+(function (feng3d) {
+    /**
+     * 声源
+     */
+    var AudioSource = /** @class */ (function (_super) {
+        __extends(AudioSource, _super);
+        function AudioSource() {
+            var _this = _super.call(this) || this;
+            /**
+             * 声音文件路径
+             */
+            _this.url = "";
+            _this._loop = true;
+            _this.panner = createPanner();
+            _this.panningModel = 'HRTF';
+            _this.distanceModel = 'inverse';
+            _this.refDistance = 1;
+            _this.maxDistance = 10000;
+            _this.rolloffFactor = 1;
+            _this.coneInnerAngle = 360;
+            _this.coneOuterAngle = 0;
+            _this.coneOuterGain = 0;
+            //
+            _this.gain = feng3d.audioCtx.createGain();
+            _this.volume = 1;
+            //
+            _this.gain.connect(feng3d.globalGain);
+            _this.panner.connect(_this.gain);
+            return _this;
+        }
+        Object.defineProperty(AudioSource.prototype, "loop", {
+            get: function () {
+                return this._loop;
+            },
+            set: function (v) {
+                this._loop = v;
+                if (this.source)
+                    this.source.loop = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "volume", {
+            /**
+             * 音量
+             */
+            get: function () {
+                return this._volume;
+            },
+            set: function (v) {
+                this._volume = v;
+                this.gain.gain.setTargetAtTime(v, feng3d.audioCtx.currentTime, 0.01);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "coneInnerAngle", {
+            get: function () {
+                return this._coneInnerAngle;
+            },
+            set: function (v) {
+                this._coneInnerAngle = v;
+                this.panner.coneInnerAngle = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "coneOuterAngle", {
+            get: function () {
+                return this._coneOuterAngle;
+            },
+            set: function (v) {
+                this._coneOuterAngle = v;
+                this.panner.coneOuterAngle = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "coneOuterGain", {
+            get: function () {
+                return this._coneOuterGain;
+            },
+            set: function (v) {
+                this._coneOuterGain = v;
+                this.panner.coneOuterGain = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "distanceModel", {
+            get: function () {
+                return this._distanceModel;
+            },
+            set: function (v) {
+                this._distanceModel = v;
+                this.panner.distanceModel = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "maxDistance", {
+            get: function () {
+                return this._maxDistance;
+            },
+            set: function (v) {
+                this._maxDistance = v;
+                this.panner.maxDistance = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "panningModel", {
+            get: function () {
+                return this._panningModel;
+            },
+            set: function (v) {
+                this._panningModel = v;
+                this.panner.panningModel = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "refDistance", {
+            get: function () {
+                return this._refDistance;
+            },
+            set: function (v) {
+                this._refDistance = v;
+                this.panner.refDistance = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(AudioSource.prototype, "rolloffFactor", {
+            get: function () {
+                return this._rolloffFactor;
+            },
+            set: function (v) {
+                this._rolloffFactor = v;
+                this.panner.rolloffFactor = v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        AudioSource.prototype.init = function (gameObject) {
+            _super.prototype.init.call(this, gameObject);
+            this.gameObject.on("scenetransformChanged", this.onScenetransformChanged, this);
+        };
+        AudioSource.prototype.onScenetransformChanged = function () {
+            var scenePosition = this.transform.scenePosition;
+            //
+            var panner = this.panner;
+            if (panner.positionX) {
+                panner.positionX.value = scenePosition.x;
+                panner.positionY.value = scenePosition.y;
+                panner.positionZ.value = scenePosition.z;
+            }
+            else {
+                panner.setPosition(scenePosition.x, scenePosition.y, scenePosition.z);
+            }
+        };
+        AudioSource.prototype.onUrlChanged = function () {
+            var _this = this;
+            this.stop();
+            if (this.url) {
+                var url = this.url;
+                feng3d.assets.readFile(this.url, function (err, data) {
+                    if (err) {
+                        feng3d.warn(err);
+                        return;
+                    }
+                    if (url != _this.url)
+                        return;
+                    feng3d.audioCtx.decodeAudioData(data, function (buffer) {
+                        _this.buffer = buffer;
+                    });
+                });
+            }
+        };
+        AudioSource.prototype.play = function () {
+            this.stop();
+            if (this.buffer) {
+                this.source = feng3d.audioCtx.createBufferSource();
+                this.source.buffer = this.buffer;
+                this.source.connect(this.panner);
+                this.source.loop = this.loop;
+                this.source.start(0);
+            }
+        };
+        AudioSource.prototype.stop = function () {
+            if (this.source) {
+                this.source.stop(0);
+                this.source.disconnect(this.panner);
+                this.source = null;
+            }
+        };
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav({ component: "OAVPick", componentParam: { accepttype: "audio" } }),
+            feng3d.watch("onUrlChanged")
+        ], AudioSource.prototype, "url", void 0);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "loop", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "volume", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "coneInnerAngle", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "coneOuterAngle", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "coneOuterGain", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "distanceModel", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "maxDistance", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "panningModel", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "refDistance", null);
+        __decorate([
+            feng3d.serialize,
+            feng3d.oav()
+        ], AudioSource.prototype, "rolloffFactor", null);
+        __decorate([
+            feng3d.oav()
+        ], AudioSource.prototype, "play", null);
+        __decorate([
+            feng3d.oav()
+        ], AudioSource.prototype, "stop", null);
+        return AudioSource;
+    }(feng3d.Component));
+    feng3d.AudioSource = AudioSource;
+})(feng3d || (feng3d = {}));
+function createPanner() {
+    var panner = this.panner = feng3d.audioCtx.createPanner();
+    if (panner.orientationX) {
+        panner.orientationX.value = 1;
+        panner.orientationY.value = 0;
+        panner.orientationZ.value = 0;
+    }
+    else {
+        panner.setOrientation(1, 0, 0);
+    }
+    return panner;
+}
 var feng3d;
 (function (feng3d) {
     /**

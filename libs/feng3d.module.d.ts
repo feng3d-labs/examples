@@ -1533,6 +1533,18 @@ declare namespace feng3d {
          */
         gif = "gif",
         /**
+         * mp3声音
+         */
+        mp3 = "mp3",
+        /**
+         * ogg声音
+         */
+        ogg = "ogg",
+        /**
+         * wav声音
+         */
+        wav = "wav",
+        /**
          * ts文件
          */
         ts = "ts",
@@ -7694,21 +7706,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    interface ComponentRawMap {
-        TransformRaw: TransformRaw;
-    }
-    interface TransformRaw {
-        __class__?: "feng3d.Transform";
-        rx?: number;
-        ry?: number;
-        rz?: number;
-        sx?: number;
-        sy?: number;
-        sz?: number;
-        x?: number;
-        y?: number;
-        z?: number;
-    }
     interface TransformEventMap {
         /**
          * 变换矩阵变化
@@ -9725,16 +9722,6 @@ declare namespace feng3d {
     }
 }
 declare namespace feng3d {
-    interface ComponentRawMap {
-        PointLight: PointLightRaw;
-    }
-    interface PointLightRaw extends LightRaw {
-        __class__?: "feng3d.PointLight";
-        /**
-         * 光照范围
-         */
-        range?: number;
-    }
     /**
      * 点光源
      * @author feng 2016-12-13
@@ -9928,6 +9915,120 @@ declare namespace feng3d {
         geometry: Geometry;
     }
 }
+declare namespace feng3d {
+    var audioCtx: AudioContext;
+    var globalGain: GainNode;
+    /**
+     * 声音监听器
+     */
+    class AudioListener extends Behaviour {
+        gain: GainNode;
+        enabled: boolean;
+        /**
+         * 音量
+         */
+        volume: number;
+        private _volume;
+        constructor();
+        init(gameObject: GameObject): void;
+        private onScenetransformChanged();
+        private enabledChanged();
+    }
+}
+interface AudioListener {
+    positionX: {
+        value: number;
+    };
+    positionY: {
+        value: number;
+    };
+    positionZ: {
+        value: number;
+    };
+    forwardX: {
+        value: number;
+    };
+    forwardY: {
+        value: number;
+    };
+    forwardZ: {
+        value: number;
+    };
+    upX: {
+        value: number;
+    };
+    upY: {
+        value: number;
+    };
+    upZ: {
+        value: number;
+    };
+}
+declare namespace feng3d {
+    /**
+     * 声源
+     */
+    class AudioSource extends Component {
+        private panner;
+        private source;
+        private buffer;
+        private gain;
+        /**
+         * 声音文件路径
+         */
+        url: string;
+        loop: boolean;
+        private _loop;
+        /**
+         * 音量
+         */
+        volume: number;
+        private _volume;
+        coneInnerAngle: number;
+        private _coneInnerAngle;
+        coneOuterAngle: number;
+        private _coneOuterAngle;
+        coneOuterGain: number;
+        private _coneOuterGain;
+        distanceModel: DistanceModelType;
+        private _distanceModel;
+        maxDistance: number;
+        private _maxDistance;
+        panningModel: "equalpower";
+        private _panningModel;
+        refDistance: number;
+        private _refDistance;
+        rolloffFactor: number;
+        private _rolloffFactor;
+        constructor();
+        init(gameObject: GameObject): void;
+        private onScenetransformChanged();
+        private onUrlChanged();
+        play(): void;
+        stop(): void;
+    }
+}
+interface PannerNode {
+    positionX: {
+        value: number;
+    };
+    positionY: {
+        value: number;
+    };
+    positionZ: {
+        value: number;
+    };
+    orientationX: {
+        value: number;
+    };
+    orientationY: {
+        value: number;
+    };
+    orientationZ: {
+        value: number;
+    };
+}
+declare function createPanner(): PannerNode;
 declare namespace feng3d {
     /**
      * 地形几何体原始数据

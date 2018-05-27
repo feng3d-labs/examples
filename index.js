@@ -23,7 +23,6 @@ var files = {
         "PointLightTest",
     ],
     "animator": [
-        "ParticleAnimatorTest",
         "SceneLoadTest",
     ],
     "loaders": [
@@ -39,8 +38,6 @@ var files = {
         "Basic_View",
         "Basic_SkyBox",
         "Basic_Shading",
-        "Basic_Particles",
-        "Basic_Fire",
     ],
 };
 

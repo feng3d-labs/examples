@@ -26,55 +26,7 @@ declare class TerrainTest extends feng3d.Script {
     */
     dispose(): void;
 }
-declare class ParticleAnimatorTest extends feng3d.Script {
-    /**
-     * 初始化时调用
-     */
-    init(): void;
-    /**
-     * 更新
-     */
-    update(): void;
-    /**
-    * 销毁时调用
-    */
-    dispose(): void;
-}
 declare class SceneLoadTest extends feng3d.Script {
-    /**
-     * 初始化时调用
-     */
-    init(): void;
-    /**
-     * 更新
-     */
-    update(): void;
-    /**
-    * 销毁时调用
-    */
-    dispose(): void;
-}
-interface FireVO {
-    mesh: feng3d.GameObject;
-    particleSystem: feng3d.ParticleSystem;
-    light?: feng3d.PointLight;
-    strength: number;
-}
-declare class Basic_Fire extends feng3d.Script {
-    /**
-     * 初始化时调用
-     */
-    init(): void;
-    /**
-     * 更新
-     */
-    update(): void;
-    /**
-    * 销毁时调用
-    */
-    dispose(): void;
-}
-declare class Basic_Particles extends feng3d.Script {
     /**
      * 初始化时调用
      */

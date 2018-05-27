@@ -4,7 +4,7 @@ var process = require('child_process');
 var fs = require("fs");
 var path = require("path");
 
-watchcopyDir("../engine/out", "libs");
+// watchcopyDir("../engine/out", "libs");
 
 /**
  * Watch for changes in TypeScript

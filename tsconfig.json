@@ -9,7 +9,7 @@
 		"outFile": "out/examples.js"
 	},
 	"include": [
-		"libs/feng3d.d.ts",
+		"../engine/out/feng3d.d.ts",
 		"src/**/*.ts"
 	]
 }

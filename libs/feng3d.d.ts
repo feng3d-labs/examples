@@ -10326,10 +10326,6 @@ declare namespace feng3d {
          */
         enable: boolean;
         /**
-         * 优先级
-         */
-        priority: number;
-        /**
          * 数据是否变脏
          */
         isDirty: boolean;
@@ -10430,8 +10426,6 @@ declare namespace feng3d {
      * @author feng 2017-01-09
      */
     class ParticleSystem extends MeshRenderer {
-        geometry: Geometry;
-        material: Material;
         /**
          * 是否正在播放
          */
@@ -10449,18 +10443,20 @@ declare namespace feng3d {
          */
         cycle: number;
         /**
-         * 属性数据列表
+         * 粒子数量
          */
-        private _attributes;
-        readonly animations: ParticlePosition[];
+        numParticles: number;
+        geometry: Geometry;
+        material: Material;
         /**
          * 粒子全局属性
          */
         readonly particleGlobal: ParticleGlobal;
+        readonly animations: ParticlePosition[];
         /**
-         * 粒子数量
+         * 属性数据列表
          */
-        numParticles: number;
+        private _attributes;
         private _isDirty;
         readonly single: boolean;
         init(gameObject: GameObject): void;

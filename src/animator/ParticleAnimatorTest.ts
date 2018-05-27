@@ -38,9 +38,9 @@ class ParticleAnimatorTest extends feng3d.Script
         particleSystem.particleGlobal.acceleration = acceleration;
         //通过函数来创建粒子初始状态
         particleSystem.generateFunctions.push({
-            generate: (particle) =>
+            generate: (particle, particleSystem) =>
             {
-                particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
+                particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particleSystem.numParticles);
             }, priority: 0
         });
         particleSystem.isPlaying = true;

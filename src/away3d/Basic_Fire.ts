@@ -83,9 +83,9 @@ class Basic_Fire extends feng3d.Script
             //通过函数来创建粒子初始状态
             particleSystem.numParticles = 500;
             particleSystem.generateFunctions.push({
-                generate: (particle) =>
+                generate: (particle, particleSystem) =>
                 {
-                    particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
+                    particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particleSystem.numParticles);
 
                     particle.birthTime = Math.random() * 5;
                     particle.lifetime = Math.random() * 4 + 0.1;

@@ -155,8 +155,8 @@ var ParticleAnimatorTest = /** @class */ (function (_super) {
         particleSystem.particleGlobal.acceleration = acceleration;
         //通过函数来创建粒子初始状态
         particleSystem.generateFunctions.push({
-            generate: function (particle) {
-                particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
+            generate: function (particle, particleSystem) {
+                particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particleSystem.numParticles);
             }, priority: 0
         });
         particleSystem.isPlaying = true;
@@ -272,8 +272,8 @@ var Basic_Fire = /** @class */ (function (_super) {
             //通过函数来创建粒子初始状态
             particleSystem.numParticles = 500;
             particleSystem.generateFunctions.push({
-                generate: function (particle) {
-                    particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particle.total);
+                generate: function (particle, particleSystem) {
+                    particle.color = new feng3d.Color4(1, 0, 0, 1).mix(new feng3d.Color4(0, 1, 0, 1), particle.index / particleSystem.numParticles);
                     particle.birthTime = Math.random() * 5;
                     particle.lifetime = Math.random() * 4 + 0.1;
                     var degree1 = Math.random() * Math.PI * 2;

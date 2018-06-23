@@ -1433,7 +1433,7 @@ var webvr_cubes = /** @class */ (function (_super) {
             container.appendChild(info);
             scene.background.fromUnit(0x505050);
             var lens = camera.lens = new feng3d.PerspectiveLens(70);
-            lens.aspectRatio = window.innerWidth / window.innerHeight;
+            lens.aspect = window.innerWidth / window.innerHeight;
             lens.near = 0.1;
             lens.far = 10;
             camera.gameObject.addComponent(feng3d.FPSController);
@@ -1523,7 +1523,7 @@ var webvr_cubes = /** @class */ (function (_super) {
             }
         }
         function onWindowResize() {
-            camera.lens.aspectRatio = window.innerWidth / window.innerHeight;
+            camera.lens.aspect = window.innerWidth / window.innerHeight;
             // engine.setSize(window.innerWidth, window.innerHeight);
         }
         //

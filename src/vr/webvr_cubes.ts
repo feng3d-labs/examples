@@ -41,7 +41,7 @@ class webvr_cubes extends feng3d.Script
             scene.background.fromUnit(0x505050);
 
             var lens = camera.lens = new feng3d.PerspectiveLens(70);
-            lens.aspectRatio = window.innerWidth / window.innerHeight;
+            lens.aspect = window.innerWidth / window.innerHeight;
             lens.near = 0.1;
             lens.far = 10;
             camera.gameObject.addComponent(feng3d.FPSController);
@@ -167,7 +167,7 @@ class webvr_cubes extends feng3d.Script
 
         function onWindowResize()
         {
-            camera.lens.aspectRatio = window.innerWidth / window.innerHeight;
+            camera.lens.aspect = window.innerWidth / window.innerHeight;
 
             // engine.setSize(window.innerWidth, window.innerHeight);
         }

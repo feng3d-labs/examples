@@ -581,7 +581,7 @@ var MousePickTest = /** @class */ (function (_super) {
         cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
         cylinder.mouseEnabled = true;
         scene.gameObject.addChild(cylinder);
-        scene.gameObject.on("click", function (event) {
+        scene.on("click", function (event) {
             var transform = event.target;
             if (transform.getComponent(feng3d.MeshRenderer)) {
                 var material = transform.getComponent(feng3d.MeshRenderer).material = feng3d.materialFactory.create("color");

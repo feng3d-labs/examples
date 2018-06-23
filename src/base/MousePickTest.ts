@@ -41,7 +41,7 @@ class MousePickTest extends feng3d.Script
         cylinder.mouseEnabled = true;
         scene.gameObject.addChild(cylinder);
 
-        scene.gameObject.on("click", (event) =>
+        scene.on("click", (event) =>
         {
             var transform = <feng3d.Transform>event.target;
             if (transform.getComponent(feng3d.MeshRenderer))

@@ -16,9 +16,9 @@ class TerrainTest extends feng3d.Script
         var root = 'resources/terrain/';
         //
         var terrain = feng3d.GameObject.create("terrain");
-        var meshRenderer = terrain.addComponent(feng3d.MeshRenderer);
-        // meshRenderer.geometry = new feng3d.TerrainGeometry();
-        meshRenderer.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg', width: 500, height: 100, depth: 500 });
+        var model = terrain.addComponent(feng3d.Model);
+        // model.geometry = new feng3d.TerrainGeometry();
+        model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg', width: 500, height: 100, depth: 500 });
         var material = feng3d.materialFactory.create("terrain");
 
         material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
@@ -30,7 +30,7 @@ class TerrainTest extends feng3d.Script
         material.uniforms.s_splatTexture3.url = root + 'rock.jpg';
         material.uniforms.u_splatRepeats = new feng3d.Vector4(1, 50, 50, 50)
 
-        meshRenderer.material = material;
+        model.material = material;
         scene.gameObject.addChild(terrain);
 
         //初始化光源

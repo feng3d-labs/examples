@@ -15,7 +15,7 @@ class Basic_View extends feng3d.Script
         camera.transform.lookAt(new feng3d.Vector3());
 
         var plane = feng3d.GameObject.create();
-        var model = plane.addComponent(feng3d.MeshRenderer);
+        var model = plane.addComponent(feng3d.Model);
         model.geometry = new feng3d.PlaneGeometry({ width: 7, height: 7 });
         var material = model.material = feng3d.materialFactory.create("standard");
         material.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";

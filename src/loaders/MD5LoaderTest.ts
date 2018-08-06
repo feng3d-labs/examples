@@ -41,7 +41,7 @@ class MD5LoaderTest extends feng3d.Script
             for (var i = 0; i < gameObject.numChildren; i++)
             {
                 var child = gameObject.getChildAt(i);
-                var model = child.getComponent(feng3d.MeshRenderer);
+                var model = child.getComponent(feng3d.Model);
                 if (model)
                 {
                     var material = <feng3d.StandardMaterial>model.material;

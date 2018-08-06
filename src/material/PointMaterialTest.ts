@@ -12,9 +12,9 @@ class PointMaterialTest extends feng3d.Script
         var pointGeometry = new feng3d.PointGeometry();
         var pointMaterial = feng3d.materialFactory.create("point", { renderParams: { renderMode: feng3d.RenderMode.POINTS } });
         var gameObject = feng3d.GameObject.create("plane");
-        var meshRenderer = gameObject.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = pointGeometry;
-        meshRenderer.material = pointMaterial;
+        var model = gameObject.addComponent(feng3d.Model);
+        model.geometry = pointGeometry;
+        model.material = pointMaterial;
         gameObject.transform.z = 3;
         scene.gameObject.addChild(gameObject);
 

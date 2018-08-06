@@ -14,9 +14,9 @@ class SegmentMaterialTest extends feng3d.Script
         scene.gameObject.addChild(segment);
 
         //初始化材质
-        var meshRenderer = segment.addComponent(feng3d.MeshRenderer);
-        meshRenderer.material = feng3d.materialFactory.create("segment", { renderParams: { renderMode: feng3d.RenderMode.LINES } });
-        var segmentGeometry = meshRenderer.geometry = new feng3d.SegmentGeometry();
+        var model = segment.addComponent(feng3d.Model);
+        model.material = feng3d.materialFactory.create("segment", { renderParams: { renderMode: feng3d.RenderMode.LINES } });
+        var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
 
         var length = 200;
         var height = 2 / Math.PI;

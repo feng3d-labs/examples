@@ -39,8 +39,8 @@ class OBJParserTest extends feng3d.Script
             object.transform.z = 300;
             scene.gameObject.addChild(gameObject);
 
-            var meshRenderers = gameObject.getComponentsInChildren(feng3d.MeshRenderer);
-            meshRenderers.forEach(element =>
+            var models = gameObject.getComponentsInChildren(feng3d.Model);
+            models.forEach(element =>
             {
                 element.material = material;
             });

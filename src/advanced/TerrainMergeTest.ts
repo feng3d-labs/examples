@@ -17,15 +17,15 @@ class TerrainMergeTest extends feng3d.Script
         var root = 'resources/terrain/';
         //
         var terrain = feng3d.GameObject.create("terrain");
-        var meshRenderer = terrain.addComponent(feng3d.MeshRenderer);
-        meshRenderer.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg' });
+        var model = terrain.addComponent(feng3d.Model);
+        model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg' });
         var material = feng3d.materialFactory.create("standard");
         material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
         material.uniforms.s_normal.url = root + "terrain_normals.jpg";
 
         // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3(50, 50, 50));
         // material.terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png', root + 'test1.jpg', new Vector3(50, 50, 50));
-        meshRenderer.material = material;
+        model.material = material;
         scene.gameObject.addChild(terrain);
 
         //初始化光源

@@ -40,7 +40,7 @@ class PointLightTest extends feng3d.Script
 
         function initObjects()
         {
-            var material = feng3d.materialFactory.create("standard");
+            var material = new feng3d.StandardMaterial();
             material.uniforms.s_diffuse.url = 'resources/head_diffuse.jpg';
             material.uniforms.s_normal.url = 'resources/head_normals.jpg';
             material.uniforms.s_specular.url = 'resources/head_specular.jpg';
@@ -85,7 +85,7 @@ class PointLightTest extends feng3d.Script
             //初始化点光源
             var pointLight0 = light0.addComponent(feng3d.PointLight);
             pointLight0.color = lightColor0.toColor3();
-            model.material = feng3d.materialFactory.create("color", { uniforms: { u_diffuseInput: lightColor0 } });
+            model.material = new feng3d.ColorMaterial({ uniforms: { u_diffuseInput: lightColor0 } });
             scene.gameObject.addChild(light0);
 
             //
@@ -95,7 +95,7 @@ class PointLightTest extends feng3d.Script
             //初始化点光源
             var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
             pointLight1.color = lightColor1.toColor3();
-            model.material = feng3d.materialFactory.create("color", { uniforms: { u_diffuseInput: lightColor1 } });
+            model.material = new feng3d.ColorMaterial({ uniforms: { u_diffuseInput: lightColor1 } });
             scene.gameObject.addChild(light1);
         }
 

@@ -11,7 +11,7 @@ class ScriptDemo extends feng3d.Script
         var model = cube.addComponent(feng3d.Model);
         model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
-        var material = model.material = feng3d.materialFactory.create("standard");
+        var material = model.material = new feng3d.StandardMaterial();
         material.uniforms.s_diffuse.url = 'resources/m.png';
 
         material.uniforms.u_fogMode = feng3d.FogMode.LINEAR;

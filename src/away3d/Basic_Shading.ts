@@ -37,18 +37,18 @@ class Basic_Shading extends feng3d.Script
 
         function initMaterials()
         {
-            planeMaterial = feng3d.materialFactory.create("standard");
+            planeMaterial = new feng3d.StandardMaterial();
             planeMaterial.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
             planeMaterial.uniforms.s_normal.url = "resources/floor_normal.jpg";
             planeMaterial.uniforms.s_specular.url = "resources/floor_specular.jpg";
-            sphereMaterial = feng3d.materialFactory.create("standard");
+            sphereMaterial = new feng3d.StandardMaterial();
             sphereMaterial.uniforms.s_diffuse.url = "resources/beachball_diffuse.jpg";
             sphereMaterial.uniforms.s_specular.url = "resources/beachball_specular.jpg";
-            cubeMaterial = feng3d.materialFactory.create("standard");
+            cubeMaterial = new feng3d.StandardMaterial();
             cubeMaterial.uniforms.s_diffuse.url = "resources/trinket_diffuse.jpg";
             cubeMaterial.uniforms.s_normal.url = "resources/trinket_normal.jpg";
             cubeMaterial.uniforms.s_specular.url = "resources/trinket_specular.jpg";
-            torusMaterial = feng3d.materialFactory.create("standard");
+            torusMaterial = new feng3d.StandardMaterial();
             torusMaterial.uniforms.s_diffuse.url = "resources/weave_diffuse.jpg";
             torusMaterial.uniforms.s_normal.url = "resources/weave_normal.jpg";
             torusMaterial.uniforms.s_specular.url = "resources/weave_diffuse.jpg";

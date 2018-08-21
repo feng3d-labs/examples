@@ -23,7 +23,7 @@ class OBJParserTest extends feng3d.Script
         // var objUrl = "resources/cube.obj";
         var objUrl = "resources/head.obj";
 
-        var material = feng3d.materialFactory.create("standard");
+        var material = new feng3d.StandardMaterial();
         material.uniforms.s_diffuse.url = "resources/head_diffuse.jpg";
         material.uniforms.s_normal.url = "resources/head_normals.jpg";
         material.uniforms.s_specular.url = "resources/head_specular.jpg";

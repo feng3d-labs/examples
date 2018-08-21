@@ -24,10 +24,9 @@ class TextureMaterialTest extends feng3d.Script
         model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
-        model.material = feng3d.materialFactory.create("texture",
-            {
-                uniforms: { s_texture: { url: 'resources/m.png', flipY: false } }
-            });
+        model.material = new feng3d.TextureMaterial({
+            uniforms: { s_texture: { url: 'resources/m.png', flipY: false } }
+        });
     }
 
     /**

@@ -19,7 +19,7 @@ class TerrainTest extends feng3d.Script
         var model = terrain.addComponent(feng3d.Model);
         // model.geometry = new feng3d.TerrainGeometry();
         model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg', width: 500, height: 100, depth: 500 });
-        var material = feng3d.materialFactory.create("terrain");
+        var material = new feng3d.TerrainMaterial();
 
         material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
         material.uniforms.s_normal.url = root + "terrain_normals.jpg";

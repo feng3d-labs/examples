@@ -113,20 +113,6 @@ declare class Container3DTest extends feng3d.Script {
      */
     dispose(): void;
 }
-declare class FogTest extends feng3d.Script {
-    /**
-     * 初始化时调用
-     */
-    init(): void;
-    /**
-     * 更新
-     */
-    update(): void;
-    /**
-     * 销毁时调用
-     */
-    dispose(): void;
-}
 declare class FPSControllerTest extends feng3d.Script {
     /**
      * 初始化时调用
@@ -139,6 +125,20 @@ declare class FPSControllerTest extends feng3d.Script {
     /**
     * 销毁时调用
     */
+    dispose(): void;
+}
+declare class FogTest extends feng3d.Script {
+    /**
+     * 初始化时调用
+     */
+    init(): void;
+    /**
+     * 更新
+     */
+    update(): void;
+    /**
+     * 销毁时调用
+     */
     dispose(): void;
 }
 declare class MousePickTest extends feng3d.Script {
@@ -350,6 +350,19 @@ declare class ScriptDemo extends feng3d.Script {
  * @author alteredq / http://alteredqualia.com/
  */
 declare function Clock(autoStart: any): void;
+/**
+ * @author mrdoob / http://mrdoob.com
+ * @author Mugen87 / https://github.com/Mugen87
+ *
+ * Based on @tojiro's vr-samples-utils.js
+ */
+declare var WEBVR: {
+    createButton: (renderer: any) => HTMLAnchorElement | HTMLButtonElement;
+    checkAvailability: () => void;
+    getMessageContainer: () => HTMLDivElement;
+    getButton: () => HTMLDivElement;
+    getVRDisplay: () => void;
+};
 declare class webvr_cubes extends feng3d.Script {
     /**
      * 初始化时调用
@@ -364,16 +377,3 @@ declare class webvr_cubes extends feng3d.Script {
     */
     dispose(): void;
 }
-/**
- * @author mrdoob / http://mrdoob.com
- * @author Mugen87 / https://github.com/Mugen87
- *
- * Based on @tojiro's vr-samples-utils.js
- */
-declare var WEBVR: {
-    createButton: (renderer: any) => HTMLAnchorElement | HTMLButtonElement;
-    checkAvailability: () => void;
-    getMessageContainer: () => HTMLDivElement;
-    getButton: () => HTMLDivElement;
-    getVRDisplay: () => void;
-};

@@ -852,7 +852,7 @@ var PointLightTest = /** @class */ (function (_super) {
             //初始化点光源
             var pointLight0 = light0.addComponent(feng3d.PointLight);
             pointLight0.color = lightColor0.toColor3();
-            model.material = new feng3d.ColorMaterial({ uniforms: { u_diffuseInput: lightColor0 } });
+            model.material = new feng3d.ColorMaterial().value({ uniforms: { u_diffuseInput: lightColor0 } });
             scene.gameObject.addChild(light0);
             //
             var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
@@ -861,7 +861,7 @@ var PointLightTest = /** @class */ (function (_super) {
             //初始化点光源
             var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
             pointLight1.color = lightColor1.toColor3();
-            model.material = new feng3d.ColorMaterial({ uniforms: { u_diffuseInput: lightColor1 } });
+            model.material = new feng3d.ColorMaterial().value({ uniforms: { u_diffuseInput: lightColor1 } });
             scene.gameObject.addChild(light1);
         }
         function setPointLightPosition() {
@@ -1164,7 +1164,7 @@ var PointMaterialTest = /** @class */ (function (_super) {
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
         var pointGeometry = new feng3d.PointGeometry();
-        var pointMaterial = new feng3d.PointMaterial({ renderParams: { renderMode: feng3d.RenderMode.POINTS } });
+        var pointMaterial = new feng3d.PointMaterial().value({ renderParams: { renderMode: feng3d.RenderMode.POINTS } });
         var gameObject = new feng3d.GameObject({ name: "plane" });
         var model = gameObject.addComponent(feng3d.Model);
         model.geometry = pointGeometry;
@@ -1213,7 +1213,7 @@ var SegmentMaterialTest = /** @class */ (function (_super) {
         scene.gameObject.addChild(segment);
         //初始化材质
         var model = segment.addComponent(feng3d.Model);
-        model.material = new feng3d.SegmentMaterial({ renderParams: { renderMode: feng3d.RenderMode.LINES } });
+        model.material = new feng3d.SegmentMaterial().value({ renderParams: { renderMode: feng3d.RenderMode.LINES } });
         var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
         var length = 200;
         var height = 2 / Math.PI;
@@ -1315,7 +1315,7 @@ var TextureMaterialTest = /** @class */ (function (_super) {
         model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
-        model.material = new feng3d.TextureMaterial({
+        model.material = new feng3d.TextureMaterial().value({
             uniforms: { s_texture: { url: 'resources/m.png', flipY: false } }
         });
     };

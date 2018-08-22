@@ -10,7 +10,7 @@ class PointMaterialTest extends feng3d.Script
         var canvas = document.getElementById("glcanvas");
 
         var pointGeometry = new feng3d.PointGeometry();
-        var pointMaterial = new feng3d.PointMaterial({ renderParams: { renderMode: feng3d.RenderMode.POINTS } });
+        var pointMaterial = new feng3d.PointMaterial().value({ renderParams: { renderMode: feng3d.RenderMode.POINTS } });
         var gameObject = new feng3d.GameObject({ name: "plane" });
         var model = gameObject.addComponent(feng3d.Model);
         model.geometry = pointGeometry;

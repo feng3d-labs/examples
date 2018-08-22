@@ -76,14 +76,14 @@ class Basic_Shading extends feng3d.Script
         {
             plane = new feng3d.GameObject();
             var model = plane.addComponent(feng3d.Model);
-            var geometry: feng3d.Geometry = model.geometry = new feng3d.PlaneGeometry({ width: 10, height: 10 });
+            var geometry: feng3d.Geometry = model.geometry = new feng3d.PlaneGeometry().value({ width: 10, height: 10 });
             model.material = planeMaterial;
             geometry.scaleUV(2, 2);
             plane.transform.y = -0.20;
             scene.gameObject.addChild(plane);
             sphere = new feng3d.GameObject();
             var model = sphere.addComponent(feng3d.Model);
-            model.geometry = new feng3d.SphereGeometry({ radius: 1.50, segmentsW: 40, segmentsH: 20 })
+            model.geometry = new feng3d.SphereGeometry().value({ radius: 1.50, segmentsW: 40, segmentsH: 20 })
             model.material = sphereMaterial;
             sphere.transform.x = 3;
             sphere.transform.y = 1.60;
@@ -91,7 +91,7 @@ class Basic_Shading extends feng3d.Script
             scene.gameObject.addChild(sphere);
             cube = new feng3d.GameObject();
             var model = cube.addComponent(feng3d.Model);
-            model.geometry = new feng3d.CubeGeometry({ width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+            model.geometry = new feng3d.CubeGeometry().value({ width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.material = cubeMaterial;
             cube.transform.x = 3.00;
             cube.transform.y = 1.60;
@@ -99,7 +99,7 @@ class Basic_Shading extends feng3d.Script
             scene.gameObject.addChild(cube);
             torus = new feng3d.GameObject();
             var model = torus.addComponent(feng3d.Model);
-            geometry = model.geometry = new feng3d.TorusGeometry({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
+            geometry = model.geometry = new feng3d.TorusGeometry().value({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
             geometry.scaleUV(10, 5);
             torus.transform.x = -2.50;

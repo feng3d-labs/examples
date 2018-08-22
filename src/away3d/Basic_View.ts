@@ -16,7 +16,7 @@ class Basic_View extends feng3d.Script
 
         var plane = new feng3d.GameObject();
         var model = plane.addComponent(feng3d.Model);
-        model.geometry = new feng3d.PlaneGeometry({ width: 7, height: 7 });
+        model.geometry = new feng3d.PlaneGeometry().value({ width: 7, height: 7 });
         var material = model.material = new feng3d.StandardMaterial();
         material.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
         scene.gameObject.addChild(plane);

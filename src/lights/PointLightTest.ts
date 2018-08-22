@@ -55,7 +55,7 @@ class PointLightTest extends feng3d.Script
             var plane = new feng3d.GameObject();
             plane.transform.y = -1;
             var model = plane.addComponent(feng3d.Model);
-            var geometry = model.geometry = new feng3d.PlaneGeometry({ width: 10, height: 10 });
+            var geometry = model.geometry = new feng3d.PlaneGeometry().value({ width: 10, height: 10 });
             geometry.scaleUV(2, 2);
             model.material = material;
             scene.gameObject.addChild(plane);
@@ -63,7 +63,7 @@ class PointLightTest extends feng3d.Script
             var cube = new feng3d.GameObject();
             var model = cube.addComponent(feng3d.Model);
             model.material = material;
-            model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+            model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.geometry.scaleUV(2, 2);
             scene.gameObject.addChild(cube);
         }
@@ -81,7 +81,7 @@ class PointLightTest extends feng3d.Script
             //
             var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
             var model = light0.addComponent(feng3d.Model);
-            model.geometry = new feng3d.SphereGeometry({ radius: 0.05 });
+            model.geometry = new feng3d.SphereGeometry().value({ radius: 0.05 });
             //初始化点光源
             var pointLight0 = light0.addComponent(feng3d.PointLight);
             pointLight0.color = lightColor0.toColor3();
@@ -91,7 +91,7 @@ class PointLightTest extends feng3d.Script
             //
             var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
             model = light1.addComponent(feng3d.Model);
-            model.geometry = new feng3d.SphereGeometry({ radius: 0.05 });
+            model.geometry = new feng3d.SphereGeometry().value({ radius: 0.05 });
             //初始化点光源
             var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
             pointLight1.color = lightColor1.toColor3();

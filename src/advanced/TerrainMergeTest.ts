@@ -16,7 +16,7 @@ class TerrainMergeTest extends feng3d.Script
 
         var root = 'resources/terrain/';
         //
-        var terrain = new feng3d.GameObject({ name: "terrain" });
+        var terrain = new feng3d.GameObject().value({ name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
         model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg' });
         var material = new feng3d.StandardMaterial();

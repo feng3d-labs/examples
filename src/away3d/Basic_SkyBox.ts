@@ -18,7 +18,7 @@ class Basic_SkyBox extends feng3d.Script
             negative_z_url: 'resources/skybox/snow_negative_z.jpg',
         });
 
-        var skybox = new feng3d.GameObject({ name: "skybox" });
+        var skybox = new feng3d.GameObject().value({ name: "skybox" });
         var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
         skyboxComponent.s_skyboxTexture = cubeTexture;
         scene.gameObject.addChild(skybox);
@@ -33,7 +33,7 @@ class Basic_SkyBox extends feng3d.Script
         // torusMaterial.uniforms.u_ambient.a = 0.25;
         torusMaterial.uniforms.s_envMap = cubeTexture;
 
-        var torus = new feng3d.GameObject({ name: "torus" });
+        var torus = new feng3d.GameObject().value({ name: "torus" });
         var model = torus.addComponent(feng3d.Model);
         model.geometry = new feng3d.TorusGeometry({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
         model.material = torusMaterial;

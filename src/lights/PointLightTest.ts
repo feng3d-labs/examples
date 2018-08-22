@@ -9,8 +9,8 @@ class PointLightTest extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var light0 = new feng3d.GameObject({ name: "pointLight" });
-        var light1 = new feng3d.GameObject({ name: "pointLight" });
+        var light0 = new feng3d.GameObject().value({ name: "pointLight" });
+        var light1 = new feng3d.GameObject().value({ name: "pointLight" });
 
         initObjects();
         initLights();

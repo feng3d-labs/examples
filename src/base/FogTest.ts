@@ -5,7 +5,7 @@ class FogTest extends feng3d.Script
      */
     init()
     {
-        var cube = feng3d.GameObject.create();
+        var cube = new feng3d.GameObject();
         cube.transform.z = -7;
         cube.transform.y = 0;
         this.gameObject.addChild(cube);

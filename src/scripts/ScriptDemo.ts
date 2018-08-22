@@ -4,7 +4,7 @@ class ScriptDemo extends feng3d.Script
 
     init()
     {
-        var cube = this.cube = feng3d.GameObject.create();
+        var cube = this.cube = new feng3d.GameObject();
         cube.transform.z = -7;
         this.gameObject.addChild(cube);
 

@@ -9,8 +9,8 @@ class PointLightTest extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var light0 = feng3d.GameObject.create("pointLight");
-        var light1 = feng3d.GameObject.create("pointLight");
+        var light0 = new feng3d.GameObject({ name: "pointLight" });
+        var light1 = new feng3d.GameObject({ name: "pointLight" });
 
         initObjects();
         initLights();
@@ -52,7 +52,7 @@ class PointLightTest extends feng3d.Script
             material.uniforms.s_specular.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
 
             //初始化立方体
-            var plane = feng3d.GameObject.create();
+            var plane = new feng3d.GameObject();
             plane.transform.y = -1;
             var model = plane.addComponent(feng3d.Model);
             var geometry = model.geometry = new feng3d.PlaneGeometry({ width: 10, height: 10 });
@@ -60,7 +60,7 @@ class PointLightTest extends feng3d.Script
             model.material = material;
             scene.gameObject.addChild(plane);
 
-            var cube = feng3d.GameObject.create();
+            var cube = new feng3d.GameObject();
             var model = cube.addComponent(feng3d.Model);
             model.material = material;
             model.geometry = new feng3d.CubeGeometry({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });

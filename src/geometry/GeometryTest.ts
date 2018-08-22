@@ -9,7 +9,7 @@ class GeometryTest extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var gameobject = feng3d.GameObject.create();
+        var gameobject = new feng3d.GameObject();
         var model = gameobject.addComponent(feng3d.Model);
 
         var geometry = model.geometry = new feng3d.CustomGeometry();

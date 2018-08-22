@@ -58,13 +58,13 @@ class Basic_Shading extends feng3d.Script
         {
             scene.ambientColor.a = 0.2;
 
-            light1 = feng3d.GameObject.create();
+            light1 = new feng3d.GameObject();
             var directionalLight = light1.addComponent(feng3d.DirectionalLight);
             directionalLight.intensity = 0.7;
             light1.transform.rx = 90;
             scene.gameObject.addChild(light1);
 
-            light2 = feng3d.GameObject.create();
+            light2 = new feng3d.GameObject();
             var directionalLight = light2.addComponent(feng3d.DirectionalLight);
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
@@ -74,14 +74,14 @@ class Basic_Shading extends feng3d.Script
 
         function initObjects()
         {
-            plane = feng3d.GameObject.create();
+            plane = new feng3d.GameObject();
             var model = plane.addComponent(feng3d.Model);
             var geometry: feng3d.Geometry = model.geometry = new feng3d.PlaneGeometry({ width: 10, height: 10 });
             model.material = planeMaterial;
             geometry.scaleUV(2, 2);
             plane.transform.y = -0.20;
             scene.gameObject.addChild(plane);
-            sphere = feng3d.GameObject.create();
+            sphere = new feng3d.GameObject();
             var model = sphere.addComponent(feng3d.Model);
             model.geometry = new feng3d.SphereGeometry({ radius: 1.50, segmentsW: 40, segmentsH: 20 })
             model.material = sphereMaterial;
@@ -89,7 +89,7 @@ class Basic_Shading extends feng3d.Script
             sphere.transform.y = 1.60;
             sphere.transform.z = 3.00;
             scene.gameObject.addChild(sphere);
-            cube = feng3d.GameObject.create();
+            cube = new feng3d.GameObject();
             var model = cube.addComponent(feng3d.Model);
             model.geometry = new feng3d.CubeGeometry({ width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.material = cubeMaterial;
@@ -97,7 +97,7 @@ class Basic_Shading extends feng3d.Script
             cube.transform.y = 1.60;
             cube.transform.z = -2.50;
             scene.gameObject.addChild(cube);
-            torus = feng3d.GameObject.create();
+            torus = new feng3d.GameObject();
             var model = torus.addComponent(feng3d.Model);
             geometry = model.geometry = new feng3d.TorusGeometry({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;

@@ -9,7 +9,7 @@ class TextureMaterialTest extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var cube = feng3d.GameObject.create();
+        var cube = new feng3d.GameObject();
         cube.transform.z = 3;
         cube.transform.y = -1;
         scene.gameObject.addChild(cube);

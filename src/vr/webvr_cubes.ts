@@ -55,7 +55,7 @@ class webvr_cubes extends feng3d.Script
             camera.gameObject.addComponent(feng3d.FPSController);
             scene.gameObject.addChild(camera.gameObject);
 
-            crosshair = feng3d.GameObject.create("crosshair");
+            crosshair = new feng3d.GameObject({ name: "crosshair" });
             var model = crosshair.addComponent(feng3d.Model);
             model.geometry = new feng3d.TorusGeometry({ radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
             var material = model.material = new feng3d.StandardMaterial();
@@ -101,7 +101,7 @@ class webvr_cubes extends feng3d.Script
 
             for (var i = 0; i < 200; i++)
             {
-                var object = feng3d.GameObject.create(`box${i}`);
+                var object = new feng3d.GameObject({ name: `box${i}` });
 
                 object.addComponent(feng3d.Model, (component) =>
                 {

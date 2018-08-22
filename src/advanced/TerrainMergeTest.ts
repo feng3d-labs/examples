@@ -16,7 +16,7 @@ class TerrainMergeTest extends feng3d.Script
 
         var root = 'resources/terrain/';
         //
-        var terrain = feng3d.GameObject.create("terrain");
+        var terrain = new feng3d.GameObject({ name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
         model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg' });
         var material = new feng3d.StandardMaterial();
@@ -29,7 +29,7 @@ class TerrainMergeTest extends feng3d.Script
         scene.gameObject.addChild(terrain);
 
         //初始化光源
-        var light1 = feng3d.GameObject.create();
+        var light1 = new feng3d.GameObject();
         var pointLight1 = light1.addComponent(feng3d.PointLight);
         // pointLight1.range = 1000;
         pointLight1.color = new feng3d.Color3(1, 1, 0);

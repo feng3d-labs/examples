@@ -9,7 +9,7 @@ class SegmentMaterialTest extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var segment = feng3d.GameObject.create("segment");
+        var segment = new feng3d.GameObject({ name: "segment" });
         segment.transform.z = 3;
         scene.gameObject.addChild(segment);
 

@@ -363,6 +363,11 @@ declare var WEBVR: {
     getButton: () => HTMLDivElement;
     getVRDisplay: () => void;
 };
+declare namespace feng3d {
+    interface GameObjectUserData {
+        velocity: Vector3;
+    }
+}
 declare class webvr_cubes extends feng3d.Script {
     /**
      * 初始化时调用

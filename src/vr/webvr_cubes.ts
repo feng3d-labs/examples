@@ -1,3 +1,11 @@
+namespace feng3d
+{
+    export interface GameObjectUserData
+    {
+        velocity: Vector3;
+    }
+}
+
 class webvr_cubes extends feng3d.Script
 {
     /**
@@ -56,7 +64,8 @@ class webvr_cubes extends feng3d.Script
             crosshair.transform.z = 2;
             camera.gameObject.addChild(crosshair);
 
-            room = feng3d.GameObject.create("room", {
+            room = new feng3d.GameObject({
+                name: "room",
                 components: [
                     { __class__: "feng3d.Transform", y: 3 },
                     {
@@ -79,7 +88,8 @@ class webvr_cubes extends feng3d.Script
 
             // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
-            var light = feng3d.GameObject.create("light", {
+            var light = new feng3d.GameObject({
+                name: "light",
                 components: [
                     { __class__: "feng3d.Transform", rx: 0.577, ry: 0.577, rz: 0.577 },
                     { __class__: "feng3d.DirectionalLight" }

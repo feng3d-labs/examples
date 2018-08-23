@@ -11,7 +11,7 @@ class SceneLoadTest extends feng3d.Script
         feng3d.Loader.loadText("resources/scene/Untitled.scene.json", (content) =>
         {
             var json = JSON.parse(content);
-            var sceneobject = feng3d.serialization.deserialize(json);
+            var sceneobject: feng3d.GameObject = feng3d.serialization.deserialize(json);
             var scene = sceneobject.getComponent(feng3d.Scene3D);
             scene.initCollectComponents();
 

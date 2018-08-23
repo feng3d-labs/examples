@@ -73,7 +73,7 @@ function watchProject(project)
     childProcess.stdout.on('data', function (data)
     {
         data = data.trim();
-        console.log(data);
+        if (data.length > 10) console.log(data);
     });
     childProcess.stderr.on('data', function (data)
     {

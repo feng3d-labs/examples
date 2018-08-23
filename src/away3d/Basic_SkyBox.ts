@@ -9,7 +9,7 @@ class Basic_SkyBox extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var cubeTexture = new feng3d.TextureCube({
+        var cubeTexture = new feng3d.TextureCube().value({
             positive_x_url: 'resources/skybox/snow_positive_x.jpg',
             positive_y_url: 'resources/skybox/snow_positive_y.jpg',
             positive_z_url: 'resources/skybox/snow_positive_z.jpg',

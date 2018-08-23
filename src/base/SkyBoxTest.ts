@@ -15,7 +15,7 @@ class SkyBoxTest extends feng3d.Script
 
         var skybox = new feng3d.GameObject().value({ name: "skybox" });
         var model = skybox.addComponent(feng3d.SkyBox);
-        model.s_skyboxTexture = new feng3d.TextureCube({
+        model.s_skyboxTexture = new feng3d.TextureCube().value({
             positive_x_url: 'resources/skybox/px.jpg',
             positive_y_url: 'resources/skybox/py.jpg',
             positive_z_url: 'resources/skybox/pz.jpg',

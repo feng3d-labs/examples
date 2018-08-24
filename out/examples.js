@@ -1555,7 +1555,7 @@ var webvr_cubes = /** @class */ (function (_super) {
                 components: [
                     { __class__: "feng3d.Transform", y: 3 },
                     {
-                        __class__: "feng3d.Model",
+                        __class__: "feng3d.MeshModel",
                         geometry: {
                             __class__: "feng3d.CubeGeometry",
                             width: 6, height: 6, depth: 6,

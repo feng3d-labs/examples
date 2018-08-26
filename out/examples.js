@@ -889,15 +889,15 @@ var PointLightTest = /** @class */ (function (_super) {
     };
     return PointLightTest;
 }(feng3d.Script));
-var MD5LoaderTest = /** @class */ (function (_super) {
-    __extends(MD5LoaderTest, _super);
-    function MD5LoaderTest() {
+var md5LoaderTest = /** @class */ (function (_super) {
+    __extends(md5LoaderTest, _super);
+    function md5LoaderTest() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     /**
      * 初始化时调用
      */
-    MD5LoaderTest.prototype.init = function () {
+    md5LoaderTest.prototype.init = function () {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -905,14 +905,14 @@ var MD5LoaderTest = /** @class */ (function (_super) {
         var md5meshUrl = "resources/hellknight/hellknight.md5mesh";
         var md5animUrl = "resources/hellknight/idle2.md5anim";
         camera.gameObject.transform.z = -300;
-        feng3d.MD5Loader.load(md5meshUrl, function (gameObject) {
+        feng3d.md5Loader.load(md5meshUrl, function (gameObject) {
             object = gameObject;
             gameObject.transform.rx = -90;
             gameObject.transform.ry = -90;
             useMatrial(gameObject);
             scene.gameObject.addChild(gameObject);
             //
-            feng3d.MD5Loader.loadAnim(md5animUrl, function (animationClip) {
+            feng3d.md5Loader.loadAnim(md5animUrl, function (animationClip) {
                 animationClip.name = "idle2";
                 var animation = gameObject.addComponent(feng3d.Animation);
                 animation.animation = animationClip;
@@ -935,14 +935,14 @@ var MD5LoaderTest = /** @class */ (function (_super) {
     /**
      * 更新
      */
-    MD5LoaderTest.prototype.update = function () {
+    md5LoaderTest.prototype.update = function () {
     };
     /**
     * 销毁时调用
     */
-    MD5LoaderTest.prototype.dispose = function () {
+    md5LoaderTest.prototype.dispose = function () {
     };
-    return MD5LoaderTest;
+    return md5LoaderTest;
 }(feng3d.Script));
 var MdlLoaderTest = /** @class */ (function (_super) {
     __extends(MdlLoaderTest, _super);

@@ -1,4 +1,4 @@
-class MD5LoaderTest extends feng3d.Script
+class md5LoaderTest extends feng3d.Script
 {
     /**
      * 初始化时调用
@@ -16,7 +16,7 @@ class MD5LoaderTest extends feng3d.Script
 
         camera.gameObject.transform.z = -300;
 
-        feng3d.MD5Loader.load(md5meshUrl, (gameObject) =>
+        feng3d.md5Loader.load(md5meshUrl, (gameObject) =>
         {
             object = gameObject;
 
@@ -27,7 +27,7 @@ class MD5LoaderTest extends feng3d.Script
 
             scene.gameObject.addChild(gameObject);
             //
-            feng3d.MD5Loader.loadAnim(md5animUrl, (animationClip) =>
+            feng3d.md5Loader.loadAnim(md5animUrl, (animationClip) =>
             {
                 animationClip.name = "idle2";
                 var animation = gameObject.addComponent(feng3d.Animation);

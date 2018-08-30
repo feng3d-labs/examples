@@ -135,7 +135,7 @@ var SceneLoadTest = /** @class */ (function (_super) {
      */
     SceneLoadTest.prototype.init = function () {
         var view3D = new feng3d.Engine();
-        feng3d.Loader.loadText("resources/scene/Untitled.scene.json", function (content) {
+        feng3d.loader.loadText("resources/scene/Untitled.scene.json", function (content) {
             var json = JSON.parse(content);
             var sceneobject = feng3d.serialization.deserialize(json);
             var scene = sceneobject.getComponent(feng3d.Scene3D);
@@ -1089,7 +1089,7 @@ var OBJParserTest = /** @class */ (function (_super) {
         material.uniforms.s_specular.url = "resources/head_specular.jpg";
         // var material = materialFactory.create("color");
         material.renderParams.cullFace = feng3d.CullFace.NONE;
-        feng3d.ObjLoader.load(objUrl, function (gameObject) {
+        feng3d.objLoader.load(objUrl, function (gameObject) {
             object = gameObject;
             object.transform.sx = 20;
             object.transform.sy = 20;

@@ -30,7 +30,7 @@ class OBJParserTest extends feng3d.Script
         // var material = materialFactory.create("color");
         material.renderParams.cullFace = feng3d.CullFace.NONE;
 
-        feng3d.ObjLoader.load(objUrl, function (gameObject: feng3d.GameObject)
+        feng3d.objLoader.load(objUrl, function (gameObject: feng3d.GameObject)
         {
             object = gameObject;
             object.transform.sx = 20;

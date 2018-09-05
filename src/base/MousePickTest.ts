@@ -46,11 +46,15 @@ class MousePickTest extends feng3d.Script
             var transform = <feng3d.Transform>event.target;
             if (transform.getComponent(feng3d.Model))
             {
-                var material = transform.getComponent(feng3d.Model).material = new feng3d.ColorMaterial();
-                material.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 24));
+                var material = transform.getComponent(feng3d.Model).material = new feng3d.Material().value({
+                    shaderName: "color", uniforms: {
+                        u_diffuseInput: new feng3d.Color4().fromUnit(Math.random() * (1 << 24))
+                    }
+                });
             }
         });
     }
+
     /**
      * 更新
      */

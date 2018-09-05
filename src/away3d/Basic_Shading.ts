@@ -9,10 +9,10 @@ class Basic_Shading extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var planeMaterial: feng3d.StandardMaterial;
-        var sphereMaterial: feng3d.StandardMaterial;
-        var cubeMaterial: feng3d.StandardMaterial;
-        var torusMaterial: feng3d.StandardMaterial;
+        var planeMaterial: feng3d.Material;
+        var sphereMaterial: feng3d.Material;
+        var cubeMaterial: feng3d.Material;
+        var torusMaterial: feng3d.Material;
         var light1: feng3d.GameObject;
         var light2: feng3d.GameObject;
         var plane: feng3d.GameObject;
@@ -37,21 +37,33 @@ class Basic_Shading extends feng3d.Script
 
         function initMaterials()
         {
-            planeMaterial = new feng3d.StandardMaterial();
-            planeMaterial.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
-            planeMaterial.uniforms.s_normal.url = "resources/floor_normal.jpg";
-            planeMaterial.uniforms.s_specular.url = "resources/floor_specular.jpg";
-            sphereMaterial = new feng3d.StandardMaterial();
-            sphereMaterial.uniforms.s_diffuse.url = "resources/beachball_diffuse.jpg";
-            sphereMaterial.uniforms.s_specular.url = "resources/beachball_specular.jpg";
-            cubeMaterial = new feng3d.StandardMaterial();
-            cubeMaterial.uniforms.s_diffuse.url = "resources/trinket_diffuse.jpg";
-            cubeMaterial.uniforms.s_normal.url = "resources/trinket_normal.jpg";
-            cubeMaterial.uniforms.s_specular.url = "resources/trinket_specular.jpg";
-            torusMaterial = new feng3d.StandardMaterial();
-            torusMaterial.uniforms.s_diffuse.url = "resources/weave_diffuse.jpg";
-            torusMaterial.uniforms.s_normal.url = "resources/weave_normal.jpg";
-            torusMaterial.uniforms.s_specular.url = "resources/weave_diffuse.jpg";
+            planeMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/floor_diffuse.jpg" },
+                    s_normal: { url: "resources/floor_normal.jpg" },
+                    s_specular: { url: "resources/floor_specular.jpg" },
+                }
+            });
+            sphereMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/beachball_diffuse.jpg" },
+                    s_specular: { url: "resources/beachball_specular.jpg" },
+                }
+            });
+            cubeMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/trinket_diffuse.jpg" },
+                    s_normal: { url: "resources/trinket_normal.jpg" },
+                    s_specular: { url: "resources/trinket_specular.jpg" },
+                }
+            });
+            torusMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/weave_diffuse.jpg" },
+                    s_normal: { url: "resources/weave_normal.jpg" },
+                    s_specular: { url: "resources/weave_diffuse.jpg" },
+                }
+            });
         }
 
         function initLights()

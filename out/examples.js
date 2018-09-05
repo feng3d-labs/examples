@@ -32,9 +32,12 @@ var TerrainMergeTest = /** @class */ (function (_super) {
         var terrain = new feng3d.GameObject().value({ name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
         model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg' });
-        var material = new feng3d.StandardMaterial();
-        material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
-        material.uniforms.s_normal.url = root + "terrain_normals.jpg";
+        var material = new feng3d.Material().value({
+            shaderName: "standard", uniforms: {
+                s_diffuse: { url: root + 'terrain_diffuse.jpg' },
+                s_normal: { url: root + 'terrain_normals.jpg' },
+            }
+        });
         // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3(50, 50, 50));
         // material.terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png', root + 'test1.jpg', new Vector3(50, 50, 50));
         model.material = material;
@@ -87,15 +90,18 @@ var TerrainTest = /** @class */ (function (_super) {
         var model = terrain.addComponent(feng3d.Model);
         // model.geometry = new feng3d.TerrainGeometry();
         model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg', width: 500, height: 100, depth: 500 });
-        var material = new feng3d.TerrainMaterial();
-        material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
-        material.uniforms.s_normal.url = root + "terrain_normals.jpg";
-        //
-        material.uniforms.s_blendTexture.url = root + 'terrain_splats.png';
-        material.uniforms.s_splatTexture1.url = root + 'beach.jpg';
-        material.uniforms.s_splatTexture2.url = root + 'grass.jpg';
-        material.uniforms.s_splatTexture3.url = root + 'rock.jpg';
-        material.uniforms.u_splatRepeats = new feng3d.Vector4(1, 50, 50, 50);
+        var material = new feng3d.Material().value({
+            shaderName: "terrain", uniforms: {
+                s_diffuse: { url: root + 'terrain_diffuse.jpg' },
+                s_normal: { url: root + 'terrain_normals.jpg' },
+                //
+                s_blendTexture: { url: root + 'terrain_splats.jpg' },
+                s_splatTexture1: { url: root + 'beach.jpg' },
+                s_splatTexture2: { url: root + 'grass.jpg' },
+                s_splatTexture3: { url: root + 'rock.jpg' },
+                u_splatRepeats: new feng3d.Vector4(1, 50, 50, 50),
+            }
+        });
         model.material = material;
         scene.gameObject.addChild(terrain);
         //初始化光源
@@ -189,21 +195,33 @@ var Basic_Shading = /** @class */ (function (_super) {
             camera.gameObject.addComponent(feng3d.FPSController);
         }
         function initMaterials() {
-            planeMaterial = new feng3d.StandardMaterial();
-            planeMaterial.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
-            planeMaterial.uniforms.s_normal.url = "resources/floor_normal.jpg";
-            planeMaterial.uniforms.s_specular.url = "resources/floor_specular.jpg";
-            sphereMaterial = new feng3d.StandardMaterial();
-            sphereMaterial.uniforms.s_diffuse.url = "resources/beachball_diffuse.jpg";
-            sphereMaterial.uniforms.s_specular.url = "resources/beachball_specular.jpg";
-            cubeMaterial = new feng3d.StandardMaterial();
-            cubeMaterial.uniforms.s_diffuse.url = "resources/trinket_diffuse.jpg";
-            cubeMaterial.uniforms.s_normal.url = "resources/trinket_normal.jpg";
-            cubeMaterial.uniforms.s_specular.url = "resources/trinket_specular.jpg";
-            torusMaterial = new feng3d.StandardMaterial();
-            torusMaterial.uniforms.s_diffuse.url = "resources/weave_diffuse.jpg";
-            torusMaterial.uniforms.s_normal.url = "resources/weave_normal.jpg";
-            torusMaterial.uniforms.s_specular.url = "resources/weave_diffuse.jpg";
+            planeMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/floor_diffuse.jpg" },
+                    s_normal: { url: "resources/floor_normal.jpg" },
+                    s_specular: { url: "resources/floor_specular.jpg" },
+                }
+            });
+            sphereMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/beachball_diffuse.jpg" },
+                    s_specular: { url: "resources/beachball_specular.jpg" },
+                }
+            });
+            cubeMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/trinket_diffuse.jpg" },
+                    s_normal: { url: "resources/trinket_normal.jpg" },
+                    s_specular: { url: "resources/trinket_specular.jpg" },
+                }
+            });
+            torusMaterial = new feng3d.Material().value({
+                shaderName: "standard", uniforms: {
+                    s_diffuse: { url: "resources/weave_diffuse.jpg" },
+                    s_normal: { url: "resources/weave_normal.jpg" },
+                    s_specular: { url: "resources/weave_diffuse.jpg" },
+                }
+            });
         }
         function initLights() {
             scene.ambientColor.a = 0.2;
@@ -300,11 +318,10 @@ var Basic_SkyBox = /** @class */ (function (_super) {
         camera.transform.z = -6;
         camera.transform.lookAt(new feng3d.Vector3());
         camera.lens = new feng3d.PerspectiveLens(90);
-        var torusMaterial = new feng3d.StandardMaterial();
+        var torusMaterial = new feng3d.Material().value({ uniforms: { s_envMap: cubeTexture } });
         // torusMaterial.uniforms.u_specular.a = 0.5;
         // torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
         // torusMaterial.uniforms.u_ambient.a = 0.25;
-        torusMaterial.uniforms.s_envMap = cubeTexture;
         var torus = new feng3d.GameObject().value({ name: "torus" });
         var model = torus.addComponent(feng3d.Model);
         model.geometry = new feng3d.TorusGeometry().value({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
@@ -348,8 +365,7 @@ var Basic_View = /** @class */ (function (_super) {
         var plane = new feng3d.GameObject();
         var model = plane.addComponent(feng3d.Model);
         model.geometry = new feng3d.PlaneGeometry().value({ width: 7, height: 7 });
-        var material = model.material = new feng3d.StandardMaterial();
-        material.uniforms.s_diffuse.url = "resources/floor_diffuse.jpg";
+        var material = model.material = new feng3d.Material().value({ uniforms: { s_diffuse: { url: "resources/floor_diffuse.jpg" } } });
         scene.gameObject.addChild(plane);
         feng3d.ticker.onframe(function () {
             plane.transform.ry += 1;
@@ -394,10 +410,9 @@ var BillboardTest = /** @class */ (function (_super) {
         //材质
         var model = gameObject.getComponent(feng3d.Model);
         model.geometry = new feng3d.PlaneGeometry().value({ width: 40, height: 40, segmentsW: 1, segmentsH: 1, yUp: false });
-        var textureMaterial = model.material = new feng3d.StandardMaterial();
+        var textureMaterial = model.material = new feng3d.Material().value({ uniforms: { s_diffuse: { url: 'resources/m.png' } } });
         // textureMaterial.cullFace = CullFace.NONE;
         //
-        var texture = textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';
         // var texture = textureMaterial.texture = new ImageDataTexture();
         // var canvas2D = document.createElement("canvas");
         // canvas2D.width = 256;
@@ -443,7 +458,7 @@ var Container3DTest = /** @class */ (function (_super) {
         //初始化颜色材质
         this.cube = feng3d.gameObjectFactory.createCube();
         this.gameObject.addChild(this.cube);
-        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = new feng3d.ColorMaterial();
+        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = new feng3d.Material().value({ shaderName: "color" });
         var cylinder = feng3d.gameObjectFactory.createCylinder();
         cylinder.transform.x = 2;
         this.cube.addChild(cylinder);
@@ -456,8 +471,9 @@ var Container3DTest = /** @class */ (function (_super) {
         //变化旋转与颜色
         this.cube.transform.ry += 1;
         this.num++;
-        if (this.num % 60 == 0)
+        if (this.num % 60 == 0) {
             this.colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
+        }
     };
     /**
      * 销毁时调用
@@ -525,12 +541,15 @@ var FogTest = /** @class */ (function (_super) {
         var model = cube.addComponent(feng3d.Model);
         model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
-        var material = model.material = new feng3d.StandardMaterial();
-        material.uniforms.s_diffuse.url = 'resources/m.png';
-        material.uniforms.u_fogMode = feng3d.FogMode.LINEAR;
-        material.uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
-        material.uniforms.u_fogMinDistance = 2;
-        material.uniforms.u_fogMaxDistance = 3;
+        var material = model.material = new feng3d.Material().value({
+            uniforms: {
+                s_diffuse: { url: 'resources/m.png' },
+                u_fogMode: feng3d.FogMode.LINEAR,
+                u_fogColor: new feng3d.Color3(1, 1, 0),
+                u_fogMinDistance: 2,
+                u_fogMaxDistance: 3,
+            }
+        });
         feng3d.ticker.onframe(function () {
             cube.transform.ry += 1;
         });
@@ -587,8 +606,11 @@ var MousePickTest = /** @class */ (function (_super) {
         scene.on("click", function (event) {
             var transform = event.target;
             if (transform.getComponent(feng3d.Model)) {
-                var material = transform.getComponent(feng3d.Model).material = new feng3d.ColorMaterial();
-                material.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 24));
+                var material = transform.getComponent(feng3d.Model).material = new feng3d.Material().value({
+                    shaderName: "color", uniforms: {
+                        u_diffuseInput: new feng3d.Color4().fromUnit(Math.random() * (1 << 24))
+                    }
+                });
             }
         });
     };
@@ -707,13 +729,14 @@ var GeometryTest = /** @class */ (function (_super) {
         gameobject.transform.y = -1;
         scene.gameObject.addChild(gameobject);
         //初始化颜色材质
-        var colorMaterial = model.material = new feng3d.ColorMaterial();
+        model.material = new feng3d.Material().value({ shaderName: "color" });
+        var colorUniforms = model.material.uniforms;
         //变化旋转与颜色
         setInterval(function () {
             gameobject.transform.ry += 1;
         }, 15);
         setInterval(function () {
-            colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
+            colorUniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
         }, 1000);
     };
     /**
@@ -814,16 +837,13 @@ var PointLightTest = /** @class */ (function (_super) {
             }
         });
         function initObjects() {
-            var material = new feng3d.StandardMaterial();
-            material.uniforms.s_diffuse.url = 'resources/head_diffuse.jpg';
-            material.uniforms.s_normal.url = 'resources/head_normals.jpg';
-            material.uniforms.s_specular.url = 'resources/head_specular.jpg';
-            material.uniforms.s_diffuse.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_diffuse.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_normal.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_normal.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_specular.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_specular.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
+            var material = new feng3d.Material().value({
+                uniforms: {
+                    s_diffuse: { url: 'resources/head_diffuse.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_normal: { url: 'resources/head_normals.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_specular: { url: 'resources/head_specular.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                }
+            });
             //初始化立方体
             var plane = new feng3d.GameObject();
             plane.transform.y = -1;
@@ -852,7 +872,7 @@ var PointLightTest = /** @class */ (function (_super) {
             //初始化点光源
             var pointLight0 = light0.addComponent(feng3d.PointLight);
             pointLight0.color = lightColor0.toColor3();
-            model.material = new feng3d.ColorMaterial().value({ uniforms: { u_diffuseInput: lightColor0 } });
+            model.material = new feng3d.Material().value({ shaderName: "color", uniforms: { u_diffuseInput: lightColor0 } });
             scene.gameObject.addChild(light0);
             //
             var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
@@ -861,7 +881,7 @@ var PointLightTest = /** @class */ (function (_super) {
             //初始化点光源
             var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
             pointLight1.color = lightColor1.toColor3();
-            model.material = new feng3d.ColorMaterial().value({ uniforms: { u_diffuseInput: lightColor1 } });
+            model.material = new feng3d.Material().value({ shaderName: "color", uniforms: { u_diffuseInput: lightColor1 } });
             scene.gameObject.addChild(light1);
         }
         function setPointLightPosition() {
@@ -924,10 +944,13 @@ var md5LoaderTest = /** @class */ (function (_super) {
                 var child = gameObject.getChildAt(i);
                 var model = child.getComponent(feng3d.Model);
                 if (model) {
-                    var material = model.material;
-                    material.uniforms.s_diffuse.url = "resources/hellknight/hellknight_diffuse.jpg";
-                    material.uniforms.s_normal.url = "resources/hellknight/hellknight_normals.png";
-                    material.uniforms.s_specular.url = "resources/hellknight/hellknight_specular.png";
+                    model.material.value({
+                        uniforms: {
+                            s_diffuse: { url: "resources/hellknight/hellknight_diffuse.jpg" },
+                            s_normal: { url: "resources/hellknight/hellknight_normals.png" },
+                            s_specular: { url: "resources/hellknight/hellknight_specular.png" },
+                        },
+                    });
                 }
             }
         }
@@ -1083,10 +1106,13 @@ var OBJParserTest = /** @class */ (function (_super) {
         }, 15);
         // var objUrl = "resources/cube.obj";
         var objUrl = "resources/head.obj";
-        var material = new feng3d.StandardMaterial();
-        material.uniforms.s_diffuse.url = "resources/head_diffuse.jpg";
-        material.uniforms.s_normal.url = "resources/head_normals.jpg";
-        material.uniforms.s_specular.url = "resources/head_specular.jpg";
+        var material = new feng3d.Material().value({
+            uniforms: {
+                s_diffuse: { url: "resources/head_diffuse.jpg" },
+                s_normal: { url: "resources/head_normals.jpg" },
+                s_specular: { url: "resources/head_specular.jpg" },
+            }
+        });
         // var material = materialFactory.create("color");
         material.renderParams.cullFace = feng3d.CullFace.NONE;
         feng3d.objLoader.load(objUrl, function (gameObject) {
@@ -1130,7 +1156,7 @@ var ColorMaterialTest = /** @class */ (function (_super) {
         cube.transform.z = 3;
         scene.gameObject.addChild(cube);
         //初始化颜色材质
-        var colorMaterial = cube.getComponent(feng3d.Model).material = new feng3d.ColorMaterial();
+        var colorMaterial = cube.getComponent(feng3d.Model).material = new feng3d.Material().value({ shaderName: "color" });
         //变化旋转与颜色
         setInterval(function () {
             cube.transform.ry += 1;
@@ -1164,7 +1190,7 @@ var PointMaterialTest = /** @class */ (function (_super) {
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
         var pointGeometry = new feng3d.PointGeometry();
-        var pointMaterial = new feng3d.PointMaterial().value({ renderParams: { renderMode: feng3d.RenderMode.POINTS } });
+        var pointMaterial = new feng3d.Material().value({ shaderName: "point", renderParams: { renderMode: feng3d.RenderMode.POINTS } });
         var gameObject = new feng3d.GameObject().value({ name: "plane" });
         var model = gameObject.addComponent(feng3d.Model);
         model.geometry = pointGeometry;
@@ -1213,7 +1239,7 @@ var SegmentMaterialTest = /** @class */ (function (_super) {
         scene.gameObject.addChild(segment);
         //初始化材质
         var model = segment.addComponent(feng3d.Model);
-        model.material = new feng3d.SegmentMaterial().value({ renderParams: { renderMode: feng3d.RenderMode.LINES } });
+        model.material = new feng3d.Material().value({ shaderName: "segment", renderParams: { renderMode: feng3d.RenderMode.LINES } });
         var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
         var length = 200;
         var height = 2 / Math.PI;
@@ -1270,14 +1296,15 @@ var StandardMaterialTest = /** @class */ (function (_super) {
         model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
-        var textureMaterial = model.material = new feng3d.StandardMaterial();
-        textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';
+        var textureMaterial = model.material = new feng3d.Material();
+        var uniforms = textureMaterial.uniforms;
+        uniforms.s_diffuse.url = 'resources/m.png';
         // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
-        textureMaterial.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
+        uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
         // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
-        textureMaterial.uniforms.s_diffuse.anisotropy = 16;
+        uniforms.s_diffuse.anisotropy = 16;
+        uniforms.u_diffuse.a = 0.2;
         textureMaterial.renderParams.enableBlend = true;
-        textureMaterial.uniforms.u_diffuse.a = 0.2;
     };
     /**
      * 更新
@@ -1315,7 +1342,8 @@ var TextureMaterialTest = /** @class */ (function (_super) {
         model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
-        model.material = new feng3d.TextureMaterial().value({
+        model.material = new feng3d.Material().value({
+            shaderName: "texture",
             uniforms: { s_texture: { url: 'resources/m.png', flipY: false } }
         });
     };
@@ -1343,12 +1371,13 @@ var ScriptDemo = /** @class */ (function (_super) {
         var model = cube.addComponent(feng3d.Model);
         model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
-        var material = model.material = new feng3d.StandardMaterial();
-        material.uniforms.s_diffuse.url = 'resources/m.png';
-        material.uniforms.u_fogMode = feng3d.FogMode.LINEAR;
-        material.uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
-        material.uniforms.u_fogMinDistance = 2;
-        material.uniforms.u_fogMaxDistance = 3;
+        var material = model.material = new feng3d.Material();
+        var uniforms = material.uniforms;
+        uniforms.s_diffuse.url = 'resources/m.png';
+        uniforms.u_fogMode = feng3d.FogMode.LINEAR;
+        uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
+        uniforms.u_fogMinDistance = 2;
+        uniforms.u_fogMaxDistance = 3;
     };
     ScriptDemo.prototype.update = function () {
         this.cube.transform.ry += 1;
@@ -1545,9 +1574,8 @@ var webvr_cubes = /** @class */ (function (_super) {
             crosshair = new feng3d.GameObject().value({ name: "crosshair" });
             var model = crosshair.addComponent(feng3d.Model);
             model.geometry = new feng3d.TorusGeometry().value({ radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
-            var material = model.material = new feng3d.StandardMaterial();
+            var material = model.material = new feng3d.Material().value({ uniforms: { u_diffuse: { a: 0.5 } } });
             material.renderParams.enableBlend = true;
-            material.uniforms.u_diffuse.a = 0.5;
             crosshair.transform.z = 2;
             camera.gameObject.addChild(crosshair);
             room = new feng3d.GameObject().value({
@@ -1585,7 +1613,7 @@ var webvr_cubes = /** @class */ (function (_super) {
                 var object = new feng3d.GameObject().value({ name: "box" + i });
                 object.addComponent(feng3d.Model, function (component) {
                     component.geometry = geometry;
-                    var material = component.material = new feng3d.StandardMaterial();
+                    var material = component.material = new feng3d.Material();
                     material.uniforms.u_diffuse.fromUnit(Math.random() * 0xffffff);
                 });
                 object.transform.position = feng3d.Vector3.random().scale(4).subNumber(2);

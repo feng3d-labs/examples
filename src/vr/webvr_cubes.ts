@@ -58,9 +58,8 @@ class webvr_cubes extends feng3d.Script
             crosshair = new feng3d.GameObject().value({ name: "crosshair" });
             var model = crosshair.addComponent(feng3d.Model);
             model.geometry = new feng3d.TorusGeometry().value({ radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
-            var material = model.material = new feng3d.StandardMaterial();
+            var material = model.material = new feng3d.Material().value({ uniforms: { u_diffuse: { a: 0.5 } } });
             material.renderParams.enableBlend = true;
-            material.uniforms.u_diffuse.a = 0.5;
             crosshair.transform.z = 2;
             camera.gameObject.addChild(crosshair);
 
@@ -106,8 +105,8 @@ class webvr_cubes extends feng3d.Script
                 object.addComponent(feng3d.Model, (component) =>
                 {
                     component.geometry = geometry;
-                    var material = component.material = new feng3d.StandardMaterial();
-                    material.uniforms.u_diffuse.fromUnit(Math.random() * 0xffffff);
+                    var material = component.material = new feng3d.Material();
+                    (<feng3d.StandardUniforms>material.uniforms).u_diffuse.fromUnit(Math.random() * 0xffffff);
                 });
 
                 object.transform.position = feng3d.Vector3.random().scale(4).subNumber(2);

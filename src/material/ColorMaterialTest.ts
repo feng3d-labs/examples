@@ -14,7 +14,7 @@ class ColorMaterialTest extends feng3d.Script
         scene.gameObject.addChild(cube);
 
         //初始化颜色材质
-        var colorMaterial = cube.getComponent(feng3d.Model).material = new feng3d.ColorMaterial();
+        var colorMaterial = cube.getComponent(feng3d.Model).material = new feng3d.Material().value({ shaderName: "color" });
 
         //变化旋转与颜色
         setInterval(function ()
@@ -23,7 +23,7 @@ class ColorMaterialTest extends feng3d.Script
         }, 15);
         setInterval(function ()
         {
-            colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
+            (<feng3d.ColorUniforms>colorMaterial.uniforms).u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
         }, 1000);
     }
     /**

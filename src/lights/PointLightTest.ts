@@ -40,16 +40,13 @@ class PointLightTest extends feng3d.Script
 
         function initObjects()
         {
-            var material = new feng3d.StandardMaterial();
-            material.uniforms.s_diffuse.url = 'resources/head_diffuse.jpg';
-            material.uniforms.s_normal.url = 'resources/head_normals.jpg';
-            material.uniforms.s_specular.url = 'resources/head_specular.jpg';
-            material.uniforms.s_diffuse.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_diffuse.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_normal.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_normal.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_specular.wrapS = feng3d.TextureWrap.MIRRORED_REPEAT;
-            material.uniforms.s_specular.wrapT = feng3d.TextureWrap.MIRRORED_REPEAT;
+            var material = new feng3d.Material().value({
+                uniforms: {
+                    s_diffuse: { url: 'resources/head_diffuse.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_normal: { url: 'resources/head_normals.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_specular: { url: 'resources/head_specular.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                }
+            });
 
             //初始化立方体
             var plane = new feng3d.GameObject();
@@ -85,7 +82,7 @@ class PointLightTest extends feng3d.Script
             //初始化点光源
             var pointLight0 = light0.addComponent(feng3d.PointLight);
             pointLight0.color = lightColor0.toColor3();
-            model.material = new feng3d.ColorMaterial().value({ uniforms: { u_diffuseInput: lightColor0 } });
+            model.material = new feng3d.Material().value({ shaderName: "color", uniforms: { u_diffuseInput: lightColor0 } });
             scene.gameObject.addChild(light0);
 
             //
@@ -95,7 +92,7 @@ class PointLightTest extends feng3d.Script
             //初始化点光源
             var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
             pointLight1.color = lightColor1.toColor3();
-            model.material = new feng3d.ColorMaterial().value({ uniforms: { u_diffuseInput: lightColor1 } });
+            model.material = new feng3d.Material().value({ shaderName: "color", uniforms: { u_diffuseInput: lightColor1 } });
             scene.gameObject.addChild(light1);
         }
 

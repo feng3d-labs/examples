@@ -23,10 +23,13 @@ class OBJParserTest extends feng3d.Script
         // var objUrl = "resources/cube.obj";
         var objUrl = "resources/head.obj";
 
-        var material = new feng3d.StandardMaterial();
-        material.uniforms.s_diffuse.url = "resources/head_diffuse.jpg";
-        material.uniforms.s_normal.url = "resources/head_normals.jpg";
-        material.uniforms.s_specular.url = "resources/head_specular.jpg";
+        var material = new feng3d.Material().value({
+            uniforms: {
+                s_diffuse: { url: "resources/head_diffuse.jpg" },
+                s_normal: { url: "resources/head_normals.jpg" },
+                s_specular: { url: "resources/head_specular.jpg" },
+            }
+        });
         // var material = materialFactory.create("color");
         material.renderParams.cullFace = feng3d.CullFace.NONE;
 

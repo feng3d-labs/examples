@@ -27,11 +27,10 @@ class Basic_SkyBox extends feng3d.Script
         camera.transform.lookAt(new feng3d.Vector3());
         camera.lens = new feng3d.PerspectiveLens(90);
 
-        var torusMaterial = new feng3d.StandardMaterial();
+        var torusMaterial = new feng3d.Material().value({ uniforms: { s_envMap: cubeTexture } });
         // torusMaterial.uniforms.u_specular.a = 0.5;
         // torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
         // torusMaterial.uniforms.u_ambient.a = 0.25;
-        torusMaterial.uniforms.s_envMap = cubeTexture;
 
         var torus = new feng3d.GameObject().value({ name: "torus" });
         var model = torus.addComponent(feng3d.Model);

@@ -32,7 +32,8 @@ class GeometryTest extends feng3d.Script
         scene.gameObject.addChild(gameobject);
 
         //初始化颜色材质
-        var colorMaterial = model.material = new feng3d.ColorMaterial();
+        model.material = new feng3d.Material().value({ shaderName: "color" });
+        var colorUniforms = <feng3d.ColorUniforms>model.material.uniforms;
 
         //变化旋转与颜色
         setInterval(function ()
@@ -41,7 +42,7 @@ class GeometryTest extends feng3d.Script
         }, 15);
         setInterval(function ()
         {
-            colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
+            colorUniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
         }, 1000);
     }
     /**

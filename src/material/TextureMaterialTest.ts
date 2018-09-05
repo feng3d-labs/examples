@@ -24,7 +24,8 @@ class TextureMaterialTest extends feng3d.Script
         model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
-        model.material = new feng3d.TextureMaterial().value({
+        model.material = new feng3d.Material().value({
+            shaderName: "texture",
             uniforms: { s_texture: { url: 'resources/m.png', flipY: false } }
         });
     }

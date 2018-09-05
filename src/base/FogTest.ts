@@ -13,13 +13,16 @@ class FogTest extends feng3d.Script
         var model = cube.addComponent(feng3d.Model);
         model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
-        var material = model.material = new feng3d.StandardMaterial();
-        material.uniforms.s_diffuse.url = 'resources/m.png';
+        var material = model.material = new feng3d.Material().value({
+            uniforms: {
+                s_diffuse: { url: 'resources/m.png' },
+                u_fogMode: feng3d.FogMode.LINEAR,
+                u_fogColor: new feng3d.Color3(1, 1, 0),
+                u_fogMinDistance: 2,
+                u_fogMaxDistance: 3,
+            }
+        });
 
-        material.uniforms.u_fogMode = feng3d.FogMode.LINEAR;
-        material.uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
-        material.uniforms.u_fogMinDistance = 2;
-        material.uniforms.u_fogMaxDistance = 3;
 
         feng3d.ticker.onframe(() =>
         {

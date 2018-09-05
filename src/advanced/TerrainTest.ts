@@ -19,16 +19,18 @@ class TerrainTest extends feng3d.Script
         var model = terrain.addComponent(feng3d.Model);
         // model.geometry = new feng3d.TerrainGeometry();
         model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg', width: 500, height: 100, depth: 500 });
-        var material = new feng3d.TerrainMaterial();
-
-        material.uniforms.s_diffuse.url = root + 'terrain_diffuse.jpg';
-        material.uniforms.s_normal.url = root + "terrain_normals.jpg";
-        //
-        material.uniforms.s_blendTexture.url = root + 'terrain_splats.png';
-        material.uniforms.s_splatTexture1.url = root + 'beach.jpg';
-        material.uniforms.s_splatTexture2.url = root + 'grass.jpg';
-        material.uniforms.s_splatTexture3.url = root + 'rock.jpg';
-        material.uniforms.u_splatRepeats = new feng3d.Vector4(1, 50, 50, 50)
+        var material = new feng3d.Material().value({
+            shaderName: "terrain", uniforms: {
+                s_diffuse: { url: root + 'terrain_diffuse.jpg' },
+                s_normal: { url: root + 'terrain_normals.jpg' },
+                //
+                s_blendTexture: { url: root + 'terrain_splats.jpg' },
+                s_splatTexture1: { url: root + 'beach.jpg' },
+                s_splatTexture2: { url: root + 'grass.jpg' },
+                s_splatTexture3: { url: root + 'rock.jpg' },
+                u_splatRepeats: new feng3d.Vector4(1, 50, 50, 50),
+            }
+        });
 
         model.material = material;
         scene.gameObject.addChild(terrain);

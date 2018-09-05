@@ -24,16 +24,17 @@ class StandardMaterialTest extends feng3d.Script
         model.geometry = new feng3d.CubeGeometry().value({ width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
-        var textureMaterial = model.material = new feng3d.StandardMaterial();
-        textureMaterial.uniforms.s_diffuse.url = 'resources/m.png';
+        var textureMaterial = model.material = new feng3d.Material();
+        var uniforms = <feng3d.StandardUniforms>textureMaterial.uniforms;
+        uniforms.s_diffuse.url = 'resources/m.png';
         // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
-        textureMaterial.uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
+        uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
         // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
 
-        textureMaterial.uniforms.s_diffuse.anisotropy = 16;
+        uniforms.s_diffuse.anisotropy = 16;
+        uniforms.u_diffuse.a = 0.2;
 
         textureMaterial.renderParams.enableBlend = true;
-        textureMaterial.uniforms.u_diffuse.a = 0.2;
     }
 
     /**

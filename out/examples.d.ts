@@ -98,7 +98,7 @@ declare class BillboardTest extends feng3d.Script {
  */
 declare class Container3DTest extends feng3d.Script {
     cube: feng3d.GameObject;
-    colorMaterial: feng3d.ColorMaterial;
+    colorMaterial: feng3d.Material;
     num: number;
     /**
      * 初始化时调用

@@ -10,7 +10,7 @@ class PointMaterialTest extends feng3d.Script
         var canvas = document.getElementById("glcanvas");
 
         var pointGeometry = new feng3d.PointGeometry();
-        var pointMaterial = new feng3d.PointMaterial().value({ renderParams: { renderMode: feng3d.RenderMode.POINTS } });
+        var pointMaterial = new feng3d.Material().value({ shaderName: "point", renderParams: { renderMode: feng3d.RenderMode.POINTS } });
         var gameObject = new feng3d.GameObject().value({ name: "plane" });
         var model = gameObject.addComponent(feng3d.Model);
         model.geometry = pointGeometry;
@@ -31,7 +31,7 @@ class PointMaterialTest extends feng3d.Script
         setInterval(function ()
         {
             gameObject.transform.ry += 1;
-            pointMaterial.uniforms.u_PointSize = 1 + 5 * Math.sin(gameObject.transform.ry / 30);
+            (<feng3d.PointUniforms>pointMaterial.uniforms).u_PointSize = 1 + 5 * Math.sin(gameObject.transform.ry / 30);
         }, 15);
     }
     /**

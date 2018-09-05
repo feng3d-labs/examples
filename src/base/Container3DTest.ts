@@ -4,7 +4,7 @@
 class Container3DTest extends feng3d.Script
 {
     cube: feng3d.GameObject
-    colorMaterial: feng3d.ColorMaterial
+    colorMaterial: feng3d.Material
     num = 0;
 
     /**
@@ -17,7 +17,7 @@ class Container3DTest extends feng3d.Script
         this.cube = feng3d.gameObjectFactory.createCube();
         this.gameObject.addChild(this.cube);
 
-        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = new feng3d.ColorMaterial();
+        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = new feng3d.Material().value({ shaderName: "color" });
 
         var cylinder = feng3d.gameObjectFactory.createCylinder();
         cylinder.transform.x = 2;
@@ -37,9 +37,11 @@ class Container3DTest extends feng3d.Script
         this.num++;
 
         if (this.num % 60 == 0)
-            this.colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
+        {
+            (<feng3d.ColorUniforms>this.colorMaterial.uniforms).u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
+        }
     }
-
+    
     /**
      * 销毁时调用
      */

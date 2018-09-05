@@ -65,7 +65,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms",
@@ -95,7 +95,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -121,7 +121,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms",
@@ -150,7 +150,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -176,7 +176,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms",
@@ -206,7 +206,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -232,7 +232,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -258,7 +258,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -283,7 +283,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -309,7 +309,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -335,7 +335,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"
@@ -361,7 +361,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "feng3d.StandardMaterial",
+								"__class__": "feng3d.Material",
 								"shaderName": "standard",
 								"uniforms": {
 									"__class__": "feng3d.StandardUniforms"

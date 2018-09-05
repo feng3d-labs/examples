@@ -75,7 +75,7 @@ class webvr_cubes extends feng3d.Script
                             segmentsW: 8, segmentsH: 8, segmentsD: 8,
                         },
                         material: {
-                            __class__: "feng3d.StandardMaterial",
+                            __class__: "feng3d.Material",
                             shaderName: "standard",
                             uniforms: { u_diffuse: { r: 0.25, g: 0.25, b: 0.25 } },
                             renderParams: { renderMode: feng3d.RenderMode.LINES },

@@ -34,8 +34,8 @@ var TerrainMergeTest = /** @class */ (function (_super) {
         model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg' });
         var material = new feng3d.Material().value({
             shaderName: "standard", uniforms: {
-                s_diffuse: { url: root + 'terrain_diffuse.jpg' },
-                s_normal: { url: root + 'terrain_normals.jpg' },
+                s_diffuse: { __class__: "feng3d.UrlImageTexture2D", url: root + 'terrain_diffuse.jpg' },
+                s_normal: { __class__: "feng3d.UrlImageTexture2D", url: root + 'terrain_normals.jpg' },
             }
         });
         // var terrainMethod = new TerrainMergeMethod(root + 'terrain_splats.png',root + 'test3.jpg',new Vector3(50, 50, 50));

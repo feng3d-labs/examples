@@ -31,7 +31,7 @@ var TerrainMergeTest = /** @class */ (function (_super) {
         //
         var terrain = new feng3d.GameObject().value({ name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
-        model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg' });
+        model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.UrlImageTexture2D", url: root + 'terrain_heights.jpg' } });
         var material = new feng3d.Material().value({
             shaderName: "standard", uniforms: {
                 s_diffuse: { __class__: "feng3d.UrlImageTexture2D", url: root + 'terrain_diffuse.jpg' },
@@ -89,7 +89,7 @@ var TerrainTest = /** @class */ (function (_super) {
         var terrain = new feng3d.GameObject().value({ name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
         // model.geometry = new feng3d.TerrainGeometry();
-        model.geometry = new feng3d.TerrainGeometry({ heightMapUrl: root + 'terrain_heights.jpg', width: 500, height: 100, depth: 500 });
+        model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.UrlImageTexture2D", url: root + 'terrain_heights.jpg' }, width: 500, height: 100, depth: 500 });
         var material = new feng3d.Material().value({
             shaderName: "terrain", uniforms: {
                 s_diffuse: { url: root + 'terrain_diffuse.jpg' },

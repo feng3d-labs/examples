@@ -635,7 +635,7 @@ var ScriptTest = /** @class */ (function (_super) {
      * 初始化时调用
      */
     ScriptTest.prototype.init = function () {
-        var sc = this.gameObject.addScript("ScriptDemo");
+        var sc = this.gameObject.addScript(ScriptDemo);
         // windowEventProxy.on("keyup", (e) =>
         // {
         //     if (e.keyCode == 82)

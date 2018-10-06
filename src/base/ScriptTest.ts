@@ -6,7 +6,7 @@ class ScriptTest extends feng3d.Script
     init()
     {
 
-        var sc = this.gameObject.addScript("ScriptDemo")
+        var sc = this.gameObject.addScript(ScriptDemo)
 
         // windowEventProxy.on("keyup", (e) =>
         // {

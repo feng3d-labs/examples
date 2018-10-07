@@ -145,7 +145,6 @@ var SceneLoadTest = /** @class */ (function (_super) {
             var json = JSON.parse(content);
             var sceneobject = feng3d.serialization.deserialize(json);
             var scene = sceneobject.getComponent(feng3d.Scene3D);
-            scene.initCollectComponents();
             view3D.scene = scene;
         });
     };

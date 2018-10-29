@@ -9,7 +9,7 @@ class Basic_SkyBox extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var cubeTexture = new feng3d.TextureCube().value({
+        var cubeTexture = Object.setValue(new feng3d.TextureCube(), {
             positive_x_url: 'resources/skybox/snow_positive_x.jpg',
             positive_y_url: 'resources/skybox/snow_positive_y.jpg',
             positive_z_url: 'resources/skybox/snow_positive_z.jpg',
@@ -18,7 +18,7 @@ class Basic_SkyBox extends feng3d.Script
             negative_z_url: 'resources/skybox/snow_negative_z.jpg',
         });
 
-        var skybox = new feng3d.GameObject().value({ name: "skybox" });
+        var skybox = Object.setValue(new feng3d.GameObject(), { name: "skybox" });
         var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
         skyboxComponent.s_skyboxTexture = cubeTexture;
         scene.gameObject.addChild(skybox);
@@ -27,14 +27,14 @@ class Basic_SkyBox extends feng3d.Script
         camera.transform.lookAt(new feng3d.Vector3());
         camera.lens = new feng3d.PerspectiveLens(90);
 
-        var torusMaterial = new feng3d.Material().value({ uniforms: { s_envMap: cubeTexture } });
+        var torusMaterial = Object.setValue(new feng3d.Material(), { uniforms: { s_envMap: cubeTexture } });
         // torusMaterial.uniforms.u_specular.a = 0.5;
         // torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
         // torusMaterial.uniforms.u_ambient.a = 0.25;
 
-        var torus = new feng3d.GameObject().value({ name: "torus" });
+        var torus = Object.setValue(new feng3d.GameObject(), { name: "torus" });
         var model = torus.addComponent(feng3d.Model);
-        model.geometry = new feng3d.TorusGeometry().value({ radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
+        model.geometry = Object.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
         model.material = torusMaterial;
         scene.gameObject.addChild(torus);
 

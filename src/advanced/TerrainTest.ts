@@ -15,11 +15,11 @@ class TerrainTest extends feng3d.Script
 
         var root = 'resources/terrain/';
         //
-        var terrain = new feng3d.GameObject().value({ name: "terrain" });
+        var terrain = Object.setValue(new feng3d.GameObject(), { name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
         // model.geometry = new feng3d.TerrainGeometry();
         model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.UrlImageTexture2D", url: root + 'terrain_heights.jpg' }, width: 500, height: 100, depth: 500 });
-        var material = new feng3d.Material().value({
+        var material = Object.setValue(new feng3d.Material(), {
             shaderName: "terrain", uniforms: {
                 s_diffuse: { url: root + 'terrain_diffuse.jpg' },
                 s_normal: { url: root + 'terrain_normals.jpg' },

@@ -17,7 +17,7 @@ class Container3DTest extends feng3d.Script
         this.cube = feng3d.gameObjectFactory.createCube();
         this.gameObject.addChild(this.cube);
 
-        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = new feng3d.Material().value({ shaderName: "color" });
+        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = Object.setValue(new feng3d.Material(), { shaderName: "color" });
 
         var cylinder = feng3d.gameObjectFactory.createCylinder();
         cylinder.transform.x = 2;
@@ -41,7 +41,7 @@ class Container3DTest extends feng3d.Script
             (<feng3d.ColorUniforms>this.colorMaterial.uniforms).u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
         }
     }
-    
+
     /**
      * 销毁时调用
      */

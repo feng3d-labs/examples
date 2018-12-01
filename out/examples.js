@@ -1615,10 +1615,10 @@ var webvr_cubes = /** @class */ (function (_super) {
                     var material = component.material = new feng3d.Material();
                     material.uniforms.u_diffuse.fromUnit(Math.random() * 0xffffff);
                 });
-                object.transform.position = feng3d.Vector3.random().scale(4).subNumber(2);
-                object.transform.rotation = feng3d.Vector3.random().scale(2 * Math.PI);
+                object.transform.position = feng3d.Vector3.random().scaleNumber(4).subNumber(2);
+                object.transform.rotation = feng3d.Vector3.random().scaleNumber(2 * Math.PI);
                 object.transform.scale = feng3d.Vector3.random().addNumber(0.5);
-                object.userData.velocity = feng3d.Vector3.random().scale(0.01).subNumber(0.005);
+                object.userData.velocity = feng3d.Vector3.random().scaleNumber(0.01).subNumber(0.005);
                 room.addChild(object);
             }
             // renderer = new THREE.WebGLRenderer({ antialias: true });

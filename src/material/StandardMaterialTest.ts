@@ -26,7 +26,7 @@ class StandardMaterialTest extends feng3d.Script
         //材质
         var textureMaterial = model.material = new feng3d.Material();
         var uniforms = <feng3d.StandardUniforms>textureMaterial.uniforms;
-        uniforms.s_diffuse.url = 'resources/m.png';
+        uniforms.s_diffuse.source = { url: 'resources/m.png' };
         // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
         uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
         // textureMaterial.diffuseMethod.alphaThreshold = 0.1;

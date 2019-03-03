@@ -13,7 +13,7 @@ class ScriptDemo extends feng3d.Script
         //材质
         var material = model.material = new feng3d.Material();
         var uniforms = <feng3d.StandardUniforms>material.uniforms;
-        uniforms.s_diffuse.url = 'resources/m.png';
+        uniforms.s_diffuse.source = { url: 'resources/m.png' };
 
         uniforms.u_fogMode = feng3d.FogMode.LINEAR;
         uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);

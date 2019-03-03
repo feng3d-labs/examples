@@ -39,29 +39,29 @@ class Basic_Shading extends feng3d.Script
         {
             planeMaterial = Object.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { url: "resources/floor_diffuse.jpg" },
-                    s_normal: { url: "resources/floor_normal.jpg" },
-                    s_specular: { url: "resources/floor_specular.jpg" },
+                    s_diffuse: { source: { url: "resources/floor_diffuse.jpg" } },
+                    s_normal: { source: { url: "resources/floor_normal.jpg" } },
+                    s_specular: { source: { url: "resources/floor_specular.jpg" } },
                 }
             });
             sphereMaterial = Object.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { url: "resources/beachball_diffuse.jpg" },
-                    s_specular: { url: "resources/beachball_specular.jpg" },
+                    s_diffuse: { source: { url: "resources/beachball_diffuse.jpg" } },
+                    s_specular: { source: { url: "resources/beachball_specular.jpg" } },
                 }
             });
             cubeMaterial = Object.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { url: "resources/trinket_diffuse.jpg" },
-                    s_normal: { url: "resources/trinket_normal.jpg" },
-                    s_specular: { url: "resources/trinket_specular.jpg" },
+                    s_diffuse: { source: { url: "resources/trinket_diffuse.jpg" } },
+                    s_normal: { source: { url: "resources/trinket_normal.jpg" } },
+                    s_specular: { source: { url: "resources/trinket_specular.jpg" } },
                 }
             });
             torusMaterial = Object.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { url: "resources/weave_diffuse.jpg" },
-                    s_normal: { url: "resources/weave_normal.jpg" },
-                    s_specular: { url: "resources/weave_diffuse.jpg" },
+                    s_diffuse: { source: { url: "resources/weave_diffuse.jpg" } },
+                    s_normal: { source: { url: "resources/weave_normal.jpg" } },
+                    s_specular: { source: { url: "resources/weave_diffuse.jpg" } },
                 }
             });
         }

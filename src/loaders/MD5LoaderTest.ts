@@ -46,9 +46,9 @@ class md5LoaderTest extends feng3d.Script
                 {
                     Object.setValue(model.material, {
                         uniforms: {
-                            s_diffuse: { url: "resources/hellknight/hellknight_diffuse.jpg" },
-                            s_normal: { url: "resources/hellknight/hellknight_normals.png" },
-                            s_specular: { url: "resources/hellknight/hellknight_specular.png" },
+                            s_diffuse: { source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
+                            s_normal: { source: { url: "resources/hellknight/hellknight_normals.png" } },
+                            s_specular: { source: { url: "resources/hellknight/hellknight_specular.png" } },
                         },
                     })
                 }

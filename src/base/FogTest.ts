@@ -15,7 +15,7 @@ class FogTest extends feng3d.Script
         //材质
         var material = model.material = Object.setValue(new feng3d.Material(), {
             uniforms: {
-                s_diffuse: { url: 'resources/m.png' },
+                s_diffuse: { source: { url: 'resources/m.png' } },
                 u_fogMode: feng3d.FogMode.LINEAR,
                 u_fogColor: new feng3d.Color3(1, 1, 0),
                 u_fogMinDistance: 2,

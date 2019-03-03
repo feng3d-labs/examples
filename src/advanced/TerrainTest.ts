@@ -18,16 +18,16 @@ class TerrainTest extends feng3d.Script
         var terrain = Object.setValue(new feng3d.GameObject(), { name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
         // model.geometry = new feng3d.TerrainGeometry();
-        model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.UrlImageTexture2D", url: root + 'terrain_heights.jpg' }, width: 500, height: 100, depth: 500 });
+        model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } }, width: 500, height: 100, depth: 500 });
         var material = Object.setValue(new feng3d.Material(), {
             shaderName: "terrain", uniforms: {
-                s_diffuse: { url: root + 'terrain_diffuse.jpg' },
-                s_normal: { url: root + 'terrain_normals.jpg' },
+                s_diffuse: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_diffuse.jpg' } },
+                s_normal: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_normals.jpg' } },
                 //
-                s_blendTexture: { url: root + 'terrain_splats.jpg' },
-                s_splatTexture1: { url: root + 'beach.jpg' },
-                s_splatTexture2: { url: root + 'grass.jpg' },
-                s_splatTexture3: { url: root + 'rock.jpg' },
+                s_blendTexture: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_splats.png' } },
+                s_splatTexture1: { __class__: "feng3d.Texture2D", source: { url: root + 'beach.jpg' } },
+                s_splatTexture2: { __class__: "feng3d.Texture2D", source: { url: root + 'grass.jpg' } },
+                s_splatTexture3: { __class__: "feng3d.Texture2D", source: { url: root + 'rock.jpg' } },
                 u_splatRepeats: new feng3d.Vector4(1, 50, 50, 50),
             }
         });

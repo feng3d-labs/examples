@@ -25,9 +25,9 @@ class OBJParserTest extends feng3d.Script
 
         var material = Object.setValue(new feng3d.Material(), {
             uniforms: {
-                s_diffuse: { url: "resources/head_diffuse.jpg" },
-                s_normal: { url: "resources/head_normals.jpg" },
-                s_specular: { url: "resources/head_specular.jpg" },
+                s_diffuse: { source: { url: "resources/head_diffuse.jpg" } },
+                s_normal: { source: { url: "resources/head_normals.jpg" } },
+                s_specular: { source: { url: "resources/head_specular.jpg" } },
             }
         });
         // var material = materialFactory.create("color");

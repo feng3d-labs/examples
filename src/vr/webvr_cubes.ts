@@ -55,15 +55,15 @@ class webvr_cubes extends feng3d.Script
             camera.gameObject.addComponent(feng3d.FPSController);
             scene.gameObject.addChild(camera.gameObject);
 
-            crosshair = Object.setValue(new feng3d.GameObject(), { name: "crosshair" });
+            crosshair = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "crosshair" });
             var model = crosshair.addComponent(feng3d.Model);
-            model.geometry = Object.setValue(new feng3d.TorusGeometry(), { radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
-            var material = model.material = Object.setValue(new feng3d.Material(), { uniforms: { u_diffuse: { a: 0.5 } } });
+            model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
+            var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { u_diffuse: { a: 0.5 } } });
             material.renderParams.enableBlend = true;
             crosshair.transform.z = 2;
             camera.gameObject.addChild(crosshair);
 
-            room = Object.setValue(new feng3d.GameObject(), {
+            room = feng3d.serialization.setValue(new feng3d.GameObject(), {
                 name: "room",
                 components: [
                     { __class__: "feng3d.Transform", y: 3 },
@@ -87,7 +87,7 @@ class webvr_cubes extends feng3d.Script
 
             // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
-            var light = Object.setValue(new feng3d.GameObject(), {
+            var light = feng3d.serialization.setValue(new feng3d.GameObject(), {
                 name: "light",
                 components: [
                     { __class__: "feng3d.Transform", rx: 0.577, ry: 0.577, rz: 0.577 },
@@ -96,11 +96,11 @@ class webvr_cubes extends feng3d.Script
             });
             scene.gameObject.addChild(light);
 
-            var geometry = Object.setValue(new feng3d.CubeGeometry(), { width: 0.15, height: 0.15, depth: 0.15 });
+            var geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 0.15, height: 0.15, depth: 0.15 });
 
             for (var i = 0; i < 200; i++)
             {
-                var object = Object.setValue(new feng3d.GameObject(), { name: `box${i}` });
+                var object = feng3d.serialization.setValue(new feng3d.GameObject(), { name: `box${i}` });
 
                 object.addComponent(feng3d.Model, (component) =>
                 {

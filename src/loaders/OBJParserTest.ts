@@ -23,7 +23,7 @@ class OBJParserTest extends feng3d.Script
         // var objUrl = "resources/cube.obj";
         var objUrl = "resources/head.obj";
 
-        var material = Object.setValue(new feng3d.Material(), {
+        var material = feng3d.serialization.setValue(new feng3d.Material(), {
             uniforms: {
                 s_diffuse: { source: { url: "resources/head_diffuse.jpg" } },
                 s_normal: { source: { url: "resources/head_normals.jpg" } },

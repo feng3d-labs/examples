@@ -16,7 +16,7 @@ class GeometryTest extends feng3d.Script
         geometry.addGeometry(new feng3d.PlaneGeometry());
         var matrix3D = new feng3d.Matrix4x4();
         matrix3D.appendTranslation(0, 0.50, 0);
-        geometry.addGeometry(Object.setValue(new feng3d.SphereGeometry(), { radius: 50 }), matrix3D);
+        geometry.addGeometry(feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 50 }), matrix3D);
 
         matrix3D.appendTranslation(0, 0.50, 0);
         var addGeometry = new feng3d.CubeGeometry();
@@ -32,7 +32,7 @@ class GeometryTest extends feng3d.Script
         scene.gameObject.addChild(gameobject);
 
         //初始化颜色材质
-        model.material = Object.setValue(new feng3d.Material(), { shaderName: "color" });
+        model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
         var colorUniforms = <feng3d.ColorUniforms>model.material.uniforms;
 
         //变化旋转与颜色

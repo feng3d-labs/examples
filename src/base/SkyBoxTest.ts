@@ -13,9 +13,9 @@ class SkyBoxTest extends feng3d.Script
         camera.gameObject.addComponent(feng3d.FPSController);
         //
 
-        var skybox = Object.setValue(new feng3d.GameObject(), { name: "skybox" });
+        var skybox = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "skybox" });
         var model = skybox.addComponent(feng3d.SkyBox);
-        model.s_skyboxTexture = Object.setValue(new feng3d.TextureCube(), {
+        model.s_skyboxTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
             positive_x_url: 'resources/skybox/px.jpg',
             positive_y_url: 'resources/skybox/py.jpg',
             positive_z_url: 'resources/skybox/pz.jpg',

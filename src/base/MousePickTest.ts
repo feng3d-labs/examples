@@ -46,7 +46,7 @@ class MousePickTest extends feng3d.Script
             var transform = <feng3d.Transform>event.target;
             if (transform.getComponent(feng3d.Model))
             {
-                var material = transform.getComponent(feng3d.Model).material = Object.setValue(new feng3d.Material(), {
+                var material = transform.getComponent(feng3d.Model).material = feng3d.serialization.setValue(new feng3d.Material(), {
                     shaderName: "color", uniforms: {
                         u_diffuseInput: new feng3d.Color4().fromUnit(Math.random() * (1 << 24))
                     }

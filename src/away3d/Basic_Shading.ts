@@ -37,27 +37,27 @@ class Basic_Shading extends feng3d.Script
 
         function initMaterials()
         {
-            planeMaterial = Object.setValue(new feng3d.Material(), {
+            planeMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
                     s_diffuse: { source: { url: "resources/floor_diffuse.jpg" } },
                     s_normal: { source: { url: "resources/floor_normal.jpg" } },
                     s_specular: { source: { url: "resources/floor_specular.jpg" } },
                 }
             });
-            sphereMaterial = Object.setValue(new feng3d.Material(), {
+            sphereMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
                     s_diffuse: { source: { url: "resources/beachball_diffuse.jpg" } },
                     s_specular: { source: { url: "resources/beachball_specular.jpg" } },
                 }
             });
-            cubeMaterial = Object.setValue(new feng3d.Material(), {
+            cubeMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
                     s_diffuse: { source: { url: "resources/trinket_diffuse.jpg" } },
                     s_normal: { source: { url: "resources/trinket_normal.jpg" } },
                     s_specular: { source: { url: "resources/trinket_specular.jpg" } },
                 }
             });
-            torusMaterial = Object.setValue(new feng3d.Material(), {
+            torusMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
                     s_diffuse: { source: { url: "resources/weave_diffuse.jpg" } },
                     s_normal: { source: { url: "resources/weave_normal.jpg" } },
@@ -88,14 +88,14 @@ class Basic_Shading extends feng3d.Script
         {
             plane = new feng3d.GameObject();
             var model = plane.addComponent(feng3d.Model);
-            var geometry: feng3d.Geometry = model.geometry = Object.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
+            var geometry: feng3d.Geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             model.material = planeMaterial;
             geometry.scaleUV(2, 2);
             plane.transform.y = -0.20;
             scene.gameObject.addChild(plane);
             sphere = new feng3d.GameObject();
             var model = sphere.addComponent(feng3d.Model);
-            model.geometry = Object.setValue(new feng3d.SphereGeometry(), { radius: 1.50, segmentsW: 40, segmentsH: 20 })
+            model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 1.50, segmentsW: 40, segmentsH: 20 })
             model.material = sphereMaterial;
             sphere.transform.x = 3;
             sphere.transform.y = 1.60;
@@ -103,7 +103,7 @@ class Basic_Shading extends feng3d.Script
             scene.gameObject.addChild(sphere);
             cube = new feng3d.GameObject();
             var model = cube.addComponent(feng3d.Model);
-            model.geometry = Object.setValue(new feng3d.CubeGeometry(), { width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+            model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.material = cubeMaterial;
             cube.transform.x = 3.00;
             cube.transform.y = 1.60;
@@ -111,7 +111,7 @@ class Basic_Shading extends feng3d.Script
             scene.gameObject.addChild(cube);
             torus = new feng3d.GameObject();
             var model = torus.addComponent(feng3d.Model);
-            geometry = model.geometry = Object.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
+            geometry = model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
             geometry.scaleUV(10, 5);
             torus.transform.x = -2.50;

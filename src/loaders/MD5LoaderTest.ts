@@ -44,7 +44,7 @@ class md5LoaderTest extends feng3d.Script
                 var model = child.getComponent(feng3d.Model);
                 if (model)
                 {
-                    Object.setValue(model.material, {
+                    feng3d.serialization.setValue(model.material, {
                         uniforms: {
                             s_diffuse: { source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
                             s_normal: { source: { url: "resources/hellknight/hellknight_normals.png" } },

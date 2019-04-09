@@ -16,10 +16,10 @@ class TerrainMergeTest extends feng3d.Script
 
         var root = 'resources/terrain/';
         //
-        var terrain = Object.setValue(new feng3d.GameObject(), { name: "terrain" });
+        var terrain = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "terrain" });
         var model = terrain.addComponent(feng3d.Model);
         model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } } });
-        var material = Object.setValue(new feng3d.Material(), {
+        var material = feng3d.serialization.setValue(new feng3d.Material(), {
             shaderName: "standard", uniforms: {
                 s_diffuse: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_diffuse.jpg' } },
                 s_normal: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_normals.jpg' } },

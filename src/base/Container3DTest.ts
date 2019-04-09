@@ -17,7 +17,7 @@ class Container3DTest extends feng3d.Script
         this.cube = feng3d.gameObjectFactory.createCube();
         this.gameObject.addChild(this.cube);
 
-        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = Object.setValue(new feng3d.Material(), { shaderName: "color" });
+        this.colorMaterial = this.cube.getComponent(feng3d.Model).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
 
         var cylinder = feng3d.gameObjectFactory.createCylinder();
         cylinder.transform.x = 2;

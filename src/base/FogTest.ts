@@ -11,9 +11,9 @@ class FogTest extends feng3d.Script
         this.gameObject.addChild(cube);
 
         var model = cube.addComponent(feng3d.Model);
-        model.geometry = Object.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+        model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
-        var material = model.material = Object.setValue(new feng3d.Material(), {
+        var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), {
             uniforms: {
                 s_diffuse: { source: { url: 'resources/m.png' } },
                 u_fogMode: feng3d.FogMode.LINEAR,

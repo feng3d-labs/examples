@@ -1,6 +1,6 @@
 {
   "name": "examples",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "feng3d引擎示例",
   "main": "out/examples.js",
   "scripts": {
@@ -10,6 +10,9 @@
     "type": "git",
     "url": "https://git.oschina.net/feng3d/examples.git"
   },
+  "files": [
+    "out"
+  ],
   "keywords": [
     "feng3d",
     "examples",
@@ -19,5 +22,7 @@
   "author": "feng",
   "license": "ISC",
   "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "feng3d": "0.1.0"
+  }
 }

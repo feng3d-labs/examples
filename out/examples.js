@@ -303,12 +303,16 @@ var Basic_SkyBox = /** @class */ (function (_super) {
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
         var cubeTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
-            positive_x_url: 'resources/skybox/snow_positive_x.jpg',
-            positive_y_url: 'resources/skybox/snow_positive_y.jpg',
-            positive_z_url: 'resources/skybox/snow_positive_z.jpg',
-            negative_x_url: 'resources/skybox/snow_negative_x.jpg',
-            negative_y_url: 'resources/skybox/snow_negative_y.jpg',
-            negative_z_url: 'resources/skybox/snow_negative_z.jpg',
+            rawData: {
+                type: "path", paths: [
+                    'resources/skybox/snow_positive_x.jpg',
+                    'resources/skybox/snow_positive_y.jpg',
+                    'resources/skybox/snow_positive_z.jpg',
+                    'resources/skybox/snow_negative_x.jpg',
+                    'resources/skybox/snow_negative_y.jpg',
+                    'resources/skybox/snow_negative_z.jpg',
+                ]
+            }
         });
         var skybox = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "skybox" });
         var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
@@ -408,7 +412,7 @@ var BillboardTest = /** @class */ (function (_super) {
         cube.addChild(gameObject);
         //材质
         var model = gameObject.getComponent(feng3d.Model);
-        model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 40, height: 40, segmentsW: 1, segmentsH: 1, yUp: false });
+        model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
         var textureMaterial = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { source: { url: 'resources/m.png' } } } });
         // textureMaterial.cullFace = CullFace.NONE;
         //
@@ -481,6 +485,47 @@ var Container3DTest = /** @class */ (function (_super) {
     };
     return Container3DTest;
 }(feng3d.Script));
+var FogTest = /** @class */ (function (_super) {
+    __extends(FogTest, _super);
+    function FogTest() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * 初始化时调用
+     */
+    FogTest.prototype.init = function () {
+        var cube = new feng3d.GameObject();
+        cube.transform.z = -7;
+        cube.transform.y = 0;
+        this.gameObject.addChild(cube);
+        var model = cube.addComponent(feng3d.Model);
+        model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+        //材质
+        var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), {
+            uniforms: {
+                s_diffuse: { source: { url: 'resources/m.png' } },
+                u_fogMode: feng3d.FogMode.LINEAR,
+                u_fogColor: new feng3d.Color3(1, 1, 0),
+                u_fogMinDistance: 2,
+                u_fogMaxDistance: 3,
+            }
+        });
+        feng3d.ticker.onframe(function () {
+            cube.transform.ry += 1;
+        });
+    };
+    /**
+     * 更新
+     */
+    FogTest.prototype.update = function () {
+    };
+    /**
+     * 销毁时调用
+     */
+    FogTest.prototype.dispose = function () {
+    };
+    return FogTest;
+}(feng3d.Script));
 var FPSControllerTest = /** @class */ (function (_super) {
     __extends(FPSControllerTest, _super);
     function FPSControllerTest() {
@@ -523,47 +568,6 @@ var FPSControllerTest = /** @class */ (function (_super) {
     FPSControllerTest.prototype.dispose = function () {
     };
     return FPSControllerTest;
-}(feng3d.Script));
-var FogTest = /** @class */ (function (_super) {
-    __extends(FogTest, _super);
-    function FogTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    /**
-     * 初始化时调用
-     */
-    FogTest.prototype.init = function () {
-        var cube = new feng3d.GameObject();
-        cube.transform.z = -7;
-        cube.transform.y = 0;
-        this.gameObject.addChild(cube);
-        var model = cube.addComponent(feng3d.Model);
-        model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
-        //材质
-        var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), {
-            uniforms: {
-                s_diffuse: { source: { url: 'resources/m.png' } },
-                u_fogMode: feng3d.FogMode.LINEAR,
-                u_fogColor: new feng3d.Color3(1, 1, 0),
-                u_fogMinDistance: 2,
-                u_fogMaxDistance: 3,
-            }
-        });
-        feng3d.ticker.onframe(function () {
-            cube.transform.ry += 1;
-        });
-    };
-    /**
-     * 更新
-     */
-    FogTest.prototype.update = function () {
-    };
-    /**
-     * 销毁时调用
-     */
-    FogTest.prototype.dispose = function () {
-    };
-    return FogTest;
 }(feng3d.Script));
 var MousePickTest = /** @class */ (function (_super) {
     __extends(MousePickTest, _super);
@@ -677,12 +681,16 @@ var SkyBoxTest = /** @class */ (function (_super) {
         var skybox = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "skybox" });
         var model = skybox.addComponent(feng3d.SkyBox);
         model.s_skyboxTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
-            positive_x_url: 'resources/skybox/px.jpg',
-            positive_y_url: 'resources/skybox/py.jpg',
-            positive_z_url: 'resources/skybox/pz.jpg',
-            negative_x_url: 'resources/skybox/nx.jpg',
-            negative_y_url: 'resources/skybox/ny.jpg',
-            negative_z_url: 'resources/skybox/nz.jpg'
+            rawData: {
+                type: "path", paths: [
+                    'resources/skybox/px.jpg',
+                    'resources/skybox/py.jpg',
+                    'resources/skybox/pz.jpg',
+                    'resources/skybox/nx.jpg',
+                    'resources/skybox/ny.jpg',
+                    'resources/skybox/nz.jpg'
+                ]
+            }
         });
         scene.gameObject.addChild(skybox);
     };
@@ -1390,346 +1398,5 @@ var ScriptDemo = /** @class */ (function (_super) {
         this.cube = null;
     };
     return ScriptDemo;
-}(feng3d.Script));
-/**
- * @author alteredq / http://alteredqualia.com/
- */
-function Clock(autoStart) {
-    this.autoStart = (autoStart !== undefined) ? autoStart : true;
-    this.startTime = 0;
-    this.oldTime = 0;
-    this.elapsedTime = 0;
-    this.running = false;
-}
-Object.assign(Clock.prototype, {
-    start: function () {
-        this.startTime = (typeof performance === 'undefined' ? Date : performance).now(); // see #10732
-        this.oldTime = this.startTime;
-        this.elapsedTime = 0;
-        this.running = true;
-    },
-    stop: function () {
-        this.getElapsedTime();
-        this.running = false;
-        this.autoStart = false;
-    },
-    getElapsedTime: function () {
-        this.getDelta();
-        return this.elapsedTime;
-    },
-    getDelta: function () {
-        var diff = 0;
-        if (this.autoStart && !this.running) {
-            this.start();
-            return 0;
-        }
-        if (this.running) {
-            var newTime = (typeof performance === 'undefined' ? Date : performance).now();
-            diff = (newTime - this.oldTime) / 1000;
-            this.oldTime = newTime;
-            this.elapsedTime += diff;
-        }
-        return diff;
-    }
-});
-/**
- * @author mrdoob / http://mrdoob.com
- * @author Mugen87 / https://github.com/Mugen87
- *
- * Based on @tojiro's vr-samples-utils.js
- */
-var WEBVR = {
-    createButton: function (renderer) {
-        function showEnterVR(display) {
-            button.style.display = '';
-            button.style.cursor = 'pointer';
-            button.style.left = 'calc(50% - 50px)';
-            button.style.width = '100px';
-            button.textContent = 'ENTER VR';
-            button.onmouseenter = function () { button.style.opacity = '1.0'; };
-            button.onmouseleave = function () { button.style.opacity = '0.5'; };
-            button.onclick = function () {
-                display.isPresenting ? display.exitPresent() : display.requestPresent([{ source: renderer.domElement }]);
-            };
-            renderer.vr.setDevice(display);
-        }
-        function showVRNotFound() {
-            button.style.display = '';
-            button.style.cursor = 'auto';
-            button.style.left = 'calc(50% - 75px)';
-            button.style.width = '150px';
-            button.textContent = 'VR NOT FOUND';
-            button.onmouseenter = null;
-            button.onmouseleave = null;
-            button.onclick = null;
-            renderer.vr.setDevice(null);
-        }
-        function stylizeElement(element) {
-            element.style.position = 'absolute';
-            element.style.bottom = '20px';
-            element.style.padding = '12px 6px';
-            element.style.border = '1px solid #fff';
-            element.style.borderRadius = '4px';
-            element.style.background = 'transparent';
-            element.style.color = '#fff';
-            element.style.font = 'normal 13px sans-serif';
-            element.style.textAlign = 'center';
-            element.style.opacity = '0.5';
-            element.style.outline = 'none';
-            element.style.zIndex = '999';
-        }
-        if ('getVRDisplays' in navigator) {
-            var button = document.createElement('button');
-            button.style.display = 'none';
-            stylizeElement(button);
-            window.addEventListener('vrdisplayconnect', function (event) {
-                showEnterVR(event.display);
-            }, false);
-            window.addEventListener('vrdisplaydisconnect', function (event) {
-                showVRNotFound();
-            }, false);
-            window.addEventListener('vrdisplaypresentchange', function (event) {
-                button.textContent = event.display.isPresenting ? 'EXIT VR' : 'ENTER VR';
-            }, false);
-            window.addEventListener('vrdisplayactivate', function (event) {
-                event.display.requestPresent([{ source: renderer.domElement }]);
-            }, false);
-            navigator["getVRDisplays"]()
-                .then(function (displays) {
-                if (displays.length > 0) {
-                    showEnterVR(displays[0]);
-                }
-                else {
-                    showVRNotFound();
-                }
-            });
-            return button;
-        }
-        else {
-            var message = document.createElement('a');
-            message.href = 'https://webvr.info';
-            message.innerHTML = 'WEBVR NOT SUPPORTED';
-            message.style.left = 'calc(50% - 90px)';
-            message.style.width = '180px';
-            message.style.textDecoration = 'none';
-            stylizeElement(message);
-            return message;
-        }
-    },
-    // DEPRECATED
-    checkAvailability: function () {
-        console.warn('WEBVR.checkAvailability has been deprecated.');
-        // return new Promise( function () {} );
-    },
-    getMessageContainer: function () {
-        console.warn('WEBVR.getMessageContainer has been deprecated.');
-        return document.createElement('div');
-    },
-    getButton: function () {
-        console.warn('WEBVR.getButton has been deprecated.');
-        return document.createElement('div');
-    },
-    getVRDisplay: function () {
-        console.warn('WEBVR.getVRDisplay has been deprecated.');
-    }
-};
-var webvr_cubes = /** @class */ (function (_super) {
-    __extends(webvr_cubes, _super);
-    function webvr_cubes() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    /**
-     * 初始化时调用
-     */
-    webvr_cubes.prototype.init = function () {
-        var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
-        var canvas = document.getElementById("glcanvas");
-        var clock = new Clock(true);
-        var container;
-        var room;
-        var isMouseDown = false;
-        var INTERSECTED;
-        var crosshair;
-        init();
-        animate();
-        function init() {
-            container = document.createElement('div');
-            document.body.appendChild(container);
-            var info = document.createElement('div');
-            info.style.position = 'absolute';
-            info.style.top = '10px';
-            info.style.width = '100%';
-            info.style.textAlign = 'center';
-            info.innerHTML = '<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - interactive cubes';
-            container.appendChild(info);
-            scene.background.fromUnit(0x505050);
-            var lens = camera.lens = new feng3d.PerspectiveLens(70);
-            lens.aspect = window.innerWidth / window.innerHeight;
-            lens.near = 0.1;
-            lens.far = 10;
-            camera.gameObject.addComponent(feng3d.FPSController);
-            scene.gameObject.addChild(camera.gameObject);
-            crosshair = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "crosshair" });
-            var model = crosshair.addComponent(feng3d.Model);
-            model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
-            var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { u_diffuse: { a: 0.5 } } });
-            material.renderParams.enableBlend = true;
-            crosshair.transform.z = 2;
-            camera.gameObject.addChild(crosshair);
-            room = feng3d.serialization.setValue(new feng3d.GameObject(), {
-                name: "room",
-                components: [
-                    { __class__: "feng3d.Transform", y: 3 },
-                    {
-                        __class__: "feng3d.MeshModel",
-                        geometry: {
-                            __class__: "feng3d.CubeGeometry",
-                            width: 6, height: 6, depth: 6,
-                            segmentsW: 8, segmentsH: 8, segmentsD: 8,
-                        },
-                        material: {
-                            __class__: "feng3d.Material",
-                            shaderName: "standard",
-                            uniforms: { u_diffuse: { r: 0.25, g: 0.25, b: 0.25 } },
-                            renderParams: { renderMode: feng3d.RenderMode.LINES },
-                        }
-                    }
-                ]
-            });
-            scene.gameObject.addChild(room);
-            // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
-            var light = feng3d.serialization.setValue(new feng3d.GameObject(), {
-                name: "light",
-                components: [
-                    { __class__: "feng3d.Transform", rx: 0.577, ry: 0.577, rz: 0.577 },
-                    { __class__: "feng3d.DirectionalLight" }
-                ],
-            });
-            scene.gameObject.addChild(light);
-            var geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 0.15, height: 0.15, depth: 0.15 });
-            for (var i = 0; i < 200; i++) {
-                var object = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "box" + i });
-                object.addComponent(feng3d.Model, function (component) {
-                    component.geometry = geometry;
-                    var material = component.material = new feng3d.Material();
-                    material.uniforms.u_diffuse.fromUnit(Math.random() * 0xffffff);
-                });
-                object.transform.position = feng3d.Vector3.random().scaleNumber(4).subNumber(2);
-                object.transform.rotation = feng3d.Vector3.random().scaleNumber(2 * Math.PI);
-                object.transform.scale = feng3d.Vector3.random().addNumber(0.5);
-                object.userData.velocity = feng3d.Vector3.random().scaleNumber(0.01).subNumber(0.005);
-                room.addChild(object);
-            }
-            // renderer = new THREE.WebGLRenderer({ antialias: true });
-            // renderer.setPixelRatio(window.devicePixelRatio);
-            // renderer.setSize(window.innerWidth, window.innerHeight);
-            // renderer.vr.enabled = true;
-            // container.appendChild(renderer.domElement);
-            canvas.addEventListener('mousedown', onMouseDown, false);
-            canvas.addEventListener('mouseup', onMouseUp, false);
-            canvas.addEventListener('touchstart', onMouseDown, false);
-            canvas.addEventListener('touchend', onMouseUp, false);
-            window.addEventListener('resize', onWindowResize, false);
-            //
-            window.addEventListener('vrdisplaypointerrestricted', onPointerRestricted, false);
-            window.addEventListener('vrdisplaypointerunrestricted', onPointerUnrestricted, false);
-            document.body.appendChild(WEBVR.createButton(canvas));
-        }
-        function onMouseDown() {
-            isMouseDown = true;
-        }
-        function onMouseUp() {
-            isMouseDown = false;
-        }
-        function onPointerRestricted() {
-            var pointerLockElement = canvas;
-            if (pointerLockElement && typeof (pointerLockElement.requestPointerLock) === 'function') {
-                pointerLockElement.requestPointerLock();
-            }
-        }
-        function onPointerUnrestricted() {
-            var currentPointerLockElement = document.pointerLockElement;
-            var expectedPointerLockElement = canvas;
-            if (currentPointerLockElement && currentPointerLockElement === expectedPointerLockElement && typeof (document.exitPointerLock) === 'function') {
-                document.exitPointerLock();
-            }
-        }
-        function onWindowResize() {
-            camera.lens.aspect = window.innerWidth / window.innerHeight;
-            // engine.setSize(window.innerWidth, window.innerHeight);
-        }
-        //
-        function animate() {
-            // renderer.animate(render);
-        }
-        function render() {
-            var delta = clock.getDelta() * 60;
-            if (isMouseDown === true) {
-                var cube = room.children[0];
-                room.removeChild(cube);
-                cube.transform.position = new feng3d.Vector3(0, 0, -0.75).applyQuaternion(camera.transform.orientation);
-                cube.userData.velocity.x = (Math.random() - 0.5) * 0.02 * delta;
-                cube.userData.velocity.y = (Math.random() - 0.5) * 0.02 * delta;
-                cube.userData.velocity.z = (Math.random() * 0.01 - 0.05) * delta;
-                cube.userData.velocity.applyQuaternion(camera.transform.orientation);
-                room.addChild(cube);
-            }
-            // find intersections
-            // raycaster.setFromCamera({ x: 0, y: 0 }, camera);
-            // var intersects = raycaster.intersectObjects(room.children);
-            // if (intersects.length > 0)
-            // {
-            //     if (INTERSECTED != intersects[0].object)
-            //     {
-            //         if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
-            //         INTERSECTED = intersects[0].object;
-            //         INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-            //         INTERSECTED.material.emissive.setHex(0xff0000);
-            //     }
-            // } else
-            // {
-            //     if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
-            //     INTERSECTED = undefined;
-            // }
-            // // Keep cubes inside room
-            // for (var i = 0; i < room.children.length; i++)
-            // {
-            //     var cube = room.children[i];
-            //     cube.userData.velocity.multiplyScalar(1 - (0.001 * delta));
-            //     cube.position.add(cube.userData.velocity);
-            //     if (cube.position.x < - 3 || cube.position.x > 3)
-            //     {
-            //         cube.position.x = THREE.Math.clamp(cube.position.x, - 3, 3);
-            //         cube.userData.velocity.x = - cube.userData.velocity.x;
-            //     }
-            //     if (cube.position.y < - 3 || cube.position.y > 3)
-            //     {
-            //         cube.position.y = THREE.Math.clamp(cube.position.y, - 3, 3);
-            //         cube.userData.velocity.y = - cube.userData.velocity.y;
-            //     }
-            //     if (cube.position.z < - 3 || cube.position.z > 3)
-            //     {
-            //         cube.position.z = THREE.Math.clamp(cube.position.z, - 3, 3);
-            //         cube.userData.velocity.z = - cube.userData.velocity.z;
-            //     }
-            //     cube.rotation.x += cube.userData.velocity.x * 2 * delta;
-            //     cube.rotation.y += cube.userData.velocity.y * 2 * delta;
-            //     cube.rotation.z += cube.userData.velocity.z * 2 * delta;
-            // }
-            // renderer.render(scene, camera);
-        }
-    };
-    /**
-     * 更新
-     */
-    webvr_cubes.prototype.update = function () {
-    };
-    /**
-    * 销毁时调用
-    */
-    webvr_cubes.prototype.dispose = function () {
-    };
-    return webvr_cubes;
 }(feng3d.Script));
 //# sourceMappingURL=examples.js.map

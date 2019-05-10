@@ -5,11 +5,11 @@
 		"sourceMap": true,
 		"experimentalDecorators": true,
 		"declaration": true,
-		"outDir": "out"
-		// "outFile": "out/examples.js"
+		// "outDir": "out"
+		"outFile": "out/examples.js"
 	},
 	"include": [
-		"node_modules/feng3d/debug/**/*.ts"
+		"../feng3d/out/feng3d.d.ts"
 	],
 	"files": [
 		"src/advanced/TerrainMergeTest.ts",
@@ -22,6 +22,7 @@
 		"src/away3d/Basic_View.ts",
 		//
 		"src/base/BillboardTest.ts",
+		"src/base/Container3DTest.ts",
 		"src/base/FogTest.ts",
 		"src/base/FPSControllerTest.ts",
 		"src/base/MousePickTest.ts",
@@ -45,8 +46,8 @@
 		//
 		"src/scripts/ScriptDemo.ts",
 		//
-		"src/vr/Clock.ts",
-		"src/vr/webvr_cubes.ts",
-		"src/vr/WebVR.ts",
+		// "src/vr/Clock.ts",
+		// "src/vr/webvr_cubes.ts",
+		// "src/vr/WebVR.ts",
 	]
 }

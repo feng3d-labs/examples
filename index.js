@@ -80,7 +80,7 @@ button.id = 'button';
 button.textContent = 'View source';
 button.addEventListener('click', function (event) {
 
-    window.open('https://github.com/feng3d-labs/feng3d-ts-examples/blob/master/src/' + selected + '.ts');
+    window.open('https://gitee.com/feng3d/examples/tree/master/src/' + selected + '.ts');
 
 }, false);
 button.style.display = 'none';

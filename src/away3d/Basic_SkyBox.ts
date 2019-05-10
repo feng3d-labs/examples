@@ -9,13 +9,17 @@ class Basic_SkyBox extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var cubeTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), { 
-            positive_x_url: 'resources/skybox/snow_positive_x.jpg',
-            positive_y_url: 'resources/skybox/snow_positive_y.jpg',
-            positive_z_url: 'resources/skybox/snow_positive_z.jpg',
-            negative_x_url: 'resources/skybox/snow_negative_x.jpg',
-            negative_y_url: 'resources/skybox/snow_negative_y.jpg',
-            negative_z_url: 'resources/skybox/snow_negative_z.jpg',
+        var cubeTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
+            rawData: {
+                type: "path", paths: [
+                    'resources/skybox/snow_positive_x.jpg',
+                    'resources/skybox/snow_positive_y.jpg',
+                    'resources/skybox/snow_positive_z.jpg',
+                    'resources/skybox/snow_negative_x.jpg',
+                    'resources/skybox/snow_negative_y.jpg',
+                    'resources/skybox/snow_negative_z.jpg',
+                ]
+            }
         });
 
         var skybox = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "skybox" });

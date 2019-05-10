@@ -39,37 +39,39 @@ class MousePickTest extends feng3d.Script
         cylinder.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(cylinder);
 
-        // scene.on("click", (event) =>
+        scene.on("click", (event) =>
+        {
+            var gameObject = <feng3d.GameObject>event.target;
+            if (gameObject.getComponent(feng3d.Model))
+            {
+                var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Model).material.uniforms;
+                uniforms.u_diffuse.fromUnit(Math.random() * (1 << 24));
+            }
+        });
+
+        // var engines = feng3d.Feng3dObject.getObjects(feng3d.Engine);
+
+        // engines[0].mouse3DManager.mouseInput.catchMouseMove = true;
+
+        // scene.on("mouseover", (event) =>
         // {
         //     var gameObject = <feng3d.GameObject>event.target;
         //     if (gameObject.getComponent(feng3d.Model))
         //     {
         //         var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Model).material.uniforms;
-        //         uniforms.u_diffuse.fromUnit(Math.random() * (1 << 24));
+        //         uniforms.u_diffuse.setTo(0, 1, 0);
         //     }
         // });
 
-        feng3d.Engine.instanceList[0].mouse3DManager.mouseInput.catchMouseMove = true;
-
-        scene.on("mouseover", (event) =>
-        {
-            var gameObject = <feng3d.GameObject>event.target;
-            if (gameObject.getComponent(feng3d.Model))
-            {
-                var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Model).material.uniforms;
-                uniforms.u_diffuse.setTo(0, 1, 0);
-            }
-        });
-
-        scene.on("mouseout", (event) =>
-        {
-            var gameObject = <feng3d.GameObject>event.target;
-            if (gameObject.getComponent(feng3d.Model))
-            {
-                var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Model).material.uniforms;
-                uniforms.u_diffuse.setTo(1, 1, 1);
-            }
-        });
+        // scene.on("mouseout", (event) =>
+        // {
+        //     var gameObject = <feng3d.GameObject>event.target;
+        //     if (gameObject.getComponent(feng3d.Model))
+        //     {
+        //         var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Model).material.uniforms;
+        //         uniforms.u_diffuse.setTo(1, 1, 1);
+        //     }
+        // });
     }
 
     /**

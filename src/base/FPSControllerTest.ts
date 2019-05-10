@@ -11,11 +11,6 @@ class FPSControllerTest extends feng3d.Script
         var cube = feng3d.gameObjectFactory.createCube();
         this.gameObject.addChild(cube);
 
-        var plane = feng3d.gameObjectFactory.createPlane();
-        plane.transform.position = new feng3d.Vector3(1.50, 0, 0);
-        plane.transform.rx = -90;
-        this.gameObject.addChild(plane);
-
         var sphere = feng3d.gameObjectFactory.createSphere();
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
         this.gameObject.addChild(sphere);

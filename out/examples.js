@@ -539,10 +539,6 @@ var FPSControllerTest = /** @class */ (function (_super) {
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var cube = feng3d.gameObjectFactory.createCube();
         this.gameObject.addChild(cube);
-        var plane = feng3d.gameObjectFactory.createPlane();
-        plane.transform.position = new feng3d.Vector3(1.50, 0, 0);
-        plane.transform.rx = -90;
-        this.gameObject.addChild(plane);
         var sphere = feng3d.gameObjectFactory.createSphere();
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
         this.gameObject.addChild(sphere);
@@ -588,32 +584,45 @@ var MousePickTest = /** @class */ (function (_super) {
         camera.gameObject.addComponent(feng3d.FPSController);
         var cube = feng3d.gameObjectFactory.createCube();
         cube.mouseEnabled = true;
+        cube.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(cube);
-        var plane = feng3d.gameObjectFactory.createPlane();
-        plane.transform.position = new feng3d.Vector3(1.50, 0, 0);
-        plane.transform.rx = -90;
-        plane.mouseEnabled = true;
-        scene.gameObject.addChild(plane);
         var sphere = feng3d.gameObjectFactory.createSphere();
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
         sphere.mouseEnabled = true;
+        sphere.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(sphere);
         var capsule = feng3d.gameObjectFactory.createCapsule();
         capsule.transform.position = new feng3d.Vector3(3, 0, 0);
         capsule.mouseEnabled = true;
+        capsule.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(capsule);
         var cylinder = feng3d.gameObjectFactory.createCylinder();
         cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
         cylinder.mouseEnabled = true;
+        cylinder.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(cylinder);
-        scene.on("click", function (event) {
-            var transform = event.target;
-            if (transform.getComponent(feng3d.Model)) {
-                var material = transform.getComponent(feng3d.Model).material = feng3d.serialization.setValue(new feng3d.Material(), {
-                    shaderName: "color", uniforms: {
-                        u_diffuseInput: new feng3d.Color4().fromUnit(Math.random() * (1 << 24))
-                    }
-                });
+        // scene.on("click", (event) =>
+        // {
+        //     var gameObject = <feng3d.GameObject>event.target;
+        //     if (gameObject.getComponent(feng3d.Model))
+        //     {
+        //         var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Model).material.uniforms;
+        //         uniforms.u_diffuse.fromUnit(Math.random() * (1 << 24));
+        //     }
+        // });
+        feng3d.Engine.instanceList[0].mouse3DManager.mouseInput.catchMouseMove = true;
+        scene.on("mouseover", function (event) {
+            var gameObject = event.target;
+            if (gameObject.getComponent(feng3d.Model)) {
+                var uniforms = gameObject.getComponent(feng3d.Model).material.uniforms;
+                uniforms.u_diffuse.setTo(0, 1, 0);
+            }
+        });
+        scene.on("mouseout", function (event) {
+            var gameObject = event.target;
+            if (gameObject.getComponent(feng3d.Model)) {
+                var uniforms = gameObject.getComponent(feng3d.Model).material.uniforms;
+                uniforms.u_diffuse.setTo(1, 1, 1);
             }
         });
     };

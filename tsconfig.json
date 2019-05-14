@@ -5,6 +5,10 @@
 		"sourceMap": true,
 		"experimentalDecorators": true,
 		"declaration": true,
+		"lib": [
+			"es2015",
+			"dom"
+		],
 		// "outDir": "out"
 		"outFile": "out/examples.js"
 	},

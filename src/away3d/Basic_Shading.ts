@@ -90,7 +90,8 @@ class Basic_Shading extends feng3d.Script
             var model = plane.addComponent(feng3d.Model);
             var geometry: feng3d.Geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             model.material = planeMaterial;
-            geometry.scaleUV(2, 2);
+            geometry.scaleU = 2;
+            geometry.scaleV = 2;
             plane.transform.y = -0.20;
             scene.gameObject.addChild(plane);
             sphere = new feng3d.GameObject();
@@ -113,7 +114,8 @@ class Basic_Shading extends feng3d.Script
             var model = torus.addComponent(feng3d.Model);
             geometry = model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
-            geometry.scaleUV(10, 5);
+            geometry.scaleU = 10;
+            geometry.scaleV = 5;
             torus.transform.x = -2.50;
             torus.transform.y = 1.60;
             torus.transform.z = -2.50;

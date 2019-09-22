@@ -241,7 +241,8 @@ var Basic_Shading = /** @class */ (function (_super) {
             var model = plane.addComponent(feng3d.Model);
             var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             model.material = planeMaterial;
-            geometry.scaleUV(2, 2);
+            geometry.scaleU = 2;
+            geometry.scaleV = 2;
             plane.transform.y = -0.20;
             scene.gameObject.addChild(plane);
             sphere = new feng3d.GameObject();
@@ -264,7 +265,8 @@ var Basic_Shading = /** @class */ (function (_super) {
             var model = torus.addComponent(feng3d.Model);
             geometry = model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
-            geometry.scaleUV(10, 5);
+            geometry.scaleU = 10;
+            geometry.scaleV = 5;
             torus.transform.x = -2.50;
             torus.transform.y = 1.60;
             torus.transform.z = -2.50;
@@ -868,14 +870,16 @@ var PointLightTest = /** @class */ (function (_super) {
             plane.transform.y = -1;
             var model = plane.addComponent(feng3d.Model);
             var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
-            geometry.scaleUV(2, 2);
+            geometry.scaleU = 2;
+            geometry.scaleV = 2;
             model.material = material;
             scene.gameObject.addChild(plane);
             var cube = new feng3d.GameObject();
             var model = cube.addComponent(feng3d.Model);
             model.material = material;
             model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
-            model.geometry.scaleUV(2, 2);
+            model.geometry.scaleU = 2;
+            model.geometry.scaleV = 2;
             scene.gameObject.addChild(cube);
         }
         function clearObjects() {

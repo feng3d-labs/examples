@@ -42,9 +42,9 @@ class PointLightTest extends feng3d.Script
         {
             var material = feng3d.serialization.setValue(new feng3d.Material(), {
                 uniforms: {
-                    s_diffuse: { url: 'resources/head_diffuse.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
-                    s_normal: { url: 'resources/head_normals.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
-                    s_specular: { url: 'resources/head_specular.jpg', wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_diffuse: { source: { url: 'resources/head_diffuse.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_normal: { source: { url: 'resources/head_normals.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_specular: { source: { url: 'resources/head_specular.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
                 }
             });
 

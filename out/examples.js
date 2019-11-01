@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -1367,7 +1367,7 @@ var TextureMaterialTest = /** @class */ (function (_super) {
         //材质
         model.material = feng3d.serialization.setValue(new feng3d.Material(), {
             shaderName: "texture",
-            uniforms: { s_texture: { url: 'resources/m.png', flipY: false } }
+            uniforms: { s_texture: { source: { url: 'resources/m.png' }, flipY: false } }
         });
     };
     /**

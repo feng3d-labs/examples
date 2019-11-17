@@ -22,6 +22,7 @@
   "author": "feng",
   "license": "ISC",
   "devDependencies": {
+    "@feng3d/build": "0.0.8",
     "typescript": "^3.6.3"
   },
   "dependencies": {

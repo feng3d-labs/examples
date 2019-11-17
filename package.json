@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.oschina.net/feng3d/examples.git"
+    "url": "https://gitee.com/feng3d/examples.git"
   },
   "files": [
     "package.json"

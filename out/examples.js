@@ -1416,19 +1416,3 @@ var ScriptDemo = /** @class */ (function (_super) {
     return ScriptDemo;
 }(feng3d.Script));
 //# sourceMappingURL=examples.js.map
-console.log("feng3d-examples-0.1.0");
-(function universalModuleDefinition(root, factory)
-{
-    if (typeof exports === 'object' && typeof module === 'object')
-        module.exports = factory();
-    else if (typeof define === 'function' && define.amd)
-        define([], factory);
-    else if (typeof exports === 'object')
-        exports["undefined"] = factory();
-    else
-        root["undefined"] = factory();
-    undefined
-})(this, function ()
-{
-    return feng3d;
-});

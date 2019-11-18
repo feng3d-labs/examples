@@ -1,6 +1,3 @@
-declare module 'undefined' {
-    export = feng3d;
-}
 declare class TerrainMergeTest extends feng3d.Script {
     /**
      * 初始化时调用

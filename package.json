@@ -4,7 +4,7 @@
   "description": "feng3d引擎示例",
   "main": "out/examples.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -b"
   },
   "repository": {
     "type": "git",
@@ -20,12 +20,5 @@
     "3dEngine"
   ],
   "author": "feng",
-  "license": "ISC",
-  "devDependencies": {
-    "@feng3d/build": "0.0.8",
-    "typescript": "^3.6.3"
-  },
-  "dependencies": {
-    "feng3d": "0.1.3"
-  }
+  "license": "ISC"
 }

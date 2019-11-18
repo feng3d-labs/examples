@@ -15,6 +15,11 @@
 	"include": [
 		"../feng3d/out/feng3d.d.ts"
 	],
+	"references": [
+		{
+			"path": "../feng3d"
+		}
+	],
 	"files": [
 		"src/advanced/TerrainMergeTest.ts",
 		"src/advanced/TerrainTest.ts",

@@ -1262,7 +1262,7 @@ var SegmentMaterialTest = /** @class */ (function (_super) {
         scene.gameObject.addChild(segment);
         //初始化材质
         var model = segment.addComponent(feng3d.Model);
-        model.material = feng3d.Material.getDefaultMaterial("Default-SegmentMaterial");
+        model.material = feng3d.Material.getDefaultMaterial("Segment-Material");
         var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
         var length = 200;
         var height = 2 / Math.PI;

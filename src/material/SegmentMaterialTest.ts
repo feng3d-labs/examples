@@ -15,7 +15,7 @@ class SegmentMaterialTest extends feng3d.Script
 
         //初始化材质
         var model = segment.addComponent(feng3d.Model);
-        model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "segment", renderParams: { renderMode: feng3d.RenderMode.LINES } });
+        model.material = feng3d.Material.getDefaultMaterial("Default-SegmentMaterial");
         var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
 
         var length = 200;

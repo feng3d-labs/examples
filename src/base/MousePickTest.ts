@@ -21,19 +21,19 @@ class MousePickTest extends feng3d.Script
         cube.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(cube);
 
-        var sphere = feng3d.gameObjectFactory.createSphere();
+        var sphere = feng3d.GameObject.createPrimitive("Sphere");
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
         sphere.mouseEnabled = true;
         sphere.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(sphere);
 
-        var capsule = feng3d.gameObjectFactory.createCapsule();
+        var capsule = feng3d.GameObject.createPrimitive("Capsule");
         capsule.transform.position = new feng3d.Vector3(3, 0, 0);
         capsule.mouseEnabled = true;
         capsule.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(capsule);
 
-        var cylinder = feng3d.gameObjectFactory.createCylinder();
+        var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
         cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
         cylinder.mouseEnabled = true;
         cylinder.getComponent(feng3d.Model).material = new feng3d.Material();

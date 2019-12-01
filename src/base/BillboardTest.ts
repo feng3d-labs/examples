@@ -15,7 +15,7 @@ class BillboardTest extends feng3d.Script
         cube.transform.z = 3;
         scene.gameObject.addChild(cube);
 
-        var gameObject = feng3d.gameObjectFactory.createPlane();
+        var gameObject = feng3d.GameObject.createPrimitive("Plane");
         gameObject.transform.y = 1.50;
         var holdSizeComponent = gameObject.addComponent(feng3d.HoldSizeComponent);
         holdSizeComponent.holdSize = 1;

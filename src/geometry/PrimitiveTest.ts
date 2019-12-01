@@ -13,20 +13,20 @@ class PrimitiveTest extends feng3d.Script
         var cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(cube);
 
-        var plane = feng3d.gameObjectFactory.createPlane();
+        var plane = feng3d.GameObject.createPrimitive("Plane");
         plane.transform.position = new feng3d.Vector3(1.50, 0, 0);
         plane.transform.rx = -90;
         this.gameObject.addChild(plane);
 
-        var sphere = feng3d.gameObjectFactory.createSphere();
+        var sphere = feng3d.GameObject.createPrimitive("Sphere");
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
         this.gameObject.addChild(sphere);
 
-        var capsule = feng3d.gameObjectFactory.createCapsule();
+        var capsule = feng3d.GameObject.createPrimitive("Capsule");
         capsule.transform.position = new feng3d.Vector3(3, 0, 0);
         this.gameObject.addChild(capsule);
 
-        var cylinder = feng3d.gameObjectFactory.createCylinder();
+        var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
         cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
         this.gameObject.addChild(cylinder);
 

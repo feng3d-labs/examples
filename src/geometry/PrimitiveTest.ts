@@ -10,7 +10,7 @@ class PrimitiveTest extends feng3d.Script
         var canvas = document.getElementById("glcanvas");
 
 
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(cube);
 
         var plane = feng3d.gameObjectFactory.createPlane();

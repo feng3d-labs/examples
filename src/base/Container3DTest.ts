@@ -14,7 +14,7 @@ class Container3DTest extends feng3d.Script
     {
 
         //初始化颜色材质
-        this.cube = feng3d.gameObjectFactory.createCube();
+        this.cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(this.cube);
 
         this.colorMaterial = this.cube.getComponent(feng3d.Model).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });

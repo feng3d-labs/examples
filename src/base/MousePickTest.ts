@@ -16,7 +16,7 @@ class MousePickTest extends feng3d.Script
         camera.transform.lookAt(new feng3d.Vector3());
         camera.gameObject.addComponent(feng3d.FPSController);
 
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         cube.mouseEnabled = true;
         cube.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(cube);

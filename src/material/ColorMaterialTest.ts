@@ -9,7 +9,7 @@ class ColorMaterialTest extends feng3d.Script
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
 
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         cube.transform.z = 3;
         scene.gameObject.addChild(cube);
 

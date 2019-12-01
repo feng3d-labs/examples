@@ -8,7 +8,7 @@ class FPSControllerTest extends feng3d.Script
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
 
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(cube);
 
         var sphere = feng3d.gameObjectFactory.createSphere();

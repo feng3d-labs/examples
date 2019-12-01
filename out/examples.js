@@ -401,7 +401,7 @@ var BillboardTest = /** @class */ (function (_super) {
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         camera.gameObject.addComponent(feng3d.FPSController);
         scene.background.setTo(0.3, 0.3, 0.3, 1);
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         cube.transform.z = 3;
         scene.gameObject.addChild(cube);
         var gameObject = feng3d.gameObjectFactory.createPlane();
@@ -461,7 +461,7 @@ var Container3DTest = /** @class */ (function (_super) {
      */
     Container3DTest.prototype.init = function () {
         //初始化颜色材质
-        this.cube = feng3d.gameObjectFactory.createCube();
+        this.cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(this.cube);
         this.colorMaterial = this.cube.getComponent(feng3d.Model).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
         var cylinder = feng3d.gameObjectFactory.createCylinder();
@@ -539,7 +539,7 @@ var FPSControllerTest = /** @class */ (function (_super) {
     FPSControllerTest.prototype.init = function () {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(cube);
         var sphere = feng3d.gameObjectFactory.createSphere();
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
@@ -584,7 +584,7 @@ var MousePickTest = /** @class */ (function (_super) {
         camera.transform.z = -5;
         camera.transform.lookAt(new feng3d.Vector3());
         camera.gameObject.addComponent(feng3d.FPSController);
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         cube.mouseEnabled = true;
         cube.getComponent(feng3d.Model).material = new feng3d.Material();
         scene.gameObject.addChild(cube);
@@ -784,7 +784,7 @@ var PrimitiveTest = /** @class */ (function (_super) {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(cube);
         var plane = feng3d.gameObjectFactory.createPlane();
         plane.transform.position = new feng3d.Vector3(1.50, 0, 0);
@@ -1175,7 +1175,7 @@ var ColorMaterialTest = /** @class */ (function (_super) {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
-        var cube = feng3d.gameObjectFactory.createCube();
+        var cube = feng3d.GameObject.createPrimitive("Cube");
         cube.transform.z = 3;
         scene.gameObject.addChild(cube);
         //初始化颜色材质

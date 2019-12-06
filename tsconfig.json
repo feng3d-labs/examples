@@ -1,12 +1,12 @@
 {
 	"compilerOptions": {
-		"target": "es5",
+		"target": "ES5",
 		"noImplicitAny": false,
 		"sourceMap": true,
 		"experimentalDecorators": true,
 		"declaration": true,
 		"lib": [
-			"es2015",
+			"ES2015",
 			"dom"
 		],
 		// "outDir": "out"

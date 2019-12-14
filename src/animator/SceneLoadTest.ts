@@ -6,7 +6,7 @@ class SceneLoadTest extends feng3d.Script
     init()
     {
 
-        var view3D = new feng3d.Engine();
+        var view3D = new feng3d.View();
 
         feng3d.loader.loadText("resources/scene/Untitled.scene.json", (content) =>
         {

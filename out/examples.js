@@ -140,7 +140,7 @@ var SceneLoadTest = /** @class */ (function (_super) {
      * 初始化时调用
      */
     SceneLoadTest.prototype.init = function () {
-        var view3D = new feng3d.Engine();
+        var view3D = new feng3d.View();
         feng3d.loader.loadText("resources/scene/Untitled.scene.json", function (content) {
             var json = JSON.parse(content);
             var sceneobject = feng3d.serialization.deserialize(json);
@@ -1033,7 +1033,7 @@ var MdlLoaderTest = /** @class */ (function (_super) {
         /** 相机起始离物体的距离 */
         var len = 200;
         var showWar3Model;
-        var view = new feng3d.Engine();
+        var view = new feng3d.View();
         view.camera.transform.x = -200;
         view.camera.transform.y = 200;
         view.camera.transform.z = -300;

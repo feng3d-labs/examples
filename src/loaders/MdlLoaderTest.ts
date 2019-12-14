@@ -57,7 +57,7 @@ class MdlLoaderTest extends feng3d.Script
 
 		var showWar3Model: feng3d.GameObject;
 
-		var view = new feng3d.Engine();
+		var view = new feng3d.View();
 
 		view.camera.transform.x = -200;
 		view.camera.transform.y = 200;

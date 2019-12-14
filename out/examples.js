@@ -144,7 +144,7 @@ var SceneLoadTest = /** @class */ (function (_super) {
         feng3d.loader.loadText("resources/scene/Untitled.scene.json", function (content) {
             var json = JSON.parse(content);
             var sceneobject = feng3d.serialization.deserialize(json);
-            var scene = sceneobject.getComponent(feng3d.Scene3D);
+            var scene = sceneobject.getComponent(feng3d.Scene);
             view3D.scene = scene;
         });
     };
@@ -653,17 +653,6 @@ var ScriptTest = /** @class */ (function (_super) {
      */
     ScriptTest.prototype.init = function () {
         var sc = this.gameObject.addScript("ScriptDemo");
-        // windowEventProxy.on("keyup", (e) =>
-        // {
-        //     if (e.keyCode == 82)
-        //     {
-        //         GameObjectUtil.removeScript(scene3D.gameObject, path);
-        //         GameObjectUtil.addScript(scene3D.gameObject, path);
-        //     } else if (e.keyCode == 84)
-        //     {
-        //         GameObjectUtil.reloadJS(path);
-        //     }
-        // })
     };
     /**
      * 更新

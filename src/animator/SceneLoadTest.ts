@@ -12,7 +12,7 @@ class SceneLoadTest extends feng3d.Script
         {
             var json = JSON.parse(content);
             var sceneobject: feng3d.GameObject = feng3d.serialization.deserialize(json);
-            var scene = sceneobject.getComponent(feng3d.Scene3D);
+            var scene = sceneobject.getComponent(feng3d.Scene);
 
             view3D.scene = scene;
         });

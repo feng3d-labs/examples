@@ -14,18 +14,18 @@ class GeometryTest extends feng3d.Script
 
         var geometry = model.geometry = new feng3d.CustomGeometry();
         geometry.addGeometry(new feng3d.PlaneGeometry());
-        var matrix3D = new feng3d.Matrix4x4();
-        matrix3D.appendTranslation(0, 0.50, 0);
-        geometry.addGeometry(feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 50 }), matrix3D);
+        var matrix = new feng3d.Matrix4x4();
+        matrix.appendTranslation(0, 0.50, 0);
+        geometry.addGeometry(feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 50 }), matrix);
 
-        matrix3D.appendTranslation(0, 0.50, 0);
+        matrix.appendTranslation(0, 0.50, 0);
         var addGeometry = new feng3d.CubeGeometry();
-        geometry.addGeometry(addGeometry, matrix3D);
+        geometry.addGeometry(addGeometry, matrix);
 
         addGeometry.width = 0.50;
-        matrix3D.appendTranslation(0, 0.50, 0);
-        matrix3D.appendRotation(feng3d.Vector3.Z_AXIS, 45);
-        geometry.addGeometry(addGeometry, matrix3D);
+        matrix.appendTranslation(0, 0.50, 0);
+        matrix.appendRotation(feng3d.Vector3.Z_AXIS, 45);
+        geometry.addGeometry(addGeometry, matrix);
 
         gameobject.transform.z = 3;
         gameobject.transform.y = -1;

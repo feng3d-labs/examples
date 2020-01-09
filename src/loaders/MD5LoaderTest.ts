@@ -41,7 +41,7 @@ class md5LoaderTest extends feng3d.Script
             for (var i = 0; i < gameObject.numChildren; i++)
             {
                 var child = gameObject.getChildAt(i);
-                var model = child.getComponent(feng3d.Model);
+                var model = child.getComponent(feng3d.Renderable);
                 if (model)
                 {
                     feng3d.serialization.setValue(model.material, {

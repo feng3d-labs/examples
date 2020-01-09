@@ -51,7 +51,7 @@ class PointLightTest extends feng3d.Script
             //初始化立方体
             var plane = new feng3d.GameObject();
             plane.transform.y = -1;
-            var model = plane.addComponent(feng3d.Model);
+            var model = plane.addComponent(feng3d.Renderable);
             var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             geometry.scaleU = 2;
             geometry.scaleV = 2;
@@ -59,7 +59,7 @@ class PointLightTest extends feng3d.Script
             scene.gameObject.addChild(plane);
 
             var cube = new feng3d.GameObject();
-            var model = cube.addComponent(feng3d.Model);
+            var model = cube.addComponent(feng3d.Renderable);
             model.material = material;
             model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.geometry.scaleU = 2;
@@ -79,7 +79,7 @@ class PointLightTest extends feng3d.Script
         {
             //
             var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
-            var model = light0.addComponent(feng3d.Model);
+            var model = light0.addComponent(feng3d.Renderable);
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight0 = light0.addComponent(feng3d.PointLight);
@@ -89,7 +89,7 @@ class PointLightTest extends feng3d.Script
 
             //
             var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
-            model = light1.addComponent(feng3d.Model);
+            model = light1.addComponent(feng3d.Renderable);
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight1 = light1.addComponent(feng3d.DirectionalLight);

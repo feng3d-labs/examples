@@ -37,7 +37,7 @@ class Basic_SkyBox extends feng3d.Script
         // torusMaterial.uniforms.u_ambient.a = 0.25;
 
         var torus = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "torus" });
-        var model = torus.addComponent(feng3d.Model);
+        var model = torus.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
         model.material = torusMaterial;
         scene.gameObject.addChild(torus);

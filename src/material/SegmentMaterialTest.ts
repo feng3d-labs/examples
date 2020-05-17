@@ -14,7 +14,7 @@ class SegmentMaterialTest extends feng3d.Script
         scene.gameObject.addChild(segment);
 
         //初始化材质
-        var model = segment.addComponent(feng3d.Renderable);
+        var model = segment.addComponent(feng3d.Renderer);
         model.material = feng3d.Material.getDefault("Segment-Material");
         var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
 

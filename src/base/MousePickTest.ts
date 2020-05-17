@@ -18,33 +18,33 @@ class MousePickTest extends feng3d.Script
 
         var cube = feng3d.GameObject.createPrimitive("Cube");
         cube.mouseEnabled = true;
-        cube.getComponent(feng3d.Renderable).material = new feng3d.Material();
+        cube.getComponent(feng3d.Renderer).material = new feng3d.Material();
         scene.gameObject.addChild(cube);
 
         var sphere = feng3d.GameObject.createPrimitive("Sphere");
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
         sphere.mouseEnabled = true;
-        sphere.getComponent(feng3d.Renderable).material = new feng3d.Material();
+        sphere.getComponent(feng3d.Renderer).material = new feng3d.Material();
         scene.gameObject.addChild(sphere);
 
         var capsule = feng3d.GameObject.createPrimitive("Capsule");
         capsule.transform.position = new feng3d.Vector3(3, 0, 0);
         capsule.mouseEnabled = true;
-        capsule.getComponent(feng3d.Renderable).material = new feng3d.Material();
+        capsule.getComponent(feng3d.Renderer).material = new feng3d.Material();
         scene.gameObject.addChild(capsule);
 
         var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
         cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
         cylinder.mouseEnabled = true;
-        cylinder.getComponent(feng3d.Renderable).material = new feng3d.Material();
+        cylinder.getComponent(feng3d.Renderer).material = new feng3d.Material();
         scene.gameObject.addChild(cylinder);
 
         scene.on("click", (event) =>
         {
             var gameObject = <feng3d.GameObject>event.target;
-            if (gameObject.getComponent(feng3d.Renderable))
+            if (gameObject.getComponent(feng3d.Renderer))
             {
-                var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Renderable).material.uniforms;
+                var uniforms = <feng3d.StandardUniforms>gameObject.getComponent(feng3d.Renderer).material.uniforms;
                 uniforms.u_diffuse.fromUnit(Math.random() * (1 << 24));
             }
         });

@@ -1,25 +1,8 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var TerrainMergeTest = /** @class */ (function (_super) {
-    __extends(TerrainMergeTest, _super);
-    function TerrainMergeTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
+class TerrainMergeTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    TerrainMergeTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         //
@@ -50,34 +33,29 @@ var TerrainMergeTest = /** @class */ (function (_super) {
         light1.transform.y = 3;
         // scene.transform.addChild(light1);
         //
-        feng3d.ticker.onframe(function () {
+        feng3d.ticker.onframe(() => {
             var time = new Date().getTime();
             var angle = time / 1000;
             light1.transform.x = Math.sin(angle) * 3;
             light1.transform.z = Math.cos(angle) * 3;
         });
-    };
+    }
     /**
      * 更新
      */
-    TerrainMergeTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    TerrainMergeTest.prototype.dispose = function () {
-    };
-    return TerrainMergeTest;
-}(feng3d.Script));
-var TerrainTest = /** @class */ (function (_super) {
-    __extends(TerrainTest, _super);
-    function TerrainTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class TerrainTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    TerrainTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         camera.transform.z = -500;
@@ -112,63 +90,53 @@ var TerrainTest = /** @class */ (function (_super) {
         light1.transform.y = 3;
         // scene.transform.addChild(light1);
         //
-        feng3d.ticker.onframe(function () {
+        feng3d.ticker.onframe(() => {
             var time = new Date().getTime();
             var angle = time / 1000;
             light1.transform.x = Math.sin(angle) * 3;
             light1.transform.z = Math.cos(angle) * 3;
         });
-    };
+    }
     /**
      * 更新
      */
-    TerrainTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    TerrainTest.prototype.dispose = function () {
-    };
-    return TerrainTest;
-}(feng3d.Script));
-var SceneLoadTest = /** @class */ (function (_super) {
-    __extends(SceneLoadTest, _super);
-    function SceneLoadTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class SceneLoadTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    SceneLoadTest.prototype.init = function () {
+    init() {
         var view3D = new feng3d.View();
-        feng3d.loader.loadText("resources/scene/Untitled.scene.json", function (content) {
+        feng3d.loader.loadText("resources/scene/Untitled.scene.json", (content) => {
             var json = JSON.parse(content);
             var sceneobject = feng3d.serialization.deserialize(json);
             var scene = sceneobject.getComponent(feng3d.Scene);
             view3D.scene = scene;
         });
-    };
+    }
     /**
      * 更新
      */
-    SceneLoadTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    SceneLoadTest.prototype.dispose = function () {
-    };
-    return SceneLoadTest;
-}(feng3d.Script));
-var Basic_Shading = /** @class */ (function (_super) {
-    __extends(Basic_Shading, _super);
-    function Basic_Shading() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class Basic_Shading extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    Basic_Shading.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -279,28 +247,23 @@ var Basic_Shading = /** @class */ (function (_super) {
             light1.transform.rx = 30;
             light1.transform.ry++;
         }
-    };
+    }
     /**
      * 更新
      */
-    Basic_Shading.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    Basic_Shading.prototype.dispose = function () {
-    };
-    return Basic_Shading;
-}(feng3d.Script));
-var Basic_SkyBox = /** @class */ (function (_super) {
-    __extends(Basic_SkyBox, _super);
-    function Basic_SkyBox() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class Basic_SkyBox extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    Basic_SkyBox.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -332,35 +295,30 @@ var Basic_SkyBox = /** @class */ (function (_super) {
         model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
         model.material = torusMaterial;
         scene.gameObject.addChild(torus);
-        feng3d.ticker.onframe(function () {
+        feng3d.ticker.onframe(() => {
             torus.transform.rx += 2;
             torus.transform.ry += 1;
             camera.transform.position = new feng3d.Vector3(0, 0, 0);
             camera.transform.ry += 0.5 * (feng3d.windowEventProxy.clientX - canvas.clientLeft - canvas.clientWidth / 2) / 800;
             camera.transform.moveBackward(6);
         });
-    };
+    }
     /**
      * 更新
      */
-    Basic_SkyBox.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    Basic_SkyBox.prototype.dispose = function () {
-    };
-    return Basic_SkyBox;
-}(feng3d.Script));
-var Basic_View = /** @class */ (function (_super) {
-    __extends(Basic_View, _super);
-    function Basic_View() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class Basic_View extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    Basic_View.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -372,31 +330,26 @@ var Basic_View = /** @class */ (function (_super) {
         model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 7, height: 7 });
         var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { source: { url: "resources/floor_diffuse.jpg" } } } });
         scene.gameObject.addChild(plane);
-        feng3d.ticker.onframe(function () {
+        feng3d.ticker.onframe(() => {
             plane.transform.ry += 1;
         });
-    };
+    }
     /**
      * 更新
      */
-    Basic_View.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    Basic_View.prototype.dispose = function () {
-    };
-    return Basic_View;
-}(feng3d.Script));
-var BillboardTest = /** @class */ (function (_super) {
-    __extends(BillboardTest, _super);
-    function BillboardTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class BillboardTest extends feng3d.Script {
     /*
      * 初始化时调用
      */
-    BillboardTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         camera.gameObject.addComponent(feng3d.FPSController);
@@ -433,33 +386,30 @@ var BillboardTest = /** @class */ (function (_super) {
         // var imageData = context2D.getImageData(0, 0, canvas2D.width, canvas2D.height);
         // texture.pixels = imageData;
         // gameObject.holdSize = 1;
-    };
+    }
     /**
      * 更新
      */
-    BillboardTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
      * 销毁时调用
      */
-    BillboardTest.prototype.dispose = function () {
-    };
-    return BillboardTest;
-}(feng3d.Script));
+    dispose() {
+    }
+}
 /**
  * 测试3D容器
  */
-var Container3DTest = /** @class */ (function (_super) {
-    __extends(Container3DTest, _super);
-    function Container3DTest() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.num = 0;
-        return _this;
+class Container3DTest extends feng3d.Script {
+    constructor() {
+        super(...arguments);
+        this.num = 0;
     }
     /**
      * 初始化时调用
      */
-    Container3DTest.prototype.init = function () {
+    init() {
         //初始化颜色材质
         this.cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(this.cube);
@@ -467,11 +417,11 @@ var Container3DTest = /** @class */ (function (_super) {
         var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
         cylinder.transform.x = 2;
         this.cube.addChild(cylinder);
-    };
+    }
     /**
      * 更新
      */
-    Container3DTest.prototype.update = function () {
+    update() {
         console.log("update");
         //变化旋转与颜色
         this.cube.transform.ry += 1;
@@ -479,23 +429,18 @@ var Container3DTest = /** @class */ (function (_super) {
         if (this.num % 60 == 0) {
             this.colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
         }
-    };
+    }
     /**
      * 销毁时调用
      */
-    Container3DTest.prototype.dispose = function () {
-    };
-    return Container3DTest;
-}(feng3d.Script));
-var FogTest = /** @class */ (function (_super) {
-    __extends(FogTest, _super);
-    function FogTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class FogTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    FogTest.prototype.init = function () {
+    init() {
         var cube = new feng3d.GameObject();
         cube.transform.z = -7;
         cube.transform.y = 0;
@@ -512,31 +457,26 @@ var FogTest = /** @class */ (function (_super) {
                 u_fogMaxDistance: 3,
             }
         });
-        feng3d.ticker.onframe(function () {
+        feng3d.ticker.onframe(() => {
             cube.transform.ry += 1;
         });
-    };
+    }
     /**
      * 更新
      */
-    FogTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
      * 销毁时调用
      */
-    FogTest.prototype.dispose = function () {
-    };
-    return FogTest;
-}(feng3d.Script));
-var FPSControllerTest = /** @class */ (function (_super) {
-    __extends(FPSControllerTest, _super);
-    function FPSControllerTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class FPSControllerTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    FPSControllerTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var cube = feng3d.GameObject.createPrimitive("Cube");
@@ -554,28 +494,23 @@ var FPSControllerTest = /** @class */ (function (_super) {
         camera.transform.lookAt(new feng3d.Vector3());
         //
         camera.gameObject.addComponent(feng3d.FPSController);
-    };
+    }
     /**
      * 更新
      */
-    FPSControllerTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    FPSControllerTest.prototype.dispose = function () {
-    };
-    return FPSControllerTest;
-}(feng3d.Script));
-var MousePickTest = /** @class */ (function (_super) {
-    __extends(MousePickTest, _super);
-    function MousePickTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class MousePickTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    MousePickTest.prototype.init = function () {
+    init() {
         /**
          * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
          */
@@ -603,7 +538,7 @@ var MousePickTest = /** @class */ (function (_super) {
         cylinder.mouseEnabled = true;
         cylinder.getComponent(feng3d.Renderer).material = new feng3d.Material();
         scene.gameObject.addChild(cylinder);
-        scene.on("click", function (event) {
+        scene.on("click", (event) => {
             var gameObject = event.target;
             if (gameObject.getComponent(feng3d.Renderer)) {
                 var uniforms = gameObject.getComponent(feng3d.Renderer).material.uniforms;
@@ -630,51 +565,41 @@ var MousePickTest = /** @class */ (function (_super) {
         //         uniforms.u_diffuse.setTo(1, 1, 1);
         //     }
         // });
-    };
+    }
     /**
      * 更新
      */
-    MousePickTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    MousePickTest.prototype.dispose = function () {
-    };
-    return MousePickTest;
-}(feng3d.Script));
-var ScriptTest = /** @class */ (function (_super) {
-    __extends(ScriptTest, _super);
-    function ScriptTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class ScriptTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    ScriptTest.prototype.init = function () {
+    init() {
         var sc = this.gameObject.addScript("ScriptDemo");
-    };
+    }
     /**
      * 更新
      */
-    ScriptTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    ScriptTest.prototype.dispose = function () {
-    };
-    return ScriptTest;
-}(feng3d.Script));
-var SkyBoxTest = /** @class */ (function (_super) {
-    __extends(SkyBoxTest, _super);
-    function SkyBoxTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class SkyBoxTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    SkyBoxTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         camera.transform.z = -5;
@@ -696,28 +621,23 @@ var SkyBoxTest = /** @class */ (function (_super) {
             }
         });
         scene.gameObject.addChild(skybox);
-    };
+    }
     /**
      * 更新
      */
-    SkyBoxTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    SkyBoxTest.prototype.dispose = function () {
-    };
-    return SkyBoxTest;
-}(feng3d.Script));
-var GeometryTest = /** @class */ (function (_super) {
-    __extends(GeometryTest, _super);
-    function GeometryTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class GeometryTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    GeometryTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -748,28 +668,23 @@ var GeometryTest = /** @class */ (function (_super) {
         setInterval(function () {
             colorUniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
         }, 1000);
-    };
+    }
     /**
      * 更新
      */
-    GeometryTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    GeometryTest.prototype.dispose = function () {
-    };
-    return GeometryTest;
-}(feng3d.Script));
-var PrimitiveTest = /** @class */ (function (_super) {
-    __extends(PrimitiveTest, _super);
-    function PrimitiveTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class PrimitiveTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    PrimitiveTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -791,35 +706,30 @@ var PrimitiveTest = /** @class */ (function (_super) {
         var controller = new feng3d.LookAtController(camera.gameObject);
         controller.lookAtPosition = new feng3d.Vector3();
         //
-        setInterval(function () {
+        setInterval(() => {
             var time = new Date().getTime();
             var angle = (Math.round(time / 17) % 360);
             angle = angle * Math.DEG2RAD;
             camera.transform.position = new feng3d.Vector3(10 * Math.sin(angle), 0, 10 * Math.cos(angle));
             controller.update();
         }, 17);
-    };
+    }
     /**
      * 更新
      */
-    PrimitiveTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    PrimitiveTest.prototype.dispose = function () {
-    };
-    return PrimitiveTest;
-}(feng3d.Script));
-var PointLightTest = /** @class */ (function (_super) {
-    __extends(PointLightTest, _super);
-    function PointLightTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class PointLightTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    PointLightTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -833,7 +743,7 @@ var PointLightTest = /** @class */ (function (_super) {
         camera.transform.lookAt(new feng3d.Vector3());
         camera.gameObject.addComponent(feng3d.FPSController);
         //
-        feng3d.windowEventProxy.on("keyup", function (event) {
+        feng3d.windowEventProxy.on("keyup", (event) => {
             var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
             switch (boardKey) {
                 case "c":
@@ -908,28 +818,23 @@ var PointLightTest = /** @class */ (function (_super) {
             light1.transform.z = Math.cos(angle) * 3;
             light1.transform.lookAt(new feng3d.Vector3());
         }
-    };
+    }
     /**
      * 更新
      */
-    PointLightTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    PointLightTest.prototype.dispose = function () {
-    };
-    return PointLightTest;
-}(feng3d.Script));
-var md5LoaderTest = /** @class */ (function (_super) {
-    __extends(md5LoaderTest, _super);
-    function md5LoaderTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class md5LoaderTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    md5LoaderTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -937,14 +842,14 @@ var md5LoaderTest = /** @class */ (function (_super) {
         var md5meshUrl = "resources/hellknight/hellknight.md5mesh";
         var md5animUrl = "resources/hellknight/idle2.md5anim";
         camera.gameObject.transform.z = -300;
-        feng3d.md5Loader.load(md5meshUrl, function (gameObject) {
+        feng3d.md5Loader.load(md5meshUrl, (gameObject) => {
             object = gameObject;
             gameObject.transform.rx = -90;
             gameObject.transform.ry = -90;
             useMatrial(gameObject);
             scene.gameObject.addChild(gameObject);
             //
-            feng3d.md5Loader.loadAnim(md5animUrl, function (animationClip) {
+            feng3d.md5Loader.loadAnim(md5animUrl, (animationClip) => {
                 animationClip.name = "idle2";
                 var animation = gameObject.addComponent(feng3d.Animation);
                 animation.animation = animationClip;
@@ -966,28 +871,23 @@ var md5LoaderTest = /** @class */ (function (_super) {
                 }
             }
         }
-    };
+    }
     /**
      * 更新
      */
-    md5LoaderTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    md5LoaderTest.prototype.dispose = function () {
-    };
-    return md5LoaderTest;
-}(feng3d.Script));
-var MdlLoaderTest = /** @class */ (function (_super) {
-    __extends(MdlLoaderTest, _super);
-    function MdlLoaderTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class MdlLoaderTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    MdlLoaderTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -1042,7 +942,7 @@ var MdlLoaderTest = /** @class */ (function (_super) {
         //
         var rooturl = "resources/war3/";
         updateModel();
-        feng3d.windowEventProxy.on("keyup", function (e) {
+        feng3d.windowEventProxy.on("keyup", (e) => {
             if (e.keyCode == 37 && !loading) {
                 modelId--;
                 updateModel();
@@ -1076,7 +976,7 @@ var MdlLoaderTest = /** @class */ (function (_super) {
         function loadModel(model) {
             var mdlurl = rooturl + model.url;
             loading = true;
-            feng3d.mdlLoader.load(mdlurl, function (gameObject) {
+            feng3d.mdlLoader.load(mdlurl, (gameObject) => {
                 view.scene.gameObject.addChild(gameObject);
                 loading = false;
                 showWar3Model = gameObject;
@@ -1084,28 +984,23 @@ var MdlLoaderTest = /** @class */ (function (_super) {
                 animation.isplaying = true;
             });
         }
-    };
+    }
     /**
      * 更新
      */
-    MdlLoaderTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    MdlLoaderTest.prototype.dispose = function () {
-    };
-    return MdlLoaderTest;
-}(feng3d.Script));
-var OBJParserTest = /** @class */ (function (_super) {
-    __extends(OBJParserTest, _super);
-    function OBJParserTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class OBJParserTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    OBJParserTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -1135,32 +1030,27 @@ var OBJParserTest = /** @class */ (function (_super) {
             object.transform.z = 300;
             scene.gameObject.addChild(gameObject);
             var models = gameObject.getComponentsInChildren(feng3d.Renderer);
-            models.forEach(function (element) {
+            models.forEach(element => {
                 element.material = material;
             });
         });
-    };
+    }
     /**
      * 更新
      */
-    OBJParserTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    OBJParserTest.prototype.dispose = function () {
-    };
-    return OBJParserTest;
-}(feng3d.Script));
-var ColorMaterialTest = /** @class */ (function (_super) {
-    __extends(ColorMaterialTest, _super);
-    function ColorMaterialTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class ColorMaterialTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    ColorMaterialTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -1176,28 +1066,23 @@ var ColorMaterialTest = /** @class */ (function (_super) {
         setInterval(function () {
             colorMaterial.uniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
         }, 1000);
-    };
+    }
     /**
      * 更新
      */
-    ColorMaterialTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    ColorMaterialTest.prototype.dispose = function () {
-    };
-    return ColorMaterialTest;
-}(feng3d.Script));
-var PointMaterialTest = /** @class */ (function (_super) {
-    __extends(PointMaterialTest, _super);
-    function PointMaterialTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class PointMaterialTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    PointMaterialTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -1221,28 +1106,23 @@ var PointMaterialTest = /** @class */ (function (_super) {
             gameObject.transform.ry += 1;
             pointMaterial.uniforms.u_PointSize = 1 + 5 * Math.sin(gameObject.transform.ry / 30);
         }, 15);
-    };
+    }
     /**
      * 更新
      */
-    PointMaterialTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    PointMaterialTest.prototype.dispose = function () {
-    };
-    return PointMaterialTest;
-}(feng3d.Script));
-var SegmentMaterialTest = /** @class */ (function (_super) {
-    __extends(SegmentMaterialTest, _super);
-    function SegmentMaterialTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class SegmentMaterialTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    SegmentMaterialTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -1271,28 +1151,23 @@ var SegmentMaterialTest = /** @class */ (function (_super) {
         setInterval(function () {
             segment.transform.ry += 1;
         }, 15);
-    };
+    }
     /**
      * 更新
      */
-    SegmentMaterialTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    SegmentMaterialTest.prototype.dispose = function () {
-    };
-    return SegmentMaterialTest;
-}(feng3d.Script));
-var StandardMaterialTest = /** @class */ (function (_super) {
-    __extends(StandardMaterialTest, _super);
-    function StandardMaterialTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class StandardMaterialTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    StandardMaterialTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -1317,28 +1192,23 @@ var StandardMaterialTest = /** @class */ (function (_super) {
         uniforms.s_diffuse.anisotropy = 16;
         uniforms.u_diffuse.a = 0.2;
         textureMaterial.renderParams.enableBlend = true;
-    };
+    }
     /**
      * 更新
      */
-    StandardMaterialTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    StandardMaterialTest.prototype.dispose = function () {
-    };
-    return StandardMaterialTest;
-}(feng3d.Script));
-var TextureMaterialTest = /** @class */ (function (_super) {
-    __extends(TextureMaterialTest, _super);
-    function TextureMaterialTest() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
+}
+class TextureMaterialTest extends feng3d.Script {
     /**
      * 初始化时调用
      */
-    TextureMaterialTest.prototype.init = function () {
+    init() {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
@@ -1358,25 +1228,20 @@ var TextureMaterialTest = /** @class */ (function (_super) {
             shaderName: "texture",
             uniforms: { s_texture: { source: { url: 'resources/m.png' }, flipY: false } }
         });
-    };
+    }
     /**
      * 更新
      */
-    TextureMaterialTest.prototype.update = function () {
-    };
+    update() {
+    }
     /**
     * 销毁时调用
     */
-    TextureMaterialTest.prototype.dispose = function () {
-    };
-    return TextureMaterialTest;
-}(feng3d.Script));
-var ScriptDemo = /** @class */ (function (_super) {
-    __extends(ScriptDemo, _super);
-    function ScriptDemo() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    dispose() {
     }
-    ScriptDemo.prototype.init = function () {
+}
+class ScriptDemo extends feng3d.Script {
+    init() {
         var cube = this.cube = new feng3d.GameObject();
         cube.transform.z = -7;
         this.gameObject.addChild(cube);
@@ -1390,18 +1255,17 @@ var ScriptDemo = /** @class */ (function (_super) {
         uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
         uniforms.u_fogMinDistance = 2;
         uniforms.u_fogMaxDistance = 3;
-    };
-    ScriptDemo.prototype.update = function () {
+    }
+    update() {
         this.cube.transform.ry += 1;
         // log("this.cube.transform.ry: " + this.cube.transform.ry);
-    };
+    }
     /**
      * 销毁
      */
-    ScriptDemo.prototype.dispose = function () {
+    dispose() {
         this.cube.dispose();
         this.cube = null;
-    };
-    return ScriptDemo;
-}(feng3d.Script));
+    }
+}
 //# sourceMappingURL=examples.js.map

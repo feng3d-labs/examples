@@ -12,7 +12,7 @@ class PointMaterialTest extends feng3d.Script
         var pointGeometry = new feng3d.PointGeometry();
         var pointMaterial = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "point", renderParams: { renderMode: feng3d.RenderMode.POINTS } });
         var gameObject = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "plane" });
-        var model = gameObject.addComponent(feng3d.Renderer);
+        var model = gameObject.addComponent(feng3d.Renderable);
         model.geometry = pointGeometry;
         model.material = pointMaterial;
         gameObject.transform.z = 3;

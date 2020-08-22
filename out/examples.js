@@ -13,7 +13,7 @@ class TerrainMergeTest extends feng3d.Script {
         var root = 'resources/terrain/';
         //
         var terrain = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "terrain" });
-        var model = terrain.addComponent(feng3d.Renderer);
+        var model = terrain.addComponent(feng3d.Renderable);
         model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } } });
         var material = feng3d.serialization.setValue(new feng3d.Material(), {
             shaderName: "standard", uniforms: {
@@ -65,7 +65,7 @@ class TerrainTest extends feng3d.Script {
         var root = 'resources/terrain/';
         //
         var terrain = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "terrain" });
-        var model = terrain.addComponent(feng3d.Renderer);
+        var model = terrain.addComponent(feng3d.Renderable);
         // model.geometry = new feng3d.TerrainGeometry();
         model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } }, width: 500, height: 100, depth: 500 });
         var material = feng3d.serialization.setValue(new feng3d.Material(), {
@@ -206,7 +206,7 @@ class Basic_Shading extends feng3d.Script {
         }
         function initObjects() {
             plane = new feng3d.GameObject();
-            var model = plane.addComponent(feng3d.Renderer);
+            var model = plane.addComponent(feng3d.Renderable);
             var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             model.material = planeMaterial;
             geometry.scaleU = 2;
@@ -214,7 +214,7 @@ class Basic_Shading extends feng3d.Script {
             plane.transform.y = -0.20;
             scene.gameObject.addChild(plane);
             sphere = new feng3d.GameObject();
-            var model = sphere.addComponent(feng3d.Renderer);
+            var model = sphere.addComponent(feng3d.Renderable);
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 1.50, segmentsW: 40, segmentsH: 20 });
             model.material = sphereMaterial;
             sphere.transform.x = 3;
@@ -222,7 +222,7 @@ class Basic_Shading extends feng3d.Script {
             sphere.transform.z = 3.00;
             scene.gameObject.addChild(sphere);
             cube = new feng3d.GameObject();
-            var model = cube.addComponent(feng3d.Renderer);
+            var model = cube.addComponent(feng3d.Renderable);
             model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.material = cubeMaterial;
             cube.transform.x = 3.00;
@@ -230,7 +230,7 @@ class Basic_Shading extends feng3d.Script {
             cube.transform.z = -2.50;
             scene.gameObject.addChild(cube);
             torus = new feng3d.GameObject();
-            var model = torus.addComponent(feng3d.Renderer);
+            var model = torus.addComponent(feng3d.Renderable);
             geometry = model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
             geometry.scaleU = 10;
@@ -291,7 +291,7 @@ class Basic_SkyBox extends feng3d.Script {
         // torusMaterial.uniforms.u_ambient.fromUnit(0x111111);
         // torusMaterial.uniforms.u_ambient.a = 0.25;
         var torus = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "torus" });
-        var model = torus.addComponent(feng3d.Renderer);
+        var model = torus.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
         model.material = torusMaterial;
         scene.gameObject.addChild(torus);
@@ -326,7 +326,7 @@ class Basic_View extends feng3d.Script {
         camera.transform.y = 5;
         camera.transform.lookAt(new feng3d.Vector3());
         var plane = new feng3d.GameObject();
-        var model = plane.addComponent(feng3d.Renderer);
+        var model = plane.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 7, height: 7 });
         var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { source: { url: "resources/floor_diffuse.jpg" } } } });
         scene.gameObject.addChild(plane);
@@ -366,7 +366,7 @@ class BillboardTest extends feng3d.Script {
         billboardComponent.camera = camera;
         cube.addChild(gameObject);
         //材质
-        var model = gameObject.getComponent(feng3d.Renderer);
+        var model = gameObject.getComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
         var textureMaterial = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { source: { url: 'resources/m.png' } } } });
         // textureMaterial.cullFace = CullFace.NONE;
@@ -413,7 +413,7 @@ class Container3DTest extends feng3d.Script {
         //初始化颜色材质
         this.cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(this.cube);
-        this.colorMaterial = this.cube.getComponent(feng3d.Renderer).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+        this.colorMaterial = this.cube.getComponent(feng3d.Renderable).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
         var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
         cylinder.transform.x = 2;
         this.cube.addChild(cylinder);
@@ -445,7 +445,7 @@ class FogTest extends feng3d.Script {
         cube.transform.z = -7;
         cube.transform.y = 0;
         this.gameObject.addChild(cube);
-        var model = cube.addComponent(feng3d.Renderer);
+        var model = cube.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
         var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), {
@@ -521,27 +521,27 @@ class MousePickTest extends feng3d.Script {
         camera.gameObject.addComponent(feng3d.FPSController);
         var cube = feng3d.GameObject.createPrimitive("Cube");
         cube.mouseEnabled = true;
-        cube.getComponent(feng3d.Renderer).material = new feng3d.Material();
+        cube.getComponent(feng3d.Renderable).material = new feng3d.Material();
         scene.gameObject.addChild(cube);
         var sphere = feng3d.GameObject.createPrimitive("Sphere");
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
         sphere.mouseEnabled = true;
-        sphere.getComponent(feng3d.Renderer).material = new feng3d.Material();
+        sphere.getComponent(feng3d.Renderable).material = new feng3d.Material();
         scene.gameObject.addChild(sphere);
         var capsule = feng3d.GameObject.createPrimitive("Capsule");
         capsule.transform.position = new feng3d.Vector3(3, 0, 0);
         capsule.mouseEnabled = true;
-        capsule.getComponent(feng3d.Renderer).material = new feng3d.Material();
+        capsule.getComponent(feng3d.Renderable).material = new feng3d.Material();
         scene.gameObject.addChild(capsule);
         var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
         cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
         cylinder.mouseEnabled = true;
-        cylinder.getComponent(feng3d.Renderer).material = new feng3d.Material();
+        cylinder.getComponent(feng3d.Renderable).material = new feng3d.Material();
         scene.gameObject.addChild(cylinder);
         scene.on("click", (event) => {
             var gameObject = event.target;
-            if (gameObject.getComponent(feng3d.Renderer)) {
-                var uniforms = gameObject.getComponent(feng3d.Renderer).material.uniforms;
+            if (gameObject.getComponent(feng3d.Renderable)) {
+                var uniforms = gameObject.getComponent(feng3d.Renderable).material.uniforms;
                 uniforms.u_diffuse.fromUnit(Math.random() * (1 << 24));
             }
         });
@@ -642,7 +642,7 @@ class GeometryTest extends feng3d.Script {
         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
         var canvas = document.getElementById("glcanvas");
         var gameobject = new feng3d.GameObject();
-        var model = gameobject.addComponent(feng3d.Renderer);
+        var model = gameobject.addComponent(feng3d.Renderable);
         var geometry = model.geometry = new feng3d.CustomGeometry();
         geometry.addGeometry(new feng3d.PlaneGeometry());
         var matrix = new feng3d.Matrix4x4();
@@ -767,14 +767,14 @@ class PointLightTest extends feng3d.Script {
             //初始化立方体
             var plane = new feng3d.GameObject();
             plane.transform.y = -1;
-            var model = plane.addComponent(feng3d.Renderer);
+            var model = plane.addComponent(feng3d.Renderable);
             var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             geometry.scaleU = 2;
             geometry.scaleV = 2;
             model.material = material;
             scene.gameObject.addChild(plane);
             var cube = new feng3d.GameObject();
-            var model = cube.addComponent(feng3d.Renderer);
+            var model = cube.addComponent(feng3d.Renderable);
             model.material = material;
             model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.geometry.scaleU = 2;
@@ -789,7 +789,7 @@ class PointLightTest extends feng3d.Script {
         function initLights() {
             //
             var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
-            var model = light0.addComponent(feng3d.Renderer);
+            var model = light0.addComponent(feng3d.Renderable);
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight0 = light0.addComponent(feng3d.PointLight);
@@ -798,7 +798,7 @@ class PointLightTest extends feng3d.Script {
             scene.gameObject.addChild(light0);
             //
             var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
-            model = light1.addComponent(feng3d.Renderer);
+            model = light1.addComponent(feng3d.Renderable);
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
@@ -859,7 +859,7 @@ class md5LoaderTest extends feng3d.Script {
         function useMatrial(gameObject) {
             for (var i = 0; i < gameObject.numChildren; i++) {
                 var child = gameObject.getChildAt(i);
-                var model = child.getComponent(feng3d.Renderer);
+                var model = child.getComponent(feng3d.Renderable);
                 if (model) {
                     feng3d.serialization.setValue(model.material, {
                         uniforms: {
@@ -1029,7 +1029,7 @@ class OBJParserTest extends feng3d.Script {
             object.transform.sz = 20;
             object.transform.z = 300;
             scene.gameObject.addChild(gameObject);
-            var models = gameObject.getComponentsInChildren(feng3d.Renderer);
+            var models = gameObject.getComponentsInChildren(feng3d.Renderable);
             models.forEach(element => {
                 element.material = material;
             });
@@ -1058,7 +1058,7 @@ class ColorMaterialTest extends feng3d.Script {
         cube.transform.z = 3;
         scene.gameObject.addChild(cube);
         //初始化颜色材质
-        var colorMaterial = cube.getComponent(feng3d.Renderer).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+        var colorMaterial = cube.getComponent(feng3d.Renderable).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
         //变化旋转与颜色
         setInterval(function () {
             cube.transform.ry += 1;
@@ -1089,7 +1089,7 @@ class PointMaterialTest extends feng3d.Script {
         var pointGeometry = new feng3d.PointGeometry();
         var pointMaterial = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "point", renderParams: { renderMode: feng3d.RenderMode.POINTS } });
         var gameObject = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "plane" });
-        var model = gameObject.addComponent(feng3d.Renderer);
+        var model = gameObject.addComponent(feng3d.Renderable);
         model.geometry = pointGeometry;
         model.material = pointMaterial;
         gameObject.transform.z = 3;
@@ -1130,7 +1130,7 @@ class SegmentMaterialTest extends feng3d.Script {
         segment.transform.z = 3;
         scene.gameObject.addChild(segment);
         //初始化材质
-        var model = segment.addComponent(feng3d.Renderer);
+        var model = segment.addComponent(feng3d.Renderable);
         model.material = feng3d.Material.getDefault("Segment-Material");
         var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
         var length = 200;
@@ -1179,7 +1179,7 @@ class StandardMaterialTest extends feng3d.Script {
         setInterval(function () {
             cube.transform.ry += 1;
         }, 15);
-        var model = cube.addComponent(feng3d.Renderer);
+        var model = cube.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
@@ -1220,7 +1220,7 @@ class TextureMaterialTest extends feng3d.Script {
         setInterval(function () {
             cube.transform.ry += 1;
         }, 15);
-        var model = cube.addComponent(feng3d.Renderer);
+        var model = cube.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质
@@ -1245,7 +1245,7 @@ class ScriptDemo extends feng3d.Script {
         var cube = this.cube = new feng3d.GameObject();
         cube.transform.z = -7;
         this.gameObject.addChild(cube);
-        var model = cube.addComponent(feng3d.Renderer);
+        var model = cube.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
         var material = model.material = new feng3d.Material();

@@ -14,7 +14,7 @@ class ColorMaterialTest extends feng3d.Script
         scene.gameObject.addChild(cube);
 
         //初始化颜色材质
-        var colorMaterial = cube.getComponent(feng3d.Renderer).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+        var colorMaterial = cube.getComponent(feng3d.Renderable).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
 
         //变化旋转与颜色
         setInterval(function ()

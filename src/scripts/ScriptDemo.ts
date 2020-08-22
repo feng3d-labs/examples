@@ -8,7 +8,7 @@ class ScriptDemo extends feng3d.Script
         cube.transform.z = -7;
         this.gameObject.addChild(cube);
 
-        var model = cube.addComponent(feng3d.Renderer);
+        var model = cube.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
         var material = model.material = new feng3d.Material();

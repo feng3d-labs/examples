@@ -6,7 +6,7 @@ class md5LoaderTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
 
         var object: feng3d.GameObject;
@@ -30,7 +30,7 @@ class md5LoaderTest extends feng3d.Script
             feng3d.md5Loader.loadAnim(md5animUrl, (animationClip) =>
             {
                 animationClip.name = "idle2";
-                var animation = gameObject.addComponent(feng3d.Animation);
+                var animation = gameObject.addComponent("Animation");
                 animation.animation = animationClip;
                 animation.isplaying = true;
             });
@@ -41,7 +41,7 @@ class md5LoaderTest extends feng3d.Script
             for (var i = 0; i < gameObject.numChildren; i++)
             {
                 var child = gameObject.getChildAt(i);
-                var model = child.getComponent(feng3d.Renderable);
+                var model = child.getComponent("Renderable");
                 if (model)
                 {
                     feng3d.serialization.setValue(model.material, {

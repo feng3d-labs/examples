@@ -6,9 +6,9 @@ class BillboardTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
 
-        camera.gameObject.addComponent(feng3d.FPSController);
+        camera.gameObject.addComponent("FPSController");
         scene.background.setTo(0.3, 0.3, 0.3, 1);
 
         var cube = feng3d.GameObject.createPrimitive("Cube");
@@ -17,15 +17,15 @@ class BillboardTest extends feng3d.Script
 
         var gameObject = feng3d.GameObject.createPrimitive("Plane");
         gameObject.transform.y = 1.50;
-        var holdSizeComponent = gameObject.addComponent(feng3d.HoldSizeComponent);
+        var holdSizeComponent = gameObject.addComponent("HoldSizeComponent");
         holdSizeComponent.holdSize = 1;
         holdSizeComponent.camera = camera;
-        var billboardComponent = gameObject.addComponent(feng3d.BillboardComponent);
+        var billboardComponent = gameObject.addComponent("BillboardComponent");
         billboardComponent.camera = camera;
         cube.addChild(gameObject);
 
         //材质
-        var model = gameObject.getComponent(feng3d.Renderable);
+        var model = gameObject.getComponent("Renderable");
         model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
         var textureMaterial = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { source: { url: 'resources/m.png' } } } });
         // textureMaterial.cullFace = CullFace.NONE;

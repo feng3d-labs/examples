@@ -6,7 +6,7 @@ class OBJParserTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
 
         var object: feng3d.GameObject;
@@ -42,7 +42,7 @@ class OBJParserTest extends feng3d.Script
             object.transform.z = 300;
             scene.gameObject.addChild(gameObject);
 
-            var models = gameObject.getComponentsInChildren(feng3d.Renderable);
+            var models = gameObject.getComponentsInChildren("Renderable");
             models.forEach(element =>
             {
                 element.material = material;

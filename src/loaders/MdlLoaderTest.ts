@@ -6,7 +6,7 @@ class MdlLoaderTest extends feng3d.Script
 	init()
 	{
 		var scene = this.gameObject.scene;
-		var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+		var camera = scene.getComponentsInChildren("Camera")[0];
 		var canvas = document.getElementById("glcanvas");
 
 		var modelConfig = [
@@ -64,7 +64,7 @@ class MdlLoaderTest extends feng3d.Script
 		view.camera.transform.z = -300;
 		view.camera.transform.lookAt(new feng3d.Vector3());
 
-		view.camera.gameObject.addComponent(feng3d.FPSController);
+		view.camera.gameObject.addComponent("FPSController");
 
 		//
 		var rooturl = "resources/war3/";
@@ -95,7 +95,7 @@ class MdlLoaderTest extends feng3d.Script
 
 			function updateAnimatorId()
 			{
-				var animation = showWar3Model.getComponentsInChildren(feng3d.Animation)[0];
+				var animation = showWar3Model.getComponentsInChildren("Animation")[0];
 				animatorId = (animation.animations.length + animatorId) % animation.animations.length;
 				animation.animation = animation.animations[animatorId];
 			}
@@ -122,7 +122,7 @@ class MdlLoaderTest extends feng3d.Script
 				view.scene.gameObject.addChild(gameObject);
 				loading = false;
 				showWar3Model = gameObject;
-				var animation = showWar3Model.getComponentsInChildren(feng3d.Animation)[0];
+				var animation = showWar3Model.getComponentsInChildren("Animation")[0];
 				animation.isplaying = true;
 			});
 		}

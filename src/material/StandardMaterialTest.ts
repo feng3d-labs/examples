@@ -6,7 +6,7 @@ class StandardMaterialTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
 
         var cube = new feng3d.GameObject();
@@ -20,7 +20,7 @@ class StandardMaterialTest extends feng3d.Script
             cube.transform.ry += 1;
         }, 15);
 
-        var model = cube.addComponent(feng3d.Renderable);
+        var model = cube.addComponent("Renderable");
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // model.geometry = new PlaneGeometry();
         //材质

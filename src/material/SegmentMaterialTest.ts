@@ -6,7 +6,7 @@ class SegmentMaterialTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
 
         var segment = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "segment" });
@@ -14,7 +14,7 @@ class SegmentMaterialTest extends feng3d.Script
         scene.gameObject.addChild(segment);
 
         //初始化材质
-        var model = segment.addComponent(feng3d.Renderable);
+        var model = segment.addComponent("Renderable");
         model.material = feng3d.Material.getDefault("Segment-Material");
         var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
 

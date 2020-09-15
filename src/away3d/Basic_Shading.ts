@@ -6,7 +6,7 @@ class Basic_Shading extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
 
         var planeMaterial: feng3d.Material;
@@ -32,7 +32,7 @@ class Basic_Shading extends feng3d.Script
             camera.transform.y = 5;
             camera.transform.z = -10;
             camera.transform.lookAt(new feng3d.Vector3());
-            camera.gameObject.addComponent(feng3d.FPSController);
+            camera.gameObject.addComponent("FPSController");
         }
 
         function initMaterials()
@@ -71,13 +71,13 @@ class Basic_Shading extends feng3d.Script
             scene.ambientColor.a = 0.2;
 
             light1 = new feng3d.GameObject();
-            var directionalLight = light1.addComponent(feng3d.DirectionalLight);
+            var directionalLight = light1.addComponent("DirectionalLight");
             directionalLight.intensity = 0.7;
             light1.transform.rx = 90;
             scene.gameObject.addChild(light1);
 
             light2 = new feng3d.GameObject();
-            var directionalLight = light2.addComponent(feng3d.DirectionalLight);
+            var directionalLight = light2.addComponent("DirectionalLight");
             directionalLight.color.fromUnit(0x00FFFF);
             directionalLight.intensity = 0.7;
             light2.transform.rx = 90;
@@ -87,7 +87,7 @@ class Basic_Shading extends feng3d.Script
         function initObjects()
         {
             plane = new feng3d.GameObject();
-            var model = plane.addComponent(feng3d.Renderable);
+            var model = plane.addComponent("Renderable");
             var geometry: feng3d.Geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             model.material = planeMaterial;
             geometry.scaleU = 2;
@@ -95,7 +95,7 @@ class Basic_Shading extends feng3d.Script
             plane.transform.y = -0.20;
             scene.gameObject.addChild(plane);
             sphere = new feng3d.GameObject();
-            var model = sphere.addComponent(feng3d.Renderable);
+            var model = sphere.addComponent("Renderable");
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 1.50, segmentsW: 40, segmentsH: 20 })
             model.material = sphereMaterial;
             sphere.transform.x = 3;
@@ -103,7 +103,7 @@ class Basic_Shading extends feng3d.Script
             sphere.transform.z = 3.00;
             scene.gameObject.addChild(sphere);
             cube = new feng3d.GameObject();
-            var model = cube.addComponent(feng3d.Renderable);
+            var model = cube.addComponent("Renderable");
             model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.material = cubeMaterial;
             cube.transform.x = 3.00;
@@ -111,7 +111,7 @@ class Basic_Shading extends feng3d.Script
             cube.transform.z = -2.50;
             scene.gameObject.addChild(cube);
             torus = new feng3d.GameObject();
-            var model = torus.addComponent(feng3d.Renderable);
+            var model = torus.addComponent("Renderable");
             geometry = model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
             model.material = torusMaterial;
             geometry.scaleU = 10;

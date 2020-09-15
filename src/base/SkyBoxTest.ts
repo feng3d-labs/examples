@@ -6,15 +6,15 @@ class SkyBoxTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
 
         camera.transform.z = -5;
         camera.transform.lookAt(new feng3d.Vector3());
-        camera.gameObject.addComponent(feng3d.FPSController);
+        camera.gameObject.addComponent("FPSController");
         //
 
         var skybox = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "skybox" });
-        var model = skybox.addComponent(feng3d.SkyBox);
+        var model = skybox.addComponent("SkyBox");
         model.s_skyboxTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
             rawData: {
                 type: "path", paths: [

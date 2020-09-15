@@ -6,7 +6,7 @@ class Basic_SkyBox extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
 
         var cubeTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
@@ -23,7 +23,7 @@ class Basic_SkyBox extends feng3d.Script
         });
 
         var skybox = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "skybox" });
-        var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
+        var skyboxComponent = skybox.addComponent("SkyBox");
         skyboxComponent.s_skyboxTexture = cubeTexture;
         scene.gameObject.addChild(skybox);
 
@@ -37,7 +37,7 @@ class Basic_SkyBox extends feng3d.Script
         // torusMaterial.uniforms.u_ambient.a = 0.25;
 
         var torus = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "torus" });
-        var model = torus.addComponent(feng3d.Renderable);
+        var model = torus.addComponent("Renderable");
         model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
         model.material = torusMaterial;
         scene.gameObject.addChild(torus);

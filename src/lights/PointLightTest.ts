@@ -6,7 +6,7 @@ class PointLightTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
 
         var light0 = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "pointLight" });
@@ -20,7 +20,7 @@ class PointLightTest extends feng3d.Script
         camera.transform.z = -5;
         camera.transform.y = 2;
         camera.transform.lookAt(new feng3d.Vector3());
-        camera.gameObject.addComponent(feng3d.FPSController);
+        camera.gameObject.addComponent("FPSController");
         //
         feng3d.windowEventProxy.on("keyup", (event) =>
         {
@@ -51,7 +51,7 @@ class PointLightTest extends feng3d.Script
             //初始化立方体
             var plane = new feng3d.GameObject();
             plane.transform.y = -1;
-            var model = plane.addComponent(feng3d.Renderable);
+            var model = plane.addComponent("Renderable");
             var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
             geometry.scaleU = 2;
             geometry.scaleV = 2;
@@ -59,7 +59,7 @@ class PointLightTest extends feng3d.Script
             scene.gameObject.addChild(plane);
 
             var cube = new feng3d.GameObject();
-            var model = cube.addComponent(feng3d.Renderable);
+            var model = cube.addComponent("Renderable");
             model.material = material;
             model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
             model.geometry.scaleU = 2;
@@ -79,20 +79,20 @@ class PointLightTest extends feng3d.Script
         {
             //
             var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
-            var model = light0.addComponent(feng3d.Renderable);
+            var model = light0.addComponent("Renderable");
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
-            var pointLight0 = light0.addComponent(feng3d.PointLight);
+            var pointLight0 = light0.addComponent("PointLight");
             pointLight0.color = lightColor0.toColor3();
             model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor0 } });
             scene.gameObject.addChild(light0);
 
             //
             var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
-            model = light1.addComponent(feng3d.Renderable);
+            model = light1.addComponent("Renderable");
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
-            var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
+            var pointLight1 = light1.addComponent("DirectionalLight");
             pointLight1.color = lightColor1.toColor3();
             model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor1 } });
             scene.gameObject.addChild(light1);

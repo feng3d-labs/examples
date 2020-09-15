@@ -6,7 +6,7 @@ class FPSControllerTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
 
         var cube = feng3d.GameObject.createPrimitive("Cube");
         this.gameObject.addChild(cube);
@@ -26,7 +26,7 @@ class FPSControllerTest extends feng3d.Script
         camera.transform.z = -5;
         camera.transform.lookAt(new feng3d.Vector3());
         //
-        camera.gameObject.addComponent(feng3d.FPSController);
+        camera.gameObject.addComponent("FPSController");
     }
     /**
      * 更新

@@ -6,18 +6,18 @@ class TerrainMergeTest extends feng3d.Script
     init()
     {
         var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
+        var camera = scene.getComponentsInChildren("Camera")[0];
 
         //
         camera.transform.z = -5;
         camera.transform.y = 2;
         camera.transform.lookAt(new feng3d.Vector3());
-        camera.gameObject.addComponent(feng3d.FPSController);
+        camera.gameObject.addComponent("FPSController");
 
         var root = 'resources/terrain/';
         //
         var terrain = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "terrain" });
-        var model = terrain.addComponent(feng3d.Renderable);
+        var model = terrain.addComponent("Renderable");
         model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } } });
         var material = feng3d.serialization.setValue(new feng3d.Material(), {
             shaderName: "standard", uniforms: {
@@ -33,7 +33,7 @@ class TerrainMergeTest extends feng3d.Script
 
         //初始化光源
         var light1 = new feng3d.GameObject();
-        var pointLight1 = light1.addComponent(feng3d.PointLight);
+        var pointLight1 = light1.addComponent("PointLight");
         // pointLight1.range = 1000;
         pointLight1.color = new feng3d.Color3(1, 1, 0);
         light1.transform.y = 3;

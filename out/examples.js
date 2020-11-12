@@ -196,29 +196,29 @@ var Basic_Shading = /** @class */ (function (_super) {
         function initMaterials() {
             planeMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { source: { url: "resources/floor_diffuse.jpg" } },
-                    s_normal: { source: { url: "resources/floor_normal.jpg" } },
-                    s_specular: { source: { url: "resources/floor_specular.jpg" } },
+                    s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/floor_diffuse.jpg" } },
+                    s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/floor_normal.jpg" } },
+                    s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/floor_specular.jpg" } },
                 }
             });
             sphereMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { source: { url: "resources/beachball_diffuse.jpg" } },
-                    s_specular: { source: { url: "resources/beachball_specular.jpg" } },
+                    s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/beachball_diffuse.jpg" } },
+                    s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/beachball_specular.jpg" } },
                 }
             });
             cubeMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { source: { url: "resources/trinket_diffuse.jpg" } },
-                    s_normal: { source: { url: "resources/trinket_normal.jpg" } },
-                    s_specular: { source: { url: "resources/trinket_specular.jpg" } },
+                    s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/trinket_diffuse.jpg" } },
+                    s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/trinket_normal.jpg" } },
+                    s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/trinket_specular.jpg" } },
                 }
             });
             torusMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
                 shaderName: "standard", uniforms: {
-                    s_diffuse: { source: { url: "resources/weave_diffuse.jpg" } },
-                    s_normal: { source: { url: "resources/weave_normal.jpg" } },
-                    s_specular: { source: { url: "resources/weave_diffuse.jpg" } },
+                    s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/weave_diffuse.jpg" } },
+                    s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/weave_normal.jpg" } },
+                    s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/weave_diffuse.jpg" } },
                 }
             });
         }
@@ -370,7 +370,7 @@ var Basic_View = /** @class */ (function (_super) {
         var plane = new feng3d.GameObject();
         var model = plane.addComponent("Renderable");
         model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 7, height: 7 });
-        var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { source: { url: "resources/floor_diffuse.jpg" } } } });
+        var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/floor_diffuse.jpg" } } } });
         scene.gameObject.addChild(plane);
         feng3d.ticker.onframe(function () {
             plane.transform.ry += 1;
@@ -415,7 +415,7 @@ var BillboardTest = /** @class */ (function (_super) {
         //材质
         var model = gameObject.getComponent("Renderable");
         model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
-        var textureMaterial = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { source: { url: 'resources/m.png' } } } });
+        var textureMaterial = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { __class__: "feng3d.Texture2D", source: { url: 'resources/m.png' } } } });
         // textureMaterial.cullFace = CullFace.NONE;
         //
         // var texture = textureMaterial.texture = new ImageDataTexture();
@@ -505,7 +505,10 @@ var FogTest = /** @class */ (function (_super) {
         //材质
         var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), {
             uniforms: {
-                s_diffuse: { source: { url: 'resources/m.png' } },
+                s_diffuse: {
+                    __class__: "feng3d.Texture2D",
+                    source: { url: 'resources/m.png' }
+                },
                 u_fogMode: feng3d.FogMode.LINEAR,
                 u_fogColor: new feng3d.Color3(1, 1, 0),
                 u_fogMinDistance: 2,
@@ -778,6 +781,7 @@ var PrimitiveTest = /** @class */ (function (_super) {
         var plane = feng3d.GameObject.createPrimitive("Plane");
         plane.transform.position = new feng3d.Vector3(1.50, 0, 0);
         plane.transform.rx = -90;
+        plane.transform.scale.set(0.1, 0.1, 0.1);
         this.gameObject.addChild(plane);
         var sphere = feng3d.GameObject.createPrimitive("Sphere");
         sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
@@ -849,9 +853,9 @@ var PointLightTest = /** @class */ (function (_super) {
         function initObjects() {
             var material = feng3d.serialization.setValue(new feng3d.Material(), {
                 uniforms: {
-                    s_diffuse: { source: { url: 'resources/head_diffuse.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
-                    s_normal: { source: { url: 'resources/head_normals.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
-                    s_specular: { source: { url: 'resources/head_specular.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_diffuse: { __class__: "feng3d.Texture2D", source: { url: 'resources/head_diffuse.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_normal: { __class__: "feng3d.Texture2D", source: { url: 'resources/head_normals.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
+                    s_specular: { __class__: "feng3d.Texture2D", source: { url: 'resources/head_specular.jpg' }, wrapS: feng3d.TextureWrap.MIRRORED_REPEAT, wrapT: feng3d.TextureWrap.MIRRORED_REPEAT },
                 }
             });
             //初始化立方体
@@ -921,15 +925,15 @@ var PointLightTest = /** @class */ (function (_super) {
     };
     return PointLightTest;
 }(feng3d.Script));
-var md5LoaderTest = /** @class */ (function (_super) {
-    __extends(md5LoaderTest, _super);
-    function md5LoaderTest() {
+var MD5LoaderTest = /** @class */ (function (_super) {
+    __extends(MD5LoaderTest, _super);
+    function MD5LoaderTest() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     /**
      * 初始化时调用
      */
-    md5LoaderTest.prototype.init = function () {
+    MD5LoaderTest.prototype.init = function () {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren("Camera")[0];
         var canvas = document.getElementById("glcanvas");
@@ -958,9 +962,9 @@ var md5LoaderTest = /** @class */ (function (_super) {
                 if (model) {
                     feng3d.serialization.setValue(model.material, {
                         uniforms: {
-                            s_diffuse: { source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
-                            s_normal: { source: { url: "resources/hellknight/hellknight_normals.png" } },
-                            s_specular: { source: { url: "resources/hellknight/hellknight_specular.png" } },
+                            s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
+                            s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_normals.png" } },
+                            s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_specular.png" } },
                         },
                     });
                 }
@@ -970,14 +974,14 @@ var md5LoaderTest = /** @class */ (function (_super) {
     /**
      * 更新
      */
-    md5LoaderTest.prototype.update = function () {
+    MD5LoaderTest.prototype.update = function () {
     };
     /**
     * 销毁时调用
     */
-    md5LoaderTest.prototype.dispose = function () {
+    MD5LoaderTest.prototype.dispose = function () {
     };
-    return md5LoaderTest;
+    return MD5LoaderTest;
 }(feng3d.Script));
 var MdlLoaderTest = /** @class */ (function (_super) {
     __extends(MdlLoaderTest, _super);
@@ -1034,9 +1038,9 @@ var MdlLoaderTest = /** @class */ (function (_super) {
         var len = 200;
         var showWar3Model;
         var view = new feng3d.View();
-        view.camera.transform.x = -200;
-        view.camera.transform.y = 200;
-        view.camera.transform.z = -300;
+        view.camera.transform.x = -2;
+        view.camera.transform.y = 2;
+        view.camera.transform.z = -3;
         view.camera.transform.lookAt(new feng3d.Vector3());
         view.camera.gameObject.addComponent("FPSController");
         //
@@ -1120,9 +1124,9 @@ var OBJParserTest = /** @class */ (function (_super) {
         var objUrl = "resources/head.obj";
         var material = feng3d.serialization.setValue(new feng3d.Material(), {
             uniforms: {
-                s_diffuse: { source: { url: "resources/head_diffuse.jpg" } },
-                s_normal: { source: { url: "resources/head_normals.jpg" } },
-                s_specular: { source: { url: "resources/head_specular.jpg" } },
+                s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/head_diffuse.jpg" } },
+                s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/head_normals.jpg" } },
+                s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/head_specular.jpg" } },
             }
         });
         // var material = materialFactory.create("color");
@@ -1310,6 +1314,7 @@ var StandardMaterialTest = /** @class */ (function (_super) {
         //材质
         var textureMaterial = model.material = new feng3d.Material();
         var uniforms = textureMaterial.uniforms;
+        uniforms.s_diffuse = new feng3d.Texture2D();
         uniforms.s_diffuse.source = { url: 'resources/m.png' };
         // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
         uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
@@ -1356,7 +1361,11 @@ var TextureMaterialTest = /** @class */ (function (_super) {
         //材质
         model.material = feng3d.serialization.setValue(new feng3d.Material(), {
             shaderName: "texture",
-            uniforms: { s_texture: { source: { url: 'resources/m.png' }, flipY: false } }
+            uniforms: {
+                s_texture: {
+                    __class__: "feng3d.Texture2D", source: { url: 'resources/m.png' }, flipY: false
+                }
+            }
         });
     };
     /**
@@ -1385,6 +1394,7 @@ var ScriptDemo = /** @class */ (function (_super) {
         //材质
         var material = model.material = new feng3d.Material();
         var uniforms = material.uniforms;
+        uniforms.s_diffuse = new feng3d.Texture2D();
         uniforms.s_diffuse.source = { url: 'resources/m.png' };
         uniforms.u_fogMode = feng3d.FogMode.LINEAR;
         uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);

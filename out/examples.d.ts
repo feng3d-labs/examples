@@ -225,7 +225,7 @@ declare class PointLightTest extends feng3d.Script {
     */
     dispose(): void;
 }
-declare class md5LoaderTest extends feng3d.Script {
+declare class MD5LoaderTest extends feng3d.Script {
     /**
      * 初始化时调用
      */

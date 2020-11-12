@@ -16,6 +16,7 @@ class PrimitiveTest extends feng3d.Script
         var plane = feng3d.GameObject.createPrimitive("Plane");
         plane.transform.position = new feng3d.Vector3(1.50, 0, 0);
         plane.transform.rx = -90;
+        plane.transform.scale.set(0.1, 0.1, 0.1);
         this.gameObject.addChild(plane);
 
         var sphere = feng3d.GameObject.createPrimitive("Sphere");

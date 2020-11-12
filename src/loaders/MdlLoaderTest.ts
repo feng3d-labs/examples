@@ -59,9 +59,9 @@ class MdlLoaderTest extends feng3d.Script
 
 		var view = new feng3d.View();
 
-		view.camera.transform.x = -200;
-		view.camera.transform.y = 200;
-		view.camera.transform.z = -300;
+		view.camera.transform.x = -2;
+		view.camera.transform.y = 2;
+		view.camera.transform.z = -3;
 		view.camera.transform.lookAt(new feng3d.Vector3());
 
 		view.camera.gameObject.addComponent("FPSController");

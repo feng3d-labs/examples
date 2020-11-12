@@ -58,7 +58,7 @@
 							"rz": 90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.ConeGeometry",
 								"bottomRadius": 7,
@@ -88,7 +88,7 @@
 							"rz": -90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.ConeGeometry",
 								"bottomRadius": 7,
@@ -114,7 +114,7 @@
 							"rz": 180
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.ConeGeometry",
 								"bottomRadius": 7,
@@ -143,7 +143,7 @@
 							"y": -19
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.ConeGeometry",
 								"bottomRadius": 7,
@@ -169,7 +169,7 @@
 							"rx": -90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.ConeGeometry",
 								"bottomRadius": 7,
@@ -199,7 +199,7 @@
 							"rx": 90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.ConeGeometry",
 								"bottomRadius": 7,
@@ -225,7 +225,7 @@
 							"rz": -90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.PlaneGeometry",
 								"width": 14,
@@ -251,7 +251,7 @@
 							"rz": 90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.PlaneGeometry",
 								"width": 14,
@@ -276,7 +276,7 @@
 							"y": 7
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.PlaneGeometry",
 								"width": 14,
@@ -302,7 +302,7 @@
 							"rz": 180
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.PlaneGeometry",
 								"width": 14,
@@ -328,7 +328,7 @@
 							"rx": 90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.PlaneGeometry",
 								"width": 14,
@@ -354,7 +354,7 @@
 							"rx": -90
 						},
 						{
-							"__class__": "feng3d.Model",
+							"__class__": "feng3d.MeshRenderer",
 							"geometry": {
 								"__class__": "feng3d.PlaneGeometry",
 								"width": 14,
@@ -385,7 +385,7 @@
 			"__class__": "feng3d.Transform"
 		},
 		{
-			"__class__": "feng3d.Scene3D",
+			"__class__": "feng3d.Scene",
 			"background": {
 				"r": 0.408,
 				"g": 0.38,

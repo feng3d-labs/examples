@@ -26,7 +26,11 @@ class TextureMaterialTest extends feng3d.Script
         //材质
         model.material = feng3d.serialization.setValue(new feng3d.Material(), {
             shaderName: "texture",
-            uniforms: { s_texture: { source: { url: 'resources/m.png' }, flipY: false } }
+            uniforms: {
+                s_texture: {
+                    __class__: "feng3d.Texture2D", source: { url: 'resources/m.png' }, flipY: false
+                }
+            }
         });
     }
 

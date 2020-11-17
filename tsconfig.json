@@ -15,7 +15,13 @@
 	"references": [
 		{
 			"path": "../feng3d"
-		}
+		},
+		{
+			"path": "../packages/terrain/runtime"
+		},
+		{
+			"path": "../packages/parsers/runtime"
+		},
 	],
 	"files": [
 		"src/advanced/TerrainMergeTest.ts",

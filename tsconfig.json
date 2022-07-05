@@ -17,10 +17,10 @@
 			"path": "../feng3d"
 		},
 		{
-			"path": "../packages/terrain/runtime"
+			"path": "../terrain/runtime"
 		},
 		{
-			"path": "../packages/parsers/runtime"
+			"path": "../parsers/runtime"
 		},
 	],
 	"files": [

@@ -20,9 +20,6 @@ class MD5LoaderTest extends feng3d.Script
         {
             object = gameObject;
 
-            gameObject.transform.rx = -90;
-            gameObject.transform.ry = -90;
-
             useMatrial(gameObject);
 
             scene.gameObject.addChild(gameObject);
@@ -33,6 +30,11 @@ class MD5LoaderTest extends feng3d.Script
                 var animation = gameObject.addComponent("Animation");
                 animation.animation = animationClip;
                 animation.isplaying = true;
+
+
+                gameObject.transform.rx = -90;
+                gameObject.transform.ry = -90;
+                gameObject.transform.rz = -90;
             });
         });
 

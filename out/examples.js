@@ -80,43 +80,52 @@ var TerrainTest = /** @class */ (function (_super) {
     TerrainTest.prototype.init = function () {
         var scene = this.gameObject.scene;
         var camera = scene.getComponentsInChildren("Camera")[0];
-        camera.transform.z = -500;
-        camera.transform.y = 200;
-        camera.transform.lookAt(new feng3d.Vector3());
+        camera.transform.x = 0;
+        camera.transform.y = 80;
+        camera.transform.z = 0;
+        // camera.transform.lookAt(new feng3d.Vector3());
         camera.gameObject.addComponent("FPSController");
         var root = 'resources/terrain/';
         //
         var terrain = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "terrain" });
         var model = terrain.addComponent("Renderable");
         // model.geometry = new feng3d.TerrainGeometry();
-        model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } }, width: 500, height: 100, depth: 500 });
+        model.geometry = new feng3d.TerrainGeometry({
+            heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } },
+            width: 500, height: 100, depth: 500,
+            segmentsW: 100,
+            segmentsH: 100,
+        });
         var material = feng3d.serialization.setValue(new feng3d.Material(), {
             shaderName: "terrain", uniforms: {
                 s_diffuse: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_diffuse.jpg' } },
                 s_normal: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_normals.jpg' } },
                 //
-                s_blendTexture: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_splats.png' } },
-                s_splatTexture1: { __class__: "feng3d.Texture2D", source: { url: root + 'beach.jpg' } },
-                s_splatTexture2: { __class__: "feng3d.Texture2D", source: { url: root + 'grass.jpg' } },
-                s_splatTexture3: { __class__: "feng3d.Texture2D", source: { url: root + 'rock.jpg' } },
+                s_blendTexture: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_splats.png' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
+                s_splatTexture1: { __class__: "feng3d.Texture2D", source: { url: root + 'beach.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
+                s_splatTexture2: { __class__: "feng3d.Texture2D", source: { url: root + 'grass.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
+                s_splatTexture3: { __class__: "feng3d.Texture2D", source: { url: root + 'rock.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
                 u_splatRepeats: new feng3d.Vector4(1, 50, 50, 50),
             }
         });
         model.material = material;
         scene.gameObject.addChild(terrain);
+        scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
         //初始化光源
         var light1 = new feng3d.GameObject();
         var pointLight1 = light1.addComponent("PointLight");
-        // pointLight1.range = 1000;
-        pointLight1.color = new feng3d.Color3(1, 1, 0);
-        light1.transform.y = 3;
-        // scene.transform.addChild(light1);
+        pointLight1.range = 5000;
+        pointLight1.color = new feng3d.Color3(1, 1, 1);
+        // pointLight1.shadowType = feng3d.ShadowType.PCF_Shadows;
+        light1.transform.y = 1000;
+        scene.gameObject.addChild(light1);
         //
         feng3d.ticker.onframe(function () {
             var time = new Date().getTime();
-            var angle = time / 1000;
-            light1.transform.x = Math.sin(angle) * 3;
-            light1.transform.z = Math.cos(angle) * 3;
+            var angle = time / 1000 / 5;
+            light1.transform.y = Math.sin(angle) * 1000;
+            light1.transform.z = Math.cos(angle) * 1000;
+            console.log(light1.transform.y, light1.transform.z);
         });
     };
     /**
@@ -881,12 +890,14 @@ var PointLightTest = /** @class */ (function (_super) {
             }
         }
         function initLights() {
+            scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
             //
             var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
             var model = light0.addComponent("Renderable");
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight0 = light0.addComponent("PointLight");
+            pointLight0.shadowType = feng3d.ShadowType.PCF_Shadows;
             pointLight0.color = lightColor0.toColor3();
             model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor0 } });
             scene.gameObject.addChild(light0);
@@ -896,6 +907,7 @@ var PointLightTest = /** @class */ (function (_super) {
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight1 = light1.addComponent("DirectionalLight");
+            pointLight1.shadowType = feng3d.ShadowType.PCF_Shadows;
             pointLight1.color = lightColor1.toColor3();
             model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor1 } });
             scene.gameObject.addChild(light1);
@@ -904,10 +916,12 @@ var PointLightTest = /** @class */ (function (_super) {
             var time = new Date().getTime();
             //
             var angle = time / 1000;
+            light0.transform.y = 3;
             light0.transform.x = Math.sin(angle) * 3;
             light0.transform.z = Math.cos(angle) * 3;
             //
             angle = angle + Math.PI / 2;
+            light1.transform.y = 3;
             light1.transform.x = Math.sin(angle) * 3;
             light1.transform.z = Math.cos(angle) * 3;
             light1.transform.lookAt(new feng3d.Vector3());
@@ -943,8 +957,6 @@ var MD5LoaderTest = /** @class */ (function (_super) {
         camera.gameObject.transform.z = -300;
         feng3d.md5Loader.load(md5meshUrl, function (gameObject) {
             object = gameObject;
-            gameObject.transform.rx = -90;
-            gameObject.transform.ry = -90;
             useMatrial(gameObject);
             scene.gameObject.addChild(gameObject);
             //
@@ -953,6 +965,9 @@ var MD5LoaderTest = /** @class */ (function (_super) {
                 var animation = gameObject.addComponent("Animation");
                 animation.animation = animationClip;
                 animation.isplaying = true;
+                gameObject.transform.rx = -90;
+                gameObject.transform.ry = -90;
+                gameObject.transform.rz = -90;
             });
         });
         function useMatrial(gameObject) {

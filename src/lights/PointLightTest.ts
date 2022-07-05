@@ -77,12 +77,15 @@ class PointLightTest extends feng3d.Script
 
         function initLights()
         {
+            scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
+
             //
             var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
             var model = light0.addComponent("Renderable");
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight0 = light0.addComponent("PointLight");
+            pointLight0.shadowType = feng3d.ShadowType.PCF_Shadows;
             pointLight0.color = lightColor0.toColor3();
             model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor0 } });
             scene.gameObject.addChild(light0);
@@ -93,6 +96,7 @@ class PointLightTest extends feng3d.Script
             model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
             //初始化点光源
             var pointLight1 = light1.addComponent("DirectionalLight");
+            pointLight1.shadowType = feng3d.ShadowType.PCF_Shadows;
             pointLight1.color = lightColor1.toColor3();
             model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor1 } });
             scene.gameObject.addChild(light1);
@@ -103,10 +107,12 @@ class PointLightTest extends feng3d.Script
             var time = new Date().getTime();
             //
             var angle = time / 1000;
+            light0.transform.y = 3;
             light0.transform.x = Math.sin(angle) * 3;
             light0.transform.z = Math.cos(angle) * 3;
             //
             angle = angle + Math.PI / 2;
+            light1.transform.y = 3;
             light1.transform.x = Math.sin(angle) * 3;
             light1.transform.z = Math.cos(angle) * 3;
             light1.transform.lookAt(new feng3d.Vector3());

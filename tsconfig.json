@@ -50,8 +50,6 @@
 		"src/material/StandardMaterialTest.ts",
 		"src/material/TextureMaterialTest.ts",
 		//
-		"src/scripts/ScriptDemo.ts",
-		//
 		// "src/vr/Clock.ts",
 		// "src/vr/webvr_cubes.ts",
 		// "src/vr/WebVR.ts",

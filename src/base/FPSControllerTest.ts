@@ -1,45 +1,31 @@
-class FPSControllerTest extends feng3d.Script
+namespace examples
 {
-    /**
-     * 初始化时调用
-     */
-    init()
-    {
-        var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren("Camera")[0];
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-        var cube = feng3d.GameObject.createPrimitive("Cube");
-        this.gameObject.addChild(cube);
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    camera.transform.position = new feng3d.Vector3(0, 1, -10);
+    scene.gameObject.addChild(camera.gameObject);
 
-        var sphere = feng3d.GameObject.createPrimitive("Sphere");
-        sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
-        this.gameObject.addChild(sphere);
+    var engine = new feng3d.View(null, scene, camera);
 
-        var capsule = feng3d.GameObject.createPrimitive("Capsule");
-        capsule.transform.position = new feng3d.Vector3(3, 0, 0);
-        this.gameObject.addChild(capsule);
+    var cube = feng3d.GameObject.createPrimitive("Cube");
+    scene.gameObject.addChild(cube);
 
-        var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
-        cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
-        this.gameObject.addChild(cylinder);
+    var sphere = feng3d.GameObject.createPrimitive("Sphere");
+    sphere.transform.position = new feng3d.Vector3(-1.50, 0, 0);
+    scene.gameObject.addChild(sphere);
 
-        camera.transform.z = -5;
-        camera.transform.lookAt(new feng3d.Vector3());
-        //
-        camera.gameObject.addComponent("FPSController");
-    }
-    /**
-     * 更新
-     */
-    update()
-    {
-    }
+    var capsule = feng3d.GameObject.createPrimitive("Capsule");
+    capsule.transform.position = new feng3d.Vector3(3, 0, 0);
+    scene.gameObject.addChild(capsule);
 
-    /**
-    * 销毁时调用
-    */
-    dispose()
-    {
+    var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
+    cylinder.transform.position = new feng3d.Vector3(-3, 0, 0);
+    scene.gameObject.addChild(cylinder);
 
-    }
+    camera.transform.z = -5;
+    camera.transform.lookAt(new feng3d.Vector3());
+    //
+    camera.gameObject.addComponent("FPSController");
 }

@@ -1,43 +1,28 @@
-class ColorMaterialTest extends feng3d.Script
+namespace examples
 {
-    /**
-     * 初始化时调用
-     */
-    init()
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    camera.transform.position = new feng3d.Vector3(0, 1, -10);
+    scene.gameObject.addChild(camera.gameObject);
+
+    var engine = new feng3d.View(null, scene, camera);
+
+    var cube = feng3d.GameObject.createPrimitive("Cube");
+    cube.transform.z = 3;
+    scene.gameObject.addChild(cube);
+
+    //初始化颜色材质
+    var colorMaterial = cube.getComponent("Renderable").material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+
+    //变化旋转与颜色
+    setInterval(function ()
     {
-        var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren("Camera")[0];
-        var canvas = document.getElementById("glcanvas");
-
-        var cube = feng3d.GameObject.createPrimitive("Cube");
-        cube.transform.z = 3;
-        scene.gameObject.addChild(cube);
-
-        //初始化颜色材质
-        var colorMaterial = cube.getComponent("Renderable").material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
-
-        //变化旋转与颜色
-        setInterval(function ()
-        {
-            cube.transform.ry += 1;
-        }, 15);
-        setInterval(function ()
-        {
-            (<feng3d.ColorUniforms>colorMaterial.uniforms).u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
-        }, 1000);
-    }
-    /**
-     * 更新
-     */
-    update()
+        cube.transform.ry += 1;
+    }, 15);
+    setInterval(function ()
     {
-    }
-
-    /**
-    * 销毁时调用
-    */
-    dispose()
-    {
-
-    }
+        (<feng3d.ColorUniforms>colorMaterial.uniforms).u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
+    }, 1000);
 }

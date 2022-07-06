@@ -1,58 +1,43 @@
-class SegmentMaterialTest extends feng3d.Script
+namespace examples
 {
-    /**
-     * 初始化时调用
-     */
-    init()
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    camera.transform.position = new feng3d.Vector3(0, 1, -10);
+    scene.gameObject.addChild(camera.gameObject);
+
+    var engine = new feng3d.View(null, scene, camera);
+
+    var segment = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "segment" });
+    segment.transform.z = 3;
+    scene.gameObject.addChild(segment);
+
+    //初始化材质
+    var model = segment.addComponent("Renderable");
+    model.material = feng3d.Material.getDefault("Segment-Material");
+    var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
+
+    var length = 200;
+    var height = 2 / Math.PI;
+    var preVec: feng3d.Vector3;
+    for (var x = -length; x <= length; x++)
     {
-        var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren("Camera")[0];
-        var canvas = document.getElementById("glcanvas");
-
-        var segment = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "segment" });
-        segment.transform.z = 3;
-        scene.gameObject.addChild(segment);
-
-        //初始化材质
-        var model = segment.addComponent("Renderable");
-        model.material = feng3d.Material.getDefault("Segment-Material");
-        var segmentGeometry = model.geometry = new feng3d.SegmentGeometry();
-
-        var length = 200;
-        var height = 2 / Math.PI;
-        var preVec: feng3d.Vector3;
-        for (var x = -length; x <= length; x++)
+        var angle = x / length * Math.PI;
+        if (preVec == null)
         {
-            var angle = x / length * Math.PI;
-            if (preVec == null)
-            {
-                preVec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
-            } else
-            {
-                var vec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
-                segmentGeometry.addSegment({ start: preVec, end: vec });
-                preVec = vec;
-            }
+            preVec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
+        } else
+        {
+            var vec = new feng3d.Vector3(x / 100, Math.sin(angle) * height, 0);
+            segmentGeometry.addSegment({ start: preVec, end: vec });
+            preVec = vec;
         }
-
-        //变化旋转
-        setInterval(function ()
-        {
-            segment.transform.ry += 1;
-        }, 15);
     }
-    /**
-     * 更新
-     */
-    update()
+
+    //变化旋转
+    setInterval(function ()
     {
-    }
-
-    /**
-    * 销毁时调用
-    */
-    dispose()
-    {
-
-    }
+        segment.transform.ry += 1;
+    }, 15);
 }

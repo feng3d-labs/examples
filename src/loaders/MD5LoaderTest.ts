@@ -1,74 +1,59 @@
-class MD5LoaderTest extends feng3d.Script
+namespace examples
 {
-    /**
-     * 初始化时调用
-     */
-    init()
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    camera.transform.position = new feng3d.Vector3(0, 1, -10);
+    scene.gameObject.addChild(camera.gameObject);
+
+    var engine = new feng3d.View(null, scene, camera);
+
+    var object: feng3d.GameObject;
+
+    var md5meshUrl = "resources/hellknight/hellknight.md5mesh";
+    var md5animUrl = "resources/hellknight/idle2.md5anim";
+
+    camera.gameObject.transform.z = -300;
+
+    feng3d.md5Loader.load(md5meshUrl, (gameObject) =>
     {
-        var scene = this.gameObject.scene;
-        var camera = scene.getComponentsInChildren("Camera")[0];
-        var canvas = document.getElementById("glcanvas");
+        object = gameObject;
 
-        var object: feng3d.GameObject;
+        useMatrial(gameObject);
 
-        var md5meshUrl = "resources/hellknight/hellknight.md5mesh";
-        var md5animUrl = "resources/hellknight/idle2.md5anim";
-
-        camera.gameObject.transform.z = -300;
-
-        feng3d.md5Loader.load(md5meshUrl, (gameObject) =>
+        scene.gameObject.addChild(gameObject);
+        //
+        feng3d.md5Loader.loadAnim(md5animUrl, (animationClip) =>
         {
-            object = gameObject;
-
-            useMatrial(gameObject);
-
-            scene.gameObject.addChild(gameObject);
-            //
-            feng3d.md5Loader.loadAnim(md5animUrl, (animationClip) =>
-            {
-                animationClip.name = "idle2";
-                var animation = gameObject.addComponent("Animation");
-                animation.animation = animationClip;
-                animation.isplaying = true;
+            animationClip.name = "idle2";
+            var animation = gameObject.addComponent("Animation");
+            animation.animation = animationClip;
+            animation.isplaying = true;
 
 
-                gameObject.transform.rx = -90;
-                gameObject.transform.ry = -90;
-                gameObject.transform.rz = -90;
-            });
+            gameObject.transform.rx = -90;
+            gameObject.transform.ry = -90;
+            gameObject.transform.rz = -90;
         });
+    });
 
-        function useMatrial(gameObject: feng3d.GameObject)
+    function useMatrial(gameObject: feng3d.GameObject)
+    {
+        for (var i = 0; i < gameObject.numChildren; i++)
         {
-            for (var i = 0; i < gameObject.numChildren; i++)
+            var child = gameObject.getChildAt(i);
+            var model = child.getComponent("Renderable");
+            if (model)
             {
-                var child = gameObject.getChildAt(i);
-                var model = child.getComponent("Renderable");
-                if (model)
-                {
-                    feng3d.serialization.setValue(model.material, {
-                        uniforms: {
-                            s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
-                            s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_normals.png" } },
-                            s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_specular.png" } },
-                        },
-                    })
-                }
+                feng3d.serialization.setValue(model.material, {
+                    uniforms: {
+                        s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
+                        s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_normals.png" } },
+                        s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_specular.png" } },
+                    },
+                })
             }
         }
-    }
-    /**
-     * 更新
-     */
-    update()
-    {
-    }
-
-    /**
-    * 销毁时调用
-    */
-    dispose()
-    {
-
     }
 }

@@ -55,5 +55,8 @@
 		// "src/vr/WebVR.ts",
 		//
 		"src/font/GeometryFontTest.ts",
+		//
+		"src/renderer/Basic.ts",
+		"src/renderer/DashedLine.ts",
 	]
 }

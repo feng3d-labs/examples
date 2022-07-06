@@ -41,7 +41,11 @@ var files = {
     ],
     "font": [
         "GeometryFontTest"
-    ]
+    ],
+    "renderer": [
+        "Basic",
+        "DashedLine",
+    ],
 };
 
 function extractQuery()

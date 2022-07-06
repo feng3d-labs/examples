@@ -16,9 +16,6 @@
 		{
 			"path": "../feng3d"
 		},
-		{
-			"path": "../parsers/runtime"
-		},
 	],
 	"files": [
 		"src/advanced/TerrainMergeTest.ts",

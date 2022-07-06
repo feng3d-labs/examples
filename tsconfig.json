@@ -53,5 +53,7 @@
 		// "src/vr/Clock.ts",
 		// "src/vr/webvr_cubes.ts",
 		// "src/vr/WebVR.ts",
+		//
+		"src/font/GeometryFontTest.ts",
 	]
 }

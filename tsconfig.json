@@ -17,9 +17,6 @@
 			"path": "../feng3d"
 		},
 		{
-			"path": "../terrain/runtime"
-		},
-		{
 			"path": "../parsers/runtime"
 		},
 	],

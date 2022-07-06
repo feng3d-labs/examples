@@ -1,52 +1,38 @@
 /**
  * 测试3D容器
  */
-class Container3DTest extends feng3d.Script
+
+var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+
+var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+camera.transform.position = new feng3d.Vector3(0, 1, -10);
+scene.gameObject.addChild(camera.gameObject);
+
+var engine = new feng3d.View(null, scene, camera);
+
+//初始化颜色材质
+const cube = feng3d.GameObject.createPrimitive("Cube");
+scene.gameObject.addChild(cube);
+
+const colorMaterial = cube.getComponent("Renderable").material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+
+var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
+cylinder.transform.x = 2;
+cube.addChild(cylinder);
+
+let num = 0;
+feng3d.ticker.onframe(() =>
 {
-    cube: feng3d.GameObject
-    colorMaterial: feng3d.Material
-    num = 0;
+    console.log("update")
 
-    /**
-     * 初始化时调用
-     */
-    init()
+    //变化旋转与颜色
+    cube.transform.ry += 1;
+
+    num++;
+
+    if (num % 60 == 0)
     {
-
-        //初始化颜色材质
-        this.cube = feng3d.GameObject.createPrimitive("Cube");
-        this.gameObject.addChild(this.cube);
-
-        this.colorMaterial = this.cube.getComponent("Renderable").material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
-
-        var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
-        cylinder.transform.x = 2;
-        this.cube.addChild(cylinder);
+        (<feng3d.ColorUniforms>colorMaterial.uniforms).u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
     }
-
-    /**
-     * 更新
-     */
-    update()
-    {
-        console.log("update")
-
-        //变化旋转与颜色
-        this.cube.transform.ry += 1;
-
-        this.num++;
-
-        if (this.num % 60 == 0)
-        {
-            (<feng3d.ColorUniforms>this.colorMaterial.uniforms).u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
-        }
-    }
-
-    /**
-     * 销毁时调用
-     */
-    dispose()
-    {
-
-    }
-}
+});

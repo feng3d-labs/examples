@@ -9,8 +9,8 @@
 			"ES2015",
 			"dom"
 		],
-		// "outDir": "out"
-		"outFile": "out/examples.js"
+		"outDir": "out"
+		// "outFile": "out/examples.js"
 	},
 	"references": [
 		{

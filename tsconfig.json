@@ -16,6 +16,9 @@
 		{
 			"path": "../feng3d"
 		},
+		{
+			"path": "../feng2d"
+		},
 	],
 	"files": [
 		"src/advanced/TerrainMergeTest.ts",

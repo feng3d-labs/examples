@@ -1,15 +1,15 @@
 namespace examples
 {
-    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
     scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
     camera.transform.position = new feng3d.Vector3(0, 1, -10);
     scene.gameObject.addChild(camera.gameObject);
 
     var engine = new feng3d.View(null, scene, camera);
 
-    camera.gameObject.addComponent("FPSController");
+    camera.gameObject.addComponent(feng3d.FPSController);
     scene.background.setTo(0.3, 0.3, 0.3, 1);
 
     var cube = feng3d.GameObject.createPrimitive("Cube");
@@ -18,15 +18,15 @@ namespace examples
 
     var gameObject = feng3d.GameObject.createPrimitive("Plane");
     gameObject.transform.y = 1.50;
-    var holdSizeComponent = gameObject.addComponent("HoldSizeComponent");
+    var holdSizeComponent = gameObject.addComponent(feng3d.HoldSizeComponent);
     holdSizeComponent.holdSize = 1;
     holdSizeComponent.camera = camera;
-    var billboardComponent = gameObject.addComponent("BillboardComponent");
+    var billboardComponent = gameObject.addComponent(feng3d.BillboardComponent);
     billboardComponent.camera = camera;
     cube.addChild(gameObject);
 
     //材质
-    var model = gameObject.getComponent("Renderable");
+    var model = gameObject.getComponent(feng3d.Renderable);
     model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
     var textureMaterial = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { __class__: "feng3d.Texture2D", source: { url: 'resources/m.png' } } } });
     // textureMaterial.cullFace = CullFace.NONE;

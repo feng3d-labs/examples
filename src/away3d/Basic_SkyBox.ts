@@ -1,9 +1,9 @@
 namespace examples
 {
-    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
     scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
     camera.transform.position = new feng3d.Vector3(0, 1, -10);
     scene.gameObject.addChild(camera.gameObject);
 
@@ -24,7 +24,7 @@ namespace examples
     });
 
     var skybox = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "skybox" });
-    var skyboxComponent = skybox.addComponent("SkyBox");
+    var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
     skyboxComponent.s_skyboxTexture = cubeTexture;
     scene.gameObject.addChild(skybox);
 
@@ -39,7 +39,7 @@ namespace examples
     uniforms.u_ambient.a = 0.25;
 
     var torus = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "torus" });
-    var model = torus.addComponent("Renderable");
+    var model = torus.addComponent(feng3d.Renderable);
     model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
     model.material = torusMaterial;
     scene.gameObject.addChild(torus);

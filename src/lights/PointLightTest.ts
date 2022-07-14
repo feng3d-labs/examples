@@ -1,9 +1,9 @@
 namespace examples
 {
-    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
     scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
     camera.transform.position = new feng3d.Vector3(0, 1, -10);
     scene.gameObject.addChild(camera.gameObject);
 
@@ -20,7 +20,7 @@ namespace examples
     camera.transform.z = -5;
     camera.transform.y = 2;
     camera.transform.lookAt(new feng3d.Vector3());
-    camera.gameObject.addComponent("FPSController");
+    camera.gameObject.addComponent(feng3d.FPSController);
     //
     feng3d.windowEventProxy.on("keyup", (event) =>
     {
@@ -51,7 +51,7 @@ namespace examples
         //初始化立方体
         var plane = new feng3d.GameObject();
         plane.transform.y = -1;
-        var model = plane.addComponent("Renderable");
+        var model = plane.addComponent(feng3d.Renderable);
         var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
         geometry.scaleU = 2;
         geometry.scaleV = 2;
@@ -59,7 +59,7 @@ namespace examples
         scene.gameObject.addChild(plane);
 
         var cube = new feng3d.GameObject();
-        var model = cube.addComponent("Renderable");
+        var model = cube.addComponent(feng3d.Renderable);
         model.material = material;
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         model.geometry.scaleU = 2;
@@ -81,10 +81,10 @@ namespace examples
 
         //
         var lightColor0 = new feng3d.Color4(1, 0, 0, 1);
-        var model = light0.addComponent("Renderable");
+        var model = light0.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
         //初始化点光源
-        var pointLight0 = light0.addComponent("PointLight");
+        var pointLight0 = light0.addComponent(feng3d.PointLight);
         pointLight0.shadowType = feng3d.ShadowType.PCF_Shadows;
         pointLight0.color = lightColor0.toColor3();
         model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor0 } });
@@ -92,10 +92,10 @@ namespace examples
 
         //
         var lightColor1 = new feng3d.Color4(0, 1, 0, 1);
-        model = light1.addComponent("Renderable");
+        model = light1.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 0.05 });
         //初始化点光源
-        var pointLight1 = light1.addComponent("DirectionalLight");
+        var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
         pointLight1.shadowType = feng3d.ShadowType.PCF_Shadows;
         pointLight1.color = lightColor1.toColor3();
         model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor1 } });

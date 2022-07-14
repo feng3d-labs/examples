@@ -1,9 +1,9 @@
 namespace examples
 {
-    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
     scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
     camera.transform.position = new feng3d.Vector3(0, 1, -10);
     scene.gameObject.addChild(camera.gameObject);
 
@@ -14,7 +14,7 @@ namespace examples
     scene.gameObject.addChild(cube);
 
     //初始化颜色材质
-    var colorMaterial = cube.getComponent("Renderable").material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+    var colorMaterial = cube.getComponent(feng3d.Renderable).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
 
     //变化旋转与颜色
     setInterval(function ()

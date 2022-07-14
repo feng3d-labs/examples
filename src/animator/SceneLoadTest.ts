@@ -6,7 +6,7 @@ namespace examples
     {
         var json = JSON.parse(content);
         var sceneobject: feng3d.GameObject = feng3d.serialization.deserialize(json);
-        var scene = sceneobject.getComponent("Scene");
+        var scene = sceneobject.getComponent(feng3d.Scene);
 
         view3D.scene = scene;
     });

@@ -15,7 +15,7 @@
 //     {
 
 //         var scene = this.gameObject.scene;
-//         var camera = scene.getComponentsInChildren("Camera")[0];
+//         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
 //         var canvas = document.getElementById("glcanvas");
 
 
@@ -52,11 +52,11 @@
 //             lens.aspect = window.innerWidth / window.innerHeight;
 //             lens.near = 0.1;
 //             lens.far = 10;
-//             camera.gameObject.addComponent("FPSController");
+//             camera.gameObject.addComponent(feng3d.FPSController);
 //             scene.gameObject.addChild(camera.gameObject);
 
 //             crosshair = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "crosshair" });
-//             var model = crosshair.addComponent("Renderable");
+//             var model = crosshair.addComponent(feng3d.Renderable);
 //             model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
 //             var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { u_diffuse: { a: 0.5 } } });
 //             material.renderParams.enableBlend = true;

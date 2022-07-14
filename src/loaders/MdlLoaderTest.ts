@@ -1,9 +1,9 @@
 namespace examples
 {
-	var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent("Scene")
+	var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
 	scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-	var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent("Camera");
+	var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
 	camera.transform.position = new feng3d.Vector3(0, 1, -10);
 	scene.gameObject.addChild(camera.gameObject);
 
@@ -64,7 +64,7 @@ namespace examples
 	view.camera.transform.z = -3;
 	view.camera.transform.lookAt(new feng3d.Vector3());
 
-	view.camera.gameObject.addComponent("FPSController");
+	view.camera.gameObject.addComponent(feng3d.FPSController);
 
 	//
 	var rooturl = "resources/war3/";
@@ -95,7 +95,7 @@ namespace examples
 
 		function updateAnimatorId()
 		{
-			var animation = showWar3Model.getComponentsInChildren("Animation")[0];
+			var animation = showWar3Model.getComponentsInChildren(feng3d.Animation)[0];
 			animatorId = (animation.animations.length + animatorId) % animation.animations.length;
 			animation.animation = animation.animations[animatorId];
 		}
@@ -122,7 +122,7 @@ namespace examples
 			view.scene.gameObject.addChild(gameObject);
 			loading = false;
 			showWar3Model = gameObject;
-			var animation = showWar3Model.getComponentsInChildren("Animation")[0];
+			var animation = showWar3Model.getComponentsInChildren(feng3d.Animation)[0];
 			animation.isplaying = true;
 		});
 	}

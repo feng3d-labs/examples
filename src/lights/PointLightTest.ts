@@ -24,7 +24,7 @@ namespace examples
     //
     feng3d.windowEventProxy.on("keyup", (event) =>
     {
-        var boardKey = String.fromCharCode(event.keyCode).toLocaleLowerCase();
+        var boardKey = String.fromCharCode(event.data.keyCode).toLocaleLowerCase();
         switch (boardKey)
         {
             case "c":

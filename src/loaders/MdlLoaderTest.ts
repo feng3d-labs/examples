@@ -70,8 +70,9 @@ namespace examples
 	var rooturl = "resources/war3/";
 	updateModel();
 
-	feng3d.windowEventProxy.on("keyup", (e) =>
+	feng3d.windowEventProxy.on("keyup", (event) =>
 	{
+		const e = event.data;
 		if (e.keyCode == 37 && !loading)
 		{
 			modelId--;

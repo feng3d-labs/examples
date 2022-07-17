@@ -5,6 +5,7 @@
 		"sourceMap": true,
 		"experimentalDecorators": true,
 		"declaration": true,
+		"skipLibCheck": true,
 		"lib": [
 			"ES2015",
 			"dom"

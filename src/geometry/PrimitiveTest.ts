@@ -37,7 +37,7 @@ namespace examples
     {
         var time = new Date().getTime();
         var angle = (Math.round(time / 17) % 360);
-        angle = angle * Math.DEG2RAD;
+        angle = angle * feng3d.mathUtil.DEG2RAD;
         camera.transform.position = new feng3d.Vector3(10 * Math.sin(angle), 0, 10 * Math.cos(angle));
 
         controller.update();

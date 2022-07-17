@@ -253,7 +253,7 @@
 //             //     if (cube.position.x < - 3 || cube.position.x > 3)
 //             //     {
 
-//             //         cube.position.x = THREE.Math.clamp(cube.position.x, - 3, 3);
+//             //         cube.position.x = THREE.mathUtil.clamp(cube.position.x, - 3, 3);
 //             //         cube.userData.velocity.x = - cube.userData.velocity.x;
 
 //             //     }
@@ -261,7 +261,7 @@
 //             //     if (cube.position.y < - 3 || cube.position.y > 3)
 //             //     {
 
-//             //         cube.position.y = THREE.Math.clamp(cube.position.y, - 3, 3);
+//             //         cube.position.y = THREE.mathUtil.clamp(cube.position.y, - 3, 3);
 //             //         cube.userData.velocity.y = - cube.userData.velocity.y;
 
 //             //     }
@@ -269,7 +269,7 @@
 //             //     if (cube.position.z < - 3 || cube.position.z > 3)
 //             //     {
 
-//             //         cube.position.z = THREE.Math.clamp(cube.position.z, - 3, 3);
+//             //         cube.position.z = THREE.mathUtil.clamp(cube.position.z, - 3, 3);
 //             //         cube.userData.velocity.z = - cube.userData.velocity.z;
 
 //             //     }

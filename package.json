@@ -20,5 +20,8 @@
     "3dEngine"
   ],
   "author": "feng",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "feng3d": "0.1.3"
+  }
 }

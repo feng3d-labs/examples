@@ -23,6 +23,6 @@
   "author": "feng",
   "license": "ISC",
   "dependencies": {
-    "feng3d": "0.4.1"
+    "feng3d": "0.5.0"
   }
 }

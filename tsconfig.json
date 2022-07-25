@@ -14,7 +14,7 @@
 		// "outFile": "out/examples.js"
 	},
 	"files": [
-		"../feng3d/index.d.ts",
+		"../feng3d/dist/index.d.ts",
 		//
 		"src/advanced/TerrainMergeTest.ts",
 		"src/advanced/TerrainTest.ts",

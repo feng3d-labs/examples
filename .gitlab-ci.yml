@@ -20,6 +20,6 @@ pages:
   - npm run deploy
   artifacts:
     paths:
-    - public
+    - docs
   only:
   - master

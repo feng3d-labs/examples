@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "npm run watch",
-    "clean": "rimraf \"{out,public}\"",
+    "clean": "rimraf \"{out,docs}\"",
     "build": "npm run clean && tsc",
     "watch": "tsc -w",
     "deploy": "npm run build && node scripts/deploy.js",

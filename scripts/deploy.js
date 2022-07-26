@@ -14,5 +14,5 @@ const copyfiles = [
 
 copyfiles.forEach((v) =>
 {
-    fs.copy(v, `public/${v}`);
+    fs.copy(v, `docs/${v}`);
 });

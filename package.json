@@ -6,11 +6,15 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "deploy": "node scripts/deploy.js"
+    "deploy": "node scripts/deploy.js",
+    "release": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/feng3d/feng3d-examples.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "libs",

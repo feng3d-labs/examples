@@ -17,8 +17,7 @@ test:
 pages:
   stage: deploy
   script:
-  - npm run build
-  - npm run copyfiles
+  - npm run deploy
   artifacts:
     paths:
     - public

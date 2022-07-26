@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "deploy": "node scripts/deploy.js",
+    "deploy": "npm run build && node scripts/deploy.js",
     "release": "npm run build && npm publish"
   },
   "repository": {

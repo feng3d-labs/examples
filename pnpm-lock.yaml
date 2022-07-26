@@ -1,0 +1,477 @@
+lockfileVersion: 5.3
+
+specifiers:
+  copyfiles: ^2.4.1
+  feng3d: 0.5.0
+  fs-extra: ^10.1.0
+  typescript: 4.3.5
+
+dependencies:
+  copyfiles: 2.4.1
+  feng3d: 0.5.0
+
+devDependencies:
+  fs-extra: 10.1.0
+  typescript: 4.3.5
+
+packages:
+
+  /@feng3d/assets/0.5.0:
+    resolution: {integrity: sha512-H5qm47A6mgaxsE7XK/PaYHBM3CCjr+7C2UXXVVck8CBzYvdF68MU5OqtpEboQ128/rEWdfQ8B3lTwV6Yy4FiUQ==}
+    dependencies:
+      '@feng3d/core': 0.5.0
+      '@feng3d/event': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /@feng3d/bezier/0.5.0:
+    resolution: {integrity: sha512-aIf+qa8TT+Kh5pJkHzR1BSTzv7dCQs09jwV4eADWVUIa612i8ZLhCQY4bl4qztZahIUVfK4YERR548Ztcu2N2w==}
+    dev: false
+
+  /@feng3d/core/0.5.0:
+    resolution: {integrity: sha512-l/oYjLBkf20IzdiEq7w/bAm7KP93A+Mqw6fPtfEFYa1YSB+OPBuBsJwUAdwV1Yx0JL3Ku68LQutYeByh0aavpQ==}
+    dependencies:
+      '@feng3d/event': 0.5.0
+      '@feng3d/filesystem': 0.5.0
+      '@feng3d/math': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/renderer': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/shortcut': 0.5.0
+      '@feng3d/task': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /@feng3d/event/0.5.0:
+    resolution: {integrity: sha512-PUXQpd4+zcps5LWzBTgudTxEQxDGa4jiSMi1rYT3M8V7yLMmyMDP761lCeqyxKX+Qsh2jNnrgiyR6yFkZDlJWg==}
+    dev: false
+
+  /@feng3d/filesystem/0.5.0:
+    resolution: {integrity: sha512-FoCEmgiYioORbt0hP2Wpx5VKO0FPs+9J7y11JjuC085kJGSgRx+CeqUx0BarYE76IjagVr1ZU/zhlxMH5BIIlQ==}
+    dependencies:
+      '@feng3d/event': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/task': 0.5.0
+    dev: false
+
+  /@feng3d/math/0.5.0:
+    resolution: {integrity: sha512-OC3rpUk12Ophl7+nP3aAJ4xGWW5/loAEd51/Po0gEu08v/adLj2vzmTAaIHEge1hDnQjBhx2oRiyC6W4+20ZDQ==}
+    dependencies:
+      '@feng3d/bezier': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/serialization': 0.5.0
+    dev: false
+
+  /@feng3d/objectview/0.5.0:
+    resolution: {integrity: sha512-bZqSudINlflR5XslN3bMrJEkKdySWValsYuE1oXQnWrd98bY+x1LoCP7pQsNvN4u8HwrWeMHgAn38r5UJFQibA==}
+    dev: false
+
+  /@feng3d/parsers/0.5.0:
+    resolution: {integrity: sha512-waLVEe8gABSBqfXaqI5rZrX62Skwfl2zUBPPri2wHZPvVff3QzlocXoEvBrckM7YYt3FFnpTqmgBsCl18Z2uaw==}
+    dependencies:
+      '@feng3d/core': 0.5.0
+      '@feng3d/event': 0.5.0
+      '@feng3d/filesystem': 0.5.0
+      '@feng3d/math': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/renderer': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /@feng3d/particlesystem/0.5.0:
+    resolution: {integrity: sha512-DpGpjoM4IllMg6P7IFVIpDQd5EGt31D+2BQomq2YmDm37SIDaEdLai7eNyDhhLRN/DFtl8s/Q3XvbcUCKxCvAQ==}
+    dependencies:
+      '@feng3d/core': 0.5.0
+      '@feng3d/event': 0.5.0
+      '@feng3d/filesystem': 0.5.0
+      '@feng3d/math': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/renderer': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /@feng3d/polyfill/0.5.0:
+    resolution: {integrity: sha512-kOJgU1t5ibVIUO2Xqa39Gq0I5yCXCMjuVYfXWZn4w0fv3zmdVSTDW7Zfodgszaz25/0XxmONHeZJkVnAaryP2Q==}
+    dev: false
+
+  /@feng3d/renderer/0.5.0:
+    resolution: {integrity: sha512-heNIxB5vZq+ekcggeDyX6pu2lP85SQhkCKSX7vHbUsEaQgJfkLmrkYxTIRQlhoBpvvFFSJQmI3H6LjV+g7zAcA==}
+    dependencies:
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /@feng3d/serialization/0.5.0:
+    resolution: {integrity: sha512-DUrx+EbuaikehKyd644WUWRbQKe3weXWSmbqQbLmGCl4NxyEzF/XPemrTP6b9+OStucHKeXVNTrS0FIyEDxppA==}
+    dependencies:
+      '@feng3d/polyfill': 0.5.0
+    dev: false
+
+  /@feng3d/shortcut/0.5.0:
+    resolution: {integrity: sha512-C5QchoDHAirGjit9lfXQC7KgoiTxGk6Vt28BMTL5JHVdEIgky5cgHXobIP4p/N7XupX3K62Ik6eSfinVnNaZtg==}
+    dependencies:
+      '@feng3d/event': 0.5.0
+    dev: false
+
+  /@feng3d/task/0.5.0:
+    resolution: {integrity: sha512-zYJdCwIDyi8PruDUI5DvD/PTFvXjSqp/2PnodxSmlMqzrMd0Uk+EtO2ux0e9Yl8tN5D0r4i4gDvtDPLvlBfjdg==}
+    dev: false
+
+  /@feng3d/terrain/0.5.0:
+    resolution: {integrity: sha512-XmKx9CgNdIcoIIyMMkIE9s2PT7IscDIEkK12jqRriwaH/y8f+YnS9Dj0ZJ7uQ1IJBNsd/gVYdorm7Zygi5Kaig==}
+    dependencies:
+      '@feng3d/core': 0.5.0
+      '@feng3d/event': 0.5.0
+      '@feng3d/math': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/renderer': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /@feng3d/ui/0.5.0:
+    resolution: {integrity: sha512-kHKu2f/VODPoxIIeUACw7Rc9nKF2S5B0v/bloNiMx8Een7zW+dxNMJ6CIvs3O4eXK4vIULPZ586pM/rTcKnNKw==}
+    dependencies:
+      '@feng3d/core': 0.5.0
+      '@feng3d/event': 0.5.0
+      '@feng3d/filesystem': 0.5.0
+      '@feng3d/math': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/renderer': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /@feng3d/watcher/0.5.0:
+    resolution: {integrity: sha512-BOBWWP/gbczyVeFnIaS4rCOA3lRdzGCmFU+abKWeQHC//o5K75bt92d6PKk9cqpULT/xW2NZsYNLkbkNIXmfHA==}
+    dev: false
+
+  /ansi-regex/5.0.1:
+    resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
+    engines: {node: '>=8'}
+    dev: false
+
+  /ansi-styles/4.3.0:
+    resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
+    engines: {node: '>=8'}
+    dependencies:
+      color-convert: 2.0.1
+    dev: false
+
+  /balanced-match/1.0.2:
+    resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+    dev: false
+
+  /brace-expansion/1.1.11:
+    resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
+    dependencies:
+      balanced-match: 1.0.2
+      concat-map: 0.0.1
+    dev: false
+
+  /cliui/7.0.4:
+    resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      wrap-ansi: 7.0.0
+    dev: false
+
+  /color-convert/2.0.1:
+    resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
+    engines: {node: '>=7.0.0'}
+    dependencies:
+      color-name: 1.1.4
+    dev: false
+
+  /color-name/1.1.4:
+    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+    dev: false
+
+  /concat-map/0.0.1:
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    dev: false
+
+  /copyfiles/2.4.1:
+    resolution: {integrity: sha512-fereAvAvxDrQDOXybk3Qu3dPbOoKoysFMWtkY3mv5BsL8//OSZVL5DCLYqgRfY5cWirgRzlC+WSrxp6Bo3eNZg==}
+    hasBin: true
+    dependencies:
+      glob: 7.2.3
+      minimatch: 3.1.2
+      mkdirp: 1.0.4
+      noms: 0.0.0
+      through2: 2.0.5
+      untildify: 4.0.0
+      yargs: 16.2.0
+    dev: false
+
+  /core-util-is/1.0.3:
+    resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+    dev: false
+
+  /emoji-regex/8.0.0:
+    resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
+    dev: false
+
+  /escalade/3.1.1:
+    resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}
+    engines: {node: '>=6'}
+    dev: false
+
+  /feng3d/0.5.0:
+    resolution: {integrity: sha512-2SRuXbZdTYdqtqgfOpkF5nXKTO5DjGJIIAaxq7IwDwdPYbtdUWeqvzx8mbe019ALDns/jaVFZ34opkG6uToi1g==}
+    dependencies:
+      '@feng3d/assets': 0.5.0
+      '@feng3d/bezier': 0.5.0
+      '@feng3d/core': 0.5.0
+      '@feng3d/event': 0.5.0
+      '@feng3d/filesystem': 0.5.0
+      '@feng3d/math': 0.5.0
+      '@feng3d/objectview': 0.5.0
+      '@feng3d/parsers': 0.5.0
+      '@feng3d/particlesystem': 0.5.0
+      '@feng3d/polyfill': 0.5.0
+      '@feng3d/renderer': 0.5.0
+      '@feng3d/serialization': 0.5.0
+      '@feng3d/shortcut': 0.5.0
+      '@feng3d/task': 0.5.0
+      '@feng3d/terrain': 0.5.0
+      '@feng3d/ui': 0.5.0
+      '@feng3d/watcher': 0.5.0
+    dev: false
+
+  /fs-extra/10.1.0:
+    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
+  /fs.realpath/1.0.0:
+    resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
+    dev: false
+
+  /get-caller-file/2.0.5:
+    resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
+    engines: {node: 6.* || 8.* || >= 10.*}
+    dev: false
+
+  /glob/7.2.3:
+    resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    dependencies:
+      fs.realpath: 1.0.0
+      inflight: 1.0.6
+      inherits: 2.0.4
+      minimatch: 3.1.2
+      once: 1.4.0
+      path-is-absolute: 1.0.1
+    dev: false
+
+  /graceful-fs/4.2.10:
+    resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
+    dev: true
+
+  /inflight/1.0.6:
+    resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    dependencies:
+      once: 1.4.0
+      wrappy: 1.0.2
+    dev: false
+
+  /inherits/2.0.4:
+    resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+    dev: false
+
+  /is-fullwidth-code-point/3.0.0:
+    resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
+    engines: {node: '>=8'}
+    dev: false
+
+  /isarray/0.0.1:
+    resolution: {integrity: sha512-D2S+3GLxWH+uhrNEcoh/fnmYeP8E8/zHl644d/jdA0g2uyXvy3sb0qxotE+ne0LtccHknQzWwZEzhak7oJ0COQ==}
+    dev: false
+
+  /isarray/1.0.0:
+    resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
+    dev: false
+
+  /jsonfile/6.1.0:
+    resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
+    dependencies:
+      universalify: 2.0.0
+    optionalDependencies:
+      graceful-fs: 4.2.10
+    dev: true
+
+  /minimatch/3.1.2:
+    resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
+    dependencies:
+      brace-expansion: 1.1.11
+    dev: false
+
+  /mkdirp/1.0.4:
+    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dev: false
+
+  /noms/0.0.0:
+    resolution: {integrity: sha512-lNDU9VJaOPxUmXcLb+HQFeUgQQPtMI24Gt6hgfuMHRJgMRHMF/qZ4HJD3GDru4sSw9IQl2jPjAYnQrdIeLbwow==}
+    dependencies:
+      inherits: 2.0.4
+      readable-stream: 1.0.34
+    dev: false
+
+  /once/1.4.0:
+    resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
+    dependencies:
+      wrappy: 1.0.2
+    dev: false
+
+  /path-is-absolute/1.0.1:
+    resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /process-nextick-args/2.0.1:
+    resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
+    dev: false
+
+  /readable-stream/1.0.34:
+    resolution: {integrity: sha512-ok1qVCJuRkNmvebYikljxJA/UEsKwLl2nI1OmaqAu4/UE+h0wKCHok4XkL/gvi39OacXvw59RJUOFUkDib2rHg==}
+    dependencies:
+      core-util-is: 1.0.3
+      inherits: 2.0.4
+      isarray: 0.0.1
+      string_decoder: 0.10.31
+    dev: false
+
+  /readable-stream/2.3.7:
+    resolution: {integrity: sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==}
+    dependencies:
+      core-util-is: 1.0.3
+      inherits: 2.0.4
+      isarray: 1.0.0
+      process-nextick-args: 2.0.1
+      safe-buffer: 5.1.2
+      string_decoder: 1.1.1
+      util-deprecate: 1.0.2
+    dev: false
+
+  /require-directory/2.1.1:
+    resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /safe-buffer/5.1.2:
+    resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
+    dev: false
+
+  /string-width/4.2.3:
+    resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
+    engines: {node: '>=8'}
+    dependencies:
+      emoji-regex: 8.0.0
+      is-fullwidth-code-point: 3.0.0
+      strip-ansi: 6.0.1
+    dev: false
+
+  /string_decoder/0.10.31:
+    resolution: {integrity: sha512-ev2QzSzWPYmy9GuqfIVildA4OdcGLeFZQrq5ys6RtiuF+RQQiZWr8TZNyAcuVXyQRYfEO+MsoB/1BuQVhOJuoQ==}
+    dev: false
+
+  /string_decoder/1.1.1:
+    resolution: {integrity: sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==}
+    dependencies:
+      safe-buffer: 5.1.2
+    dev: false
+
+  /strip-ansi/6.0.1:
+    resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
+    engines: {node: '>=8'}
+    dependencies:
+      ansi-regex: 5.0.1
+    dev: false
+
+  /through2/2.0.5:
+    resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
+    dependencies:
+      readable-stream: 2.3.7
+      xtend: 4.0.2
+    dev: false
+
+  /typescript/4.3.5:
+    resolution: {integrity: sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
+
+  /universalify/2.0.0:
+    resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
+    engines: {node: '>= 10.0.0'}
+    dev: true
+
+  /untildify/4.0.0:
+    resolution: {integrity: sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==}
+    engines: {node: '>=8'}
+    dev: false
+
+  /util-deprecate/1.0.2:
+    resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+    dev: false
+
+  /wrap-ansi/7.0.0:
+    resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
+    engines: {node: '>=10'}
+    dependencies:
+      ansi-styles: 4.3.0
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+    dev: false
+
+  /wrappy/1.0.2:
+    resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+    dev: false
+
+  /xtend/4.0.2:
+    resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
+    engines: {node: '>=0.4'}
+    dev: false
+
+  /y18n/5.0.8:
+    resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
+    engines: {node: '>=10'}
+    dev: false
+
+  /yargs-parser/20.2.9:
+    resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
+    engines: {node: '>=10'}
+    dev: false
+
+  /yargs/16.2.0:
+    resolution: {integrity: sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==}
+    engines: {node: '>=10'}
+    dependencies:
+      cliui: 7.0.4
+      escalade: 3.1.1
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 20.2.9
+    dev: false

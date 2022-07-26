@@ -92,7 +92,7 @@ button.textContent = 'View source';
 button.addEventListener('click', function (event)
 {
 
-    window.open('https://gitee.com/feng3d/examples/tree/master/src/' + selected + '.ts');
+    window.open('https://gitlab.com/feng3d/feng3d-examples/tree/master/src/' + selected + '.ts');
 
 }, false);
 button.style.display = 'none';

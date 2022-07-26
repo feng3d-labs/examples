@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 
 const copyfiles = [
+    "node_modules/feng3d/dist",
     "libs",
     "out",
     "resources",

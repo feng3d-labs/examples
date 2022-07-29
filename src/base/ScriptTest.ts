@@ -12,6 +12,7 @@ namespace examples
     var sc = scene.gameObject.addScript("ScriptDemo")
 }
 
+@feng3d.decoratorRegisterClass()
 class ScriptDemo extends feng3d.Script
 {
     cube: feng3d.GameObject;

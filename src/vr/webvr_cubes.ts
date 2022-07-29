@@ -66,16 +66,16 @@
 //             room = feng3d.serialization.setValue(new feng3d.GameObject(), {
 //                 name: "room",
 //                 components: [
-//                     { __class__: "feng3d.Transform", y: 3 },
+//                     { __class__: "Transform", y: 3 },
 //                     {
-//                         __class__: "feng3d.MeshRenderer",
+//                         __class__: "MeshRenderer",
 //                         geometry: {
-//                             __class__: "feng3d.CubeGeometry",
+//                             __class__: "CubeGeometry",
 //                             width: 6, height: 6, depth: 6,
 //                             segmentsW: 8, segmentsH: 8, segmentsD: 8,
 //                         },
 //                         material: {
-//                             __class__: "feng3d.Material",
+//                             __class__: "Material",
 //                             shaderName: "standard",
 //                             uniforms: { u_diffuse: { r: 0.25, g: 0.25, b: 0.25 } },
 //                             renderParams: { renderMode: feng3d.RenderMode.LINES },
@@ -90,8 +90,8 @@
 //             var light = feng3d.serialization.setValue(new feng3d.GameObject(), {
 //                 name: "light",
 //                 components: [
-//                     { __class__: "feng3d.Transform", rx: 0.577, ry: 0.577, rz: 0.577 },
-//                     { __class__: "feng3d.DirectionalLight" }
+//                     { __class__: "Transform", rx: 0.577, ry: 0.577, rz: 0.577 },
+//                     { __class__: "DirectionalLight" }
 //                 ],
 //             });
 //             scene.gameObject.addChild(light);

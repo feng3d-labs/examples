@@ -48,9 +48,9 @@ namespace examples
             {
                 feng3d.serialization.setValue(model.material, {
                     uniforms: {
-                        s_diffuse: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
-                        s_normal: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_normals.png" } },
-                        s_specular: { __class__: "feng3d.Texture2D", source: { url: "resources/hellknight/hellknight_specular.png" } },
+                        s_diffuse: { __class__: "Texture2D", source: { url: "resources/hellknight/hellknight_diffuse.jpg" } },
+                        s_normal: { __class__: "Texture2D", source: { url: "resources/hellknight/hellknight_normals.png" } },
+                        s_specular: { __class__: "Texture2D", source: { url: "resources/hellknight/hellknight_specular.png" } },
                     },
                 })
             }

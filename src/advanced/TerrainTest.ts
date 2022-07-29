@@ -21,20 +21,20 @@ namespace examples
     var model = terrain.addComponent(feng3d.Renderable);
     // model.geometry = new feng3d.TerrainGeometry();
     model.geometry = new feng3d.TerrainGeometry({
-        heightMap: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_heights.jpg' } },
+        heightMap: { __class__: "Texture2D", source: { url: root + 'terrain_heights.jpg' } },
         width: 500, height: 100, depth: 500,
         segmentsW: 100,
         segmentsH: 100,
     });
     var material = feng3d.serialization.setValue(new feng3d.Material(), {
         shaderName: "terrain", uniforms: {
-            s_diffuse: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_diffuse.jpg' } },
-            s_normal: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_normals.jpg' } },
+            s_diffuse: { __class__: "Texture2D", source: { url: root + 'terrain_diffuse.jpg' } },
+            s_normal: { __class__: "Texture2D", source: { url: root + 'terrain_normals.jpg' } },
             //
-            s_blendTexture: { __class__: "feng3d.Texture2D", source: { url: root + 'terrain_splats.png' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
-            s_splatTexture1: { __class__: "feng3d.Texture2D", source: { url: root + 'beach.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
-            s_splatTexture2: { __class__: "feng3d.Texture2D", source: { url: root + 'grass.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
-            s_splatTexture3: { __class__: "feng3d.Texture2D", source: { url: root + 'rock.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
+            s_blendTexture: { __class__: "Texture2D", source: { url: root + 'terrain_splats.png' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
+            s_splatTexture1: { __class__: "Texture2D", source: { url: root + 'beach.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
+            s_splatTexture2: { __class__: "Texture2D", source: { url: root + 'grass.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
+            s_splatTexture3: { __class__: "Texture2D", source: { url: root + 'rock.jpg' }, generateMipmap: true, minFilter: feng3d.TextureMinFilter.LINEAR_MIPMAP_LINEAR },
             u_splatRepeats: new feng3d.Vector4(1, 50, 50, 50),
         }
     });

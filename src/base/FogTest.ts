@@ -20,7 +20,7 @@ namespace examples
     var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), {
         uniforms: {
             s_diffuse: {
-                __class__: "feng3d.Texture2D",
+                __class__: "Texture2D",
                 source: { url: 'resources/m.png' }
             },
             u_fogMode: feng3d.FogMode.LINEAR,

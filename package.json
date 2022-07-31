@@ -1,5 +1,5 @@
 {
-  "name": "@feng3d/examples",
+  "name": "feng3d-examples",
   "version": "0.5.0",
   "description": "feng3d引擎示例",
   "main": "index.html",

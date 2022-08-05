@@ -114,17 +114,15 @@ namespace examples
 		loadModel(modelConfig[modelId]);
 	}
 
-	function loadModel(model: { label: string, url: string }): void
+	async function loadModel(model: { label: string, url: string })
 	{
 		var mdlurl = rooturl + model.url;
 		loading = true;
-		feng3d.mdlLoader.load(mdlurl, (gameObject) =>
-		{
-			view.scene.gameObject.addChild(gameObject);
-			loading = false;
-			showWar3Model = gameObject;
-			var animation = showWar3Model.getComponentsInChildren(feng3d.Animation)[0];
-			animation.isplaying = true;
-		});
+		const gameObject = await feng3d.mdlLoader.load(mdlurl);
+		view.scene.gameObject.addChild(gameObject);
+		loading = false;
+		showWar3Model = gameObject;
+		var animation = showWar3Model.getComponentsInChildren(feng3d.Animation)[0];
+		animation.isplaying = true;
 	}
 }

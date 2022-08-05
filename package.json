@@ -6,10 +6,10 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "rimraf \"{out,public}\"",
-    "build": "npm run clean && tsc",
+    "build": "tsc",
     "watch": "tsc -w",
-    "deploy": "npm run build && node scripts/deploy.js",
-    "release": "npm run build && npm publish"
+    "deploy": "npm run clean && npm run build && node scripts/deploy.js",
+    "release": "npm run clean && npm run build && npm publish"
   },
   "repository": {
     "type": "git",

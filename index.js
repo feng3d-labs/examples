@@ -25,11 +25,6 @@ var files = {
     "animator": [
         "SceneLoadTest",
     ],
-    "loaders": [
-        "OBJParserTest",
-        "MD5LoaderTest",
-        "MdlLoaderTest",
-    ],
     "advanced": [
         "TerrainTest",
         "TerrainMergeTest",

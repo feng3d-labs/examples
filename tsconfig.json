@@ -38,10 +38,6 @@
 		//
 		"src/lights/PointLightTest.ts",
 		//
-		"src/loaders/MD5LoaderTest.ts",
-		"src/loaders/MdlLoaderTest.ts",
-		"src/loaders/OBJParserTest.ts",
-		//
 		"src/material/ColorMaterialTest.ts",
 		"src/material/PointMaterialTest.ts",
 		"src/material/SegmentMaterialTest.ts",

@@ -1,6 +1,6 @@
 {
   "name": "feng3d-examples",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "feng3d引擎示例",
   "main": "index.html",
   "scripts": {
@@ -43,6 +43,6 @@
     "typescript": "4.3.5"
   },
   "dependencies": {
-    "feng3d": "^0.6.0"
+    "feng3d": "^0.7.0"
   }
 }

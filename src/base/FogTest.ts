@@ -4,14 +4,14 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
 
 var cube = new feng3d.GameObject();
-cube.transform.z = -7;
-cube.transform.y = 0;
+cube.z = -7;
+cube.y = 0;
 scene.gameObject.addChild(cube);
 
 var model = cube.addComponent(feng3d.Renderable);
@@ -33,5 +33,5 @@ var material = model.material = feng3d.serialization.setValue(new feng3d.Materia
 
 feng3d.ticker.onframe(() =>
 {
-    cube.transform.ry += 1;
+    cube.ry += 1;
 });

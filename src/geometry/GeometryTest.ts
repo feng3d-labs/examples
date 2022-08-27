@@ -4,7 +4,7 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
@@ -27,8 +27,8 @@ matrix.appendTranslation(0, 0.50, 0);
 matrix.appendRotation(feng3d.Vector3.Z_AXIS, 45);
 geometry.addGeometry(addGeometry, matrix);
 
-gameobject.transform.z = 3;
-gameobject.transform.y = -1;
+gameobject.z = 3;
+gameobject.y = -1;
 scene.gameObject.addChild(gameobject);
 
 //初始化颜色材质
@@ -38,7 +38,7 @@ var colorUniforms = <feng3d.ColorUniforms>model.material.uniforms;
 //变化旋转与颜色
 setInterval(function ()
 {
-    gameobject.transform.ry += 1;
+    gameobject.ry += 1;
 }, 15);
 setInterval(function ()
 {

@@ -4,7 +4,7 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
@@ -28,10 +28,9 @@ initListeners();
 
 function initEngine()
 {
-
-    camera.transform.y = 5;
-    camera.transform.z = -10;
-    camera.transform.lookAt(new feng3d.Vector3());
+    camera.gameObject.y = 5;
+    camera.gameObject.z = -10;
+    camera.gameObject.lookAt(new feng3d.Vector3());
     camera.gameObject.addComponent(feng3d.FPSController);
 }
 
@@ -73,14 +72,14 @@ function initLights()
     light1 = new feng3d.GameObject();
     var directionalLight = light1.addComponent(feng3d.DirectionalLight);
     directionalLight.intensity = 0.7;
-    light1.transform.rx = 90;
+    light1.rx = 90;
     scene.gameObject.addChild(light1);
 
     light2 = new feng3d.GameObject();
     var directionalLight = light2.addComponent(feng3d.DirectionalLight);
     directionalLight.color.fromUnit(0x00FFFF);
     directionalLight.intensity = 0.7;
-    light2.transform.rx = 90;
+    light2.rx = 90;
     scene.gameObject.addChild(light2);
 }
 
@@ -92,23 +91,23 @@ function initObjects()
     model.material = planeMaterial;
     geometry.scaleU = 2;
     geometry.scaleV = 2;
-    plane.transform.y = -0.20;
+    plane.y = -0.20;
     scene.gameObject.addChild(plane);
     sphere = new feng3d.GameObject();
     var model = sphere.addComponent(feng3d.Renderable);
     model.geometry = feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 1.50, segmentsW: 40, segmentsH: 20 })
     model.material = sphereMaterial;
-    sphere.transform.x = 3;
-    sphere.transform.y = 1.60;
-    sphere.transform.z = 3.00;
+    sphere.x = 3;
+    sphere.y = 1.60;
+    sphere.z = 3.00;
     scene.gameObject.addChild(sphere);
     cube = new feng3d.GameObject();
     var model = cube.addComponent(feng3d.Renderable);
     model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
     model.material = cubeMaterial;
-    cube.transform.x = 3.00;
-    cube.transform.y = 1.60;
-    cube.transform.z = -2.50;
+    cube.x = 3.00;
+    cube.y = 1.60;
+    cube.z = -2.50;
     scene.gameObject.addChild(cube);
     torus = new feng3d.GameObject();
     var model = torus.addComponent(feng3d.Renderable);
@@ -116,9 +115,9 @@ function initObjects()
     model.material = torusMaterial;
     geometry.scaleU = 10;
     geometry.scaleV = 5;
-    torus.transform.x = -2.50;
-    torus.transform.y = 1.60;
-    torus.transform.z = -2.50;
+    torus.x = -2.50;
+    torus.y = 1.60;
+    torus.z = -2.50;
     scene.gameObject.addChild(torus);
 }
 
@@ -129,6 +128,6 @@ function initListeners()
 
 function onEnterFrame()
 {
-    light1.transform.rx = 30;
-    light1.transform.ry++;
+    light1.rx = 30;
+    light1.ry++;
 }

@@ -7,7 +7,7 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
@@ -19,7 +19,7 @@ scene.gameObject.addChild(cube);
 const colorMaterial = cube.getComponent(feng3d.Renderable).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
 
 var cylinder = feng3d.GameObject.createPrimitive("Cylinder");
-cylinder.transform.x = 2;
+cylinder.x = 2;
 cube.addChild(cylinder);
 
 let num = 0;
@@ -28,7 +28,7 @@ feng3d.ticker.onframe(() =>
     console.log("update")
 
     //变化旋转与颜色
-    cube.transform.ry += 1;
+    cube.ry += 1;
 
     num++;
 

@@ -4,7 +4,7 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
@@ -15,7 +15,7 @@ var gameObject = feng3d.serialization.setValue(new feng3d.GameObject(), { name: 
 var model = gameObject.addComponent(feng3d.Renderable);
 model.geometry = pointGeometry;
 model.material = pointMaterial;
-gameObject.transform.z = 3;
+gameObject.z = 3;
 scene.gameObject.addChild(gameObject);
 
 var length = 200;
@@ -30,6 +30,6 @@ for (var x = -length; x <= length; x = x + 4)
 //变化旋转
 setInterval(function ()
 {
-    gameObject.transform.ry += 1;
-    (<feng3d.PointUniforms>pointMaterial.uniforms).u_PointSize = 1 + 5 * Math.sin(gameObject.transform.ry / 30);
+    gameObject.ry += 1;
+    (<feng3d.PointUniforms>pointMaterial.uniforms).u_PointSize = 1 + 5 * Math.sin(gameObject.ry / 30);
 }, 15);

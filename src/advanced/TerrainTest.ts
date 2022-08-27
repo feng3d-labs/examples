@@ -4,15 +4,15 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
 
-camera.transform.x = 0;
-camera.transform.y = 80;
-camera.transform.z = 0;
-// camera.transform.lookAt(new feng3d.Vector3());
+camera.gameObject.x = 0;
+camera.gameObject.y = 80;
+camera.gameObject.z = 0;
+// camera.gameObject.lookAt(new feng3d.Vector3());
 camera.gameObject.addComponent(feng3d.FPSController);
 
 var root = 'resources/terrain/';
@@ -50,7 +50,7 @@ var pointLight1 = light1.addComponent(feng3d.PointLight);
 pointLight1.range = 5000;
 pointLight1.color = new feng3d.Color3(1, 1, 1);
 // pointLight1.shadowType = feng3d.ShadowType.PCF_Shadows;
-light1.transform.y = 1000;
+light1.y = 1000;
 scene.gameObject.addChild(light1);
 
 //
@@ -58,8 +58,8 @@ feng3d.ticker.onframe(() =>
 {
     var time = new Date().getTime();
     var angle = time / 1000 / 5;
-    light1.transform.y = Math.sin(angle) * 1000;
-    light1.transform.z = Math.cos(angle) * 1000;
+    light1.y = Math.sin(angle) * 1000;
+    light1.z = Math.cos(angle) * 1000;
 
-    // console.log(light1.transform.y, light1.transform.z);
+    // console.log(light1.y, light1.z);
 });

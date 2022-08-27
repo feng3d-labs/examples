@@ -4,7 +4,7 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
@@ -13,11 +13,11 @@ camera.gameObject.addComponent(feng3d.FPSController);
 scene.background.setTo(0.3, 0.3, 0.3, 1);
 
 var cube = feng3d.GameObject.createPrimitive("Cube");
-cube.transform.z = 3;
+cube.z = 3;
 scene.gameObject.addChild(cube);
 
 var gameObject = feng3d.GameObject.createPrimitive("Plane");
-gameObject.transform.y = 1.50;
+gameObject.y = 1.50;
 var holdSizeComponent = gameObject.addComponent(feng3d.HoldSizeComponent);
 holdSizeComponent.holdSize = 1;
 holdSizeComponent.camera = camera;

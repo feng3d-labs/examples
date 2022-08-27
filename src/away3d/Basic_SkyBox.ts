@@ -1,10 +1,11 @@
 import * as feng3d from 'feng3d';
+import { TransformUtils } from 'feng3d';
 
 var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
@@ -28,8 +29,8 @@ var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
 skyboxComponent.s_skyboxTexture = cubeTexture;
 scene.gameObject.addChild(skybox);
 
-camera.transform.z = -6;
-camera.transform.lookAt(new feng3d.Vector3());
+camera.gameObject.z = -6;
+camera.gameObject.lookAt(new feng3d.Vector3());
 camera.lens = new feng3d.PerspectiveLens(90);
 
 var torusMaterial = new feng3d.Material();
@@ -46,9 +47,9 @@ scene.gameObject.addChild(torus);
 
 feng3d.ticker.onframe(() =>
 {
-    torus.transform.rx += 2;
-    torus.transform.ry += 1;
-    camera.transform.position = new feng3d.Vector3(0, 0, 0);
-    camera.transform.ry += 0.5 * (feng3d.windowEventProxy.clientX - canvas.clientLeft - canvas.clientWidth / 2) / 800;
-    camera.transform.moveBackward(6);
+    torus.rx += 2;
+    torus.ry += 1;
+    camera.gameObject.position = new feng3d.Vector3(0, 0, 0);
+    camera.gameObject.ry += 0.5 * (feng3d.windowEventProxy.clientX - canvas.clientLeft - canvas.clientWidth / 2) / 800;
+    TransformUtils.moveBackward(camera.gameObject, 6);
 });

@@ -4,7 +4,7 @@ var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Unti
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
 var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.transform.position = new feng3d.Vector3(0, 1, -10);
+camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
 scene.gameObject.addChild(camera.gameObject);
 
 var engine = new feng3d.View(null, scene, camera);
@@ -17,9 +17,9 @@ initLights();
 
 feng3d.ticker.onframe(setPointLightPosition);
 
-camera.transform.z = -5;
-camera.transform.y = 2;
-camera.transform.lookAt(new feng3d.Vector3());
+camera.gameObject.z = -5;
+camera.gameObject.y = 2;
+camera.gameObject.lookAt(new feng3d.Vector3());
 camera.gameObject.addComponent(feng3d.FPSController);
 //
 feng3d.windowEventProxy.on("keyup", (event) =>
@@ -50,7 +50,7 @@ function initObjects()
 
     //初始化立方体
     var plane = new feng3d.GameObject();
-    plane.transform.y = -1;
+    plane.y = -1;
     var model = plane.addComponent(feng3d.Renderable);
     var geometry = model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 10, height: 10 });
     geometry.scaleU = 2;
@@ -107,13 +107,13 @@ function setPointLightPosition()
     var time = new Date().getTime();
     //
     var angle = time / 1000;
-    light0.transform.y = 3;
-    light0.transform.x = Math.sin(angle) * 3;
-    light0.transform.z = Math.cos(angle) * 3;
+    light0.y = 3;
+    light0.x = Math.sin(angle) * 3;
+    light0.z = Math.cos(angle) * 3;
     //
     angle = angle + Math.PI / 2;
-    light1.transform.y = 3;
-    light1.transform.x = Math.sin(angle) * 3;
-    light1.transform.z = Math.cos(angle) * 3;
-    light1.transform.lookAt(new feng3d.Vector3());
+    light1.y = 3;
+    light1.x = Math.sin(angle) * 3;
+    light1.z = Math.cos(angle) * 3;
+    light1.lookAt(new feng3d.Vector3());
 }

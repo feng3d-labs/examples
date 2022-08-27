@@ -5,13 +5,9 @@
 		{
 			"__class__": "GameObject",
 			"name": "Main Camera",
+			"y": 1,
+			"z": -10,
 			"components": [
-				null,
-				{
-					"__class__": "Transform",
-					"y": 1,
-					"z": -10
-				},
 				{
 					"__class__": "Camera",
 					"lens": {
@@ -21,27 +17,23 @@
 				},
 				{
 					"__class__": "FPSController"
-				}]
+				}
+			]
 		},
 		{
 			"__class__": "GameObject",
 			"name": "DirectionalLight",
-			"children": [
-				null,
-				null],
+			"y": 3,
+			"rx": 50,
+			"ry": -30,
+			"children": [],
 			"components": [
-				null,
-				{
-					"__class__": "Transform",
-					"y": 3,
-					"rx": 50,
-					"ry": -30
-				},
 				{
 					"__class__": "DirectionalLight",
 					"lightType": 1
 				},
-				null]
+				null
+			]
 		},
 		{
 			"__class__": "GameObject",
@@ -50,13 +42,9 @@
 				{
 					"__class__": "GameObject",
 					"name": "arrowsX",
+					"x": 19,
+					"rz": 90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"x": 19,
-							"rz": 90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -75,18 +63,15 @@
 									}
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "arrowsNX",
+					"x": -19,
+					"rz": -90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"x": -19,
-							"rz": -90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -101,18 +86,15 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "arrowsY",
+					"y": 19,
+					"rz": 180,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"y": 19,
-							"rz": 180
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -131,17 +113,14 @@
 									}
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "arrowsNY",
+					"y": -19,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"y": -19
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -156,18 +135,15 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "arrowsZ",
+					"z": 19,
+					"rx": -90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"z": 19,
-							"rx": -90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -186,18 +162,15 @@
 									}
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "arrowsNZ",
+					"z": -19,
+					"rx": 90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"z": -19,
-							"rx": 90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -212,18 +185,15 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "planeX",
+					"x": 7,
+					"rz": -90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"x": 7,
-							"rz": -90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -238,18 +208,15 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "planeNX",
+					"x": -7,
+					"rz": 90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"x": -7,
-							"rz": 90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -264,17 +231,14 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "planeY",
+					"y": 7,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"y": 7
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -289,18 +253,15 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "planeNY",
+					"y": -7,
+					"rz": 180,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"y": -7,
-							"rz": 180
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -315,18 +276,15 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "planeZ",
+					"z": 7,
+					"rx": 90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"z": 7,
-							"rx": 90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -341,18 +299,15 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
+						}
+					]
 				},
 				{
 					"__class__": "GameObject",
 					"name": "planeNZ",
+					"z": -7,
+					"rx": -90,
 					"components": [
-						null,
-						{
-							"__class__": "Transform",
-							"z": -7,
-							"rx": -90
-						},
 						{
 							"__class__": "MeshRenderer",
 							"geometry": {
@@ -367,23 +322,17 @@
 									"__class__": "StandardUniforms"
 								}
 							}
-						}]
-				}],
-			"components": [
-				null,
-				{
-					"__class__": "Transform",
-					"sx": 0.1,
-					"sy": 0.1,
-					"sz": 0.1
-				}]
-		},
-		null],
+						}
+					]
+				}
+			],
+			"sx": 0.1,
+			"sy": 0.1,
+			"sz": 0.1,
+			"components": []
+		}
+	],
 	"components": [
-		null,
-		{
-			"__class__": "Transform"
-		},
 		{
 			"__class__": "Scene",
 			"background": {
@@ -396,6 +345,6 @@
 				"g": 0.4,
 				"b": 0.4
 			}
-		},
-		null]
+		}
+	]
 }

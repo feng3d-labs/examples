@@ -6,7 +6,6 @@
 		"experimentalDecorators": true,
 		"declaration": true,
 		"skipLibCheck": true,
-        "composite": true,
 		"lib": [
 			"ES2015",
 			"dom"
@@ -15,7 +14,6 @@
 		// "outFile": "out/examples.js"
 	},
 	"files": [
-		"node_modules/feng3d/dist/index.d.ts",
 		//
 		"src/advanced/TerrainMergeTest.ts",
 		"src/advanced/TerrainTest.ts",

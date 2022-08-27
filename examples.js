@@ -1,11 +1,10 @@
-/// <reference path="../feng3d/out/feng3d.d.ts" />
-
 window.onload = function ()
 {
     var type = GetQueryString("type");
 
     const script = document.createElement('script');
-    script.src = `out/${type}.js`;
+    script.type = 'module';
+    script.src = `src/${type}.ts`;
     document.body.appendChild(script);
 
     function GetQueryString(name)

@@ -6,6 +6,7 @@
 		"experimentalDecorators": true,
 		"declaration": true,
 		"skipLibCheck": true,
+        "composite": true,
 		"lib": [
 			"ES2015",
 			"dom"

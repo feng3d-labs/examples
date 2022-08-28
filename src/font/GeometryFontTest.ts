@@ -1,16 +1,16 @@
 import * as opentype from 'opentype.js';
 import * as feng3d from 'feng3d';
 
-var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
+var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
-scene.gameObject.addChild(camera.gameObject);
+var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
+camera.object3D.position = new feng3d.Vector3(0, 1, -10);
+scene.object3D.addChild(camera.object3D);
 
 var engine = new feng3d.View(null, scene, camera);
 
-camera.gameObject.addComponent(feng3d.FPSController);
+camera.object3D.addComponent(feng3d.FPSController);
 
 var script = document.createElement('script');
 script.onload = (ev) =>
@@ -39,11 +39,11 @@ script.onload = (ev) =>
             geometry.uvs = Array.from(uvs);
             geometry.indices = Array.from(indices);
 
-            var cube = new feng3d.GameObject().addComponent(feng3d.Renderable);
-            cube.gameObject.x = -7;
-            cube.gameObject.y = 7;
-            cube.gameObject.rx = 180;
-            scene.gameObject.addChild(cube.gameObject);
+            var cube = new feng3d.Object3D().addComponent(feng3d.Renderable);
+            cube.object3D.x = -7;
+            cube.object3D.y = 7;
+            cube.object3D.rx = 180;
+            scene.object3D.addChild(cube.object3D);
 
             //材质
             var material = cube.material = new feng3d.Material();

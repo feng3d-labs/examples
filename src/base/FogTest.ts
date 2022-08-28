@@ -1,18 +1,18 @@
 import * as feng3d from 'feng3d';
 
-var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
+var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.gameObject.position = new feng3d.Vector3(0, 1, -10);
-scene.gameObject.addChild(camera.gameObject);
+var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
+camera.object3D.position = new feng3d.Vector3(0, 1, -10);
+scene.object3D.addChild(camera.object3D);
 
 var engine = new feng3d.View(null, scene, camera);
 
-var cube = new feng3d.GameObject();
+var cube = new feng3d.Object3D();
 cube.z = -7;
 cube.y = 0;
-scene.gameObject.addChild(cube);
+scene.object3D.addChild(cube);
 
 var model = cube.addComponent(feng3d.Renderable);
 model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });

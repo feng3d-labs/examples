@@ -14,7 +14,7 @@
 //     init()
 //     {
 
-//         var scene = this.gameObject.scene;
+//         var scene = this.object3D.scene;
 //         var camera = scene.getComponentsInChildren(feng3d.Camera)[0];
 //         var canvas = document.getElementById("glcanvas");
 
@@ -23,11 +23,11 @@
 
 //         var container: HTMLDivElement;
 
-//         var room: feng3d.GameObject;
+//         var room: feng3d.Object3D;
 //         var isMouseDown = false;
 
 //         var INTERSECTED;
-//         var crosshair: feng3d.GameObject;
+//         var crosshair: feng3d.Object3D;
 
 //         init();
 //         animate();
@@ -52,18 +52,18 @@
 //             lens.aspect = window.innerWidth / window.innerHeight;
 //             lens.near = 0.1;
 //             lens.far = 10;
-//             camera.gameObject.addComponent(feng3d.FPSController);
-//             scene.gameObject.addChild(camera.gameObject);
+//             camera.object3D.addComponent(feng3d.FPSController);
+//             scene.object3D.addChild(camera.object3D);
 
-//             crosshair = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "crosshair" });
+//             crosshair = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "crosshair" });
 //             var model = crosshair.addComponent(feng3d.Renderable);
 //             model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 0.02, tubeRadius: 0.004, segmentsR: 32, segmentsT: 8, yUp: false });
 //             var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { u_diffuse: { a: 0.5 } } });
 //             material.renderParams.enableBlend = true;
 //             crosshair.z = 2;
-//             camera.gameObject.addChild(crosshair);
+//             camera.object3D.addChild(crosshair);
 
-//             room = feng3d.serialization.setValue(new feng3d.GameObject(), {
+//             room = feng3d.serialization.setValue(new feng3d.Object3D(), {
 //                 name: "room",
 //                 components: [
 //                     { __class__: "Transform", y: 3 },
@@ -83,24 +83,24 @@
 //                     }
 //                 ]
 //             });
-//             scene.gameObject.addChild(room);
+//             scene.object3D.addChild(room);
 
 //             // scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
-//             var light = feng3d.serialization.setValue(new feng3d.GameObject(), {
+//             var light = feng3d.serialization.setValue(new feng3d.Object3D(), {
 //                 name: "light",
 //                 components: [
 //                     { __class__: "Transform", rx: 0.577, ry: 0.577, rz: 0.577 },
 //                     { __class__: "DirectionalLight" }
 //                 ],
 //             });
-//             scene.gameObject.addChild(light);
+//             scene.object3D.addChild(light);
 
 //             var geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 0.15, height: 0.15, depth: 0.15 });
 
 //             for (var i = 0; i < 200; i++)
 //             {
-//                 var object = feng3d.serialization.setValue(new feng3d.GameObject(), { name: `box${i}` });
+//                 var object = feng3d.serialization.setValue(new feng3d.Object3D(), { name: `box${i}` });
 
 //                 object.addComponent(feng3d.Renderable, (component) =>
 //                 {

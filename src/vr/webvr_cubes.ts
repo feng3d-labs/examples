@@ -1,6 +1,6 @@
 // namespace feng3d
 // {
-//     export interface GameObjectUserData
+//     export interface Object3DUserData
 //     {
 //         velocity: Vector3;
 //     }

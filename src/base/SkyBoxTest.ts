@@ -16,7 +16,7 @@ camera.object3D.addComponent(feng3d.FPSController);
 
 var skybox = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "skybox" });
 const model = skybox.addComponent(feng3d.SkyBox);
-model.s_skyboxTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
+model.s_skyBoxTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
     rawData: {
         type: "path", paths: [
             'resources/skybox/px.jpg',

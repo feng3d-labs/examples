@@ -26,7 +26,7 @@ var cubeTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
 
 var skybox = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "skybox" });
 var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
-skyboxComponent.s_skyboxTexture = cubeTexture;
+skyboxComponent.s_skyBoxTexture = cubeTexture;
 scene.object3D.addChild(skybox);
 
 camera.object3D.z = -6;

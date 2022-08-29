@@ -123,7 +123,7 @@ function initObjects()
 
 function initListeners()
 {
-    feng3d.ticker.onframe(onEnterFrame, this);
+    feng3d.ticker.onFrame(onEnterFrame, this);
 }
 
 function onEnterFrame()

@@ -19,7 +19,7 @@ model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { wid
 var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: "resources/floor_diffuse.jpg" } } } });
 scene.object3D.addChild(plane);
 
-feng3d.ticker.onframe(() =>
+feng3d.ticker.onFrame(() =>
 {
     plane.ry += 1;
 });

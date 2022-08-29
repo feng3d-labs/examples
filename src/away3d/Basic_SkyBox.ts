@@ -45,7 +45,7 @@ model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { rad
 model.material = torusMaterial;
 scene.object3D.addChild(torus);
 
-feng3d.ticker.onframe(() =>
+feng3d.ticker.onFrame(() =>
 {
     torus.rx += 2;
     torus.ry += 1;

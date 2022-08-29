@@ -54,7 +54,7 @@ light1.y = 1000;
 scene.object3D.addChild(light1);
 
 //
-feng3d.ticker.onframe(() =>
+feng3d.ticker.onFrame(() =>
 {
     var time = new Date().getTime();
     var angle = time / 1000 / 5;

@@ -15,7 +15,7 @@ var light1 = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "point
 initObjects();
 initLights();
 
-feng3d.ticker.onframe(setPointLightPosition);
+feng3d.ticker.onFrame(setPointLightPosition);
 
 camera.object3D.z = -5;
 camera.object3D.y = 2;

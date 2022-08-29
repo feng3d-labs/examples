@@ -31,7 +31,7 @@ var material = model.material = feng3d.serialization.setValue(new feng3d.Materia
 });
 
 
-feng3d.ticker.onframe(() =>
+feng3d.ticker.onFrame(() =>
 {
     cube.ry += 1;
 });

@@ -23,7 +23,7 @@ cylinder.x = 2;
 cube.addChild(cylinder);
 
 let num = 0;
-feng3d.ticker.onframe(() =>
+feng3d.ticker.onFrame(() =>
 {
     console.log("update")
 

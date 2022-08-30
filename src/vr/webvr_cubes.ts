@@ -109,11 +109,11 @@
 //                     (<feng3d.StandardUniforms>material.uniforms).u_diffuse.fromUnit(Math.random() * 0xffffff);
 //                 });
 
-//                 object.position = feng3d.Vector3.random().scaleNumber(4).subNumber(2);
-//                 object.rotation = feng3d.Vector3.random().scaleNumber(2 * Math.PI);
-//                 object.scale = feng3d.Vector3.random().addNumber(0.5);
+//                 object.position = feng3d.new Vector3().random().scaleNumber(4).subNumber(2);
+//                 object.rotation = feng3d.new Vector3().random().scaleNumber(2 * Math.PI);
+//                 object.scale = feng3d.new Vector3().random().addNumber(0.5);
 
-//                 object.userData.velocity = feng3d.Vector3.random().scaleNumber(0.01).subNumber(0.005);
+//                 object.userData.velocity = feng3d.new Vector3().random().scaleNumber(0.01).subNumber(0.005);
 
 //                 room.addChild(object);
 //             }

@@ -16,6 +16,7 @@ var files = {
         "TextureMaterialTest",
     ],
     "geometry": [
+        "geometries_f",
         "geometries",
         "PrimitiveTest",
         "GeometryTest",

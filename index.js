@@ -21,6 +21,7 @@ var files = {
     ],
     "lights": [
         "PointLightTest",
+        "physical",
     ],
     "animator": [
         "SceneLoadTest",

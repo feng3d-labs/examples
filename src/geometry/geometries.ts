@@ -36,11 +36,11 @@ function init()
     object.position.set(- 300, 0, 200);
     scene.add(object);
 
-    object = new THREE.Mesh(new THREE.IcosahedronGeometry(75, 1), material);
+    object = new THREE.Mesh(new THREE.IcosahedronGeometry(75, 0), material);
     object.position.set(- 100, 0, 200);
     scene.add(object);
 
-    object = new THREE.Mesh(new THREE.OctahedronGeometry(75, 2), material);
+    object = new THREE.Mesh(new THREE.OctahedronGeometry(75, 0), material);
     object.position.set(100, 0, 200);
     scene.add(object);
 

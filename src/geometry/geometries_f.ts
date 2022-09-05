@@ -1,4 +1,4 @@
-import { Camera, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, Material, Matrix4x4, Object3D, PerspectiveLens, PlaneGeometry, PointLight, Renderable, Scene, serialization, SphereGeometry, Texture2D, TextureUniforms, TextureWrap, TorusGeometry, Vector3, View, WireframeComponent } from 'feng3d';
+import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureUniforms, TextureWrap, TorusGeometry, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
 
 const scene = new Object3D().addComponent(Scene);
 
@@ -23,7 +23,6 @@ const material = Material.create('standard', {
 );
 
 let object3D = new Object3D();
-object3D.addComponent(WireframeComponent);
 let model = object3D.addComponent(Renderable);
 model.material = material;
 model.geometry = new SphereGeometry({ radius: 75, segmentsW: 20, segmentsH: 10 });
@@ -31,7 +30,27 @@ object3D.position.set(-300, 0, 200);
 container.addChild(object3D);
 
 object3D = new Object3D();
-object3D.addComponent(WireframeComponent);
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new IcosahedronGeometry({ radius: 75, detail: 0 });
+object3D.position.set(-100, 0, 200);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new OctahedronGeometry({ radius: 75, detail: 0 });
+object3D.position.set(100, 0, 200);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new TetrahedronGeometry({ radius: 75, detail: 0 });
+object3D.position.set(300, 0, 200);
+container.addChild(object3D);
+
+object3D = new Object3D();
 model = object3D.addComponent(Renderable);
 model.material = material;
 model.geometry = new PlaneGeometry({ width: 100, height: 100, segmentsW: 4, segmentsH: 4 });
@@ -39,7 +58,6 @@ object3D.position.set(-300, 0, 0);
 container.addChild(object3D);
 
 object3D = new Object3D();
-object3D.addComponent(WireframeComponent);
 model = object3D.addComponent(Renderable);
 model.material = material;
 model.geometry = new CubeGeometry({ width: 100, height: 100, depth: 100, segmentsW: 4, segmentsH: 4, segmentsD: 4 });
@@ -47,7 +65,13 @@ object3D.position.set(-100, 0, 0);
 container.addChild(object3D);
 
 object3D = new Object3D();
-object3D.addComponent(WireframeComponent);
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new CircleGeometry({ radius: 50, segments: 20, thetaStart: 0, thetaLength: Math.PI * 2 });
+object3D.position.set(100, 0, 0);
+container.addChild(object3D);
+
+object3D = new Object3D();
 model = object3D.addComponent(Renderable);
 model.material = material;
 model.geometry = new TorusGeometry({ radius: 50, tubeRadius: 10, segmentsR: 20, segmentsT: 10 });
@@ -55,7 +79,6 @@ object3D.position.set(300, 0, 0);
 container.addChild(object3D);
 
 object3D = new Object3D();
-object3D.addComponent(WireframeComponent);
 model = object3D.addComponent(Renderable);
 model.material = material;
 model.geometry = new CylinderGeometry({ topRadius: 25, bottomRadius: 75, height: 100, segmentsW: 40, segmentsH: 5 });

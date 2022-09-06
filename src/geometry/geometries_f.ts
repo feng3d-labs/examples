@@ -1,4 +1,4 @@
-import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureUniforms, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
+import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureMinFilter, TextureUniforms, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
 
 const scene = new Object3D().addComponent(Scene);
 
@@ -18,12 +18,30 @@ camera.object3D.addChild(pointLight.object3D);
 const engine = new View(null, scene, camera);
 
 const material = Material.create('standard', {
-    s_diffuse: { source: { url: 'resources/textures/uv_grid_opengl.jpg' }, anisotropy: 16, wrapS: TextureWrap.REPEAT, wrapT: TextureWrap.REPEAT }
+    s_diffuse: {
+        source: { url: 'resources/textures/uv_grid_opengl.jpg' },
+        anisotropy: 16,
+        wrapS: TextureWrap.REPEAT, wrapT: TextureWrap.REPEAT
+    }
 }, { cullFace: CullFace.NONE }
 );
 
-let object3D = new Object3D();
-let model = object3D.addComponent(Renderable);
+// const material = Material.create('meshPhong', {
+//     map: {
+//         source: { url: 'resources/textures/uv_grid_opengl.jpg' },
+//         anisotropy: 16,
+//         minFilter: TextureMinFilter.LINEAR_MIPMAP_LINEAR,
+//         wrapS: TextureWrap.REPEAT,
+//         wrapT: TextureWrap.REPEAT
+//     }
+// }, { cullFace: CullFace.NONE }
+// );
+
+let object3D: Object3D;
+let model: Renderable;
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
 model.material = material;
 model.geometry = new SphereGeometry({ radius: 75, segmentsW: 20, segmentsH: 10 });
 object3D.position.set(-300, 0, 200);
@@ -53,7 +71,7 @@ container.addChild(object3D);
 object3D = new Object3D();
 model = object3D.addComponent(Renderable);
 model.material = material;
-model.geometry = new PlaneGeometry({ width: 100, height: 100, segmentsW: 4, segmentsH: 4 });
+model.geometry = new PlaneGeometry({ width: 100, height: 100, segmentsW: 1, segmentsH: 1 });
 object3D.position.set(-300, 0, 0);
 container.addChild(object3D);
 

@@ -1,4 +1,4 @@
-import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureUniforms, TextureWrap, TorusGeometry, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
+import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureUniforms, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
 
 const scene = new Object3D().addComponent(Scene);
 
@@ -74,7 +74,7 @@ container.addChild(object3D);
 object3D = new Object3D();
 model = object3D.addComponent(Renderable);
 model.material = material;
-model.geometry = new TorusGeometry({ radius: 50, tubeRadius: 10, segmentsR: 20, segmentsT: 10 });
+model.geometry = new RingGeometry({ innerRadius: 10, outerRadius: 50, thetaSegments: 20, phiSegments: 5, thetaStart: 0, thetaLength: Math.PI * 2 });
 object3D.position.set(300, 0, 0);
 container.addChild(object3D);
 
@@ -83,6 +83,20 @@ model = object3D.addComponent(Renderable);
 model.material = material;
 model.geometry = new CylinderGeometry({ topRadius: 25, bottomRadius: 75, height: 100, segmentsW: 40, segmentsH: 5 });
 object3D.position.set(-300, 0, -200);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new TorusGeometry({ radius: 50, tubeRadius: 20, segmentsR: 20, segmentsT: 20 });
+object3D.position.set(100, 0, - 200);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new TorusKnotGeometry({ radius: 50, tube: 10, tubularSegments: 50, radialSegments: 20 });
+object3D.position.set(300, 0, - 200);
 container.addChild(object3D);
 
 //变化旋转与颜色

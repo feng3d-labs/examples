@@ -1,159 +1,149 @@
-import * as THREE from 'three';
+import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureMinFilter, TextureUniforms, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
 
-import Stats from 'stats.js';
+const scene = new Object3D().addComponent(Scene);
 
-let camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.WebGLRenderer, stats: Stats;
+const camera = new Object3D().addComponent(Camera);
+camera.lens = new PerspectiveLens(45, window.innerWidth / window.innerHeight, 1, 2000)
+camera.object3D.y = 400;
+scene.object3D.addChild(camera.object3D);
 
-init();
-animate();
+const container = new Object3D();
+scene.object3D.addChild(container);
 
-function init()
-{
+const pointLight = new Object3D().addComponent(PointLight);
+pointLight.color.fromUnit(0xffffff);
+pointLight.intensity = 0.8;
+camera.object3D.addChild(pointLight.object3D);
 
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
-    camera.position.y = 400;
+const engine = new View(null, scene, camera);
 
-    scene = new THREE.Scene();
-
-    let object: THREE.Mesh;
-
-    const ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
-    scene.add(ambientLight);
-
-    const pointLight = new THREE.PointLight(0xffffff, 0.8);
-    camera.add(pointLight);
-    scene.add(camera);
-
-    const map = new THREE.TextureLoader().load('resources/textures/uv_grid_opengl.jpg');
-    map.wrapS = map.wrapT = THREE.RepeatWrapping;
-    map.anisotropy = 16;
-
-    const material = new THREE.MeshPhongMaterial({ map: map, side: THREE.DoubleSide });
-
-    //
-
-    object = new THREE.Mesh(new THREE.SphereGeometry(75, 20, 10), material);
-    object.position.set(- 300, 0, 200);
-    scene.add(object);
-
-    object = new THREE.Mesh(new THREE.IcosahedronGeometry(75, 0), material);
-    object.position.set(- 100, 0, 200);
-    scene.add(object);
-
-    object = new THREE.Mesh(new THREE.OctahedronGeometry(75, 0), material);
-    object.position.set(100, 0, 200);
-    scene.add(object);
-
-    object = new THREE.Mesh(new THREE.TetrahedronGeometry(75, 0), material);
-    object.position.set(300, 0, 200);
-    scene.add(object);
-
-    //
-
-    object = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 4, 4), material);
-    object.position.set(- 300, 0, 0);
-    scene.add(object);
-
-    object = new THREE.Mesh(new THREE.BoxGeometry(100, 100, 100, 4, 4, 4), material);
-    object.position.set(- 100, 0, 0);
-    scene.add(object);
-
-    object = new THREE.Mesh(new THREE.CircleGeometry(50, 20, 0, Math.PI * 2), material);
-    object.position.set(100, 0, 0);
-    scene.add(object);
-
-    object = new THREE.Mesh(new THREE.RingGeometry(10, 50, 20, 5, 0, Math.PI * 2), material);
-    object.position.set(300, 0, 0);
-    scene.add(object);
-
-    //
-
-    object = new THREE.Mesh(new THREE.CylinderGeometry(25, 75, 100, 40, 5), material);
-    object.position.set(- 300, 0, - 200);
-    scene.add(object);
-
-    const points: THREE.Vector2[] = [];
-
-    for (let i = 0; i < 50; i++)
-    {
-
-        points.push(new THREE.Vector2(Math.sin(i * 0.2) * Math.sin(i * 0.1) * 15 + 50, (i - 5) * 2));
-
+const material = Material.create('standard', {
+    s_diffuse: {
+        source: { url: 'resources/textures/uv_grid_opengl.jpg' },
+        anisotropy: 16,
+        wrapS: TextureWrap.REPEAT, wrapT: TextureWrap.REPEAT
     }
+}, { cullFace: CullFace.NONE }
+);
 
-    object = new THREE.Mesh(new THREE.LatheGeometry(points, 20), material);
-    object.position.set(- 100, 0, - 200);
-    scene.add(object);
+// const material = Material.create('meshPhong', {
+//     map: {
+//         source: { url: 'resources/textures/uv_grid_opengl.jpg' },
+//         anisotropy: 16,
+//         minFilter: TextureMinFilter.LINEAR_MIPMAP_LINEAR,
+//         wrapS: TextureWrap.REPEAT,
+//         wrapT: TextureWrap.REPEAT
+//     }
+// }, { cullFace: CullFace.NONE }
+// );
 
-    object = new THREE.Mesh(new THREE.TorusGeometry(50, 20, 20, 20), material);
-    object.position.set(100, 0, - 200);
-    scene.add(object);
+let object3D: Object3D;
+let model: Renderable;
 
-    object = new THREE.Mesh(new THREE.TorusKnotGeometry(50, 10, 50, 20), material);
-    object.position.set(300, 0, - 200);
-    scene.add(object);
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new SphereGeometry({ radius: 75, segmentsW: 20, segmentsH: 10 });
+object3D.position.set(-300, 0, 200);
+container.addChild(object3D);
 
-    //
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new IcosahedronGeometry({ radius: 75, detail: 0 });
+object3D.position.set(-100, 0, 200);
+container.addChild(object3D);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new OctahedronGeometry({ radius: 75, detail: 0 });
+object3D.position.set(100, 0, 200);
+container.addChild(object3D);
 
-    stats = new Stats();
-    document.body.appendChild(stats.dom);
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new TetrahedronGeometry({ radius: 75, detail: 0 });
+object3D.position.set(300, 0, 200);
+container.addChild(object3D);
 
-    //
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new PlaneGeometry({ width: 100, height: 100, segmentsW: 1, segmentsH: 1 });
+object3D.position.set(-300, 0, 0);
+container.addChild(object3D);
 
-    window.addEventListener('resize', onWindowResize);
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new CubeGeometry({ width: 100, height: 100, depth: 100, segmentsW: 4, segmentsH: 4, segmentsD: 4 });
+object3D.position.set(-100, 0, 0);
+container.addChild(object3D);
 
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new CircleGeometry({ radius: 50, segments: 20, thetaStart: 0, thetaLength: Math.PI * 2 });
+object3D.position.set(100, 0, 0);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new RingGeometry({ innerRadius: 10, outerRadius: 50, thetaSegments: 20, phiSegments: 5, thetaStart: 0, thetaLength: Math.PI * 2 });
+object3D.position.set(300, 0, 0);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new CylinderGeometry({ topRadius: 25, bottomRadius: 75, height: 100, segmentsW: 40, segmentsH: 5 });
+object3D.position.set(-300, 0, -200);
+container.addChild(object3D);
+
+const points: Vector2[] = [];
+
+for (let i = 0; i < 50; i++)
+{
+    points.push(new Vector2(Math.sin(i * 0.2) * Math.sin(i * 0.1) * 15 + 50, (i - 5) * 2));
 }
 
-function onWindowResize()
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new LatheGeometry({ points: points, segments: 20 });
+object3D.position.set(- 100, 0, - 200);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new TorusGeometry({ radius: 50, tubeRadius: 20, segmentsR: 20, segmentsT: 20 });
+object3D.position.set(100, 0, - 200);
+container.addChild(object3D);
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new TorusKnotGeometry({ radius: 50, tube: 10, tubularSegments: 50, radialSegments: 20 });
+object3D.position.set(300, 0, - 200);
+container.addChild(object3D);
+
+//变化旋转与颜色
+setInterval(function ()
 {
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-}
-
-//
-
-function animate()
-{
-
-    requestAnimationFrame(animate);
-
-    render();
-    stats.update();
-
-}
-
-function render()
-{
-
     const timer = Date.now() * 0.0001;
 
-    camera.position.x = Math.cos(timer) * 800;
-    camera.position.z = Math.sin(timer) * 800;
+    camera.object3D.x = Math.cos(timer) * 800;
+    camera.object3D.z = Math.sin(timer) * 800;
 
-    camera.lookAt(scene.position);
+    camera.object3D.lookAt(Vector3.ZERO);
 
-    scene.traverse(function (object)
+    container.children.forEach(child =>
     {
-
-        if (object['isMesh'] === true)
-        {
-
-            object.rotation.x = timer * 5;
-            object.rotation.y = timer * 2.5;
-
-        }
-
+        child.rx = timer * 5 * 180 / Math.PI;
+        child.ry = timer * 2.5 * 180 / Math.PI;
     });
-
-    renderer.render(scene, camera);
-
-}
+}, 15);

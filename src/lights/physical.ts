@@ -6,9 +6,16 @@ import { GUI } from 'lil-gui';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-let camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.WebGLRenderer, bulbLight: THREE.PointLight, bulbMat: THREE.MeshStandardMaterial,
-    hemiLight: THREE.HemisphereLight, stats: Stats;
-let ballMat: THREE.MeshStandardMaterial, cubeMat: THREE.MeshStandardMaterial, floorMat: THREE.MeshStandardMaterial;
+let camera: THREE.PerspectiveCamera,
+    scene: THREE.Scene,
+    renderer: THREE.WebGLRenderer,
+    bulbLight: THREE.PointLight,
+    bulbMat: THREE.MeshStandardMaterial,
+    hemiLight: THREE.HemisphereLight,
+    stats: Stats;
+let ballMat: THREE.MeshStandardMaterial,
+    cubeMat: THREE.MeshStandardMaterial,
+    floorMat: THREE.MeshStandardMaterial;
 
 let previousShadowMap = false;
 

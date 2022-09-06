@@ -16,7 +16,6 @@ var files = {
         "TextureMaterialTest",
     ],
     "geometry": [
-        "geometries_f",
         "geometries",
         "PrimitiveTest",
         "GeometryTest",
@@ -24,6 +23,7 @@ var files = {
     "lights": [
         "PointLightTest",
         "physical",
+        "physical_f",
     ],
     "animator": [
         "SceneLoadTest",

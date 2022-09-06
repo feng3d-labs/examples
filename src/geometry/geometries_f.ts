@@ -1,4 +1,4 @@
-import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureUniforms, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
+import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureUniforms, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
 
 const scene = new Object3D().addComponent(Scene);
 
@@ -85,6 +85,20 @@ model.geometry = new CylinderGeometry({ topRadius: 25, bottomRadius: 75, height:
 object3D.position.set(-300, 0, -200);
 container.addChild(object3D);
 
+const points: Vector2[] = [];
+
+for (let i = 0; i < 50; i++)
+{
+    points.push(new Vector2(Math.sin(i * 0.2) * Math.sin(i * 0.1) * 15 + 50, (i - 5) * 2));
+}
+
+object3D = new Object3D();
+model = object3D.addComponent(Renderable);
+model.material = material;
+model.geometry = new LatheGeometry({ points: points, segments: 20 });
+object3D.position.set(- 100, 0, - 200);
+container.addChild(object3D);
+
 object3D = new Object3D();
 model = object3D.addComponent(Renderable);
 model.material = material;
@@ -111,11 +125,7 @@ setInterval(function ()
 
     container.children.forEach(child =>
     {
-        child.rx = timer * 5;
-        child.ry = timer * 2.5;
+        child.rx = timer * 5 * 180 / Math.PI;
+        child.ry = timer * 2.5 * 180 / Math.PI;
     });
 }, 15);
-setInterval(function ()
-{
-    // colorUniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
-}, 1000);

@@ -9,7 +9,7 @@ webglcanvas.style.width = "100%";
 webglcanvas.style.height = "100%";
 document.body.appendChild(webglcanvas);
 
-const webglRenderer = new feng3d.WebGLRenderer(webglcanvas);
+const webglRenderer = new feng3d.WebGLRenderer({ canvas: webglcanvas });
 
 const renderAtomic = new feng3d.RenderAtomic({
     attributes: {

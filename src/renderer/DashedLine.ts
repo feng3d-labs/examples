@@ -1,12 +1,12 @@
-import * as feng3d from 'feng3d';
+import { BufferAttribute, buildLineGeometry, RenderAtomic, WebGLRenderer } from 'feng3d';
 
-var webglcanvas = document.createElement('canvas');
-webglcanvas.id = "glcanvas";
-webglcanvas.style.position = "fixed";
-webglcanvas.style.left = "0px";
-webglcanvas.style.top = "0px";
-webglcanvas.style.width = "100%";
-webglcanvas.style.height = "100%";
+const webglcanvas = document.createElement('canvas');
+webglcanvas.id = 'glcanvas';
+webglcanvas.style.position = 'fixed';
+webglcanvas.style.left = '0px';
+webglcanvas.style.top = '0px';
+webglcanvas.style.width = '100%';
+webglcanvas.style.height = '100%';
 document.body.appendChild(webglcanvas);
 
 // 构建圆线条
@@ -24,7 +24,7 @@ const geo: { points: number[]; indices: number[]; } = { points: [], indices: [] 
 
 function drawDashedLine(pattern: number[])
 {
-    feng3d.buildLineGeometry({ points: lineData, lineStyle: { width: 2, dashedLinePatternUnit: 2, dashedLinePattern: pattern } }, geo);
+    buildLineGeometry({ points: lineData, lineStyle: { width: 2, dashedLinePatternUnit: 2, dashedLinePattern: pattern } }, geo);
     for (let i = 0; i < lineData.length; i += 2)
     {
         lineData[i + 1] -= 20;
@@ -37,22 +37,19 @@ drawDashedLine([10, 10]);
 drawDashedLine([20, 5]);
 drawDashedLine([15, 3, 3, 3]);
 drawDashedLine([20, 3, 3, 3, 3, 3, 3, 3]);
-drawDashedLine([12, 3, 3]);  // Equals [12, 3, 3, 12, 3, 3]
+drawDashedLine([12, 3, 3]); // Equals [12, 3, 3, 12, 3, 3]
 
-geo.points = geo.points.map(v => v / 500);
+geo.points = geo.points.map((v) => v / 500);
 
-const webglRenderer = new feng3d.WebGLRenderer({ canvas: webglcanvas });
+const webglRenderer = new WebGLRenderer({ canvas: webglcanvas });
 
-const renderAtomic = new feng3d.RenderAtomic({
+const renderAtomic = new RenderAtomic({
     attributes: {
-        position: {
-            data: geo.points,
-            size: 2,
-        },
+        position: new BufferAttribute(new Float32Array(geo.points), 2) as any,
     },
-    index: { indices: geo.indices },
+    index: new BufferAttribute(new Uint16Array(geo.indices), 1) as any,
     uniforms: { u_color: [1, 0, 0, 1] },
-    renderParams: { cullFace: "NONE", enableBlend: true },
+    renderParams: { cullFace: 'NONE', enableBlend: true },
     shader: {
         vertex: `
                     precision mediump float;
@@ -66,7 +63,7 @@ const renderAtomic = new feng3d.RenderAtomic({
             void main () {
               gl_FragColor = u_color;
             }
-            `}
+            ` }
 });
 
 function draw()

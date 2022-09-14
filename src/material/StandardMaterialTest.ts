@@ -29,7 +29,7 @@ var uniforms = <feng3d.StandardUniforms>textureMaterial.uniforms;
 uniforms.s_diffuse = new feng3d.Texture2D();
 uniforms.s_diffuse.source = { url: 'resources/m.png' };
 // textureMaterial.uniforms.s_diffuse.url = 'resources/nonpowerof2.png';
-uniforms.s_diffuse.format = feng3d.TextureFormat.RGBA;
+uniforms.s_diffuse.format = 'RGBA';
 // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
 
 uniforms.s_diffuse.anisotropy = 16;

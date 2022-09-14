@@ -29,7 +29,7 @@ cube.addChild(object3D);
 var model = object3D.getComponent(feng3d.Renderable);
 model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
 var textureMaterial = model.material = feng3d.serialization.setValue(new feng3d.Material(), { uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: 'resources/m.png' } } } });
-// textureMaterial.cullFace = CullFace.NONE;
+// textureMaterial.cullFace = 'NONE';
 //
 
 // var texture = textureMaterial.texture = new ImageDataTexture();

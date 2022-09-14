@@ -1,5 +1,5 @@
-import * as opentype from 'opentype.js';
 import * as feng3d from 'feng3d';
+import * as opentype from 'opentype.js';
 
 var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
@@ -34,10 +34,10 @@ script.onload = (ev) =>
 
             const geometry = new feng3d.CustomGeometry();
 
-            geometry.positions = Array.from(vertices);
-            geometry.normals = Array.from(normals);
-            geometry.uvs = Array.from(uvs);
-            geometry.indices = Array.from(indices);
+            geometry.positions = vertices;
+            geometry.normals = normals;
+            geometry.uvs = uvs;
+            geometry.indices = indices;
 
             var cube = new feng3d.Object3D().addComponent(feng3d.Renderable);
             cube.object3D.x = -7;
@@ -48,7 +48,7 @@ script.onload = (ev) =>
             //材质
             var material = cube.material = new feng3d.Material();
             material.renderParams.frontFace = feng3d.FrontFace.CCW;
-            material.renderParams.cullFace = feng3d.CullFace.NONE;
+            material.renderParams.cullFace = 'NONE';
 
             cube.geometry = geometry;
         }

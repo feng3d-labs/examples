@@ -1,4 +1,4 @@
-import { Camera, CircleGeometry, Color4, ColorUniforms, CubeGeometry, CullFace, CustomGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Matrix4x4, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, serialization, SphereGeometry, TetrahedronGeometry, Texture2D, TextureMinFilter, TextureUniforms, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View, windowEventProxy, WireframeComponent } from 'feng3d';
+import { Camera, CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, SphereGeometry, TetrahedronGeometry, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View } from 'feng3d';
 
 const scene = new Object3D().addComponent(Scene);
 
@@ -23,7 +23,7 @@ const material = Material.create('standard', {
         anisotropy: 16,
         wrapS: TextureWrap.REPEAT, wrapT: TextureWrap.REPEAT
     }
-}, { cullFace: CullFace.NONE }
+}, { cullFace: 'NONE' }
 );
 
 // const material = Material.create('meshPhong', {
@@ -34,7 +34,7 @@ const material = Material.create('standard', {
 //         wrapS: TextureWrap.REPEAT,
 //         wrapT: TextureWrap.REPEAT
 //     }
-// }, { cullFace: CullFace.NONE }
+// }, { cullFace: 'NONE' }
 // );
 
 let object3D: Object3D;

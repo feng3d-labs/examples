@@ -47,7 +47,7 @@ script.onload = (ev) =>
 
             //材质
             var material = cube.material = new feng3d.Material();
-            material.renderParams.frontFace = feng3d.FrontFace.CCW;
+            material.renderParams.frontFace = 'CCW';
             material.renderParams.cullFace = 'NONE';
 
             cube.geometry = geometry;

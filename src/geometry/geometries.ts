@@ -1,4 +1,4 @@
-import { Camera, CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, SphereGeometry, TetrahedronGeometry, TextureWrap, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View } from 'feng3d';
+import { Camera, CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, SphereGeometry, TetrahedronGeometry, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View } from 'feng3d';
 
 const scene = new Object3D().addComponent(Scene);
 
@@ -21,7 +21,7 @@ const material = Material.create('standard', {
     s_diffuse: {
         source: { url: 'resources/textures/uv_grid_opengl.jpg' },
         anisotropy: 16,
-        wrapS: TextureWrap.REPEAT, wrapT: TextureWrap.REPEAT
+        wrapS: 'REPEAT', wrapT: 'REPEAT'
     }
 }, { cullFace: 'NONE' }
 );
@@ -31,8 +31,8 @@ const material = Material.create('standard', {
 //         source: { url: 'resources/textures/uv_grid_opengl.jpg' },
 //         anisotropy: 16,
 //         minFilter: 'LINEAR_MIPMAP_LINEAR',
-//         wrapS: TextureWrap.REPEAT,
-//         wrapT: TextureWrap.REPEAT
+//         wrapS: 'REPEAT',
+//         wrapT: 'REPEAT'
 //     }
 // }, { cullFace: 'NONE' }
 // );

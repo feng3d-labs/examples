@@ -30,7 +30,7 @@ const material = Material.create('standard', {
 //     map: {
 //         source: { url: 'resources/textures/uv_grid_opengl.jpg' },
 //         anisotropy: 16,
-//         minFilter: TextureMinFilter.LINEAR_MIPMAP_LINEAR,
+//         minFilter: 'LINEAR_MIPMAP_LINEAR',
 //         wrapS: TextureWrap.REPEAT,
 //         wrapT: TextureWrap.REPEAT
 //     }

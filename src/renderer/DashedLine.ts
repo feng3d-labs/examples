@@ -47,7 +47,7 @@ const renderAtomic = new RenderAtomic({
     attributes: {
         position: new AttributeBuffer(new Float32Array(geo.points), 2) as any,
     },
-    index: new ElementBuffer(new Uint16Array(geo.indices)) as any,
+    index: { array: geo.indices },
     uniforms: { u_color: [1, 0, 0, 1] },
     renderParams: { cullFace: 'NONE', enableBlend: true },
     shader: {

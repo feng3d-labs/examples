@@ -1,4 +1,4 @@
-import { AttributeBuffer, RenderAtomic, WebGLRenderer } from 'feng3d';
+import { RenderAtomic, WebGLRenderer } from 'feng3d';
 
 const webglcanvas = document.createElement('canvas');
 webglcanvas.id = 'glcanvas';
@@ -13,11 +13,13 @@ const webglRenderer = new WebGLRenderer({ canvas: webglcanvas });
 
 const renderAtomic = new RenderAtomic({
     attributes: {
-        a_position: new AttributeBuffer(new Float32Array([
-            -1, 0,
-            0, -1,
-            1, 1
-        ]), 2) as any,
+        a_position: {
+            array: [
+                -1, 0,
+                0, -1,
+                1, 1
+            ], itemSize: 2
+        },
     },
     uniforms: { u_color: [1, 0, 0, 1] },
     renderParams: { cullFace: 'NONE', enableBlend: true },

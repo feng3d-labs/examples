@@ -1,4 +1,4 @@
-import { AttributeBuffer, buildLineGeometry, ElementBuffer, RenderAtomic, WebGLRenderer } from 'feng3d';
+import { buildLineGeometry, RenderAtomic, WebGLRenderer } from 'feng3d';
 
 const webglcanvas = document.createElement('canvas');
 webglcanvas.id = 'glcanvas';
@@ -45,7 +45,7 @@ const webglRenderer = new WebGLRenderer({ canvas: webglcanvas });
 
 const renderAtomic = new RenderAtomic({
     attributes: {
-        position: new AttributeBuffer(new Float32Array(geo.points), 2) as any,
+        position: { array: geo.points, itemSize: 2 },
     },
     index: { array: geo.indices },
     uniforms: { u_color: [1, 0, 0, 1] },

@@ -1,27 +1,27 @@
-namespace examples
-{
-    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
-    scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+import * as feng3d from 'feng3d';
 
-    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-    camera.transform.position = new feng3d.Vector3(0, 1, -10);
-    scene.gameObject.addChild(camera.gameObject);
+var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
+scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
 
-    var engine = new feng3d.View(null, scene, camera);
-    
-    var sc = scene.gameObject.addScript("ScriptDemo")
-}
+var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
+camera.object3D.position = new feng3d.Vector3(0, 1, -10);
+scene.object3D.addChild(camera.object3D);
+
+var engine = new feng3d.View(null, scene, camera);
+
+var sc = scene.object3D.addScript("ScriptDemo")
+
 
 @feng3d.decoratorRegisterClass()
 class ScriptDemo extends feng3d.Script
 {
-    cube: feng3d.GameObject;
+    cube: feng3d.Object3D;
 
     init()
     {
-        var cube = this.cube = new feng3d.GameObject();
-        cube.transform.z = -7;
-        this.gameObject.addChild(cube);
+        var cube = this.cube = new feng3d.Object3D();
+        cube.z = -7;
+        this.object3D.addChild(cube);
 
         var model = cube.addComponent(feng3d.Renderable);
         model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
@@ -39,8 +39,8 @@ class ScriptDemo extends feng3d.Script
 
     update()
     {
-        this.cube.transform.ry += 1;
-        // log("this.cube.transform.ry: " + this.cube.transform.ry);
+        this.cube.ry += 1;
+        // log("this.cube.ry: " + this.cube.ry);
     }
 
     /**

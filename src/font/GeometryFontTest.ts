@@ -1,63 +1,61 @@
-/// <reference path="../../libs/opentype.d.ts" />
+import * as feng3d from 'feng3d';
+import * as opentype from 'opentype.js';
 
-namespace examples
+var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
+scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+
+var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
+camera.object3D.position = new feng3d.Vector3(0, 1, -10);
+scene.object3D.addChild(camera.object3D);
+
+var engine = new feng3d.View(null, scene, camera);
+
+camera.object3D.addComponent(feng3d.FPSController);
+
+var script = document.createElement('script');
+script.onload = (ev) =>
 {
-    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
-    scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
-
-    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-    camera.transform.position = new feng3d.Vector3(0, 1, -10);
-    scene.gameObject.addChild(camera.gameObject);
-
-    var engine = new feng3d.View(null, scene, camera);
-
-    camera.gameObject.addComponent(feng3d.FPSController);
-
-    var script = document.createElement('script');
-    script.onload = (ev) =>
+    // opentype.load('./resources/fonts/NotoSansCJKsc_Regular.otf', function (err, font)
+    opentype.load('./resources/fonts/simfang.ttf', function (err, font)
     {
-        // opentype.load('./resources/fonts/NotoSansCJKsc_Regular.otf', function (err, font)
-        opentype.load('./resources/fonts/simfang.ttf', function (err, font)
+        if (err)
         {
-            if (err)
-            {
-                alert('Font could not be loaded: ' + err);
-            } else
-            {
-                const fontData = extractFontData(font);
-                const contoursInfo = convert(fontData);
-                const font1 = new feng3d.Font(contoursInfo);
-                // font1.isCCW = !!font['isCIDFont'];
+            alert('Font could not be loaded: ' + err);
+        } else
+        {
+            const fontData = extractFontData(font);
+            const contoursInfo = convert(fontData);
+            const font1 = new feng3d.Font(contoursInfo);
+            // font1.isCCW = !!font['isCIDFont'];
 
-                // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图', 1);
-                // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图纸!', 1);
-                const { vertices, normals, uvs, indices } = font1.calculateGeometry(text1, 1);
+            // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图', 1);
+            // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图纸!', 1);
+            const { vertices, normals, uvs, indices } = font1.calculateGeometry(text1, 1);
 
-                const geometry = new feng3d.CustomGeometry();
-                
-                geometry.positions = Array.from(vertices);
-                geometry.normals = Array.from(normals);
-                geometry.uvs = Array.from(uvs);
-                geometry.indices = Array.from(indices);
+            const geometry = new feng3d.CustomGeometry();
 
-                var cube = new feng3d.GameObject().addComponent(feng3d.Renderable);
-                cube.transform.x = -7;
-                cube.transform.y = 7;
-                cube.transform.rx = 180;
-                scene.gameObject.addChild(cube.gameObject);
+            geometry.positions = vertices;
+            geometry.normals = normals;
+            geometry.uvs = uvs;
+            geometry.indices = indices;
 
-                //材质
-                var material = cube.material = new feng3d.Material();
-                material.renderParams.frontFace = feng3d.FrontFace.CCW;
-                material.renderParams.cullFace = feng3d.CullFace.NONE;
+            var cube = new feng3d.Object3D().addComponent(feng3d.Renderable);
+            cube.object3D.x = -7;
+            cube.object3D.y = 7;
+            cube.object3D.rx = 180;
+            scene.object3D.addChild(cube.object3D);
 
-                cube.geometry = geometry;
-            }
-        });
-    }
-    script.src = './libs/opentype.min.js';
-    document.head.appendChild(script);
+            //材质
+            var material = cube.material = new feng3d.Material();
+            material.renderParams.frontFace = 'CCW';
+            material.renderParams.cullFace = 'NONE';
+
+            cube.geometry = geometry;
+        }
+    });
 }
+script.src = './libs/opentype.min.js';
+document.head.appendChild(script);
 
 
 function extractFontData(fontAll: opentype.Font)

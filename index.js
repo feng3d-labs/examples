@@ -16,11 +16,14 @@ var files = {
         "TextureMaterialTest",
     ],
     "geometry": [
+        "geometries",
         "PrimitiveTest",
         "GeometryTest",
     ],
     "lights": [
         "PointLightTest",
+        "physical",
+        "physical_f",
     ],
     "animator": [
         "SceneLoadTest",

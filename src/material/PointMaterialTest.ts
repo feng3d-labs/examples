@@ -10,7 +10,7 @@ scene.object3D.addChild(camera.object3D);
 var engine = new feng3d.View(null, scene, camera);
 
 var pointGeometry = new feng3d.PointGeometry();
-var pointMaterial = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "point", renderParams: { renderMode: 'POINTS' } });
+var pointMaterial = new feng3d.PointMaterial();
 var object3D = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "plane" });
 var model = object3D.addComponent(feng3d.Renderable);
 model.geometry = pointGeometry;

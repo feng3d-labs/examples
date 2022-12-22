@@ -46,7 +46,7 @@ script.onload = (ev) =>
             scene.object3D.addChild(cube.object3D);
 
             //材质
-            var material = cube.material = new feng3d.Material();
+            var material = cube.material = new feng3d.StandardMaterial();
             material.renderParams.frontFace = 'CCW';
             material.renderParams.cullFace = 'NONE';
 

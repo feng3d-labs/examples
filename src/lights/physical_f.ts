@@ -1,4 +1,4 @@
-import { Camera, Color3, Color4, CubeGeometry, FPSController, Material, Object3D, PerspectiveLens, PlaneGeometry, PointLight, Renderable, Scene, serialization, ShadowType, SphereGeometry, Texture2D, Vector3, View } from 'feng3d';
+import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, FPSController, Material, Object3D, PerspectiveLens, PlaneGeometry, PointLight, Renderable, Scene, serialization, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3, View } from 'feng3d';
 import Stats from 'stats.js';
 
 let scene: Scene;
@@ -44,78 +44,84 @@ function init()
     scene.object3D.addChild(bulbLight.object3D);
 
     const bulbGeometry = new SphereGeometry({ radius: 0.02, segmentsW: 16, segmentsH: 8 });
-    bulbMat = new Material().init('color', { u_diffuseInput: new Color4(1) });
+    bulbMat = new ColorMaterial().init({ uniforms: { u_diffuseInput: new Color4(1) } });
     const bulbRenderable = bulbLight.object3D.addComponent(Renderable);
     bulbRenderable.material = bulbMat;
     bulbRenderable.geometry = bulbGeometry;
     bulbRenderable.castShadows = false;
     bulbRenderable.receiveShadows = false;
 
-    const floorMat = new Material().init('standard', {
-        u_diffuse: new Color4().fromUnit24(0xffffff),
-        u_specular: 0.2,
-        u_glossiness: 0.8,
-        s_diffuse: new Texture2D({
-            source: { url: 'resources/textures/hardwood2_diffuse.jpg' },
-            wrapS: 'REPEAT',
-            wrapT: 'REPEAT',
-            anisotropy: 4,
-            // repeat: { x: 10, y: 24 },
-        }) as any,
-        s_normal: new Texture2D({
-            source: { url: 'resources/textures/hardwood2_bump.jpg' },
-            wrapS: 'REPEAT',
-            wrapT: 'REPEAT',
-            anisotropy: 4,
-            // repeat: { x: 10, y: 24 },
-        }) as any,
-        s_specular: new Texture2D({
-            source: { url: 'resources/textures/hardwood2_roughness.jpg' },
-            wrapS: 'REPEAT',
-            wrapT: 'REPEAT',
-            anisotropy: 4,
-            // repeat: { x: 10, y: 24 },
-        }) as any,
+    const floorMat = new StandardMaterial().init({
+        uniforms: {
+            u_diffuse: new Color4().fromUnit24(0xffffff),
+            u_specular: 0.2,
+            u_glossiness: 0.8,
+            s_diffuse: new Texture2D({
+                source: { url: 'resources/textures/hardwood2_diffuse.jpg' },
+                wrapS: 'REPEAT',
+                wrapT: 'REPEAT',
+                anisotropy: 4,
+                // repeat: { x: 10, y: 24 },
+            }) as any,
+            s_normal: new Texture2D({
+                source: { url: 'resources/textures/hardwood2_bump.jpg' },
+                wrapS: 'REPEAT',
+                wrapT: 'REPEAT',
+                anisotropy: 4,
+                // repeat: { x: 10, y: 24 },
+            }) as any,
+            s_specular: new Texture2D({
+                source: { url: 'resources/textures/hardwood2_roughness.jpg' },
+                wrapS: 'REPEAT',
+                wrapT: 'REPEAT',
+                anisotropy: 4,
+                // repeat: { x: 10, y: 24 },
+            }) as any,
+        }
     });
 
-    const ballMat = new Material().init('standard', {
-        u_diffuse: new Color4().fromUnit24(0xffffff),
-        u_specular: 0.2,
-        u_glossiness: 0.8,
-        s_diffuse: new Texture2D({
-            source: { url: 'resources/textures/planets/earth_atmos_2048.jpg' },
-            wrapS: 'REPEAT',
-            wrapT: 'REPEAT',
-            anisotropy: 4,
-            // repeat: { x: 10, y: 24 },
-        }) as any,
-        s_specular: new Texture2D({
-            source: { url: 'resources/textures/planets/earth_specular_2048.jpg' },
-            wrapS: 'REPEAT',
-            wrapT: 'REPEAT',
-            anisotropy: 4,
-            // repeat: { x: 10, y: 24 },
-        }) as any,
+    const ballMat = new StandardMaterial().init({
+        uniforms: {
+            u_diffuse: new Color4().fromUnit24(0xffffff),
+            u_specular: 0.2,
+            u_glossiness: 0.8,
+            s_diffuse: new Texture2D({
+                source: { url: 'resources/textures/planets/earth_atmos_2048.jpg' },
+                wrapS: 'REPEAT',
+                wrapT: 'REPEAT',
+                anisotropy: 4,
+                // repeat: { x: 10, y: 24 },
+            }) as any,
+            s_specular: new Texture2D({
+                source: { url: 'resources/textures/planets/earth_specular_2048.jpg' },
+                wrapS: 'REPEAT',
+                wrapT: 'REPEAT',
+                anisotropy: 4,
+                // repeat: { x: 10, y: 24 },
+            }) as any,
+        }
     });
 
-    const cubeMat = new Material().init('standard', {
-        u_diffuse: new Color4(0.7, 0.7, 0.7),
-        u_specular: new Color3(0.2, 0.2, 0.2),
-        u_glossiness: 0.8,
-        s_diffuse: new Texture2D({
-            source: { url: 'resources/textures/brick_diffuse.jpg' },
-            wrapS: 'REPEAT',
-            wrapT: 'REPEAT',
-            anisotropy: 4,
-            // repeat: { x: 10, y: 24 },
-        }) as any,
-        // s_normal: new Texture2D({
-        //     source: { url: 'resources/textures/brick_bump.jpg' },
-        //     wrapS: 'REPEAT',
-        //     wrapT: 'REPEAT',
-        //     anisotropy: 4,
-        //     // repeat: { x: 10, y: 24 },
-        // }) as any,
+    const cubeMat = new StandardMaterial().init({
+        uniforms: {
+            u_diffuse: new Color4(0.7, 0.7, 0.7),
+            u_specular: new Color3(0.2, 0.2, 0.2),
+            u_glossiness: 0.8,
+            s_diffuse: new Texture2D({
+                source: { url: 'resources/textures/brick_diffuse.jpg' },
+                wrapS: 'REPEAT',
+                wrapT: 'REPEAT',
+                anisotropy: 4,
+                // repeat: { x: 10, y: 24 },
+            }) as any,
+            // s_normal: new Texture2D({
+            //     source: { url: 'resources/textures/brick_bump.jpg' },
+            //     wrapS: 'REPEAT',
+            //     wrapT: 'REPEAT',
+            //     anisotropy: 4,
+            //     // repeat: { x: 10, y: 24 },
+            // }) as any,
+        }
     });
 
     const floorMesh = new Object3D().addComponent(Renderable);

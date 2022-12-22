@@ -1,4 +1,5 @@
 import * as feng3d from 'feng3d';
+import { StandardMaterial } from 'feng3d';
 
 var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
 scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
@@ -40,12 +41,13 @@ feng3d.windowEventProxy.on("keyup", (event) =>
 
 function initObjects()
 {
-    var material = feng3d.Material.create('standard', {
-        s_diffuse: { __class__: "Texture2D", source: { url: 'resources/head_diffuse.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
-        s_normal: { __class__: "Texture2D", source: { url: 'resources/head_normals.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
-        s_specular: { __class__: "Texture2D", source: { url: 'resources/head_specular.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
-    }
-    );
+    var material = new feng3d.StandardMaterial().init({
+        uniforms: {
+            s_diffuse: { __class__: "Texture2D", source: { url: 'resources/head_diffuse.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
+            s_normal: { __class__: "Texture2D", source: { url: 'resources/head_normals.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
+            s_specular: { __class__: "Texture2D", source: { url: 'resources/head_specular.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
+        }
+    });
 
     //初始化立方体
     var plane = new feng3d.Object3D();
@@ -86,7 +88,7 @@ function initLights()
     var pointLight0 = light0.addComponent(feng3d.PointLight);
     pointLight0.shadowType = feng3d.ShadowType.PCF_Shadows;
     pointLight0.color = lightColor0.toColor3();
-    model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor0 } });
+    model.material = new feng3d.ColorMaterial().init({ uniforms: { u_diffuseInput: lightColor0 } });
     scene.object3D.addChild(light0);
 
     //
@@ -97,7 +99,7 @@ function initLights()
     var pointLight1 = light1.addComponent(feng3d.DirectionalLight);
     pointLight1.shadowType = feng3d.ShadowType.PCF_Shadows;
     pointLight1.color = lightColor1.toColor3();
-    model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color", uniforms: { u_diffuseInput: lightColor1 } });
+    model.material = new feng3d.ColorMaterial().init({ uniforms: { u_diffuseInput: lightColor1 } });
     scene.object3D.addChild(light1);
 }
 

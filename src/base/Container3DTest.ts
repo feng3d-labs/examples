@@ -16,7 +16,7 @@ var engine = new feng3d.View(null, scene, camera);
 const cube = feng3d.Object3D.createPrimitive("Cube");
 scene.object3D.addChild(cube);
 
-const colorMaterial = cube.getComponent(feng3d.Renderable).material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+const colorMaterial = cube.getComponent(feng3d.Renderable).material = new feng3d.ColorMaterial();
 
 var cylinder = feng3d.Object3D.createPrimitive("Cylinder");
 cylinder.x = 2;

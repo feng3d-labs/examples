@@ -36,27 +36,27 @@ function initEngine()
 
 function initMaterials()
 {
-    planeMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
-        shaderName: "standard", uniforms: {
+    planeMaterial = new feng3d.StandardMaterial().init({
+        uniforms: {
             s_diffuse: { __class__: "Texture2D", source: { url: "resources/floor_diffuse.jpg" } },
             s_normal: { __class__: "Texture2D", source: { url: "resources/floor_normal.jpg" } },
             s_specular: { __class__: "Texture2D", source: { url: "resources/floor_specular.jpg" } },
         }
     });
-    sphereMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
-        shaderName: "standard", uniforms: {
+    sphereMaterial = new feng3d.StandardMaterial().init({
+        uniforms: {
             s_diffuse: { __class__: "Texture2D", source: { url: "resources/beachball_diffuse.jpg" } },
             s_specular: { __class__: "Texture2D", source: { url: "resources/beachball_specular.jpg" } },
         }
     });
-    cubeMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
-        shaderName: "standard", uniforms: {
+    cubeMaterial = new feng3d.StandardMaterial().init({
+        uniforms: {
             s_diffuse: { __class__: "Texture2D", source: { url: "resources/trinket_diffuse.jpg" } },
             s_normal: { __class__: "Texture2D", source: { url: "resources/trinket_normal.jpg" } },
             s_specular: { __class__: "Texture2D", source: { url: "resources/trinket_specular.jpg" } },
         }
     });
-    torusMaterial = feng3d.serialization.setValue(new feng3d.Material(), {
+    torusMaterial = new feng3d.StandardMaterial().init({
         shaderName: "standard", uniforms: {
             s_diffuse: { __class__: "Texture2D", source: { url: "resources/weave_diffuse.jpg" } },
             s_normal: { __class__: "Texture2D", source: { url: "resources/weave_normal.jpg" } },

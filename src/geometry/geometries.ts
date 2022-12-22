@@ -1,4 +1,4 @@
-import { Camera, CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, SphereGeometry, TetrahedronGeometry, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View } from 'feng3d';
+import { Camera, CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Material, Object3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, Renderable, RingGeometry, Scene, SphereGeometry, StandardMaterial, TetrahedronGeometry, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View } from 'feng3d';
 
 const scene = new Object3D().addComponent(Scene);
 
@@ -17,13 +17,15 @@ camera.object3D.addChild(pointLight.object3D);
 
 const engine = new View(null, scene, camera);
 
-const material = Material.create('standard', {
-    s_diffuse: {
-        source: { url: 'resources/textures/uv_grid_opengl.jpg' },
-        anisotropy: 16,
-        wrapS: 'REPEAT', wrapT: 'REPEAT'
-    }
-}, { cullFace: 'NONE' }
+const material = new StandardMaterial().init({
+    uniforms: {
+        s_diffuse: {
+            source: { url: 'resources/textures/uv_grid_opengl.jpg' },
+            anisotropy: 16,
+            wrapS: 'REPEAT', wrapT: 'REPEAT'
+        }
+    }, renderParams: { cullFace: 'NONE' }
+}
 );
 
 // const material = Material.create('meshPhong', {

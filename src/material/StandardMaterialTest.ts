@@ -24,7 +24,7 @@ var model = cube.addComponent(feng3d.Renderable);
 model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
 // model.geometry = new PlaneGeometry();
 //材质
-var textureMaterial = model.material = new feng3d.Material();
+var textureMaterial = model.material = new feng3d.StandardMaterial();
 var uniforms = <feng3d.StandardUniforms>textureMaterial.uniforms;
 uniforms.s_diffuse = new feng3d.Texture2D();
 uniforms.s_diffuse.source = { url: 'resources/m.png' };

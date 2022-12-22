@@ -18,25 +18,25 @@ camera.object3D.addComponent(feng3d.FPSController);
 
 var cube = feng3d.Object3D.createPrimitive("Cube");
 cube.mouseEnabled = true;
-cube.getComponent(feng3d.Renderable).material = new feng3d.Material();
+cube.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
 scene.object3D.addChild(cube);
 
 var sphere = feng3d.Object3D.createPrimitive("Sphere");
 sphere.position = new feng3d.Vector3(-1.50, 0, 0);
 sphere.mouseEnabled = true;
-sphere.getComponent(feng3d.Renderable).material = new feng3d.Material();
+sphere.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
 scene.object3D.addChild(sphere);
 
 var capsule = feng3d.Object3D.createPrimitive("Capsule");
 capsule.position = new feng3d.Vector3(3, 0, 0);
 capsule.mouseEnabled = true;
-capsule.getComponent(feng3d.Renderable).material = new feng3d.Material();
+capsule.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
 scene.object3D.addChild(capsule);
 
 var cylinder = feng3d.Object3D.createPrimitive("Cylinder");
 cylinder.position = new feng3d.Vector3(-3, 0, 0);
 cylinder.mouseEnabled = true;
-cylinder.getComponent(feng3d.Renderable).material = new feng3d.Material();
+cylinder.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
 scene.object3D.addChild(cylinder);
 
 scene.on("click", (event) =>

@@ -32,7 +32,7 @@ object3D.y = -1;
 scene.object3D.addChild(object3D);
 
 //初始化颜色材质
-model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
+model.material = new feng3d.ColorMaterial();
 var colorUniforms = <feng3d.ColorUniforms>model.material.uniforms;
 
 //变化旋转与颜色

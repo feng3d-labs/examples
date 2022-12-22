@@ -20,8 +20,8 @@ var root = 'resources/terrain/';
 var terrain = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "terrain" });
 var model = terrain.addComponent(feng3d.Renderable);
 model.geometry = new feng3d.TerrainGeometry({ heightMap: { __class__: "Texture2D", source: { url: root + 'terrain_heights.jpg' } } });
-var material = feng3d.serialization.setValue(new feng3d.Material(), {
-    shaderName: "standard", uniforms: {
+var material = new feng3d.StandardMaterial().init({
+    uniforms: {
         s_diffuse: { __class__: "Texture2D", source: { url: root + 'terrain_diffuse.jpg' } },
         s_normal: { __class__: "Texture2D", source: { url: root + 'terrain_normals.jpg' } },
     }

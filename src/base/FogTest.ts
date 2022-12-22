@@ -17,7 +17,7 @@ scene.object3D.addChild(cube);
 var model = cube.addComponent(feng3d.Renderable);
 model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
 //材质
-var material = model.material = feng3d.serialization.setValue(new feng3d.Material(), {
+var material = model.material = new feng3d.StandardMaterial().init({
     uniforms: {
         s_diffuse: {
             __class__: "Texture2D",

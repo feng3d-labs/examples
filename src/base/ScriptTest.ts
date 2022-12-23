@@ -12,7 +12,7 @@ var engine = new feng3d.View(null, scene, camera);
 var sc = scene.object3D.addScript("ScriptDemo")
 
 
-@feng3d.decoratorRegisterClass()
+@feng3d.serializable()
 class ScriptDemo extends feng3d.Script
 {
     cube: feng3d.Object3D;

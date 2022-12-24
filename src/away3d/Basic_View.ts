@@ -1,25 +1,25 @@
-import * as feng3d from 'feng3d';
+import { Camera, Color4, MeshRenderer, Node3D, PlaneGeometry, Scene, serialization, StandardMaterial, ticker, Vector3, View } from "feng3d";
 
-var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
-scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.object3D.position = new feng3d.Vector3(0, 1, -10);
-scene.object3D.addChild(camera.object3D);
+var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+camera.node3d.position = new Vector3(0, 1, -10);
+scene.node3d.addChild(camera.node3d);
 
-var engine = new feng3d.View(null, scene, camera);
+var engine = new View(null, scene, camera);
 
-camera.object3D.z = -6;
-camera.object3D.y = 5;
-camera.object3D.lookAt(new feng3d.Vector3());
+camera.node3d.z = -6;
+camera.node3d.y = 5;
+camera.node3d.lookAt(new Vector3());
 
-var plane = new feng3d.Object3D();
-var model = plane.addComponent(feng3d.Renderable);
-model.geometry = feng3d.serialization.setValue(new feng3d.PlaneGeometry(), { width: 7, height: 7 });
-var material = model.material = new feng3d.StandardMaterial().init({ uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: "resources/floor_diffuse.jpg" } } } });
-scene.object3D.addChild(plane);
+var plane = new Node3D();
+var model = plane.addComponent(MeshRenderer);
+model.geometry = serialization.setValue(new PlaneGeometry(), { width: 7, height: 7 });
+var material = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: "resources/floor_diffuse.jpg" } } } });
+scene.node3d.addChild(plane);
 
-feng3d.ticker.onFrame(() =>
+ticker.onFrame(() =>
 {
     plane.ry += 1;
 });

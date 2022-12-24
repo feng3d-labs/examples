@@ -1,50 +1,50 @@
-import * as feng3d from 'feng3d';
+import { Camera, Color4, FPSController, MeshRenderer, Node3D, Scene, serialization, StandardMaterial, StandardUniforms, Vector3, View } from 'feng3d';
 
 /**
  * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
  */
-var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
-scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.object3D.position = new feng3d.Vector3(0, 1, -10);
-scene.object3D.addChild(camera.object3D);
+var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+camera.node3d.position = new Vector3(0, 1, -10);
+scene.node3d.addChild(camera.node3d);
 
-var engine = new feng3d.View(null, scene, camera);
+var engine = new View(null, scene, camera);
 
-camera.object3D.z = -5;
-camera.object3D.lookAt(new feng3d.Vector3());
-camera.object3D.addComponent(feng3d.FPSController);
+camera.node3d.z = -5;
+camera.node3d.lookAt(new Vector3());
+camera.node3d.addComponent(FPSController);
 
-var cube = feng3d.Object3D.createPrimitive("Cube");
+var cube = Node3D.createPrimitive("Cube");
 cube.mouseEnabled = true;
-cube.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
-scene.object3D.addChild(cube);
+cube.getComponent(MeshRenderer).material = new StandardMaterial();
+scene.node3d.addChild(cube);
 
-var sphere = feng3d.Object3D.createPrimitive("Sphere");
-sphere.position = new feng3d.Vector3(-1.50, 0, 0);
+var sphere = Node3D.createPrimitive("Sphere");
+sphere.position = new Vector3(-1.50, 0, 0);
 sphere.mouseEnabled = true;
-sphere.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
-scene.object3D.addChild(sphere);
+sphere.getComponent(MeshRenderer).material = new StandardMaterial();
+scene.node3d.addChild(sphere);
 
-var capsule = feng3d.Object3D.createPrimitive("Capsule");
-capsule.position = new feng3d.Vector3(3, 0, 0);
+var capsule = Node3D.createPrimitive("Capsule");
+capsule.position = new Vector3(3, 0, 0);
 capsule.mouseEnabled = true;
-capsule.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
-scene.object3D.addChild(capsule);
+capsule.getComponent(MeshRenderer).material = new StandardMaterial();
+scene.node3d.addChild(capsule);
 
-var cylinder = feng3d.Object3D.createPrimitive("Cylinder");
-cylinder.position = new feng3d.Vector3(-3, 0, 0);
+var cylinder = Node3D.createPrimitive("Cylinder");
+cylinder.position = new Vector3(-3, 0, 0);
 cylinder.mouseEnabled = true;
-cylinder.getComponent(feng3d.Renderable).material = new feng3d.StandardMaterial();
-scene.object3D.addChild(cylinder);
+cylinder.getComponent(MeshRenderer).material = new StandardMaterial();
+scene.node3d.addChild(cylinder);
 
 scene.on("click", (event) =>
 {
-    var object3D = <feng3d.Object3D>event.target;
-    if (object3D.getComponent(feng3d.Renderable))
+    var node3d = <Node3D>event.target;
+    if (node3d.getComponent(MeshRenderer))
     {
-        var uniforms = <feng3d.StandardUniforms>object3D.getComponent(feng3d.Renderable).material.uniforms;
+        var uniforms = <StandardUniforms>node3d.getComponent(MeshRenderer).material.uniforms;
         uniforms.u_diffuse.fromUnit(Math.random() * (1 << 24));
     }
 });

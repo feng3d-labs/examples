@@ -1,17 +1,16 @@
-import * as feng3d from 'feng3d';
-import { TransformUtils } from 'feng3d';
+import { Camera, Color4, MeshRenderer, Node3D, PerspectiveLens, Scene, serialization, SkyBox, StandardMaterial, StandardUniforms, TextureCube, ticker, TorusGeometry, TransformUtils, Vector3, View, windowEventProxy } from 'feng3d';
 
-var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
-scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.object3D.position = new feng3d.Vector3(0, 1, -10);
-scene.object3D.addChild(camera.object3D);
+var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+camera.node3d.position = new Vector3(0, 1, -10);
+scene.node3d.addChild(camera.node3d);
 
-var engine = new feng3d.View(null, scene, camera);
+var engine = new View(null, scene, camera);
 var canvas = engine.canvas;
 
-var cubeTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
+var cubeTexture = serialization.setValue(new TextureCube(), {
     rawData: {
         type: "path", paths: [
             'resources/skybox/snow_positive_x.jpg',
@@ -24,32 +23,32 @@ var cubeTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
     }
 });
 
-var skybox = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "skybox" });
-var skyboxComponent = skybox.addComponent(feng3d.SkyBox);
+var skybox = serialization.setValue(new Node3D(), { name: "skybox" });
+var skyboxComponent = skybox.addComponent(SkyBox);
 skyboxComponent.s_skyBoxTexture = cubeTexture;
-scene.object3D.addChild(skybox);
+scene.node3d.addChild(skybox);
 
-camera.object3D.z = -6;
-camera.object3D.lookAt(new feng3d.Vector3());
-camera.lens = new feng3d.PerspectiveLens(90);
+camera.node3d.z = -6;
+camera.node3d.lookAt(new Vector3());
+camera.lens = new PerspectiveLens(90);
 
-var torusMaterial = new feng3d.StandardMaterial();
-const uniforms = torusMaterial.uniforms as feng3d.StandardUniforms;
+var torusMaterial = new StandardMaterial();
+const uniforms = torusMaterial.uniforms as StandardUniforms;
 uniforms.s_envMap = cubeTexture;
 uniforms.u_ambient.fromUnit(0x111111);
 uniforms.u_ambient.a = 0.25;
 
-var torus = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "torus" });
-var model = torus.addComponent(feng3d.Renderable);
-model.geometry = feng3d.serialization.setValue(new feng3d.TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
+var torus = serialization.setValue(new Node3D(), { name: "torus" });
+var model = torus.addComponent(MeshRenderer);
+model.geometry = serialization.setValue(new TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
 model.material = torusMaterial;
-scene.object3D.addChild(torus);
+scene.node3d.addChild(torus);
 
-feng3d.ticker.onFrame(() =>
+ticker.onFrame(() =>
 {
     torus.rx += 2;
     torus.ry += 1;
-    camera.object3D.position = new feng3d.Vector3(0, 0, 0);
-    camera.object3D.ry += 0.5 * (feng3d.windowEventProxy.clientX - canvas.clientLeft - canvas.clientWidth / 2) / 800;
-    TransformUtils.moveBackward(camera.object3D, 6);
+    camera.node3d.position = new Vector3(0, 0, 0);
+    camera.node3d.ry += 0.5 * (windowEventProxy.clientX - canvas.clientLeft - canvas.clientWidth / 2) / 800;
+    TransformUtils.moveBackward(camera.node3d, 6);
 });

@@ -1,9 +1,9 @@
 {
-	"__class__": "Object3D",
+	"__class__": "Node3D",
 	"name": "Untitled",
 	"children": [
 		{
-			"__class__": "Object3D",
+			"__class__": "Node3D",
 			"name": "Main Camera",
 			"y": 1,
 			"z": -10,
@@ -21,7 +21,7 @@
 			]
 		},
 		{
-			"__class__": "Object3D",
+			"__class__": "Node3D",
 			"name": "DirectionalLight",
 			"y": 3,
 			"rx": 50,
@@ -36,11 +36,11 @@
 			]
 		},
 		{
-			"__class__": "Object3D",
+			"__class__": "Node3D",
 			"name": "RotationToolModel",
 			"children": [
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "arrowsX",
 					"x": 19,
 					"rz": 90,
@@ -66,7 +66,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "arrowsNX",
 					"x": -19,
 					"rz": -90,
@@ -85,7 +85,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "arrowsY",
 					"y": 19,
 					"rz": 180,
@@ -111,7 +111,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "arrowsNY",
 					"y": -19,
 					"components": [
@@ -129,7 +129,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "arrowsZ",
 					"z": 19,
 					"rx": -90,
@@ -155,7 +155,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "arrowsNZ",
 					"z": -19,
 					"rx": 90,
@@ -174,7 +174,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "planeX",
 					"x": 7,
 					"rz": -90,
@@ -193,7 +193,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "planeNX",
 					"x": -7,
 					"rz": 90,
@@ -212,7 +212,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "planeY",
 					"y": 7,
 					"components": [
@@ -230,7 +230,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "planeNY",
 					"y": -7,
 					"rz": 180,
@@ -249,7 +249,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "planeZ",
 					"z": 7,
 					"rx": 90,
@@ -268,7 +268,7 @@
 					]
 				},
 				{
-					"__class__": "Object3D",
+					"__class__": "Node3D",
 					"name": "planeNZ",
 					"z": -7,
 					"rx": -90,

@@ -1,44 +1,44 @@
-import * as feng3d from 'feng3d';
+import { Camera, Color4, ColorMaterial, ColorUniforms, CubeGeometry, CustomGeometry, Matrix4x4, MeshRenderer, Node3D, PlaneGeometry, Scene, serialization, SphereGeometry, Vector3, View } from 'feng3d';
 
-var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
-scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.object3D.position = new feng3d.Vector3(0, 1, -10);
-scene.object3D.addChild(camera.object3D);
+var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+camera.node3d.position = new Vector3(0, 1, -10);
+scene.node3d.addChild(camera.node3d);
 
-var engine = new feng3d.View(null, scene, camera);
+var engine = new View(null, scene, camera);
 
-var object3D = new feng3d.Object3D();
-var model = object3D.addComponent(feng3d.Renderable);
+var node3d = new Node3D();
+var model = node3d.addComponent(MeshRenderer);
 
-var geometry = model.geometry = new feng3d.CustomGeometry();
-geometry.addGeometry(new feng3d.PlaneGeometry());
-var matrix = new feng3d.Matrix4x4();
+var geometry = model.geometry = new CustomGeometry();
+geometry.addGeometry(new PlaneGeometry());
+var matrix = new Matrix4x4();
 matrix.appendTranslation(0, 0.50, 0);
-geometry.addGeometry(feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 50 }), matrix);
+geometry.addGeometry(serialization.setValue(new SphereGeometry(), { radius: 50 }), matrix);
 
 matrix.appendTranslation(0, 0.50, 0);
-var addGeometry = new feng3d.CubeGeometry();
+var addGeometry = new CubeGeometry();
 geometry.addGeometry(addGeometry, matrix);
 
 addGeometry.width = 0.50;
 matrix.appendTranslation(0, 0.50, 0);
-matrix.appendRotation(feng3d.Vector3.Z_AXIS, 45);
+matrix.appendRotation(Vector3.Z_AXIS, 45);
 geometry.addGeometry(addGeometry, matrix);
 
-object3D.z = 3;
-object3D.y = -1;
-scene.object3D.addChild(object3D);
+node3d.z = 3;
+node3d.y = -1;
+scene.node3d.addChild(node3d);
 
 //初始化颜色材质
-model.material = new feng3d.ColorMaterial();
-var colorUniforms = <feng3d.ColorUniforms>model.material.uniforms;
+model.material = new ColorMaterial();
+var colorUniforms = <ColorUniforms>model.material.uniforms;
 
 //变化旋转与颜色
 setInterval(function ()
 {
-    object3D.ry += 1;
+    node3d.ry += 1;
 }, 15);
 setInterval(function ()
 {

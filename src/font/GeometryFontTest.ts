@@ -1,16 +1,16 @@
-import * as feng3d from 'feng3d';
+import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, serialization, StandardMaterial, Vector3, View } from 'feng3d';
 import * as opentype from 'opentype.js';
 
-var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
-scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.object3D.position = new feng3d.Vector3(0, 1, -10);
-scene.object3D.addChild(camera.object3D);
+var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+camera.node3d.position = new Vector3(0, 1, -10);
+scene.node3d.addChild(camera.node3d);
 
-var engine = new feng3d.View(null, scene, camera);
+var engine = new View(null, scene, camera);
 
-camera.object3D.addComponent(feng3d.FPSController);
+camera.node3d.addComponent(FPSController);
 
 var script = document.createElement('script');
 script.onload = (ev) =>
@@ -25,28 +25,28 @@ script.onload = (ev) =>
         {
             const fontData = extractFontData(font);
             const contoursInfo = convert(fontData);
-            const font1 = new feng3d.Font(contoursInfo);
+            const font1 = new opentype.Font(contoursInfo);
             // font1.isCCW = !!font['isCIDFont'];
 
             // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图', 1);
             // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图纸!', 1);
             const { vertices, normals, uvs, indices } = font1.calculateGeometry(text1, 1);
 
-            const geometry = new feng3d.CustomGeometry();
+            const geometry = new CustomGeometry();
 
             geometry.positions = vertices;
             geometry.normals = normals;
             geometry.uvs = uvs;
             geometry.indices = indices;
 
-            var cube = new feng3d.Object3D().addComponent(feng3d.Renderable);
-            cube.object3D.x = -7;
-            cube.object3D.y = 7;
-            cube.object3D.rx = 180;
-            scene.object3D.addChild(cube.object3D);
+            var cube = new Node3D().addComponent(MeshRenderer);
+            cube.node3d.x = -7;
+            cube.node3d.y = 7;
+            cube.node3d.rx = 180;
+            scene.node3d.addChild(cube.node3d);
 
             //材质
-            var material = cube.material = new feng3d.StandardMaterial();
+            var material = cube.material = new StandardMaterial();
             material.renderParams.frontFace = 'CCW';
             material.renderParams.cullFace = 'NONE';
 

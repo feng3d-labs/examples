@@ -1,22 +1,22 @@
-import * as feng3d from 'feng3d';
+import { Camera, Color4, FPSController, Node3D, Scene, serialization, SkyBox, TextureCube, Vector3, View } from 'feng3d';
 
-var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
-scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.object3D.position = new feng3d.Vector3(0, 1, -10);
-scene.object3D.addChild(camera.object3D);
+var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+camera.node3d.position = new Vector3(0, 1, -10);
+scene.node3d.addChild(camera.node3d);
 
-var engine = new feng3d.View(null, scene, camera);
+var engine = new View(null, scene, camera);
 
-camera.object3D.z = -5;
-camera.object3D.lookAt(new feng3d.Vector3());
-camera.object3D.addComponent(feng3d.FPSController);
+camera.node3d.z = -5;
+camera.node3d.lookAt(new Vector3());
+camera.node3d.addComponent(FPSController);
 //
 
-var skybox = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "skybox" });
-const model = skybox.addComponent(feng3d.SkyBox);
-model.s_skyBoxTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), {
+var skybox = serialization.setValue(new Node3D(), { name: "skybox" });
+const model = skybox.addComponent(SkyBox);
+model.s_skyBoxTexture = serialization.setValue(new TextureCube(), {
     rawData: {
         type: "path", paths: [
             'resources/skybox/px.jpg',
@@ -29,4 +29,4 @@ model.s_skyBoxTexture = feng3d.serialization.setValue(new feng3d.TextureCube(), 
     }
 }
 );
-scene.object3D.addChild(skybox);
+scene.node3d.addChild(skybox);

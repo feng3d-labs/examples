@@ -1,38 +1,38 @@
-import * as feng3d from 'feng3d';
+import { Camera, Color3, Color4, CubeGeometry, FogMode, MeshRenderer, Node3D, Scene, Script, Serializable, serialization, StandardMaterial, StandardUniforms, Texture2D, Vector3, View } from "feng3d";
 
-var scene = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Untitled" }).addComponent(feng3d.Scene)
-scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = feng3d.serialization.setValue(new feng3d.Object3D(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-camera.object3D.position = new feng3d.Vector3(0, 1, -10);
-scene.object3D.addChild(camera.object3D);
+var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+camera.node3d.position = new Vector3(0, 1, -10);
+scene.node3d.addChild(camera.node3d);
 
-var engine = new feng3d.View(null, scene, camera);
+var engine = new View(null, scene, camera);
 
-var sc = scene.object3D.addScript("ScriptDemo")
+var sc = scene.node3d.addScript("ScriptDemo")
 
 
-@feng3d.Serializable()
-class ScriptDemo extends feng3d.Script
+@Serializable()
+class ScriptDemo extends Script
 {
-    cube: feng3d.Object3D;
+    cube: Node3D;
 
     init()
     {
-        var cube = this.cube = new feng3d.Object3D();
+        var cube = this.cube = new Node3D();
         cube.z = -7;
-        this.object3D.addChild(cube);
+        this.node3d.addChild(cube);
 
-        var model = cube.addComponent(feng3d.Renderable);
-        model.geometry = feng3d.serialization.setValue(new feng3d.CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+        var model = cube.addComponent(MeshRenderer);
+        model.geometry = serialization.setValue(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         //材质
-        var material = model.material = new feng3d.StandardMaterial();
-        var uniforms = <feng3d.StandardUniforms>material.uniforms;
-        uniforms.s_diffuse = new feng3d.Texture2D();
+        var material = model.material = new StandardMaterial();
+        var uniforms = <StandardUniforms>material.uniforms;
+        uniforms.s_diffuse = new Texture2D();
         uniforms.s_diffuse.source = { url: 'resources/m.png' };
 
-        uniforms.u_fogMode = feng3d.FogMode.LINEAR;
-        uniforms.u_fogColor = new feng3d.Color3(1, 1, 0);
+        uniforms.u_fogMode = FogMode.LINEAR;
+        uniforms.u_fogColor = new Color3(1, 1, 0);
         uniforms.u_fogMinDistance = 2;
         uniforms.u_fogMaxDistance = 3;
     }

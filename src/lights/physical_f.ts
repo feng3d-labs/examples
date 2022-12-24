@@ -1,4 +1,4 @@
-import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, FPSController, Material, Object3D, PerspectiveLens, PlaneGeometry, PointLight, Renderable, Scene, serialization, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3, View } from 'feng3d';
+import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, FPSController, Material, MeshRenderer, Node3D, PerspectiveLens, PlaneGeometry, PointLight, Scene, serialization, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3, View } from 'feng3d';
 import Stats from 'stats.js';
 
 let scene: Scene;
@@ -20,32 +20,32 @@ function init()
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    scene = serialization.setValue(new Object3D(), { name: "Untitled" }).addComponent(Scene)
+    scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
     scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
     scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 
-    camera = new Object3D().addComponent(Camera);
+    camera = new Node3D().addComponent(Camera);
     camera.lens = new PerspectiveLens(50, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.object3D.z = -5;
-    camera.object3D.y = 2;
-    camera.object3D.lookAt(new Vector3());
-    camera.object3D.addComponent(FPSController);
-    scene.object3D.addChild(camera.object3D);
+    camera.node3d.z = -5;
+    camera.node3d.y = 2;
+    camera.node3d.lookAt(new Vector3());
+    camera.node3d.addComponent(FPSController);
+    scene.node3d.addChild(camera.node3d);
 
     var engine = new View(null, scene, camera);
 
-    bulbLight = new Object3D().addComponent(PointLight);
+    bulbLight = new Node3D().addComponent(PointLight);
     bulbLight.color = Color3.fromUnit(0xffee88);
     bulbLight.intensity = 1;
     bulbLight.range = 5;
     // bulbLight.decay = 2;
     bulbLight.shadowType = ShadowType.PCF_Soft_Shadows;
-    bulbLight.object3D.position.set(0, 1, 0);
-    scene.object3D.addChild(bulbLight.object3D);
+    bulbLight.node3d.position.set(0, 1, 0);
+    scene.node3d.addChild(bulbLight.node3d);
 
     const bulbGeometry = new SphereGeometry({ radius: 0.02, segmentsW: 16, segmentsH: 8 });
     bulbMat = new ColorMaterial().init({ uniforms: { u_diffuseInput: new Color4(1) } });
-    const bulbRenderable = bulbLight.object3D.addComponent(Renderable);
+    const bulbRenderable = bulbLight.node3d.addComponent(MeshRenderer);
     bulbRenderable.material = bulbMat;
     bulbRenderable.geometry = bulbGeometry;
     bulbRenderable.castShadows = false;
@@ -124,31 +124,31 @@ function init()
         }
     });
 
-    const floorMesh = new Object3D().addComponent(Renderable);
+    const floorMesh = new Node3D().addComponent(MeshRenderer);
     const floorGeometry = new PlaneGeometry({ width: 20, height: 20 });
     floorMesh.geometry = floorGeometry;
     floorMesh.material = floorMat;
     floorMesh.receiveShadows = true;
     floorMesh.castShadows = true;
-    scene.object3D.addChild(floorMesh.object3D);
+    scene.node3d.addChild(floorMesh.node3d);
 
     const ballGeometry = new SphereGeometry({ radius: 0.25, segmentsW: 32, segmentsH: 32 });
-    const ballMesh = new Object3D().addComponent(Renderable);
+    const ballMesh = new Node3D().addComponent(MeshRenderer);
     ballMesh.geometry = ballGeometry;
     ballMesh.material = ballMat;
     // ballMesh.receiveShadows = true;
     ballMesh.castShadows = true;
-    ballMesh.object3D.position.set(1, 0.25, 1);
-    scene.object3D.addChild(ballMesh.object3D);
+    ballMesh.node3d.position.set(1, 0.25, 1);
+    scene.node3d.addChild(ballMesh.node3d);
 
     const boxGeometry = new CubeGeometry({ width: 0.5, height: 0.5, depth: 0.5 });
-    const boxMesh = new Object3D().addComponent(Renderable);
+    const boxMesh = new Node3D().addComponent(MeshRenderer);
     boxMesh.geometry = boxGeometry;
     boxMesh.material = cubeMat;
-    boxMesh.object3D.position.set(- 0.5, 0.25, - 1);
+    boxMesh.node3d.position.set(- 0.5, 0.25, - 1);
     boxMesh.receiveShadows = true;
     boxMesh.castShadows = true;
-    scene.object3D.addChild(boxMesh.object3D);
+    scene.node3d.addChild(boxMesh.node3d);
 
     // const boxMesh2 = new THREE.Mesh(boxGeometry, cubeMat);
     // boxMesh2.position.set(0, 0.25, - 5);

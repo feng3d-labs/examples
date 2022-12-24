@@ -16,17 +16,17 @@ var cube = Node3D.createPrimitive("Cube");
 cube.z = 3;
 scene.node3d.addChild(cube);
 
-var object3D = Node3D.createPrimitive("Plane");
-object3D.y = 1.50;
-var holdSizeComponent = object3D.addComponent(HoldSizeComponent);
+var node3d = Node3D.createPrimitive("Plane");
+node3d.y = 1.50;
+var holdSizeComponent = node3d.addComponent(HoldSizeComponent);
 holdSizeComponent.holdSize = 1;
 holdSizeComponent.camera = camera;
-var billboardComponent = object3D.addComponent(BillboardComponent);
+var billboardComponent = node3d.addComponent(BillboardComponent);
 billboardComponent.camera = camera;
-cube.addChild(object3D);
+cube.addChild(node3d);
 
 //材质
-var model = object3D.getComponent(MeshRenderer);
+var model = node3d.getComponent(MeshRenderer);
 model.geometry = serialization.setValue(new PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
 var textureMaterial = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: 'resources/m.png' } } } });
 // textureMaterial.cullFace = 'NONE';
@@ -47,4 +47,3 @@ var textureMaterial = model.material = new StandardMaterial().init({ uniforms: {
 // var imageData = context2D.getImageData(0, 0, canvas2D.width, canvas2D.height);
 // texture.pixels = imageData;
 
-// object3D.holdSize = 1;

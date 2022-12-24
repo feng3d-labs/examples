@@ -53,8 +53,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
+								"__class__": "StandardMaterial",
 								"uniforms": {
 									"__class__": "StandardUniforms",
 									"u_diffuse": {
@@ -80,11 +79,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -103,8 +98,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
+								"__class__": "StandardMaterial",
 								"uniforms": {
 									"__class__": "StandardUniforms",
 									"u_diffuse": {
@@ -129,11 +123,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -152,8 +142,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
+								"__class__": "StandardMaterial",
 								"uniforms": {
 									"__class__": "StandardUniforms",
 									"u_diffuse": {
@@ -179,11 +168,7 @@
 								"height": 21
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -202,11 +187,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -225,11 +206,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -247,11 +224,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -270,11 +243,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -293,11 +262,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]
@@ -316,11 +281,7 @@
 								"height": 14
 							},
 							"material": {
-								"__class__": "Material",
-								"shaderName": "standard",
-								"uniforms": {
-									"__class__": "StandardUniforms"
-								}
+								"__class__": "StandardMaterial"
 							}
 						}
 					]

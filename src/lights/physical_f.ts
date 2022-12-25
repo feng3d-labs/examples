@@ -4,7 +4,7 @@ import Stats from 'stats.js';
 let scene: Scene;
 
 let camera: Camera;
-let bulbLight: PointLight
+let bulbLight: PointLight;
 let bulbMat: Material;
 
 let stats: Stats;
@@ -20,7 +20,7 @@ function init()
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+    scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
     scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
     scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 
@@ -32,7 +32,7 @@ function init()
     camera.node3d.addComponent(FPSController);
     scene.node3d.addChild(camera.node3d);
 
-    var engine = new View(null, scene, camera);
+    const engine = new View(null, scene, camera);
 
     bulbLight = new Node3D().addComponent(PointLight);
     bulbLight.color = Color3.fromUnit(0xffee88);
@@ -145,7 +145,7 @@ function init()
     const boxMesh = new Node3D().addComponent(MeshRenderer);
     boxMesh.geometry = boxGeometry;
     boxMesh.material = cubeMat;
-    boxMesh.node3d.position.set(- 0.5, 0.25, - 1);
+    boxMesh.node3d.position.set(-0.5, 0.25, -1);
     boxMesh.receiveShadows = true;
     boxMesh.castShadows = true;
     scene.node3d.addChild(boxMesh.node3d);
@@ -159,7 +159,6 @@ function init()
     // boxMesh3.position.set(7, 0.25, 0);
     // boxMesh3.castShadow = true;
     // scene.add(boxMesh3);
-
 }
 
 function animate()
@@ -171,6 +170,5 @@ function animate()
 
 function render()
 {
-
     stats.update();
 }

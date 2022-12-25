@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 
 import Stats from 'stats.js';
@@ -6,19 +5,18 @@ import { GUI } from 'lil-gui';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-let camera: THREE.PerspectiveCamera,
-    scene: THREE.Scene,
-    renderer: THREE.WebGLRenderer,
-    bulbLight: THREE.PointLight,
-    bulbMat: THREE.MeshStandardMaterial,
-    hemiLight: THREE.HemisphereLight,
-    stats: Stats;
-let ballMat: THREE.MeshStandardMaterial,
-    cubeMat: THREE.MeshStandardMaterial,
-    floorMat: THREE.MeshStandardMaterial;
+let camera: THREE.PerspectiveCamera;
+    let scene: THREE.Scene;
+    let renderer: THREE.WebGLRenderer;
+    let bulbLight: THREE.PointLight;
+    let bulbMat: THREE.MeshStandardMaterial;
+    let hemiLight: THREE.HemisphereLight;
+    let stats: Stats;
+let ballMat: THREE.MeshStandardMaterial;
+    let cubeMat: THREE.MeshStandardMaterial;
+    let floorMat: THREE.MeshStandardMaterial;
 
 let previousShadowMap = false;
-
 
 // ref for lumens: http://www.power-sure.com/lumens.htm
 const bulbLuminousPowers = {
@@ -29,7 +27,7 @@ const bulbLuminousPowers = {
     '400 lm (40W)': 400,
     '180 lm (25W)': 180,
     '20 lm (4W)': 20,
-    'Off': 0
+    Off: 0
 };
 
 // ref for solar irradiances: https://en.wikipedia.org/wiki/Lux
@@ -59,16 +57,14 @@ animate();
 
 function init()
 {
-
     const container = document.createElement('div');
     document.body.append(container);
 
     stats = new Stats();
     container.appendChild(stats.dom);
 
-
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.x = - 4;
+    camera.position.x = -4;
     camera.position.z = 4;
     camera.position.y = 2;
 
@@ -99,7 +95,6 @@ function init()
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load('../../../textures/hardwood2_diffuse.jpg', function (map)
     {
-
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
@@ -107,29 +102,24 @@ function init()
         map.encoding = THREE.sRGBEncoding;
         floorMat.map = map;
         floorMat.needsUpdate = true;
-
     });
     textureLoader.load('../../../textures/hardwood2_bump.jpg', function (map)
     {
-
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
         map.repeat.set(10, 24);
         floorMat.bumpMap = map;
         floorMat.needsUpdate = true;
-
     });
     textureLoader.load('../../../textures/hardwood2_roughness.jpg', function (map)
     {
-
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
         map.repeat.set(10, 24);
         floorMat.roughnessMap = map;
         floorMat.needsUpdate = true;
-
     });
 
     cubeMat = new THREE.MeshStandardMaterial({
@@ -140,7 +130,6 @@ function init()
     });
     textureLoader.load('../../../textures/brick_diffuse.jpg', function (map)
     {
-
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
@@ -148,18 +137,15 @@ function init()
         map.encoding = THREE.sRGBEncoding;
         cubeMat.map = map;
         cubeMat.needsUpdate = true;
-
     });
     textureLoader.load('../../../textures/brick_bump.jpg', function (map)
     {
-
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
         map.repeat.set(1, 1);
         cubeMat.bumpMap = map;
         cubeMat.needsUpdate = true;
-
     });
 
     ballMat = new THREE.MeshStandardMaterial({
@@ -169,27 +155,23 @@ function init()
     });
     textureLoader.load('../../../textures/planets/earth_atmos_2048.jpg', function (map)
     {
-
         map.anisotropy = 4;
         map.encoding = THREE.sRGBEncoding;
         ballMat.map = map;
         ballMat.needsUpdate = true;
-
     });
     textureLoader.load('../../../textures/planets/earth_specular_2048.jpg', function (map)
     {
-
         map.anisotropy = 4;
         map.encoding = THREE.sRGBEncoding;
         ballMat.metalnessMap = map;
         ballMat.needsUpdate = true;
-
     });
 
     const floorGeometry = new THREE.PlaneGeometry(20, 20);
     const floorMesh = new THREE.Mesh(floorGeometry, floorMat);
     floorMesh.receiveShadow = true;
-    floorMesh.rotation.x = - Math.PI / 2.0;
+    floorMesh.rotation.x = -Math.PI / 2.0;
     scene.add(floorMesh);
 
     const ballGeometry = new THREE.SphereGeometry(0.25, 32, 32);
@@ -201,12 +183,12 @@ function init()
 
     const boxGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const boxMesh = new THREE.Mesh(boxGeometry, cubeMat);
-    boxMesh.position.set(- 0.5, 0.25, - 1);
+    boxMesh.position.set(-0.5, 0.25, -1);
     boxMesh.castShadow = true;
     scene.add(boxMesh);
 
     const boxMesh2 = new THREE.Mesh(boxGeometry, cubeMat);
-    boxMesh2.position.set(0, 0.25, - 5);
+    boxMesh2.position.set(0, 0.25, -5);
     boxMesh2.castShadow = true;
     scene.add(boxMesh2);
 
@@ -214,7 +196,6 @@ function init()
     boxMesh3.position.set(7, 0.25, 0);
     boxMesh3.castShadow = true;
     scene.add(boxMesh3);
-
 
     renderer = new THREE.WebGLRenderer();
     renderer.physicallyCorrectLights = true;
@@ -225,13 +206,11 @@ function init()
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
 
-
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.minDistance = 1;
     controls.maxDistance = 20;
 
     window.addEventListener('resize', onWindowResize);
-
 
     const gui = new GUI();
 
@@ -240,45 +219,37 @@ function init()
     gui.add(params, 'exposure', 0, 1);
     gui.add(params, 'shadows');
     gui.open();
-
 }
 
 function onWindowResize()
 {
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-
 }
 
 //
 
 function animate()
 {
-
     requestAnimationFrame(animate);
 
     render();
-
 }
 
 function render()
 {
-
     renderer.toneMappingExposure = Math.pow(params.exposure, 5.0); // to allow for very bright scenes.
     renderer.shadowMap.enabled = params.shadows;
     bulbLight.castShadow = params.shadows;
 
     if (params.shadows !== previousShadowMap)
     {
-
         ballMat.needsUpdate = true;
         cubeMat.needsUpdate = true;
         floorMat.needsUpdate = true;
         previousShadowMap = params.shadows;
-
     }
 
     bulbLight.power = bulbLuminousPowers[params.bulbPower];
@@ -292,5 +263,4 @@ function render()
     renderer.render(scene, camera);
 
     stats.update();
-
 }

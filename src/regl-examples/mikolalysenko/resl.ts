@@ -539,12 +539,10 @@ export function resl(config)
             onDone(assets);
         }
         else
-        {
-            if (onProgress)
+        if (onProgress)
             {
                 onProgress(progress / pending.length, message);
             }
-        }
     }
 
     if (pending.length === 0)

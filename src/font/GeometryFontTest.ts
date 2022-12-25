@@ -1,18 +1,18 @@
 import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, serialization, StandardMaterial, Vector3, View } from 'feng3d';
 import * as opentype from 'opentype.js';
 
-var scene = serialization.setValue(new Node3D(), { name: "Untitled" }).addComponent(Scene)
+const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-var camera = serialization.setValue(new Node3D(), { name: "Main Camera" }).addComponent(Camera);
+const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-var engine = new View(null, scene, camera);
+const engine = new View(null, scene, camera);
 
 camera.node3d.addComponent(FPSController);
 
-var script = document.createElement('script');
+const script = document.createElement('script');
 script.onload = (ev) =>
 {
     // opentype.load('../../../fonts/NotoSansCJKsc_Regular.otf', function (err, font)
@@ -20,8 +20,9 @@ script.onload = (ev) =>
     {
         if (err)
         {
-            alert('Font could not be loaded: ' + err);
-        } else
+            alert(`Font could not be loaded: ${err}`);
+        }
+        else
         {
             const fontData = extractFontData(font);
             const contoursInfo = convert(fontData);
@@ -39,24 +40,23 @@ script.onload = (ev) =>
             geometry.uvs = uvs;
             geometry.indices = indices;
 
-            var cube = new Node3D().addComponent(MeshRenderer);
+            const cube = new Node3D().addComponent(MeshRenderer);
             cube.node3d.x = -7;
             cube.node3d.y = 7;
             cube.node3d.rx = 180;
             scene.node3d.addChild(cube.node3d);
 
-            //材质
-            var material = cube.material = new StandardMaterial();
+            // 材质
+            const material = cube.material = new StandardMaterial();
             material.renderParams.frontFace = 'CCW';
             material.renderParams.cullFace = 'NONE';
 
             cube.geometry = geometry;
         }
     });
-}
+};
 script.src = '../../libs/opentype.min.js';
 document.head.appendChild(script);
-
 
 function extractFontData(fontAll: opentype.Font)
 {
@@ -91,6 +91,7 @@ function extractFontData(fontAll: opentype.Font)
             fontData.glyphsMap[glyph.unicode] = glyph;
         }
     }
+
     return fontData;
 }
 
@@ -136,21 +137,24 @@ function convert(font, restrict?: string)
                 }
             }
         }
-    } else if (restriction.set)
+    }
+    else if (restriction.set)
     { // use quit a lot
-        for (let char of restriction.set)
+        for (const char of restriction.set)
         {
             const charCode = char.codePointAt(0);
             const glyph = font.glyphsMap[charCode];
             if (glyph)
             {
                 result.glyphs[char] = fetchToken(glyph);
-            } else
+            }
+            else
             {
                 console.warn(`char: ${char}, charCode: ${charCode}`);
             }
         }
-    } else
+    }
+    else
     { // get all characters
         for (let i = 0; i < font.glyphs.length; i++)
         {
@@ -169,10 +173,10 @@ function convert(font, restrict?: string)
     result.underlinePosition = Math.round(font.tables.post.underlinePosition);
     result.underlineThickness = Math.round(font.tables.post.underlineThickness);
     result.boundingBox = {
-        'yMin': Math.round(font.tables.head.yMin),
-        'xMin': Math.round(font.tables.head.xMin),
-        'yMax': Math.round(font.tables.head.yMax),
-        'xMax': Math.round(font.tables.head.xMax)
+        yMin: Math.round(font.tables.head.yMin),
+        xMin: Math.round(font.tables.head.xMin),
+        yMax: Math.round(font.tables.head.yMax),
+        xMax: Math.round(font.tables.head.xMax)
     };
     result.unitsPerEm = font.unitsPerEm;
     result.original_font_information = font.tables.name;
@@ -215,6 +219,7 @@ function fetchToken(glyph)
             token.o += ' ';
         }
     });
+
     return token;
 }
 const text1 = `

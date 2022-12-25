@@ -1,12 +1,12 @@
-import { Camera, Color4, FPSController, MeshRenderer, Node3D, Scene, serialization, StandardMaterial, StandardUniforms, Vector3, View } from 'feng3d';
+import { Camera, Color4, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, StandardUniforms, Vector3, View } from 'feng3d';
 
 /**
  * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
  */
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 

@@ -1,10 +1,10 @@
-import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, serialization, StandardMaterial, Vector3, View } from 'feng3d';
+import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, Vector3, View } from 'feng3d';
 import * as opentype from 'opentype.js';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 

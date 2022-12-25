@@ -1,9 +1,9 @@
-import { Camera, Color4, LookAtController, mathUtil, Node3D, Scene, serialization, Vector3, View } from 'feng3d';
+import { Camera, Color4, LookAtController, mathUtil, Node3D, Scene, $set, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 

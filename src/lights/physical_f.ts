@@ -1,4 +1,4 @@
-import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, FPSController, Material, MeshRenderer, Node3D, PerspectiveLens, PlaneGeometry, PointLight, Scene, serialization, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3, View } from 'feng3d';
+import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, FPSController, Material, MeshRenderer, Node3D, PerspectiveLens, PlaneGeometry, PointLight, Scene, $set, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3, View } from 'feng3d';
 import Stats from 'stats.js';
 
 let scene: Scene;
@@ -20,7 +20,7 @@ function init()
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+    scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
     scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
     scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 

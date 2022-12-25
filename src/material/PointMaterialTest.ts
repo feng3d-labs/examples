@@ -1,9 +1,9 @@
-import { Camera, Color4, MeshRenderer, Node3D, PointGeometry, PointMaterial, PointUniforms, Scene, serialization, Vector3, View } from 'feng3d';
+import { Camera, Color4, MeshRenderer, Node3D, PointGeometry, PointMaterial, PointUniforms, Scene, $set, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -11,7 +11,7 @@ const engine = new View(null, scene, camera);
 
 const pointGeometry = new PointGeometry();
 const pointMaterial = new PointMaterial();
-const node3d = serialization.setValue(new Node3D(), { name: 'plane' });
+const node3d = $set(new Node3D(), { name: 'plane' });
 const model = node3d.addComponent(MeshRenderer);
 model.geometry = pointGeometry;
 model.material = pointMaterial;

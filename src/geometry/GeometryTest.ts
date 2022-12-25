@@ -1,9 +1,9 @@
-import { Camera, Color4, ColorMaterial, ColorUniforms, CubeGeometry, CustomGeometry, Matrix4x4, MeshRenderer, Node3D, PlaneGeometry, Scene, serialization, SphereGeometry, Vector3, View } from 'feng3d';
+import { Camera, Color4, ColorMaterial, ColorUniforms, CubeGeometry, CustomGeometry, Matrix4x4, MeshRenderer, Node3D, PlaneGeometry, Scene, $set, SphereGeometry, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -16,7 +16,7 @@ const geometry = model.geometry = new CustomGeometry();
 geometry.addGeometry(new PlaneGeometry());
 const matrix = new Matrix4x4();
 matrix.appendTranslation(0, 0.50, 0);
-geometry.addGeometry(serialization.setValue(new SphereGeometry(), { radius: 50 }), matrix);
+geometry.addGeometry($set(new SphereGeometry(), { radius: 50 }), matrix);
 
 matrix.appendTranslation(0, 0.50, 0);
 const addGeometry = new CubeGeometry();

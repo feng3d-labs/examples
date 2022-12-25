@@ -1,4 +1,4 @@
-import { loader, Node3D, Scene, serialization, View } from 'feng3d';
+import { loader, Node3D, Scene, $set, View } from 'feng3d';
 
 const view3D = new View();
 

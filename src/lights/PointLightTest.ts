@@ -1,16 +1,16 @@
-import { Camera, Color4, ColorMaterial, CubeGeometry, DirectionalLight, FPSController, MeshRenderer, Node3D, PlaneGeometry, PointLight, Scene, serialization, ShadowType, SphereGeometry, StandardMaterial, ticker, Vector3, View, windowEventProxy } from 'feng3d';
+import { Camera, Color4, ColorMaterial, CubeGeometry, DirectionalLight, FPSController, MeshRenderer, Node3D, PlaneGeometry, PointLight, Scene, $set, ShadowType, SphereGeometry, StandardMaterial, ticker, Vector3, View, windowEventProxy } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
 const engine = new View(null, scene, camera);
 
-const light0 = serialization.setValue(new Node3D(), { name: 'pointLight' });
-const light1 = serialization.setValue(new Node3D(), { name: 'pointLight' });
+const light0 = $set(new Node3D(), { name: 'pointLight' });
+const light1 = $set(new Node3D(), { name: 'pointLight' });
 
 initObjects();
 initLights();
@@ -52,7 +52,7 @@ function initObjects()
     const plane = new Node3D();
     plane.y = -1;
     let model = plane.addComponent(MeshRenderer);
-    const geometry = model.geometry = serialization.setValue(new PlaneGeometry(), { width: 10, height: 10 });
+    const geometry = model.geometry = $set(new PlaneGeometry(), { width: 10, height: 10 });
     geometry.scaleU = 2;
     geometry.scaleV = 2;
     model.material = material;
@@ -61,7 +61,7 @@ function initObjects()
     const cube = new Node3D();
     model = cube.addComponent(MeshRenderer);
     model.material = material;
-    model.geometry = serialization.setValue(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+    model.geometry = $set(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
     model.geometry.scaleU = 2;
     model.geometry.scaleV = 2;
     scene.node3d.addChild(cube);
@@ -82,7 +82,7 @@ function initLights()
     //
     const lightColor0 = new Color4(1, 0, 0, 1);
     let model = light0.addComponent(MeshRenderer);
-    model.geometry = serialization.setValue(new SphereGeometry(), { radius: 0.05 });
+    model.geometry = $set(new SphereGeometry(), { radius: 0.05 });
     // 初始化点光源
     const pointLight0 = light0.addComponent(PointLight);
     pointLight0.shadowType = ShadowType.PCF_Shadows;
@@ -93,7 +93,7 @@ function initLights()
     //
     const lightColor1 = new Color4(0, 1, 0, 1);
     model = light1.addComponent(MeshRenderer);
-    model.geometry = serialization.setValue(new SphereGeometry(), { radius: 0.05 });
+    model.geometry = $set(new SphereGeometry(), { radius: 0.05 });
     // 初始化点光源
     const pointLight1 = light1.addComponent(DirectionalLight);
     pointLight1.shadowType = ShadowType.PCF_Shadows;

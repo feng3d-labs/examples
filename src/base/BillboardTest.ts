@@ -1,9 +1,9 @@
-import { BillboardComponent, Camera, Color4, FPSController, HoldSizeComponent, MeshRenderer, Node3D, PlaneGeometry, Scene, serialization, StandardMaterial, Vector3, View } from 'feng3d';
+import { $set, BillboardComponent, Camera, Color4, FPSController, HoldSizeComponent, MeshRenderer, Node3D, PlaneGeometry, Scene, StandardMaterial, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -27,7 +27,7 @@ cube.addChild(node3d);
 
 // 材质
 const model = node3d.getComponent(MeshRenderer);
-model.geometry = serialization.setValue(new PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
+model.geometry = $set(new PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
 const textureMaterial = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: 'Texture2D', source: { url: '../../../m.png' } } } });
 // textureMaterial.cullFace = 'NONE';
 //

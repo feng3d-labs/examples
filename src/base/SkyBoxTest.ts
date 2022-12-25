@@ -1,9 +1,9 @@
-import { Camera, Color4, FPSController, Node3D, Scene, serialization, SkyBox, TextureCube, Vector3, View } from 'feng3d';
+import { Camera, Color4, FPSController, Node3D, Scene, $set, SkyBox, TextureCube, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -14,9 +14,9 @@ camera.node3d.lookAt(new Vector3());
 camera.node3d.addComponent(FPSController);
 //
 
-const skybox = serialization.setValue(new Node3D(), { name: 'skybox' });
+const skybox = $set(new Node3D(), { name: 'skybox' });
 const model = skybox.addComponent(SkyBox);
-model.s_skyBoxTexture = serialization.setValue(new TextureCube(), {
+model.s_skyBoxTexture = $set(new TextureCube(), {
     rawData: {
         type: 'path', paths: [
             '../../../skybox/px.jpg',

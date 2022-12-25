@@ -1,9 +1,9 @@
-import { Camera, Color3, Color4, CubeGeometry, FogMode, MeshRenderer, Node3D, Scene, Script, Serializable, serialization, StandardMaterial, StandardUniforms, Texture2D, Vector3, View } from 'feng3d';
+import { Camera, Color3, Color4, CubeGeometry, FogMode, MeshRenderer, Node3D, Scene, Script, Serializable, $set, StandardMaterial, StandardUniforms, Texture2D, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -23,7 +23,7 @@ class ScriptDemo extends Script
         this.node3d.addChild(cube);
 
         const model = cube.addComponent(MeshRenderer);
-        model.geometry = serialization.setValue(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+        model.geometry = $set(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
         // 材质
         const material = model.material = new StandardMaterial();
         const uniforms = <StandardUniforms>material.uniforms;

@@ -1,9 +1,9 @@
-import { Camera, Color3, Color4, FPSController, MeshRenderer, Node3D, PointLight, Scene, serialization, StandardMaterial, TerrainGeometry, ticker, Vector3, View } from 'feng3d';
+import { $set, Camera, Color3, Color4, FPSController, MeshRenderer, Node3D, PointLight, Scene, StandardMaterial, TerrainGeometry, ticker, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -17,7 +17,7 @@ camera.node3d.addComponent(FPSController);
 
 const root = '../../../terrain/';
 //
-const terrain = serialization.setValue(new Node3D(), { name: 'terrain' });
+const terrain = $set(new Node3D(), { name: 'terrain' });
 const model = terrain.addComponent(MeshRenderer);
 model.geometry = new TerrainGeometry({ heightMap: { __class__: 'Texture2D', source: { url: `${root}terrain_heights.jpg` } } });
 const material = new StandardMaterial().init({

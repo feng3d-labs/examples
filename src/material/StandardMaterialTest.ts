@@ -1,9 +1,9 @@
-import { Camera, Color4, CubeGeometry, MeshRenderer, Node3D, Scene, serialization, StandardMaterial, StandardUniforms, Texture2D, Vector3, View } from 'feng3d';
+import { Camera, Color4, CubeGeometry, MeshRenderer, Node3D, Scene, $set, StandardMaterial, StandardUniforms, Texture2D, Vector3, View } from 'feng3d';
 
-const scene = serialization.setValue(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = serialization.setValue(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -21,7 +21,7 @@ setInterval(function ()
 }, 15);
 
 const model = cube.addComponent(MeshRenderer);
-model.geometry = serialization.setValue(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
+model.geometry = $set(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
 // model.geometry = new PlaneGeometry();
 // 材质
 const textureMaterial = model.material = new StandardMaterial();

@@ -44,6 +44,22 @@ var files = {
         "Basic",
         "DashedLine",
     ],
+    'regl-examples': [
+        'basic',
+        'batch',
+        'blur',
+        'bunny',
+        'camera',
+        'cloth',
+        'cube',
+    ],
+    WebGL2Samples: [
+        'draw_image_space',
+        'draw_instanced',
+        'draw_primitive_restart',
+        'draw_range_arrays',
+        'fbo_blit',
+    ],
 };
 
 function extractQuery()

@@ -27,7 +27,7 @@ model.geometry = serialization.setValue(new CubeGeometry(), { width: 1, height: 
 model.material = new TextureMaterial().init({
     uniforms: {
         s_texture: {
-            __class__: "Texture2D", source: { url: 'resources/m.png' }, flipY: false
+            __class__: "Texture2D", source: { url: '../../../resources/m.png' }, flipY: false
         }
     }
 });

@@ -28,7 +28,7 @@ cube.addChild(node3d);
 //材质
 var model = node3d.getComponent(MeshRenderer);
 model.geometry = serialization.setValue(new PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
-var textureMaterial = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: 'resources/m.png' } } } });
+var textureMaterial = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: '../../../resources/m.png' } } } });
 // textureMaterial.cullFace = 'NONE';
 //
 

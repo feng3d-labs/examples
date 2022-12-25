@@ -1,4 +1,4 @@
-var files = {
+const files = {
     "base": [
         "Container3DTest",
         "FPSControllerTest",
@@ -64,22 +64,23 @@ var files = {
 
 function extractQuery()
 {
-    var p = window.location.search.indexOf('?q=');
+    const p = window.location.search.indexOf('?q=');
     if (p !== -1)
     {
         return window.location.search.substr(3);
     }
-    return ''
+
+    return '';
 }
 
-var panel = document.getElementById('panel');
-var content = document.getElementById('content');
-var viewer = document.getElementById('viewer');
+const panel = document.getElementById('panel');
+const content = document.getElementById('content');
+const viewer = document.getElementById('viewer');
 
-var filterInput = document.getElementById('filterInput');
-var clearFilterButton = document.getElementById('clearFilterButton');
+const filterInput = document.getElementById('filterInput');
+const clearFilterButton = document.getElementById('clearFilterButton');
 
-var expandButton = document.getElementById('expandButton');
+const expandButton = document.getElementById('expandButton');
 expandButton.addEventListener('click', function (event)
 {
     panel.classList.toggle('collapsed');
@@ -88,89 +89,70 @@ expandButton.addEventListener('click', function (event)
 
 // iOS iframe auto-resize workaround
 
-if (/(iPad|iPhone|iPod)/g.test(navigator.userAgent))
+if ((/(iPad|iPhone|iPod)/g).test(navigator.userAgent))
 {
-
     viewer.style.width = getComputedStyle(viewer).width;
     viewer.style.height = getComputedStyle(viewer).height;
     viewer.setAttribute('scrolling', 'no');
-
 }
 
-var container = document.createElement('div');
+const container = document.createElement('div');
 content.appendChild(container);
 
-var button = document.createElement('div');
+const button = document.createElement('div');
 button.id = 'button';
 button.textContent = 'View source';
 button.addEventListener('click', function (event)
 {
-
-    window.open('https://gitlab.com/feng3d/feng3d-examples/tree/master/src/' + selected + '.ts');
-
+    window.open(`http://code.pinefield-inc.com/pineai-client/fabulous/tree/master/examples/src/${selected}.ts`);
 }, false);
 button.style.display = 'none';
 document.body.appendChild(button);
 
-var links = {};
-var paths = {};
-var selected = null;
+const links = {};
+let selected = null;
 
-for (var key in files)
+for (const key in files)
 {
+    const section = files[key];
 
-    var section = files[key];
-
-    var header = document.createElement('h2');
+    const header = document.createElement('h2');
     header.textContent = key;
     header.setAttribute('data-category', key);
     container.appendChild(header);
 
-    for (var i = 0; i < section.length; i++)
+    for (let i = 0; i < section.length; i++)
     {
-
+        // eslint-disable-next-line no-loop-func
         (function (file)
         {
-
-            paths[file] = key + "/" + file;
-
-            var link = document.createElement('a');
+            const link = document.createElement('a');
             link.className = 'link';
             link.textContent = file;
-            link.href = "examples.html?type=" + paths[file] + "&v=" + Math.random();
+            link.href = `src/${key}/${file}.html`;
             link.setAttribute('target', 'viewer');
             link.addEventListener('click', function (event)
             {
-
                 if (event.button === 0)
                 {
-
-                    selectFile(file);
-
+                    selectFile(`${key}/${file}`);
                 }
-
             });
             container.appendChild(link);
 
-            links[file] = link;
-
+            links[`${key}/${file}`] = link;
         })(section[i]);
-
     }
-
 }
 
 function loadFile(file)
 {
-
     selectFile(file);
-    viewer.src = "examples.html?type=" + paths[file];
-
+    viewer.src = `src/${file}.html`;
 }
 
 function selectFile(file)
 {
-
     if (selected !== null) links[selected].classList.remove('selected');
 
     links[file].classList.add('selected');
@@ -182,135 +164,108 @@ function selectFile(file)
     panel.classList.toggle('collapsed');
 
     selected = file;
-
 }
 
 if (window.location.hash !== '')
 {
-
     loadFile(window.location.hash.substring(1));
-
 }
 
 // filter
 
 filterInput.addEventListener('input', function (e)
 {
-
     updateFilter();
-
 });
 
 clearFilterButton.addEventListener('click', function (e)
 {
-
     filterInput.value = '';
     updateFilter();
     e.preventDefault();
-
 });
 
 function updateFilter()
 {
-
-    var v = filterInput.value;
+    const v = filterInput.value;
     if (v !== '')
     {
-        window.history.replaceState({}, '', '?q=' + v + window.location.hash);
-    } else
+        window.history.replaceState({}, '', `?q=${v}${window.location.hash}`);
+    }
+    else
     {
         window.history.replaceState({}, '', window.location.pathname + window.location.hash);
     }
 
-    var exp = new RegExp(v, 'gi');
+    const exp = new RegExp(v, 'gi');
 
-    for (var key in files)
+    for (const key in files)
     {
+        const section = files[key];
 
-        var section = files[key];
-
-        for (var i = 0; i < section.length; i++)
+        for (let i = 0; i < section.length; i++)
         {
-
-            filterExample(section[i], exp);
-
+            filterExample(`${key}/${section[i]}`, exp);
         }
-
     }
 
     layoutList();
-
 }
 
 function filterExample(file, exp)
 {
-
-    var link = links[file];
-    var res = file.match(exp);
-    var text;
+    const link = links[file];
+    const res = file.match(exp);
+    let text;
 
     if (res && res.length > 0)
     {
-
         link.classList.remove('filtered');
 
-        for (var i = 0; i < res.length; i++)
+        for (let i = 0; i < res.length; i++)
         {
-            text = file.replace(res[i], '<b>' + res[i] + '</b>');
+            text = file.replace(res[i], `<b>${res[i]}</b>`);
         }
 
-        link.innerHTML = text;
-
-    } else
+        // link.innerHTML = text;
+    }
+    else
     {
-
         link.classList.add('filtered');
-        link.innerHTML = file;
-
+        // link.innerHTML = file;
     }
 }
 
 function layoutList()
 {
-
-    for (var key in files)
+    for (const key in files)
     {
+        let collapsed = true;
 
-        var collapsed = true;
+        const section = files[key];
 
-        var section = files[key];
-
-        for (var i = 0; i < section.length; i++)
+        for (let i = 0; i < section.length; i++)
         {
-
-            var file = section[i];
+            const file = `${key}/${section[i]}`;
 
             if (!links[file].classList.contains('filtered'))
             {
-
                 collapsed = false;
                 break;
-
             }
-
         }
 
-        var element = document.querySelector('h2[data-category="' + key + '"]');
+        const element = document.querySelector(`h2[data-category="${key}"]`);
 
         if (collapsed)
         {
-
             element.classList.add('filtered');
-
-        } else
-        {
-
-            element.classList.remove('filtered');
-
         }
-
+        else
+        {
+            element.classList.remove('filtered');
+        }
     }
-
 }
 
 filterInput.value = extractQuery();

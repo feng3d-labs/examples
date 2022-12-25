@@ -373,7 +373,7 @@ resl({
     manifest: {
         texture: {
             type: 'image',
-            src: 'resources/assets/cloth.png',
+            src: '../../../resources/assets/cloth.png',
         }
     },
     onDone: ({ texture }) =>

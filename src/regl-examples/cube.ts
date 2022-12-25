@@ -125,7 +125,7 @@ resl({
     manifest: {
         texture: {
             type: 'image',
-            src: 'resources/assets/peppers.png',
+            src: '../../../resources/assets/peppers.png',
         }
     },
     onDone: ({ texture }) =>

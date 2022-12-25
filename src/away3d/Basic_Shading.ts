@@ -38,29 +38,29 @@ function initMaterials()
 {
     planeMaterial = new feng3d.StandardMaterial().init({
         uniforms: {
-            s_diffuse: { __class__: "Texture2D", source: { url: "resources/floor_diffuse.jpg" } },
-            s_normal: { __class__: "Texture2D", source: { url: "resources/floor_normal.jpg" } },
-            s_specular: { __class__: "Texture2D", source: { url: "resources/floor_specular.jpg" } },
+            s_diffuse: { __class__: "Texture2D", source: { url: "../../../resources/floor_diffuse.jpg" } },
+            s_normal: { __class__: "Texture2D", source: { url: "../../../resources/floor_normal.jpg" } },
+            s_specular: { __class__: "Texture2D", source: { url: "../../../resources/floor_specular.jpg" } },
         }
     });
     sphereMaterial = new feng3d.StandardMaterial().init({
         uniforms: {
-            s_diffuse: { __class__: "Texture2D", source: { url: "resources/beachball_diffuse.jpg" } },
-            s_specular: { __class__: "Texture2D", source: { url: "resources/beachball_specular.jpg" } },
+            s_diffuse: { __class__: "Texture2D", source: { url: "../../../resources/beachball_diffuse.jpg" } },
+            s_specular: { __class__: "Texture2D", source: { url: "../../../resources/beachball_specular.jpg" } },
         }
     });
     cubeMaterial = new feng3d.StandardMaterial().init({
         uniforms: {
-            s_diffuse: { __class__: "Texture2D", source: { url: "resources/trinket_diffuse.jpg" } },
-            s_normal: { __class__: "Texture2D", source: { url: "resources/trinket_normal.jpg" } },
-            s_specular: { __class__: "Texture2D", source: { url: "resources/trinket_specular.jpg" } },
+            s_diffuse: { __class__: "Texture2D", source: { url: "../../../resources/trinket_diffuse.jpg" } },
+            s_normal: { __class__: "Texture2D", source: { url: "../../../resources/trinket_normal.jpg" } },
+            s_specular: { __class__: "Texture2D", source: { url: "../../../resources/trinket_specular.jpg" } },
         }
     });
     torusMaterial = new feng3d.StandardMaterial().init({
         shaderName: "standard", uniforms: {
-            s_diffuse: { __class__: "Texture2D", source: { url: "resources/weave_diffuse.jpg" } },
-            s_normal: { __class__: "Texture2D", source: { url: "resources/weave_normal.jpg" } },
-            s_specular: { __class__: "Texture2D", source: { url: "resources/weave_diffuse.jpg" } },
+            s_diffuse: { __class__: "Texture2D", source: { url: "../../../resources/weave_diffuse.jpg" } },
+            s_normal: { __class__: "Texture2D", source: { url: "../../../resources/weave_normal.jpg" } },
+            s_specular: { __class__: "Texture2D", source: { url: "../../../resources/weave_diffuse.jpg" } },
         }
     });
 }

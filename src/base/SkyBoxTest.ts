@@ -19,12 +19,12 @@ const model = skybox.addComponent(SkyBox);
 model.s_skyBoxTexture = serialization.setValue(new TextureCube(), {
     rawData: {
         type: "path", paths: [
-            'resources/skybox/px.jpg',
-            'resources/skybox/py.jpg',
-            'resources/skybox/pz.jpg',
-            'resources/skybox/nx.jpg',
-            'resources/skybox/ny.jpg',
-            'resources/skybox/nz.jpg'
+            '../../../resources/skybox/px.jpg',
+            '../../../resources/skybox/py.jpg',
+            '../../../resources/skybox/pz.jpg',
+            '../../../resources/skybox/nx.jpg',
+            '../../../resources/skybox/ny.jpg',
+            '../../../resources/skybox/nz.jpg'
         ]
     }
 }

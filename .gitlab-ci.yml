@@ -13,13 +13,4 @@ test:
   stage: test
   script:
     - npm install
-
-pages:
-  stage: deploy
-  script:
-  - npm run deploy
-  artifacts:
-    paths:
-    - public
-  only:
-  - publish
+    - npm run build

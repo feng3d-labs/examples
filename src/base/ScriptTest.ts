@@ -12,7 +12,7 @@ var engine = new View(null, scene, camera);
 var sc = scene.node3d.addScript("ScriptDemo")
 
 
-@Serializable()
+@Serializable('ScriptDemo')
 class ScriptDemo extends Script
 {
     cube: Node3D;

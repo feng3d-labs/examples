@@ -20,7 +20,7 @@ import { gPartial, RenderAtomic, Texture, WebGLRenderer } from 'feng3d';
         return;
     }
 
-    loadImage('../../../resources/assets/img/Di-3d.png', (img) =>
+    loadImage('../../../assets/img/Di-3d.png', (img) =>
     {
         const webglRenderer = new WebGLRenderer({ canvas });
 

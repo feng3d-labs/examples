@@ -15,7 +15,7 @@ camera.node3d.y = 2;
 camera.node3d.lookAt(new feng3d.Vector3());
 camera.node3d.addComponent(feng3d.FPSController);
 
-var root = '../../../resources/terrain/';
+var root = '../../../terrain/';
 //
 var terrain = feng3d.serialization.setValue(new feng3d.Node3D(), { name: "terrain" });
 var model = terrain.addComponent(feng3d.MeshRenderer);

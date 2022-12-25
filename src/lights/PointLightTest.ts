@@ -42,9 +42,9 @@ function initObjects()
 {
     var material = new StandardMaterial().init({
         uniforms: {
-            s_diffuse: { __class__: "Texture2D", source: { url: '../../../resources/head_diffuse.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
-            s_normal: { __class__: "Texture2D", source: { url: '../../../resources/head_normals.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
-            s_specular: { __class__: "Texture2D", source: { url: '../../../resources/head_specular.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
+            s_diffuse: { __class__: "Texture2D", source: { url: '../../../head_diffuse.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
+            s_normal: { __class__: "Texture2D", source: { url: '../../../head_normals.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
+            s_specular: { __class__: "Texture2D", source: { url: '../../../head_specular.jpg' }, wrapS: 'MIRRORED_REPEAT', wrapT: 'MIRRORED_REPEAT' },
         }
     });
 

@@ -27,8 +27,8 @@ model.geometry = serialization.setValue(new CubeGeometry(), { width: 1, height: 
 var textureMaterial = model.material = new StandardMaterial();
 var uniforms = <StandardUniforms>textureMaterial.uniforms;
 uniforms.s_diffuse = new Texture2D();
-uniforms.s_diffuse.source = { url: '../../../resources/m.png' };
-// textureMaterial.uniforms.s_diffuse.url = '../../../resources/nonpowerof2.png';
+uniforms.s_diffuse.source = { url: '../../../m.png' };
+// textureMaterial.uniforms.s_diffuse.url = '../../../nonpowerof2.png';
 uniforms.s_diffuse.format = 'RGBA';
 // textureMaterial.diffuseMethod.alphaThreshold = 0.1;
 

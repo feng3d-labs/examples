@@ -15,8 +15,8 @@ camera.node3d.addComponent(FPSController);
 var script = document.createElement('script');
 script.onload = (ev) =>
 {
-    // opentype.load('../../../resources/fonts/NotoSansCJKsc_Regular.otf', function (err, font)
-    opentype.load('../../../resources/fonts/simfang.ttf', function (err, font)
+    // opentype.load('../../../fonts/NotoSansCJKsc_Regular.otf', function (err, font)
+    opentype.load('../../../fonts/simfang.ttf', function (err, font)
     {
         if (err)
         {

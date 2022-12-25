@@ -29,7 +29,7 @@ class ScriptDemo extends Script
         var material = model.material = new StandardMaterial();
         var uniforms = <StandardUniforms>material.uniforms;
         uniforms.s_diffuse = new Texture2D();
-        uniforms.s_diffuse.source = { url: '../../../resources/m.png' };
+        uniforms.s_diffuse.source = { url: '../../../m.png' };
 
         uniforms.u_fogMode = FogMode.LINEAR;
         uniforms.u_fogColor = new Color3(1, 1, 0);

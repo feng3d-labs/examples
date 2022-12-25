@@ -16,7 +16,7 @@ camera.node3d.lookAt(new Vector3());
 var plane = new Node3D();
 var model = plane.addComponent(MeshRenderer);
 model.geometry = serialization.setValue(new PlaneGeometry(), { width: 7, height: 7 });
-var material = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: "../../../resources/floor_diffuse.jpg" } } } });
+var material = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: "Texture2D", source: { url: "../../../floor_diffuse.jpg" } } } });
 scene.node3d.addChild(plane);
 
 ticker.onFrame(() =>

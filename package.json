@@ -17,14 +17,7 @@
     "access": "public"
   },
   "files": [
-    "libs",
-    "out",
-    "resources",
-    "src",
-    "examples.html",
-    "examples.js",
-    "index.html",
-    "index.js"
+    "dist"
   ],
   "keywords": [
     "feng3d",

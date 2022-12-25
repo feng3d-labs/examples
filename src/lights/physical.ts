@@ -97,7 +97,7 @@ function init()
         bumpScale: 0.0005
     });
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('../../../resources/textures/hardwood2_diffuse.jpg', function (map)
+    textureLoader.load('../../../textures/hardwood2_diffuse.jpg', function (map)
     {
 
         map.wrapS = THREE.RepeatWrapping;
@@ -109,7 +109,7 @@ function init()
         floorMat.needsUpdate = true;
 
     });
-    textureLoader.load('../../../resources/textures/hardwood2_bump.jpg', function (map)
+    textureLoader.load('../../../textures/hardwood2_bump.jpg', function (map)
     {
 
         map.wrapS = THREE.RepeatWrapping;
@@ -120,7 +120,7 @@ function init()
         floorMat.needsUpdate = true;
 
     });
-    textureLoader.load('../../../resources/textures/hardwood2_roughness.jpg', function (map)
+    textureLoader.load('../../../textures/hardwood2_roughness.jpg', function (map)
     {
 
         map.wrapS = THREE.RepeatWrapping;
@@ -138,7 +138,7 @@ function init()
         bumpScale: 0.002,
         metalness: 0.2
     });
-    textureLoader.load('../../../resources/textures/brick_diffuse.jpg', function (map)
+    textureLoader.load('../../../textures/brick_diffuse.jpg', function (map)
     {
 
         map.wrapS = THREE.RepeatWrapping;
@@ -150,7 +150,7 @@ function init()
         cubeMat.needsUpdate = true;
 
     });
-    textureLoader.load('../../../resources/textures/brick_bump.jpg', function (map)
+    textureLoader.load('../../../textures/brick_bump.jpg', function (map)
     {
 
         map.wrapS = THREE.RepeatWrapping;
@@ -167,7 +167,7 @@ function init()
         roughness: 0.5,
         metalness: 1.0
     });
-    textureLoader.load('../../../resources/textures/planets/earth_atmos_2048.jpg', function (map)
+    textureLoader.load('../../../textures/planets/earth_atmos_2048.jpg', function (map)
     {
 
         map.anisotropy = 4;
@@ -176,7 +176,7 @@ function init()
         ballMat.needsUpdate = true;
 
     });
-    textureLoader.load('../../../resources/textures/planets/earth_specular_2048.jpg', function (map)
+    textureLoader.load('../../../textures/planets/earth_specular_2048.jpg', function (map)
     {
 
         map.anisotropy = 4;

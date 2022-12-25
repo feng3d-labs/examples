@@ -20,7 +20,7 @@ const engine = new View(null, scene, camera);
 const material = new StandardMaterial().init({
     uniforms: {
         s_diffuse: {
-            source: { url: '../../../resources/textures/uv_grid_opengl.jpg' },
+            source: { url: '../../../textures/uv_grid_opengl.jpg' },
             anisotropy: 16,
             wrapS: 'REPEAT', wrapT: 'REPEAT'
         }
@@ -30,7 +30,7 @@ const material = new StandardMaterial().init({
 
 // const material = Material.create('meshPhong', {
 //     map: {
-//         source: { url: '../../../resources/textures/uv_grid_opengl.jpg' },
+//         source: { url: '../../../textures/uv_grid_opengl.jpg' },
 //         anisotropy: 16,
 //         minFilter: 'LINEAR_MIPMAP_LINEAR',
 //         wrapS: 'REPEAT',

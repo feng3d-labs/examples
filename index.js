@@ -1,48 +1,49 @@
 const files = {
-    "base": [
-        "Container3DTest",
-        "FPSControllerTest",
-        "BillboardTest",
-        "MousePickTest",
-        "SkyBoxTest",
-        "FogTest",
-        "ScriptTest",
+    base: [
+        'base',
+        'Container3DTest',
+        'FPSControllerTest',
+        'BillboardTest',
+        'MousePickTest',
+        'SkyBoxTest',
+        'FogTest',
+        'ScriptTest',
     ],
-    "material": [
-        "ColorMaterialTest",
-        "PointMaterialTest",
-        "SegmentMaterialTest",
-        "StandardMaterialTest",
-        "TextureMaterialTest",
+    material: [
+        'ColorMaterialTest',
+        'PointMaterialTest',
+        'SegmentMaterialTest',
+        'StandardMaterialTest',
+        'TextureMaterialTest',
     ],
-    "geometry": [
-        "geometries",
-        "PrimitiveTest",
-        "GeometryTest",
+    geometry: [
+        'geometries',
+        'PrimitiveTest',
+        'GeometryTest',
     ],
-    "lights": [
-        "PointLightTest",
-        "physical",
-        "physical_f",
+    lights: [
+        'PointLightTest',
+        'physical',
+        'physical_f',
     ],
-    "animator": [
-        "SceneLoadTest",
+    animator: [
+        'SceneLoadTest',
     ],
-    "advanced": [
-        "TerrainTest",
-        "TerrainMergeTest",
+    advanced: [
+        'TerrainTest',
+        'TerrainMergeTest',
     ],
-    "away3d": [
-        "Basic_View",
-        "Basic_SkyBox",
-        "Basic_Shading",
+    away3d: [
+        'Basic_View',
+        'Basic_SkyBox',
+        'Basic_Shading',
     ],
-    "font": [
-        "GeometryFontTest"
+    font: [
+        'GeometryFontTest'
     ],
-    "renderer": [
-        "Basic",
-        "DashedLine",
+    renderer: [
+        'Basic',
+        'DashedLine',
     ],
     'regl-examples': [
         'basic',

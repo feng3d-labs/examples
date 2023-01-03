@@ -57,7 +57,7 @@ function initMaterials()
         }
     });
     torusMaterial = new StandardMaterial().init({
-        shaderName: 'standard', uniforms: {
+        uniforms: {
             s_diffuse: { __class__: 'Texture2D', source: { url: '../../../weave_diffuse.jpg' } },
             s_normal: { __class__: 'Texture2D', source: { url: '../../../weave_normal.jpg' } },
             s_specular: { __class__: 'Texture2D', source: { url: '../../../weave_diffuse.jpg' } },

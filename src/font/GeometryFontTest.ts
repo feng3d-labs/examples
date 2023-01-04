@@ -1,4 +1,4 @@
-import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, Vector3, View } from 'feng3d';
+import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, Vector3, View3D } from 'feng3d';
 import * as opentype from 'opentype.js';
 
 const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
@@ -8,7 +8,7 @@ const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-const engine = new View(null, scene, camera);
+const engine = new View3D(null, scene, camera);
 
 camera.node3d.addComponent(FPSController);
 

@@ -1,6 +1,6 @@
-import { loader, Node3D, Scene, $set, View, $deserialize } from 'feng3d';
+import { loader, Node3D, Scene, $set, View3D, $deserialize } from 'feng3d';
 
-const view3D = new View();
+const view3D = new View3D();
 
 loader.loadText('../../../scene/Untitled.scene.json').then((content) =>
 {

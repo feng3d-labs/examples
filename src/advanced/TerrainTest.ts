@@ -1,4 +1,4 @@
-import { $set, Camera, Color3, Color4, FPSController, MeshRenderer, Node3D, PointLight, Scene, TerrainGeometry, TerrainMaterial, ticker, Vector3, Vector4, View } from 'feng3d';
+import { $set, Camera, Color3, Color4, FPSController, MeshRenderer, Node3D, PointLight, Scene, TerrainGeometry, TerrainMaterial, ticker, Vector3, Vector4, View3D } from 'feng3d';
 
 const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
@@ -7,7 +7,7 @@ const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-const engine = new View(null, scene, camera);
+const engine = new View3D(null, scene, camera);
 
 camera.node3d.x = 0;
 camera.node3d.y = 80;

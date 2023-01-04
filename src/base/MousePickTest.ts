@@ -1,4 +1,4 @@
-import { Camera, Color4, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, StandardUniforms, Vector3, View } from 'feng3d';
+import { Camera, Color4, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, StandardUniforms, Vector3, View3D } from 'feng3d';
 
 /**
  * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
@@ -10,7 +10,7 @@ const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-const engine = new View(null, scene, camera);
+const engine = new View3D(null, scene, camera);
 
 camera.node3d.z = -5;
 camera.node3d.lookAt(new Vector3());

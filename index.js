@@ -7,7 +7,6 @@ const files = {
         'MousePickTest',
         'SkyBoxTest',
         'FogTest',
-        'ScriptTest',
     ],
     material: [
         'ColorMaterialTest',

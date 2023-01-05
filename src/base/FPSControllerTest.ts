@@ -1,4 +1,4 @@
-import { $set, Camera, Color4, FPSController, Node3D, Scene, Vector3, View3D } from 'feng3d';
+import { $set, Camera, CapsuleGeometry, Color4, ColorMaterial, CubeGeometry, CylinderGeometry, FPSController, MeshRenderer, Node3D, PlaneGeometry, Scene, SphereGeometry, Vector3, View3D } from 'feng3d';
 
 const root = new Node3D();
 root.addComponent(View3D);
@@ -10,20 +10,39 @@ const camera = new Node3D().addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 root.addChild(camera.node3d);
 
-const cube = Node3D.createPrimitive('Cube');
-root.addChild(cube);
+const cube = new Node3D().addComponent(MeshRenderer, {
+    material: new ColorMaterial(),
+    geometry: new CubeGeometry(),
+}).node3d;
+scene.node3d.addChild(cube);
 
-const sphere = Node3D.createPrimitive('Sphere');
+const sphere = new Node3D().addComponent(MeshRenderer, {
+    material: new ColorMaterial(),
+    geometry: new SphereGeometry(),
+}).node3d;
 sphere.position = new Vector3(-1.50, 0, 0);
-root.addChild(sphere);
+scene.node3d.addChild(sphere);
 
-const capsule = Node3D.createPrimitive('Capsule');
+const plane = new Node3D().addComponent(MeshRenderer, {
+    material: new ColorMaterial(),
+    geometry: new PlaneGeometry(),
+}).node3d;
+plane.position = new Vector3(1.50, 0, 0);
+scene.node3d.addChild(plane);
+
+const capsule = new Node3D().addComponent(MeshRenderer, {
+    material: new ColorMaterial(),
+    geometry: new CapsuleGeometry(),
+}).node3d;
 capsule.position = new Vector3(3, 0, 0);
-root.addChild(capsule);
+scene.node3d.addChild(capsule);
 
-const cylinder = Node3D.createPrimitive('Cylinder');
+const cylinder = new Node3D().addComponent(MeshRenderer, {
+    material: new ColorMaterial(),
+    geometry: new CylinderGeometry(),
+}).node3d;
 cylinder.position = new Vector3(-3, 0, 0);
-root.addChild(cylinder);
+scene.node3d.addChild(cylinder);
 
 camera.node3d.z = -5;
 camera.node3d.lookAt(new Vector3());

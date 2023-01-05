@@ -104,7 +104,7 @@ button.id = 'button';
 button.textContent = 'View source';
 button.addEventListener('click', function (event)
 {
-    window.open(`http://code.pinefield-inc.com/pineai-client/fabulous/tree/master/examples/src/${selected}.ts`);
+    window.open(`https://gitlab.com/feng3d/examples/tree/master/src/${selected}.ts`);
 }, false);
 button.style.display = 'none';
 document.body.appendChild(button);

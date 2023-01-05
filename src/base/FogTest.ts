@@ -1,9 +1,9 @@
 import { $set, Camera, Color3, Color4, CubeGeometry, FogMode, MeshRenderer, Node3D, Scene, StandardMaterial, ticker, Vector3, View3D } from 'feng3d';
 
-const scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+const scene = new Node3D().addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = $set(new Node3D(), { name: 'Main Camera' }).addComponent(Camera);
+const camera = new Node3D().addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node.addChild(camera.node3d);
 

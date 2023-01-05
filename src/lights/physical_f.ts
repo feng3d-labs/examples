@@ -20,7 +20,7 @@ function init()
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    scene = $set(new Node3D(), { name: 'Untitled' }).addComponent(Scene);
+    scene = new Node3D().addComponent(Scene);
     scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
     scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 

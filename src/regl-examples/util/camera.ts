@@ -1,4 +1,4 @@
-import { RenderAtomic } from '../../../../src';
+import { RenderAtomic } from 'feng3d';
 import { mouseListen as mouseChange } from '../mikolalysenko/mouse-change';
 import { mouseWheelListen as mouseWheel } from '../mikolalysenko/mouse-wheel';
 import { identity, lookAt, perspective } from '../stackgl/gl-mat4';

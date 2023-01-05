@@ -7,12 +7,12 @@
 		"declaration": true,
 		"skipLibCheck": true,
 		"esModuleInterop": true,
+		"noEmit": true,
 		"lib": [
 			"ES2015",
 			"dom"
 		],
 		"outDir": "out"
-		// "outFile": "out/examples.js"
 	},
 	"include": [
 		"src/**/*.ts"

@@ -56,7 +56,7 @@ cylinder.position = new Vector3(-3, 0, 0);
 cylinder.mouseEnabled = true;
 scene.node3d.addChild(cylinder);
 
-scene.on('click', (event) =>
+scene.emitter.on('click', (event) =>
 {
     const node3d = <Node3D>event.target;
     if (node3d.getComponent(MeshRenderer))

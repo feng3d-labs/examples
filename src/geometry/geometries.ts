@@ -1,6 +1,9 @@
 import { Camera, CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, MeshRenderer, Node3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, PointLight, RingGeometry, Scene, SphereGeometry, StandardMaterial, TetrahedronGeometry, TorusGeometry, TorusKnotGeometry, Vector2, Vector3, View3D } from 'feng3d';
 
-const scene = new Node3D().addComponent(Scene);
+const root = new Node3D();
+root.addComponent(View3D);
+
+const scene = root.addComponent(Scene);
 
 const camera = new Node3D().addComponent(Camera);
 camera.lens = new PerspectiveLens(45, window.innerWidth / window.innerHeight, 1, 2000);
@@ -14,8 +17,6 @@ const pointLight = new Node3D().addComponent(PointLight);
 pointLight.color.fromUnit(0xffffff);
 pointLight.intensity = 0.8;
 camera.node3d.addChild(pointLight.node3d);
-
-const engine = new View3D(null, scene, camera);
 
 const material = new StandardMaterial().init({
     uniforms: {

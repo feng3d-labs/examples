@@ -1,13 +1,14 @@
 import { $set, BillboardComponent, Camera, Color4, FPSController, HoldSizeComponent, MeshRenderer, Node3D, PlaneGeometry, Scene, StandardMaterial, Vector3, View3D } from 'feng3d';
 
-const scene = new Node3D().addComponent(Scene);
+const root = new Node3D();
+root.addComponent(View3D);
+
+const scene = root.addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
 const camera = new Node3D().addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
-
-const engine = new View3D(null, scene, camera);
 
 camera.node3d.addComponent(FPSController);
 scene.background.setTo(0.3, 0.3, 0.3, 1);

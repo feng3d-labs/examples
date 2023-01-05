@@ -1,14 +1,15 @@
 import { $set, Camera, Color4, MeshRenderer, Node3D, PerspectiveLens, Scene, SkyBox, StandardMaterial, StandardUniforms, TextureCube, ticker, TorusGeometry, TransformUtils, Vector3, View3D, windowEventProxy } from 'feng3d';
 
-const scene = new Node3D().addComponent(Scene);
+const root = new Node3D();
+const view3d = root.addComponent(View3D);
+const canvas = view3d.canvas;
+
+const scene = root.addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
 const camera = new Node3D().addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
-
-const engine = new View3D(null, scene, camera);
-const canvas = engine.canvas;
 
 const cubeTexture = $set(new TextureCube(), {
     rawData: {

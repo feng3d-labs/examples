@@ -1,13 +1,14 @@
 import { $set, Camera, Color3, Color4, FPSController, MeshRenderer, Node3D, PointLight, Scene, TerrainGeometry, TerrainMaterial, ticker, Vector3, Vector4, View3D } from 'feng3d';
 
-const scene = new Node3D().addComponent(Scene);
+const root = new Node3D();
+root.addComponent(View3D);
+
+const scene = root.addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
 const camera = new Node3D().addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
-
-const engine = new View3D(null, scene, camera);
 
 camera.node3d.x = 0;
 camera.node3d.y = 80;
@@ -15,26 +16,26 @@ camera.node3d.z = 0;
 // camera.node3d.lookAt(new Vector3());
 camera.node3d.addComponent(FPSController);
 
-const root = '../../../terrain/';
+const rootPath = '../../../terrain/';
 //
 const terrain = $set(new Node3D(), { name: 'terrain' });
 const model = terrain.addComponent(MeshRenderer);
 // model.geometry = new TerrainGeometry();
 model.geometry = new TerrainGeometry({
-    heightMap: { __class__: 'Texture2D', source: { url: `${root}terrain_heights.jpg` } },
+    heightMap: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_heights.jpg` } },
     width: 500, height: 100, depth: 500,
     segmentsW: 100,
     segmentsH: 100,
 });
 const material = new TerrainMaterial().init({
     uniforms: {
-        s_diffuse: { __class__: 'Texture2D', source: { url: `${root}terrain_diffuse.jpg` } },
-        s_normal: { __class__: 'Texture2D', source: { url: `${root}terrain_normals.jpg` } },
+        s_diffuse: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_diffuse.jpg` } },
+        s_normal: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_normals.jpg` } },
         //
-        s_blendTexture: { __class__: 'Texture2D', source: { url: `${root}terrain_splats.png` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
-        s_splatTexture1: { __class__: 'Texture2D', source: { url: `${root}beach.jpg` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
-        s_splatTexture2: { __class__: 'Texture2D', source: { url: `${root}grass.jpg` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
-        s_splatTexture3: { __class__: 'Texture2D', source: { url: `${root}rock.jpg` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
+        s_blendTexture: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_splats.png` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
+        s_splatTexture1: { __class__: 'Texture2D', source: { url: `${rootPath}beach.jpg` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
+        s_splatTexture2: { __class__: 'Texture2D', source: { url: `${rootPath}grass.jpg` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
+        s_splatTexture3: { __class__: 'Texture2D', source: { url: `${rootPath}rock.jpg` }, minFilter: 'LINEAR_MIPMAP_LINEAR' },
         u_splatRepeats: new Vector4(1, 50, 50, 50),
     }
 });

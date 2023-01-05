@@ -1,6 +1,7 @@
 import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, FPSController, Material, MeshRenderer, Node3D, PerspectiveLens, PlaneGeometry, PointLight, Scene, $set, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3, View3D } from 'feng3d';
 import Stats from 'stats.js';
 
+let root: Node3D;
 let scene: Scene;
 
 let camera: Camera;
@@ -20,7 +21,10 @@ function init()
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    scene = new Node3D().addComponent(Scene);
+    root = new Node3D();
+    root.addComponent(View3D);
+
+    scene = root.addComponent(Scene);
     scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
     scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 
@@ -31,8 +35,6 @@ function init()
     camera.node3d.lookAt(new Vector3());
     camera.node3d.addComponent(FPSController);
     scene.node3d.addChild(camera.node3d);
-
-    const engine = new View3D(null, scene, camera);
 
     bulbLight = new Node3D().addComponent(PointLight);
     bulbLight.color = Color3.fromUnit(0xffee88);

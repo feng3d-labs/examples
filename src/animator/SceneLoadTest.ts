@@ -1,12 +1,11 @@
-import { loader, Node3D, Scene, $set, View3D, $deserialize } from 'feng3d';
+import { $deserialize, loader, Node3D, View3D } from 'feng3d';
 
-const view3D = new View3D();
+const root = new Node3D();
+root.addComponent(View3D);
 
 loader.loadText('../../../scene/Untitled.scene.json').then((content) =>
 {
     const json = JSON.parse(content);
     const sceneobject: Node3D = $deserialize(json);
-    const scene = sceneobject.getComponent(Scene);
-
-    view3D.scene = scene;
+    root.addChild(sceneobject);
 });

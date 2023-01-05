@@ -1,13 +1,14 @@
 import { $set, Camera, Color3, Color4, FPSController, MeshRenderer, Node3D, PointLight, Scene, StandardMaterial, TerrainGeometry, ticker, Vector3, View3D } from 'feng3d';
 
-const scene = new Node3D().addComponent(Scene);
+const root = new Node3D();
+root.addComponent(View3D);
+
+const scene = root.addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
 const camera = new Node3D().addComponent(Camera);
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
-
-const engine = new View3D(null, scene, camera);
 
 //
 camera.node3d.z = -5;
@@ -15,15 +16,15 @@ camera.node3d.y = 2;
 camera.node3d.lookAt(new Vector3());
 camera.node3d.addComponent(FPSController);
 
-const root = '../../../terrain/';
+const rootPath = '../../../terrain/';
 //
 const terrain = $set(new Node3D(), { name: 'terrain' });
 const model = terrain.addComponent(MeshRenderer);
-model.geometry = new TerrainGeometry({ heightMap: { __class__: 'Texture2D', source: { url: `${root}terrain_heights.jpg` } } });
+model.geometry = new TerrainGeometry({ heightMap: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_heights.jpg` } } });
 const material = new StandardMaterial().init({
     uniforms: {
-        s_diffuse: { __class__: 'Texture2D', source: { url: `${root}terrain_diffuse.jpg` } },
-        s_normal: { __class__: 'Texture2D', source: { url: `${root}terrain_normals.jpg` } },
+        s_diffuse: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_diffuse.jpg` } },
+        s_normal: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_normals.jpg` } },
     }
 });
 

@@ -26,8 +26,6 @@ cube.addChild(cylinder);
 let num = 0;
 ticker.onFrame(() =>
 {
-    console.log('update');
-
     // 变化旋转与颜色
     cube.ry += 1;
 

@@ -61,6 +61,4 @@ ticker.onFrame(() =>
     const angle = time / 1000 / 5;
     light1.y = Math.sin(angle) * 1000;
     light1.z = Math.cos(angle) * 1000;
-
-    // console.log(light1.y, light1.z);
 });

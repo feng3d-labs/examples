@@ -8,8 +8,10 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: getHtmlNamesObject(),
-        }
-    }
+        },
+        sourcemap: true
+    },
+    base: './'
 });
 
 function getHtmlNamesObject()

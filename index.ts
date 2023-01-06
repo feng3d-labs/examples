@@ -73,14 +73,14 @@ function extractQuery()
     return '';
 }
 
-const panel = document.getElementById('panel');
-const content = document.getElementById('content');
-const viewer = document.getElementById('viewer');
+const panel = document.getElementById('panel') as HTMLDivElement;
+const content = document.getElementById('content') as HTMLDivElement;
+const viewer = document.getElementById('viewer') as HTMLIFrameElement;
 
-const filterInput = document.getElementById('filterInput');
-const clearFilterButton = document.getElementById('clearFilterButton');
+const filterInput = document.getElementById('filterInput') as HTMLInputElement;
+const clearFilterButton = document.getElementById('clearFilterButton') as HTMLAnchorElement;
 
-const expandButton = document.getElementById('expandButton');
+const expandButton = document.getElementById('expandButton') as HTMLSpanElement;
 expandButton.addEventListener('click', function (event)
 {
     panel.classList.toggle('collapsed');
@@ -104,12 +104,12 @@ button.id = 'button';
 button.textContent = 'View source';
 button.addEventListener('click', function (event)
 {
-    window.open(`https://gitlab.com/feng3d/examples/tree/master/src/${selected}.ts`);
+    window.open(`https://jihulab.com/wardenfeng/workersharedarraybuffer/tree/master/example/src/${selected}.ts`);
 }, false);
 button.style.display = 'none';
 document.body.appendChild(button);
 
-const links = {};
+const links: { [name: string]: HTMLAnchorElement } = {};
 let selected = null;
 
 for (const key in files)
@@ -169,6 +169,11 @@ function selectFile(file)
 if (window.location.hash !== '')
 {
     loadFile(window.location.hash.substring(1));
+}
+else
+{
+    // 选择第一个对象
+    loadFile(`${Object.keys(files)[0]}/${files[Object.keys(files)[0]][0]}`);
 }
 
 // filter
@@ -255,7 +260,7 @@ function layoutList()
             }
         }
 
-        const element = document.querySelector(`h2[data-category="${key}"]`);
+        const element = document.querySelector(`h2[data-category="${key}"]`) as HTMLAnchorElement;
 
         if (collapsed)
         {

@@ -1,4 +1,4 @@
-import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, Vector3, View3D } from 'feng3d';
+import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, Vector3, View3D, Font, geometryUtils } from 'feng3d';
 import * as opentype from 'opentype.js';
 
 const root = new Node3D();
@@ -27,19 +27,22 @@ script.onload = (ev) =>
         {
             const fontData = extractFontData(font);
             const contoursInfo = convert(fontData);
-            const font1 = new opentype.Font(contoursInfo);
+            const font1 = new Font(contoursInfo);
             // font1.isCCW = !!font['isCIDFont'];
 
             // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图', 1);
             // const { vertices, normals, uvs, indices } = font1.calculateGeometry('图纸!', 1);
             const { vertices, normals, uvs, indices } = font1.calculateGeometry(text1, 1);
 
+            const tangents = geometryUtils.createVertexTangents(indices, vertices, uvs);
+
             const geometry = new CustomGeometry();
 
-            geometry.positions = vertices;
-            geometry.normals = normals;
-            geometry.uvs = uvs;
-            geometry.indices = indices;
+            geometry.attributes.a_position = { array: vertices, itemSize: 3 };
+            geometry.attributes.a_normal = { array: normals, itemSize: 3 };
+            geometry.attributes.a_tangent = { array: tangents, itemSize: 3 };
+            geometry.attributes.a_uv = { array: uvs, itemSize: 2 };
+            geometry.indexBuffer = { array: indices };
 
             const cube = new Node3D().addComponent(MeshRenderer);
             cube.node3d.x = -7;

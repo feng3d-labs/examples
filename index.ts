@@ -104,7 +104,7 @@ button.id = 'button';
 button.textContent = 'View source';
 button.addEventListener('click', function (event)
 {
-    window.open(`https://jihulab.com/wardenfeng/workersharedarraybuffer/tree/master/example/src/${selected}.ts`);
+    window.open(`https://gitlab.com/feng3d/examples/tree/master/src/${selected}.ts`);
 }, false);
 button.style.display = 'none';
 document.body.appendChild(button);

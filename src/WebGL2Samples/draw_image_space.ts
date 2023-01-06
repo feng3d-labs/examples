@@ -41,7 +41,7 @@ import { gPartial, RenderAtomic, Texture, WebGLRenderer } from 'feng3d';
             uniforms: {
                 diffuse,
                 // eslint-disable-next-line camelcase
-                u_imageSize: [canvas.width / 2, canvas.height / 2],
+                imageSize: [canvas.width / 2, canvas.height / 2],
             },
             renderParams: { renderMode: 'TRIANGLES', cullFace: 'NONE', enableBlend: true },
             shader: {
@@ -60,13 +60,13 @@ import { gPartial, RenderAtomic, Texture, WebGLRenderer } from 'feng3d';
     
     uniform sampler2D diffuse;
     
-    uniform vec2 u_imageSize;
+    uniform vec2 imageSize;
     
     out vec4 color;
     
     void main()
     {
-        color = texture(diffuse, vec2(gl_FragCoord.x, u_imageSize.y - gl_FragCoord.y) / u_imageSize);
+        color = texture(diffuse, vec2(gl_FragCoord.x, imageSize.y - gl_FragCoord.y) / imageSize);
     }` }
         });
 
@@ -76,7 +76,7 @@ import { gPartial, RenderAtomic, Texture, WebGLRenderer } from 'feng3d';
             canvas.height = canvas.width;
 
             //
-            renderAtomic.uniforms['u_imageSize'] = [canvas.width / 2, canvas.height / 2];
+            renderAtomic.uniforms.imageSize = [canvas.width / 2, canvas.height / 2];
 
             webglRenderer.gl.clearColor(0.0, 0.0, 0.0, 1.0);
             webglRenderer.gl.clear(webglRenderer.gl.COLOR_BUFFER_BIT);

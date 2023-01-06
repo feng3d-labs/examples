@@ -4,7 +4,7 @@
 <head>
     <title>feng3d / examples</title>
     <meta charset="utf-8">
-	<meta name="renderer" content="webkit">
+    <meta name="renderer" content="webkit">
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Cache-Control" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -147,6 +147,7 @@
         #panel li b {
             font-weight: bold;
         }
+
         /* mobile */
 
         #expandButton {
@@ -175,11 +176,12 @@
             top: 22px;
         }
 
-        @media all and ( max-width: 640px) {
+        @media all and (max-width: 640px) {
             h1 {
                 margin-top: 20px;
                 margin-bottom: 20px;
             }
+
             #panel {
                 position: absolute;
                 left: 0;
@@ -191,6 +193,7 @@
                 overflow: hidden;
                 border-bottom: 1px solid #dedede;
             }
+
             #content {
                 position: absolute;
                 left: 0;
@@ -201,6 +204,7 @@
                 line-height: 22px;
                 overflow: auto;
             }
+
             #viewer {
                 position: absolute;
                 left: 0;
@@ -208,9 +212,11 @@
                 width: 100%;
                 height: calc(100% - 56px);
             }
+
             #expandButton {
                 display: block;
             }
+
             #panel.collapsed {
                 height: 56px;
             }
@@ -221,12 +227,12 @@
 <body>
 
     <div id="panel" class="collapsed">
-        <h1><a href="http://www.feng3d.com">feng3d</a> / examples</h1>
+        <h1><a href="http://www.feng3d.com">feng3d</a> / <a href="./docs/index.html">examples</a></h1>
         <a id="expandButton" href="#">
-				<span></span>
-				<span></span>
-				<span></span>
-			</a>
+            <span></span>
+            <span></span>
+            <span></span>
+        </a>
         <div class="filterBlock">
             <input type="text" id="filterInput" placeholder="Type to filter" />
             <a href="#" id="clearFilterButton">x</a>
@@ -235,7 +241,7 @@
     </div>
     <iframe id="viewer" name="viewer" allowfullscreen allowvr onmousewheel=""></iframe>
 
-    <script type="module" src="index.js"></script>
+    <script type="module" src="index.ts"></script>
 </body>
 
 </html>

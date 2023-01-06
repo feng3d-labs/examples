@@ -21,7 +21,6 @@ pages:
   - npm i -g pnpm
   - pnpm i  
   - pnpm run build
-  - npm run preview
   artifacts:
     paths:
     - public

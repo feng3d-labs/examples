@@ -12,5 +12,18 @@ cache:
 test:
   stage: test
   script:
-    - npm install
-    - npm run build
+    - npm i -g pnpm
+    - pnpm i
+
+pages:
+  stage: deploy
+  script:
+  - npm i -g pnpm
+  - pnpm i  
+  - pnpm run build
+  - npm run preview
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

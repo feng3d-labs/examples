@@ -9,7 +9,8 @@ export default defineConfig({
         rollupOptions: {
             input: getHtmlNamesObject(),
         },
-        sourcemap: true
+        sourcemap: true,
+        outDir: 'public'
     },
     base: './'
 });

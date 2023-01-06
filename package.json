@@ -7,10 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "clean": "rimraf dist",
+    "clean": "rimraf \"{lib,dist,public}\"",
     "lint": "eslint --ext .js --ext .ts src --ignore-path .gitignore --max-warnings 0",
-    "lintfix": "npm run lint -- --fix",
-    "test": "tsc"
+    "lintfix": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",

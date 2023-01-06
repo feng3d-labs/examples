@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "clean": "rimraf \"{lib,dist,public}\"",
     "lint": "eslint --ext .js --ext .ts src --ignore-path .gitignore --max-warnings 0",
-    "lintfix": "npm run lint -- --fix"
+    "lintfix": "npm run lint -- --fix",
+    "test": "tsc"
   },
   "repository": {
     "type": "git",

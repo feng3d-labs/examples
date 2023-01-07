@@ -1,10 +1,12 @@
-import { Camera, CapsuleGeometry, Color4, ColorMaterial, CubeGeometry, CylinderGeometry, FPSController, MeshRenderer, Node3D, PlaneGeometry, Scene, SphereGeometry, Vector3, View3D } from 'feng3d';
+import { Camera, CapsuleGeometry, Color4, ColorMaterial, CubeGeometry, CylinderGeometry, FPSController, MeshRenderer, MouseEvent3D, Node3D, PlaneGeometry, Scene, SphereGeometry, Vector3, View3D } from 'feng3d';
 
 /**
  * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
  */
 const root = new Node3D();
 root.addComponent(View3D);
+
+root.addComponent(MouseEvent3D); // 启动3D结点鼠标事件响应功能。
 
 const scene = root.addComponent(Scene);
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
@@ -63,5 +65,21 @@ scene.emitter.on('click', (event) =>
     {
         const material = node3d.getComponent(MeshRenderer).material as ColorMaterial;
         material.uniforms.u_diffuseInput.random();
+    }
+});
+
+window.addEventListener('dblclick', () =>
+{
+    if (root.getComponent(MouseEvent3D))
+    {
+        alert(`双击，移除 MouseEvent3D 组件，关闭鼠标响应功能！`);
+
+        root.removeComponentsByType(MouseEvent3D);
+    }
+    else
+    {
+        alert(`双击，新增 MouseEvent3D 组件，开启鼠标响应功能！`);
+
+        root.addComponent(MouseEvent3D);
     }
 });

@@ -60,12 +60,9 @@ scene.node3d.addChild(cylinder);
 
 scene.emitter.on('click', (event) =>
 {
-    const node3d = <Node3D>event.target;
-    if (node3d.getComponent(MeshRenderer))
-    {
-        const material = node3d.getComponent(MeshRenderer).material as ColorMaterial;
-        material.uniforms.u_diffuseInput.random();
-    }
+    const meshRenderer = event.data.meshRenderer;
+    const material = meshRenderer.material as ColorMaterial;
+    material.uniforms.u_diffuseInput.random();
 });
 
 window.addEventListener('dblclick', () =>

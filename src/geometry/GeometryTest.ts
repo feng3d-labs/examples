@@ -1,17 +1,17 @@
-import { Camera, Color4, ColorMaterial, ColorUniforms, CubeGeometry, CustomGeometry, Matrix4x4, MeshRenderer, Node3D, PlaneGeometry, Scene, $set, SphereGeometry, Vector3, View3D } from 'feng3d';
+import { $set, Color4, ColorMaterial, ColorUniforms, CubeGeometry, CustomGeometry, Matrix4x4, Node3D, PlaneGeometry, SphereGeometry, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent(View3D);
+root.addComponent('View3D');
 
-const scene = root.addComponent(Scene);
+const scene = root.addComponent('Scene');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent(Camera);
+const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
 const node3d = new Node3D();
-const model = node3d.addComponent(MeshRenderer);
+const model = node3d.addComponent('MeshRenderer');
 
 const geometry = model.geometry = new CustomGeometry();
 geometry.addGeometry(new PlaneGeometry());

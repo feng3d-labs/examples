@@ -1,4 +1,4 @@
-import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, FPSController, Material, MeshRenderer, Node3D, PerspectiveLens, PlaneGeometry, PointLight, Scene, $set, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3, View3D } from 'feng3d';
+import { Camera, Color3, Color4, ColorMaterial, CubeGeometry, Material, Node3D, PerspectiveLens, PlaneGeometry, PointLight, Scene, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3 } from 'feng3d';
 import Stats from 'stats.js';
 
 let root: Node3D;
@@ -22,21 +22,21 @@ function init()
     container.appendChild(stats.dom);
 
     root = new Node3D();
-    root.addComponent(View3D);
+    root.addComponent('View3D');
 
-    scene = root.addComponent(Scene);
+    scene = root.addComponent('Scene');
     scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
     scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 
-    camera = new Node3D().addComponent(Camera);
+    camera = new Node3D().addComponent('Camera');
     camera.lens = new PerspectiveLens(50, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.node3d.z = -5;
     camera.node3d.y = 2;
     camera.node3d.lookAt(new Vector3());
-    camera.node3d.addComponent(FPSController);
+    camera.node3d.addComponent('FPSController');
     scene.node3d.addChild(camera.node3d);
 
-    bulbLight = new Node3D().addComponent(PointLight);
+    bulbLight = new Node3D().addComponent('PointLight');
     bulbLight.color = Color3.fromUnit(0xffee88);
     bulbLight.intensity = 1;
     bulbLight.range = 5;
@@ -47,7 +47,7 @@ function init()
 
     const bulbGeometry = new SphereGeometry({ radius: 0.02, segmentsW: 16, segmentsH: 8 });
     bulbMat = new ColorMaterial().init({ uniforms: { u_diffuseInput: new Color4(1) } });
-    const bulbRenderable = bulbLight.node3d.addComponent(MeshRenderer);
+    const bulbRenderable = bulbLight.node3d.addComponent('MeshRenderer');
     bulbRenderable.material = bulbMat;
     bulbRenderable.geometry = bulbGeometry;
     bulbRenderable.castShadows = false;
@@ -126,7 +126,7 @@ function init()
         }
     });
 
-    const floorMesh = new Node3D().addComponent(MeshRenderer);
+    const floorMesh = new Node3D().addComponent('MeshRenderer');
     const floorGeometry = new PlaneGeometry({ width: 20, height: 20 });
     floorMesh.geometry = floorGeometry;
     floorMesh.material = floorMat;
@@ -135,7 +135,7 @@ function init()
     scene.node3d.addChild(floorMesh.node3d);
 
     const ballGeometry = new SphereGeometry({ radius: 0.25, segmentsW: 32, segmentsH: 32 });
-    const ballMesh = new Node3D().addComponent(MeshRenderer);
+    const ballMesh = new Node3D().addComponent('MeshRenderer');
     ballMesh.geometry = ballGeometry;
     ballMesh.material = ballMat;
     // ballMesh.receiveShadows = true;
@@ -144,7 +144,7 @@ function init()
     scene.node3d.addChild(ballMesh.node3d);
 
     const boxGeometry = new CubeGeometry({ width: 0.5, height: 0.5, depth: 0.5 });
-    const boxMesh = new Node3D().addComponent(MeshRenderer);
+    const boxMesh = new Node3D().addComponent('MeshRenderer');
     boxMesh.geometry = boxGeometry;
     boxMesh.material = cubeMat;
     boxMesh.node3d.position.set(-0.5, 0.25, -1);

@@ -1,12 +1,12 @@
-import { $set, Camera, Color3, Color4, FPSController, MeshRenderer, Node3D, PointLight, Scene, TerrainGeometry, TerrainMaterial, ticker, Vector3, Vector4, View3D } from 'feng3d';
+import { $set, Color3, Color4, Node3D, TerrainGeometry, TerrainMaterial, ticker, Vector3, Vector4 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent(View3D);
+root.addComponent('View3D');
 
-const scene = root.addComponent(Scene);
+const scene = root.addComponent('Scene');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent(Camera);
+const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -14,12 +14,12 @@ camera.node3d.x = 0;
 camera.node3d.y = 80;
 camera.node3d.z = 0;
 // camera.node3d.lookAt(new Vector3());
-camera.node3d.addComponent(FPSController);
+camera.node3d.addComponent('FPSController');
 
 const rootPath = '../../../terrain/';
 //
 const terrain = $set(new Node3D(), { name: 'terrain' });
-const model = terrain.addComponent(MeshRenderer);
+const model = terrain.addComponent('MeshRenderer');
 // model.geometry = new TerrainGeometry();
 model.geometry = new TerrainGeometry({
     heightMap: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_heights.jpg` } },
@@ -47,7 +47,7 @@ scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 
 // 初始化光源
 const light1 = new Node3D();
-const pointLight1 = light1.addComponent(PointLight);
+const pointLight1 = light1.addComponent('PointLight');
 pointLight1.range = 5000;
 pointLight1.color = new Color3(1, 1, 1);
 // pointLight1.shadowType = ShadowType.PCF_Shadows;

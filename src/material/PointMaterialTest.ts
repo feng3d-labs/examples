@@ -1,19 +1,19 @@
-import { $set, Camera, Color4, MeshRenderer, Node3D, PointGeometry, PointMaterial, PointUniforms, Scene, Vector3, View3D } from 'feng3d';
+import { $set, Color4, Node3D, PointGeometry, PointMaterial, PointUniforms, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent(View3D);
+root.addComponent('View3D');
 
-const scene = root.addComponent(Scene);
+const scene = root.addComponent('Scene');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent(Camera);
+const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
 const pointGeometry = new PointGeometry();
 const pointMaterial = new PointMaterial();
 const node3d = $set(new Node3D(), { name: 'plane' });
-const model = node3d.addComponent(MeshRenderer);
+const model = node3d.addComponent('MeshRenderer');
 model.geometry = pointGeometry;
 model.material = pointMaterial;
 node3d.z = 3;

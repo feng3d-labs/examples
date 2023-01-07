@@ -30,5 +30,6 @@ model.material = new TextureMaterial().init({
         s_texture: {
             __class__: 'Texture2D', source: { url: '../../../m.png' }, flipY: false
         }
-    }
+    },
+    renderParams: { enableBlend: true }
 });

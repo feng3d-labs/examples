@@ -2,7 +2,7 @@
   "name": "feng3d-examples",
   "version": "0.7.9",
   "description": "feng3d引擎示例",
-  "main": "index.html",
+  "main": "public/index.html",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,6 +10,7 @@
     "clean": "rimraf \"{lib,dist,public}\"",
     "lint": "eslint --ext .js --ext .ts src --ignore-path .gitignore --max-warnings 0",
     "lintfix": "npm run lint -- --fix",
+    "release": "npm run clean && npm run lint && npm run build && npm publish",
     "test": "tsc"
   },
   "repository": {
@@ -20,7 +21,7 @@
     "access": "public"
   },
   "files": [
-    "dist"
+    "public"
   ],
   "keywords": [
     "feng3d",

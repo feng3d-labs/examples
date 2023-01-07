@@ -1,13 +1,13 @@
-import { $set, Camera, Color4, MeshRenderer, Node3D, PerspectiveLens, Scene, SkyBox, StandardMaterial, StandardUniforms, TextureCube, ticker, TorusGeometry, TransformUtils, Vector3, View3D, windowEventProxy } from 'feng3d';
+import { $set, Color4, Node3D, PerspectiveLens, StandardMaterial, StandardUniforms, TextureCube, ticker, TorusGeometry, TransformUtils, Vector3, windowEventProxy } from 'feng3d';
 
 const root = new Node3D();
-const view3d = root.addComponent(View3D);
+const view3d = root.addComponent('View3D');
 const canvas = view3d.canvas;
 
-const scene = root.addComponent(Scene);
+const scene = root.addComponent('Scene');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent(Camera);
+const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -25,7 +25,7 @@ const cubeTexture = $set(new TextureCube(), {
 });
 
 const skybox = $set(new Node3D(), { name: 'skybox' });
-const skyboxComponent = skybox.addComponent(SkyBox);
+const skyboxComponent = skybox.addComponent('SkyBox');
 skyboxComponent.s_skyBoxTexture = cubeTexture;
 scene.node3d.addChild(skybox);
 
@@ -40,7 +40,7 @@ uniforms.u_ambient.fromUnit(0x111111);
 uniforms.u_ambient.a = 0.25;
 
 const torus = $set(new Node3D(), { name: 'torus' });
-const model = torus.addComponent(MeshRenderer);
+const model = torus.addComponent('MeshRenderer');
 model.geometry = $set(new TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
 model.material = torusMaterial;
 scene.node3d.addChild(torus);

@@ -1,17 +1,17 @@
-import { Camera, Color4, CustomGeometry, FPSController, MeshRenderer, Node3D, Scene, $set, StandardMaterial, Vector3, View3D, Font, geometryUtils } from 'feng3d';
+import { Color4, CustomGeometry, Font, geometryUtils, Node3D, StandardMaterial, Vector3 } from 'feng3d';
 import * as opentype from 'opentype.js';
 
 const root = new Node3D();
-root.addComponent(View3D);
+root.addComponent('View3D');
 
-const scene = root.addComponent(Scene);
+const scene = root.addComponent('Scene');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent(Camera);
+const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-camera.node3d.addComponent(FPSController);
+camera.node3d.addComponent('FPSController');
 
 const script = document.createElement('script');
 script.onload = (ev) =>
@@ -44,7 +44,7 @@ script.onload = (ev) =>
             geometry.attributes.a_uv = { array: uvs, itemSize: 2 };
             geometry.indexBuffer = { array: indices };
 
-            const cube = new Node3D().addComponent(MeshRenderer);
+            const cube = new Node3D().addComponent('MeshRenderer');
             cube.node3d.x = -7;
             cube.node3d.y = 7;
             cube.node3d.rx = 180;

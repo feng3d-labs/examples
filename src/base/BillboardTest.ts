@@ -1,16 +1,16 @@
-import { $set, BillboardComponent, Camera, Color4, FPSController, HoldSizeComponent, MeshRenderer, Node3D, PlaneGeometry, Scene, StandardMaterial, Vector3, View3D } from 'feng3d';
+import { $set, Color4, Node3D, PlaneGeometry, StandardMaterial, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent(View3D);
+root.addComponent('View3D');
 
-const scene = root.addComponent(Scene);
+const scene = root.addComponent('Scene');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent(Camera);
+const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-camera.node3d.addComponent(FPSController);
+camera.node3d.addComponent('FPSController');
 scene.background.setTo(0.3, 0.3, 0.3, 1);
 
 const cube = Node3D.createPrimitive('Cube');
@@ -19,15 +19,15 @@ scene.node3d.addChild(cube);
 
 const node3d = Node3D.createPrimitive('Plane');
 node3d.y = 1.50;
-const holdSizeComponent = node3d.addComponent(HoldSizeComponent);
+const holdSizeComponent = node3d.addComponent('HoldSizeComponent');
 holdSizeComponent.holdSize = 1;
 holdSizeComponent.camera = camera;
-const billboardComponent = node3d.addComponent(BillboardComponent);
+const billboardComponent = node3d.addComponent('BillboardComponent');
 billboardComponent.camera = camera;
 cube.addChild(node3d);
 
 // 材质
-const model = node3d.getComponent(MeshRenderer);
+const model = node3d.getComponent('MeshRenderer');
 model.geometry = $set(new PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
 const textureMaterial = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: 'Texture2D', source: { url: '../../../m.png' } } } });
 // textureMaterial.cullFace = 'NONE';

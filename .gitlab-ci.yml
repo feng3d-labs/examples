@@ -14,6 +14,7 @@ test:
   script:
     - npm i -g pnpm
     - pnpm i
+    - pnpm run test
 
 pages:
   stage: deploy

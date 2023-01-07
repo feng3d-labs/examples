@@ -1,12 +1,12 @@
-import { $set, Camera, Color4, Material, MeshRenderer, Node3D, Scene, SegmentGeometry, Vector3, View3D } from 'feng3d';
+import { $set, Color4, Material, Node3D, SegmentGeometry, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent(View3D);
+root.addComponent('View3D');
 
-const scene = root.addComponent(Scene);
+const scene = root.addComponent('Scene');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent(Camera);
+const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -15,7 +15,7 @@ segment.z = 3;
 scene.node3d.addChild(segment);
 
 // 初始化材质
-const model = segment.addComponent(MeshRenderer);
+const model = segment.addComponent('MeshRenderer');
 model.material = Material.getDefault('Segment-Material');
 const segmentGeometry = model.geometry = new SegmentGeometry();
 

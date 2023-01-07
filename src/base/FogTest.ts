@@ -28,7 +28,8 @@ const material = model.material = new StandardMaterial().init({
         u_fogColor: new Color3(1, 1, 0),
         u_fogMinDistance: 2,
         u_fogMaxDistance: 3,
-    }
+    },
+    renderParams: { enableBlend: true }
 });
 
 ticker.onFrame(() =>

@@ -8,10 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rimraf \"{lib,dist,public}\"",
+    "watch": "tsc -w",
     "lint": "eslint --ext .js --ext .ts src --ignore-path .gitignore --max-warnings 0",
     "lintfix": "npm run lint -- --fix",
-    "release": "npm run clean && npm run lint && npm run build && npm publish",
-    "test": "tsc"
+    "release": "npm run clean && npm run lint && npm run build && npm publish"
   },
   "repository": {
     "type": "git",

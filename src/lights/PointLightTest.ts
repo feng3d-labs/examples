@@ -3,10 +3,10 @@ import { $set, Color4, ColorMaterial, CubeGeometry, Node3D, PlaneGeometry, Shado
 const root = new Node3D();
 root.addComponent('View3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -21,7 +21,7 @@ ticker.onFrame(setPointLightPosition);
 camera.node3d.z = -5;
 camera.node3d.y = 2;
 camera.node3d.lookAt(new Vector3());
-camera.node3d.addComponent('FPSController');
+camera.node3d.addComponent('FPSController3D');
 //
 windowEventProxy.on('keyup', (event) =>
 {
@@ -85,7 +85,7 @@ function initLights()
     let model = light0.addComponent('Mesh3D');
     model.geometry = $set(new SphereGeometry(), { radius: 0.05 });
     // 初始化点光源
-    const pointLight0 = light0.addComponent('PointLight');
+    const pointLight0 = light0.addComponent('PointLight3D');
     pointLight0.shadowType = ShadowType.PCF_Shadows;
     pointLight0.color = lightColor0.toColor3();
     model.material = new ColorMaterial().init({ uniforms: { u_diffuseInput: lightColor0 } });
@@ -96,7 +96,7 @@ function initLights()
     model = light1.addComponent('Mesh3D');
     model.geometry = $set(new SphereGeometry(), { radius: 0.05 });
     // 初始化点光源
-    const pointLight1 = light1.addComponent('DirectionalLight');
+    const pointLight1 = light1.addComponent('DirectionalLight3D');
     pointLight1.shadowType = ShadowType.PCF_Shadows;
     pointLight1.color = lightColor1.toColor3();
     model.material = new ColorMaterial().init({ uniforms: { u_diffuseInput: lightColor1 } });

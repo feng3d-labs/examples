@@ -8,16 +8,16 @@ root.addComponent('View3D');
 
 root.addComponent('MouseEvent3D'); // 启动3D结点鼠标事件响应功能。
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
 camera.node3d.z = -5;
 camera.node3d.lookAt(new Vector3());
-camera.node3d.addComponent('FPSController');
+camera.node3d.addComponent('FPSController3D');
 
 const cube = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),

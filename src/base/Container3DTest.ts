@@ -6,10 +6,10 @@ root.addComponent('View3D');
 /**
  * 测试3D容器
  */
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 

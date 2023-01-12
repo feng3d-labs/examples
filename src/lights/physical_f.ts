@@ -8,19 +8,19 @@ root.addComponent('Stats', { container });
 
 root.addComponent('View3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.lens = new PerspectiveLens(50, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.node3d.z = -5;
 camera.node3d.y = 2;
 camera.node3d.lookAt(new Vector3());
-camera.node3d.addComponent('FPSController');
+camera.node3d.addComponent('FPSController3D');
 scene.node3d.addChild(camera.node3d);
 
-const bulbLight = new Node3D().addComponent('PointLight');
+const bulbLight = new Node3D().addComponent('PointLight3D');
 bulbLight.color = Color3.fromUnit(0xffee88);
 bulbLight.intensity = 1;
 bulbLight.range = 5;

@@ -3,14 +3,14 @@ import { $set, Color4, Node3D, PlaneGeometry, StandardMaterial, Vector3 } from '
 const root = new Node3D();
 root.addComponent('View3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-camera.node3d.addComponent('FPSController');
+camera.node3d.addComponent('FPSController3D');
 scene.background.setTo(0.3, 0.3, 0.3, 1);
 
 const cube = Node3D.createPrimitive('Cube');
@@ -19,10 +19,10 @@ scene.node3d.addChild(cube);
 
 const node3d = Node3D.createPrimitive('Plane');
 node3d.y = 1.50;
-const holdSizeComponent = node3d.addComponent('HoldSizeComponent');
+const holdSizeComponent = node3d.addComponent('HoldSize3D');
 holdSizeComponent.holdSize = 1;
 holdSizeComponent.camera = camera;
-const billboardComponent = node3d.addComponent('BillboardComponent');
+const billboardComponent = node3d.addComponent('Billboard3D');
 billboardComponent.camera = camera;
 cube.addChild(node3d);
 

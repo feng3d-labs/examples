@@ -3,9 +3,9 @@ import { CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, La
 const root = new Node3D();
 root.addComponent('View3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.lens = new PerspectiveLens(45, window.innerWidth / window.innerHeight, 1, 2000);
 camera.node3d.y = 400;
 scene.node3d.addChild(camera.node3d);
@@ -13,7 +13,7 @@ scene.node3d.addChild(camera.node3d);
 const container = new Node3D();
 scene.node3d.addChild(container);
 
-const pointLight = new Node3D().addComponent('PointLight');
+const pointLight = new Node3D().addComponent('PointLight3D');
 pointLight.color.fromUnit(0xffffff);
 pointLight.intensity = 0.8;
 camera.node3d.addChild(pointLight.node3d);

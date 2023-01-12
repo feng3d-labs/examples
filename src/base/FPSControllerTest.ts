@@ -3,10 +3,10 @@ import { Color4, ColorMaterial, Geometry, Node3D, Vector3 } from 'feng3d';
 const root = new Node3D();
 root.addComponent('View3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 root.addChild(camera.node3d);
 
@@ -47,4 +47,4 @@ scene.node3d.addChild(cylinder);
 camera.node3d.z = -5;
 camera.node3d.lookAt(new Vector3());
 //
-camera.node3d.addComponent('FPSController');
+camera.node3d.addComponent('FPSController3D');

@@ -4,14 +4,14 @@ import * as opentype from 'opentype.js';
 const root = new Node3D();
 root.addComponent('View3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
-camera.node3d.addComponent('FPSController');
+camera.node3d.addComponent('FPSController3D');
 
 const script = document.createElement('script');
 script.onload = (ev) =>

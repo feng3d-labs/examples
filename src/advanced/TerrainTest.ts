@@ -1,7 +1,7 @@
 import { $set, Color3, Color4, Node3D, Terrain3DGeometry, Terrain3DMaterial, ticker, Vector3, Vector4 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
 const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);

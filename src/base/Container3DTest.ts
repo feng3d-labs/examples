@@ -1,7 +1,7 @@
 import { Color4, ColorMaterial, ColorUniforms, Node3D, ticker, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
 /**
  * 测试3D容器

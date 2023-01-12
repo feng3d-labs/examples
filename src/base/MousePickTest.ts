@@ -4,7 +4,7 @@ import { CapsuleGeometry, Color4, ColorMaterial, CubeGeometry, CylinderGeometry,
  * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
  */
 const root = new Node3D();
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
 root.addComponent('MouseEvent3D'); // 启动3D结点鼠标事件响应功能。
 

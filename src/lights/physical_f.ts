@@ -6,7 +6,7 @@ document.body.append(container);
 const root = new Node3D();
 root.addComponent('Stats', { container });
 
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
 const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);

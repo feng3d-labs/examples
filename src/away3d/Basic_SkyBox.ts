@@ -1,7 +1,7 @@
 import { $set, Color4, Node3D, PerspectiveLens, StandardMaterial, StandardUniforms, TextureCube, ticker, TorusGeometry, TransformUtils, Vector3, windowEventProxy } from 'feng3d';
 
 const root = new Node3D();
-const view3d = root.addComponent('View3D');
+const view3d = root.addComponent('WebGLRenderer3D');
 const canvas = view3d.getRenderCanvas();
 
 const scene = root.addComponent('Scene3D');

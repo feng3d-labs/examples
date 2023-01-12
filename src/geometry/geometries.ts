@@ -1,7 +1,7 @@
 import { CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Mesh3D, Node3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, RingGeometry, SphereGeometry, StandardMaterial, TetrahedronGeometry, TorusGeometry, TorusKnotGeometry, Vector2, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
 const scene = root.addComponent('Scene3D');
 

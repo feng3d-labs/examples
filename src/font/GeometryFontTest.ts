@@ -2,7 +2,7 @@ import { Color4, CustomGeometry, Font, geometryUtils, Node3D, StandardMaterial, 
 import * as opentype from 'opentype.js';
 
 const root = new Node3D();
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
 const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);

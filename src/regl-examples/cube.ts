@@ -59,7 +59,7 @@ const indices = cubeElements.reduce((pv: number[], cv: number[]) =>
     return pv;
 }, []);
 
-const webglRenderer = new WebGLRenderer({ canvas: webglcanvas });
+const webglRenderer = new WebGLRenderer(webglcanvas);
 
 let diffuse: gPartial<Texture<any>>;
 

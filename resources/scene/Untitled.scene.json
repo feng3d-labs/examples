@@ -9,14 +9,14 @@
 			"z": -10,
 			"components": [
 				{
-					"__class__": "Camera",
+					"__class__": "Camera3D",
 					"lens": {
 						"__class__": "PerspectiveLens",
 						"aspectRatio": 1.1085714285714285
 					}
 				},
 				{
-					"__class__": "FPSController"
+					"__class__": "FPSController3D"
 				}
 			]
 		},
@@ -29,7 +29,7 @@
 			"children": [],
 			"components": [
 				{
-					"__class__": "DirectionalLight",
+					"__class__": "DirectionalLight3D",
 					"lightType": 1
 				},
 				null
@@ -295,7 +295,7 @@
 	],
 	"components": [
 		{
-			"__class__": "Scene",
+			"__class__": "Scene3D",
 			"background": {
 				"r": 0.408,
 				"g": 0.38,

@@ -1,11 +1,7 @@
 import { fit } from './hughsk/canvas-fit';
 import { attachCamera } from './hughsk/canvas-orbit-camera';
-import { angleNormals as normals } from './mikolalysenko/angle-normals';
-import * as bunny from './mikolalysenko/bunny';
-import { resl } from './mikolalysenko/resl';
-import * as mat4 from './stackgl/gl-mat4';
 
-import { AttributeBuffer, RenderAtomic, WebGLRenderer } from 'feng3d';
+import { RenderAtomic, WebGLRenderer } from 'feng3d';
 
 const canvas = document.createElement('canvas');
 canvas.id = 'glcanvas';
@@ -27,7 +23,7 @@ const FILTER_RADIUS = 1;
 camera.rotate([0.0, 0.0], [0.0, -0.4]);
 camera.zoom(300.0);
 
-const webglRenderer = new WebGLRenderer({ canvas });
+const webglRenderer = new WebGLRenderer(canvas);
 
 let batchId = 0;
 let tick = 0;

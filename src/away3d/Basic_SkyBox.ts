@@ -2,7 +2,7 @@ import { $set, Color4, Node3D, PerspectiveLens, StandardMaterial, StandardUnifor
 
 const root = new Node3D();
 const view3d = root.addComponent('View3D');
-const canvas = view3d.canvas;
+const canvas = view3d.getRenderCanvas();
 
 const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);

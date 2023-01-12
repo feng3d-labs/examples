@@ -24,7 +24,7 @@ import { gPartial, RenderAtomic, Texture, WebGLRenderer } from 'feng3d';
     }
     loadImage('../../../assets/img/Di-3d.png', (img) =>
     {
-        const webglRenderer = new WebGLRenderer({ canvas });
+        const webglRenderer = new WebGLRenderer(canvas);
 
         const diffuse: gPartial<Texture<any>> = {
             flipY: false,

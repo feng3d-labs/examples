@@ -9,7 +9,7 @@ webglcanvas.style.width = '100%';
 webglcanvas.style.height = '100%';
 document.body.appendChild(webglcanvas);
 
-const webglRenderer = new WebGLRenderer({ canvas: webglcanvas });
+const webglRenderer = new WebGLRenderer(webglcanvas);
 
 const renderAtomic = new RenderAtomic({
     attributes: {

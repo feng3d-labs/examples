@@ -24,7 +24,7 @@ import { RenderAtomic, WebGLRenderer } from 'feng3d';
     // WebGL 2.0 behaves as though PRIMITIVE_RESTART_FIXED_INDEX were always enabled.
     const MAX_UNSIGNED_SHORT = 65535;
 
-    const webglRenderer = new WebGLRenderer({ canvas });
+    const webglRenderer = new WebGLRenderer(canvas);
 
     const renderAtomic = new RenderAtomic({
         attributes: {

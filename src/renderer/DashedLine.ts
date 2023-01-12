@@ -41,7 +41,7 @@ drawDashedLine([12, 3, 3]); // Equals [12, 3, 3, 12, 3, 3]
 
 geo.points = geo.points.map((v) => v / 500);
 
-const webglRenderer = new WebGLRenderer({ canvas: webglcanvas });
+const webglRenderer = new WebGLRenderer(webglcanvas);
 
 const renderAtomic = new RenderAtomic({
     attributes: {

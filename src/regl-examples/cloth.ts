@@ -159,7 +159,7 @@ const indices = elements.reduce((pv: number[], cv: number[]) =>
     return pv;
 }, []);
 
-const webglRenderer = new WebGLRenderer({ canvas });
+const webglRenderer = new WebGLRenderer(canvas);
 
 let diffuse: gPartial<Texture<any>>;
 

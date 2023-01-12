@@ -13,7 +13,7 @@ scene.node3d.addChild(camera.node3d);
 const pointGeometry = new PointGeometry();
 const pointMaterial = new PointMaterial();
 const node3d = $set(new Node3D(), { name: 'plane' });
-const model = node3d.addComponent('MeshRenderer');
+const model = node3d.addComponent('Mesh3D');
 model.geometry = pointGeometry;
 model.material = pointMaterial;
 node3d.z = 3;

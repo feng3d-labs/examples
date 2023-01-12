@@ -19,7 +19,7 @@ camera.node3d.addComponent('FPSController');
 const rootPath = '../../../terrain/';
 //
 const terrain = $set(new Node3D(), { name: 'terrain' });
-const model = terrain.addComponent('MeshRenderer');
+const model = terrain.addComponent('Mesh3D');
 // model.geometry = new TerrainGeometry();
 model.geometry = new TerrainGeometry({
     heightMap: { __class__: 'Texture2D', source: { url: `${rootPath}terrain_heights.jpg` } },

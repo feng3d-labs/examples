@@ -19,14 +19,14 @@ camera.node3d.z = -5;
 camera.node3d.lookAt(new Vector3());
 camera.node3d.addComponent('FPSController');
 
-const cube = new Node3D().addComponent('MeshRenderer', {
+const cube = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: new CubeGeometry(),
 }).node3d;
 cube.mouseEnabled = true;
 scene.node3d.addChild(cube);
 
-const sphere = new Node3D().addComponent('MeshRenderer', {
+const sphere = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: new SphereGeometry(),
 }).node3d;
@@ -34,7 +34,7 @@ sphere.position = new Vector3(-1.50, 0, 0);
 sphere.mouseEnabled = true;
 scene.node3d.addChild(sphere);
 
-const plane = new Node3D().addComponent('MeshRenderer', {
+const plane = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: new PlaneGeometry(),
 }).node3d;
@@ -42,7 +42,7 @@ plane.position = new Vector3(1.50, 0, 0);
 plane.mouseEnabled = true;
 scene.node3d.addChild(plane);
 
-const capsule = new Node3D().addComponent('MeshRenderer', {
+const capsule = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: new CapsuleGeometry(),
 }).node3d;
@@ -50,7 +50,7 @@ capsule.position = new Vector3(3, 0, 0);
 capsule.mouseEnabled = true;
 scene.node3d.addChild(capsule);
 
-const cylinder = new Node3D().addComponent('MeshRenderer', {
+const cylinder = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: new CylinderGeometry(),
 }).node3d;

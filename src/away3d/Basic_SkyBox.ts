@@ -40,7 +40,7 @@ uniforms.u_ambient.fromUnit(0x111111);
 uniforms.u_ambient.a = 0.25;
 
 const torus = $set(new Node3D(), { name: 'torus' });
-const model = torus.addComponent('MeshRenderer');
+const model = torus.addComponent('Mesh3D');
 model.geometry = $set(new TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
 model.material = torusMaterial;
 scene.node3d.addChild(torus);

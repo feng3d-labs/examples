@@ -27,7 +27,7 @@ billboardComponent.camera = camera;
 cube.addChild(node3d);
 
 // 材质
-const model = node3d.getComponent('MeshRenderer');
+const model = node3d.getComponent('Mesh3D');
 model.geometry = $set(new PlaneGeometry(), { width: 0.1, height: 0.1, segmentsW: 1, segmentsH: 1, yUp: false });
 const textureMaterial = model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: 'Texture2D', source: { url: '../../../m.png' } } } });
 // textureMaterial.cullFace = 'NONE';

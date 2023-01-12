@@ -87,7 +87,7 @@ function initLights()
 function initObjects()
 {
     plane = new Node3D();
-    let model = plane.addComponent('MeshRenderer');
+    let model = plane.addComponent('Mesh3D');
     let geometry: Geometry = model.geometry = $set(new PlaneGeometry(), { width: 10, height: 10 });
     model.material = planeMaterial;
     geometry.scaleU = 2;
@@ -95,7 +95,7 @@ function initObjects()
     plane.y = -0.20;
     scene.node3d.addChild(plane);
     sphere = new Node3D();
-    model = sphere.addComponent('MeshRenderer');
+    model = sphere.addComponent('Mesh3D');
     model.geometry = $set(new SphereGeometry(), { radius: 1.50, segmentsW: 40, segmentsH: 20 });
     model.material = sphereMaterial;
     sphere.x = 3;
@@ -103,7 +103,7 @@ function initObjects()
     sphere.z = 3.00;
     scene.node3d.addChild(sphere);
     cube = new Node3D();
-    model = cube.addComponent('MeshRenderer');
+    model = cube.addComponent('Mesh3D');
     model.geometry = $set(new CubeGeometry(), { width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
     model.material = cubeMaterial;
     cube.x = 3.00;
@@ -111,7 +111,7 @@ function initObjects()
     cube.z = -2.50;
     scene.node3d.addChild(cube);
     torus = new Node3D();
-    model = torus.addComponent('MeshRenderer');
+    model = torus.addComponent('Mesh3D');
     geometry = model.geometry = $set(new TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
     model.material = torusMaterial;
     geometry.scaleU = 10;

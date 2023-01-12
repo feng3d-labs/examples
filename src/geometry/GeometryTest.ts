@@ -11,7 +11,7 @@ camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
 const node3d = new Node3D();
-const model = node3d.addComponent('MeshRenderer');
+const model = node3d.addComponent('Mesh3D');
 
 const geometry = model.geometry = new CustomGeometry();
 geometry.addGeometry(new PlaneGeometry());

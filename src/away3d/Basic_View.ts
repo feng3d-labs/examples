@@ -15,7 +15,7 @@ camera.node3d.y = 5;
 camera.node3d.lookAt(new Vector3());
 
 const plane = new Node3D();
-const model = plane.addComponent('MeshRenderer');
+const model = plane.addComponent('Mesh3D');
 model.geometry = $set(new PlaneGeometry(), { width: 7, height: 7 });
 model.material = new StandardMaterial().init({ uniforms: { s_diffuse: { __class__: 'Texture2D', source: { url: '../../../floor_diffuse.jpg' } } } });
 scene.node3d.addChild(plane);

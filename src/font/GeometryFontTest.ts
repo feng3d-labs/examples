@@ -44,7 +44,7 @@ script.onload = (ev) =>
             geometry.attributes.a_uv = { array: uvs, itemSize: 2 };
             geometry.indexBuffer = { array: indices };
 
-            const cube = new Node3D().addComponent('MeshRenderer');
+            const cube = new Node3D().addComponent('Mesh3D');
             cube.node3d.x = -7;
             cube.node3d.y = 7;
             cube.node3d.rx = 180;

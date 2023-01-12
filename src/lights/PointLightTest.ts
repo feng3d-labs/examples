@@ -52,7 +52,7 @@ function initObjects()
     // 初始化立方体
     const plane = new Node3D();
     plane.y = -1;
-    let model = plane.addComponent('MeshRenderer');
+    let model = plane.addComponent('Mesh3D');
     const geometry = model.geometry = $set(new PlaneGeometry(), { width: 10, height: 10 });
     geometry.scaleU = 2;
     geometry.scaleV = 2;
@@ -60,7 +60,7 @@ function initObjects()
     scene.node3d.addChild(plane);
 
     const cube = new Node3D();
-    model = cube.addComponent('MeshRenderer');
+    model = cube.addComponent('Mesh3D');
     model.material = material;
     model.geometry = $set(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
     model.geometry.scaleU = 2;
@@ -82,7 +82,7 @@ function initLights()
 
     //
     const lightColor0 = new Color4(1, 0, 0, 1);
-    let model = light0.addComponent('MeshRenderer');
+    let model = light0.addComponent('Mesh3D');
     model.geometry = $set(new SphereGeometry(), { radius: 0.05 });
     // 初始化点光源
     const pointLight0 = light0.addComponent('PointLight');
@@ -93,7 +93,7 @@ function initLights()
 
     //
     const lightColor1 = new Color4(0, 1, 0, 1);
-    model = light1.addComponent('MeshRenderer');
+    model = light1.addComponent('Mesh3D');
     model.geometry = $set(new SphereGeometry(), { radius: 0.05 });
     // 初始化点光源
     const pointLight1 = light1.addComponent('DirectionalLight');

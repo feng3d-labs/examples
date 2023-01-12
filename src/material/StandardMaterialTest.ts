@@ -21,7 +21,7 @@ setInterval(function ()
     cube.ry += 1;
 }, 15);
 
-const model = cube.addComponent('MeshRenderer');
+const model = cube.addComponent('Mesh3D');
 model.geometry = $set(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
 // model.geometry = new PlaneGeometry();
 // 材质

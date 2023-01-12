@@ -15,7 +15,7 @@ cube.z = -7;
 cube.y = 0;
 scene.node.addChild(cube);
 
-const model = cube.addComponent('MeshRenderer');
+const model = cube.addComponent('Mesh3D');
 model.geometry = $set(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
 // 材质
 const material = model.material = new StandardMaterial().init({

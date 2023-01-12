@@ -17,7 +17,7 @@ scene.node3d.addChild(camera.node3d);
 const cube = Node3D.createPrimitive('Cube');
 scene.node3d.addChild(cube);
 
-const colorMaterial = cube.getComponent('MeshRenderer').material = new ColorMaterial();
+const colorMaterial = cube.getComponent('Mesh3D').material = new ColorMaterial();
 
 const cylinder = Node3D.createPrimitive('Cylinder');
 cylinder.x = 2;

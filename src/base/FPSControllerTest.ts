@@ -10,34 +10,34 @@ const camera = new Node3D().addComponent('Camera');
 camera.node3d.position = new Vector3(0, 1, -10);
 root.addChild(camera.node3d);
 
-const cube = new Node3D().addComponent('MeshRenderer', {
+const cube = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: Geometry.create('CubeGeometry'),
 }).node3d;
 scene.node3d.addChild(cube);
 
-const sphere = new Node3D().addComponent('MeshRenderer', {
+const sphere = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: Geometry.create('SphereGeometry'),
 }).node3d;
 sphere.position = new Vector3(-1.50, 0, 0);
 scene.node3d.addChild(sphere);
 
-const plane = new Node3D().addComponent('MeshRenderer', {
+const plane = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: Geometry.create('PlaneGeometry'),
 }).node3d;
 plane.position = new Vector3(1.50, 0, 0);
 scene.node3d.addChild(plane);
 
-const capsule = new Node3D().addComponent('MeshRenderer', {
+const capsule = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: Geometry.create('CapsuleGeometry'),
 }).node3d;
 capsule.position = new Vector3(3, 0, 0);
 scene.node3d.addChild(capsule);
 
-const cylinder = new Node3D().addComponent('MeshRenderer', {
+const cylinder = new Node3D().addComponent('Mesh3D', {
     material: new ColorMaterial(),
     geometry: Geometry.create('CylinderGeometry'),
 }).node3d;

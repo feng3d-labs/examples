@@ -15,7 +15,7 @@ segment.z = 3;
 scene.node3d.addChild(segment);
 
 // 初始化材质
-const model = segment.addComponent('MeshRenderer');
+const model = segment.addComponent('Mesh3D');
 model.material = Material.getDefault('Segment-Material');
 const segmentGeometry = model.geometry = new SegmentGeometry();
 

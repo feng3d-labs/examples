@@ -15,7 +15,7 @@ cube.z = 3;
 scene.node3d.addChild(cube);
 
 // 初始化颜色材质
-const colorMaterial = cube.getComponent('MeshRenderer').material = new ColorMaterial();
+const colorMaterial = cube.getComponent('Mesh3D').material = new ColorMaterial();
 
 // 变化旋转与颜色
 setInterval(function ()

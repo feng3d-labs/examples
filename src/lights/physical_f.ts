@@ -1,4 +1,4 @@
-import { Color3, Color4, ColorMaterial, CubeGeometry, Node3D, PerspectiveLens, PlaneGeometry, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3 } from 'feng3d';
+import { Color3, Color4, ColorMaterial, CubeGeometry, Node3D, PlaneGeometry, ShadowType, SphereGeometry, StandardMaterial, Texture2D, Vector3 } from 'feng3d';
 
 const container = document.createElement('div');
 document.body.append(container);
@@ -12,8 +12,12 @@ const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 scene.ambientColor.setTo(0.2, 0.2, 0.2, 1.0);
 
-const camera = new Node3D().addComponent('Camera3D');
-camera.lens = new PerspectiveLens(50, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new Node3D().addComponent('PerspectiveCamera3D', {
+    fov: 50,
+    aspect: window.innerWidth / window.innerHeight,
+    near: 0.1,
+    far: 100,
+});
 camera.node3d.z = -5;
 camera.node3d.y = 2;
 camera.node3d.lookAt(new Vector3());

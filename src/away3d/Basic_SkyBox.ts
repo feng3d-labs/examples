@@ -1,4 +1,4 @@
-import { $set, Color4, Node3D, PerspectiveLens, StandardMaterial, StandardUniforms, TextureCube, ticker, TorusGeometry, TransformUtils, Vector3, windowEventProxy } from 'feng3d';
+import { $set, Color4, Node3D, StandardMaterial, StandardUniforms, TextureCube, ticker, TorusGeometry, TransformUtils, Vector3, windowEventProxy } from 'feng3d';
 
 const root = new Node3D();
 const view3d = root.addComponent('WebGLRenderer3D');
@@ -7,8 +7,9 @@ const canvas = view3d.getRenderCanvas();
 const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera3D');
-camera.node3d.position = new Vector3(0, 1, -10);
+const camera = new Node3D().addComponent('PerspectiveCamera3D', { fov: 90 });
+camera.node3d.position = new Vector3(0, 1, -6);
+camera.node3d.lookAt(new Vector3());
 scene.node3d.addChild(camera.node3d);
 
 const cubeTexture = $set(new TextureCube(), {
@@ -28,10 +29,6 @@ const skybox = $set(new Node3D(), { name: 'skybox' });
 const skyboxComponent = skybox.addComponent('SkyBox');
 skyboxComponent.s_skyBoxTexture = cubeTexture;
 scene.node3d.addChild(skybox);
-
-camera.node3d.z = -6;
-camera.node3d.lookAt(new Vector3());
-camera.lens = new PerspectiveLens(90);
 
 const torusMaterial = new StandardMaterial();
 const uniforms = torusMaterial.uniforms as StandardUniforms;

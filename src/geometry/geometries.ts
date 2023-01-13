@@ -1,12 +1,16 @@
-import { CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Mesh3D, Node3D, OctahedronGeometry, PerspectiveLens, PlaneGeometry, RingGeometry, SphereGeometry, StandardMaterial, TetrahedronGeometry, TorusGeometry, TorusKnotGeometry, Vector2, Vector3 } from 'feng3d';
+import { CircleGeometry, CubeGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, Mesh3D, Node3D, OctahedronGeometry, PlaneGeometry, RingGeometry, SphereGeometry, StandardMaterial, TetrahedronGeometry, TorusGeometry, TorusKnotGeometry, Vector2, Vector3 } from 'feng3d';
 
 const root = new Node3D();
 root.addComponent('WebGLRenderer3D');
 
 const scene = root.addComponent('Scene3D');
 
-const camera = new Node3D().addComponent('Camera3D');
-camera.lens = new PerspectiveLens(45, window.innerWidth / window.innerHeight, 1, 2000);
+const camera = new Node3D().addComponent('PerspectiveCamera3D', {
+    fov: 45,
+    aspect: window.innerWidth / window.innerHeight,
+    near: 1,
+    far: 2000,
+});
 camera.node3d.y = 400;
 scene.node3d.addChild(camera.node3d);
 

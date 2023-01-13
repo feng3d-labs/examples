@@ -9,11 +9,8 @@
 			"z": -10,
 			"components": [
 				{
-					"__class__": "Camera3D",
-					"lens": {
-						"__class__": "PerspectiveLens",
-						"aspectRatio": 1.1085714285714285
-					}
+					"__class__": "PerspectiveCamera3D",
+					"aspect": 1.1085714285714285
 				},
 				{
 					"__class__": "FPSController3D"

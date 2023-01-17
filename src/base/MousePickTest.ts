@@ -1,4 +1,4 @@
-import { CapsuleGeometry, Color4, ColorMaterial, CubeGeometry, CylinderGeometry, Node3D, PlaneGeometry, SphereGeometry, Vector3 } from 'feng3d';
+import { CapsuleGeometry, Color4, ColorMaterial, CubeGeometry, CylinderGeometry, MouseRay3D, Node3D, PlaneGeometry, SphereGeometry, Vector3 } from 'feng3d';
 
 /**
  * 操作方式:鼠标按下后可以使用移动鼠标改变旋转，wasdqe平移
@@ -7,6 +7,8 @@ const root = new Node3D();
 root.addComponent('WebGLRenderer3D');
 
 root.addComponent('MouseEvent3D'); // 启动3D结点鼠标事件响应功能。
+
+root.addComponent('MouseRay3D');
 
 const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);

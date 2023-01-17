@@ -8,7 +8,7 @@ root.addComponent('WebGLRenderer3D');
 
 root.addComponent('MouseEvent3D'); // 启动3D结点鼠标事件响应功能。
 
-root.addComponent('MouseRay3D');
+// root.addComponent('MouseRay3D');
 
 const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);

@@ -20,7 +20,7 @@ scene.node3d.addChild(cube);
 const node3d = Node3D.createPrimitive('Plane');
 node3d.y = 1.50;
 const holdSizeComponent = node3d.addComponent('HoldSize3D');
-holdSizeComponent.holdSize = 10;
+holdSizeComponent.holdSize = 1;
 holdSizeComponent.camera = camera;
 const billboardComponent = node3d.addComponent('Billboard3D');
 billboardComponent.camera = camera;

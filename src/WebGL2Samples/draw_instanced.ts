@@ -23,7 +23,7 @@ import { RenderAtomic, WebGLRenderer } from 'feng3d';
         return;
     }
 
-    const webglRenderer = new WebGLRenderer({ canvas });
+    const webglRenderer = new WebGLRenderer(canvas);
 
     const renderAtomic = new RenderAtomic({
         attributes: {

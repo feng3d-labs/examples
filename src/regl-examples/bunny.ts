@@ -11,7 +11,7 @@ webglcanvas.style.width = '100%';
 webglcanvas.style.height = '100%';
 document.body.appendChild(webglcanvas);
 
-const webglRenderer = new WebGLRenderer({ canvas: webglcanvas, antialias: true });
+const webglRenderer = new WebGLRenderer(webglcanvas, { antialias: true });
 
 const positions = bunny.positions.reduce((pv: number[], cv: number[]) =>
 {

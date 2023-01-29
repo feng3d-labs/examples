@@ -25,8 +25,9 @@ const files = {
         'physical',
         'physical_f',
     ],
-    animator: [
+    deserialize: [
         'SceneLoadTest',
+        'deserializeTest',
     ],
     advanced: [
         'TerrainTest',

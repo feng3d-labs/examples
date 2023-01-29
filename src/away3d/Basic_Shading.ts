@@ -1,12 +1,12 @@
 import { $set, Color4, CubeGeometry, Geometry, Material, Node3D, PlaneGeometry, SphereGeometry, StandardMaterial, ticker, TorusGeometry, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node3d.addChild(camera.node3d);
 
@@ -32,7 +32,7 @@ function initEngine()
     camera.node3d.y = 5;
     camera.node3d.z = -10;
     camera.node3d.lookAt(new Vector3());
-    camera.node3d.addComponent('FPSController');
+    camera.node3d.addComponent('FPSController3D');
 }
 
 function initMaterials()
@@ -71,13 +71,13 @@ function initLights()
     scene.ambientColor.a = 0.2;
 
     light1 = new Node3D();
-    let directionalLight = light1.addComponent('DirectionalLight');
+    let directionalLight = light1.addComponent('DirectionalLight3D');
     directionalLight.intensity = 0.7;
     light1.rx = 90;
     scene.node3d.addChild(light1);
 
     light2 = new Node3D();
-    directionalLight = light2.addComponent('DirectionalLight');
+    directionalLight = light2.addComponent('DirectionalLight3D');
     directionalLight.color.fromUnit(0x00FFFF);
     directionalLight.intensity = 0.7;
     light2.rx = 90;
@@ -87,7 +87,7 @@ function initLights()
 function initObjects()
 {
     plane = new Node3D();
-    let model = plane.addComponent('MeshRenderer');
+    let model = plane.addComponent('Mesh3D');
     let geometry: Geometry = model.geometry = $set(new PlaneGeometry(), { width: 10, height: 10 });
     model.material = planeMaterial;
     geometry.scaleU = 2;
@@ -95,7 +95,7 @@ function initObjects()
     plane.y = -0.20;
     scene.node3d.addChild(plane);
     sphere = new Node3D();
-    model = sphere.addComponent('MeshRenderer');
+    model = sphere.addComponent('Mesh3D');
     model.geometry = $set(new SphereGeometry(), { radius: 1.50, segmentsW: 40, segmentsH: 20 });
     model.material = sphereMaterial;
     sphere.x = 3;
@@ -103,7 +103,7 @@ function initObjects()
     sphere.z = 3.00;
     scene.node3d.addChild(sphere);
     cube = new Node3D();
-    model = cube.addComponent('MeshRenderer');
+    model = cube.addComponent('Mesh3D');
     model.geometry = $set(new CubeGeometry(), { width: 2, height: 2, depth: 2, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
     model.material = cubeMaterial;
     cube.x = 3.00;
@@ -111,7 +111,7 @@ function initObjects()
     cube.z = -2.50;
     scene.node3d.addChild(cube);
     torus = new Node3D();
-    model = torus.addComponent('MeshRenderer');
+    model = torus.addComponent('Mesh3D');
     geometry = model.geometry = $set(new TorusGeometry(), { radius: 1.50, tubeRadius: 0.60, segmentsR: 40, segmentsT: 20 });
     model.material = torusMaterial;
     geometry.scaleU = 10;

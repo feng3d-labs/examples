@@ -1,12 +1,12 @@
 import { $set, Color3, Color4, CubeGeometry, FogMode, Node3D, StandardMaterial, ticker, Vector3 } from 'feng3d';
 
 const root = new Node3D();
-root.addComponent('View3D');
+root.addComponent('WebGLRenderer3D');
 
-const scene = root.addComponent('Scene');
+const scene = root.addComponent('Scene3D');
 scene.background = new Color4(0.408, 0.38, 0.357, 1.0);
 
-const camera = new Node3D().addComponent('Camera');
+const camera = new Node3D().addComponent('Camera3D');
 camera.node3d.position = new Vector3(0, 1, -10);
 scene.node.addChild(camera.node3d);
 
@@ -15,7 +15,7 @@ cube.z = -7;
 cube.y = 0;
 scene.node.addChild(cube);
 
-const model = cube.addComponent('MeshRenderer');
+const model = cube.addComponent('Mesh3D');
 model.geometry = $set(new CubeGeometry(), { width: 1, height: 1, depth: 1, segmentsW: 1, segmentsH: 1, segmentsD: 1, tile6: false });
 // 材质
 const material = model.material = new StandardMaterial().init({

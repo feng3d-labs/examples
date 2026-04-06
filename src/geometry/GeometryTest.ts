@@ -1,47 +1,49 @@
-namespace examples
-{
-    var scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Untitled" }).addComponent(feng3d.Scene)
-    scene.background = new feng3d.Color4(0.408, 0.38, 0.357, 1.0);
+import * as feng3d from 'feng3d';
+const webglcanvas = document.createElement('canvas');
+webglcanvas.id = "glcanvas";
+webglcanvas.style.position = "fixed";
+webglcanvas.style.left = "0px";
+webglcanvas.style.top = "0px";
+webglcanvas.style.width = "100%";
+webglcanvas.style.height = "100%";
+document.body.appendChild(webglcanvas);
 
-    var camera = feng3d.serialization.setValue(new feng3d.GameObject(), { name: "Main Camera" }).addComponent(feng3d.Camera);
-    camera.transform.position = new feng3d.Vector3(0, 1, -10);
-    scene.gameObject.addChild(camera.gameObject);
+const webglRenderer = new feng3d.WebGLRenderer(webglcanvas);
 
-    var engine = new feng3d.View(null, scene, camera);
+const renderAtomic = new feng3d.RenderAtomic({
+    attributes: {
+        a_position: {
+            data: [
+                -1, 0,
+                0, -1,
+                1, 1
+            ],
+            size: 2,
+        },
+    },
+    uniforms: { u_color: [1, 0, 0, 1] },
+    renderParams: { cullFace: "NONE", enableBlend: true },
+    shader: {
+        vertex: `
+                precision mediump float;
+                attribute vec2 a_position;
+                void main () {
+                  gl_Position = vec4(a_position, 0, 1);
+                }
+        `, fragment: `
+        precision mediump float;
+        uniform vec4 u_color;
+        void main () {
+          gl_FragColor = u_color;
+        }
+        `}
+});
 
-    var gameobject = new feng3d.GameObject();
-    var model = gameobject.addComponent(feng3d.Renderable);
-
-    var geometry = model.geometry = new feng3d.CustomGeometry();
-    geometry.addGeometry(new feng3d.PlaneGeometry());
-    var matrix = new feng3d.Matrix4x4();
-    matrix.appendTranslation(0, 0.50, 0);
-    geometry.addGeometry(feng3d.serialization.setValue(new feng3d.SphereGeometry(), { radius: 50 }), matrix);
-
-    matrix.appendTranslation(0, 0.50, 0);
-    var addGeometry = new feng3d.CubeGeometry();
-    geometry.addGeometry(addGeometry, matrix);
-
-    addGeometry.width = 0.50;
-    matrix.appendTranslation(0, 0.50, 0);
-    matrix.appendRotation(feng3d.Vector3.Z_AXIS, 45);
-    geometry.addGeometry(addGeometry, matrix);
-
-    gameobject.transform.z = 3;
-    gameobject.transform.y = -1;
-    scene.gameObject.addChild(gameobject);
-
-    //初始化颜色材质
-    model.material = feng3d.serialization.setValue(new feng3d.Material(), { shaderName: "color" });
-    var colorUniforms = <feng3d.ColorUniforms>model.material.uniforms;
-
-    //变化旋转与颜色
-    setInterval(function ()
-    {
-        gameobject.transform.ry += 1;
-    }, 15);
-    setInterval(function ()
-    {
-        colorUniforms.u_diffuseInput.fromUnit(Math.random() * (1 << 32 - 1));
-    }, 1000);
+function draw() {
+    webglcanvas.width = webglcanvas.clientWidth;
+    webglcanvas.height = webglcanvas.clientHeight;
+    webglRenderer.render(renderAtomic);
+    requestAnimationFrame(draw);
 }
+draw();
+
